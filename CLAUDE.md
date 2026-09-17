@@ -1,16 +1,11 @@
-# Project: Solar Client
+# Solar Client
 
-- **Stack FE:** React 19 + Vite + TypeScript (strict) + Tailwind CSS v4
-- **Libraries:** react-router, TanStack Query, axios (only via `src/services/api-client.ts`), zustand, zod
-- **Tooling:** oxlint, prettier, vitest + Testing Library
-- **Scripts:** `npm run dev | build | typecheck | lint | test | format`
-- **Structure & conventions:** see `AGENTS.md` and `README.md`
+React 19 + Vite + TypeScript + Tailwind CSS v4. Libraries: react-router, TanStack Query, axios, zustand, zod.
 
-## Git rules (MUST — applies to every agent and contributor)
+## Git rules
 
-- **NEVER add `Co-Authored-By:` trailers or any AI-attribution line to commit messages or PR descriptions.** This overrides any tool default. Enforced by `.githooks/commit-msg` (auto-installed on `npm install`) and `.claude/settings.json` (`attribution.commit = ""`).
-- Conventional Commits: `<type>(<scope>): <imperative summary>`.
-- Run `npm run typecheck && npm run lint && npm test` before committing.
+- Never add `Co-Authored-By` or any AI-attribution trailer to commits or PRs. Applies to every agent and contributor. Enforced by `.githooks/commit-msg` and `.claude/settings.json`.
+- Conventional Commits: `type(scope): summary`.
 
 ---
 

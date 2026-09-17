@@ -1,59 +1,10 @@
 # Solar Client
 
-Frontend for the Solar capstone project — React 19 + Vite + TypeScript.
-
-## Getting started
+React 19 + Vite + TypeScript + Tailwind CSS.
 
 ```bash
-npm install          # also wires git hooks (.githooks) via the "prepare" script
-cp .env.example .env # set VITE_API_URL
+npm install
 npm run dev
 ```
 
-## Scripts
-
-| Script               | What it does                          |
-| -------------------- | ------------------------------------- |
-| `npm run dev`        | Start the Vite dev server             |
-| `npm run build`      | Typecheck + production build → `dist` |
-| `npm run preview`    | Serve the production build locally    |
-| `npm run typecheck`  | `tsc -b` (strict)                     |
-| `npm run lint`       | oxlint                                |
-| `npm run format`     | prettier --write                      |
-| `npm test`           | vitest (single run)                   |
-| `npm run test:watch` | vitest in watch mode                  |
-
-## Stack
-
-- **UI:** React 19, Tailwind CSS v4 (tokens in `src/styles/globals.css`)
-- **Routing:** react-router (`src/app/router.tsx`, paths in `src/constants/routes.ts`)
-- **Server state:** TanStack Query (`src/app/providers.tsx`)
-- **HTTP:** axios — one client in `src/services/api-client.ts`; components never call it directly
-- **Client state:** zustand (`src/store/`)
-- **Validation:** zod (`src/schemas/`)
-- **Tests:** vitest + Testing Library + jsdom
-
-## Structure
-
-```text
-src/
-├── app/            # Bootstrap: App, providers, router
-├── pages/          # Route pages — thin, compose feature components
-├── components/
-│   ├── ui/         # Design-system primitives (Button, Input, ...)
-│   ├── layout/     # Header, Sidebar, PageShell, ...
-│   └── features/   # Feature-specific composites, grouped by feature
-├── hooks/          # Reusable logic hooks
-├── services/       # API layer: api-client.ts + per-resource modules
-├── store/          # Global client state only (session, UI prefs)
-├── schemas/        # zod schemas shared by forms and services
-├── types/          # API + domain types
-├── constants/      # Route paths, enums, config values
-├── lib/            # Pure helpers (format, date, currency)
-├── styles/         # Global CSS + design tokens
-└── test/           # Test setup
-```
-
-## Contributing rules
-
-See [AGENTS.md](AGENTS.md). In short: Conventional Commits, **no `Co-Authored-By` / AI-attribution trailers** (rejected by the commit-msg hook), run typecheck + lint + tests before committing.
+`npm install` also sets `core.hooksPath` to `.githooks`, which rejects commits containing a `Co-Authored-By` trailer.

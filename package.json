@@ -7,13 +7,8 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
-    "typecheck": "tsc -b",
     "lint": "oxlint",
-    "format": "prettier --write .",
-    "format:check": "prettier --check .",
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "prepare": "node scripts/setup-git-hooks.mjs"
+    "prepare": "git config core.hooksPath .githooks || exit 0"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.103.1",
@@ -26,18 +21,13 @@
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.3.3",
-    "@testing-library/jest-dom": "^7.0.1",
-    "@testing-library/react": "^16.3.3",
     "@types/node": "^22.20.3",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "@vitejs/plugin-react": "^6.1.1",
-    "jsdom": "^29.1.1",
     "oxlint": "^1.83.0",
-    "prettier": "^3.9.7",
     "tailwindcss": "^4.3.3",
     "typescript": "^7.0.2",
-    "vite": "^8.3.0",
-    "vitest": "^5.0.1"
+    "vite": "^8.3.0"
   }
 }

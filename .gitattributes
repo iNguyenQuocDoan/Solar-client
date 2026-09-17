@@ -1,2 +1,1 @@
-# Normalize line endings to LF for every text file (keeps shell hooks in .githooks runnable on Windows clones).
 * text=auto eol=lf
