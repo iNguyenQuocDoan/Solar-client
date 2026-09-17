@@ -4,7 +4,7 @@ React 19 + Vite + TypeScript + Tailwind CSS v4. Libraries: react-router, TanStac
 
 ## Git rules
 
-- Never add `Co-Authored-By` or any AI-attribution trailer to commits or PRs. Applies to every agent and contributor. Enforced by `.claude/settings.json`.
+- Never add `Co-Authored-By` or any AI-attribution trailer to commits or PRs. Applies to every agent and contributor.
 - Conventional Commits: `type(scope): summary`.
 
 ---
