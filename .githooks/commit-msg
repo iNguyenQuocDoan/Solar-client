@@ -1,0 +1,12 @@
+#!/bin/sh
+# Project rule: no Co-Authored-By / AI attribution trailers in commit messages.
+# Installed automatically by `npm install` (see scripts/setup-git-hooks.mjs).
+
+if grep -qiE '^[[:space:]]*co-authored-by:' "$1"; then
+  echo "" >&2
+  echo "ERROR: commit message contains a 'Co-Authored-By' trailer." >&2
+  echo "This repository forbids co-author / AI attribution trailers." >&2
+  echo "Remove the trailer and commit again." >&2
+  echo "" >&2
+  exit 1
+fi
