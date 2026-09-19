@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 260" width="400" height="260">
+  <defs><linearGradient id="yardSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#dce9ff"/><stop offset="1" stop-color="#f8f9ff"/></linearGradient></defs>
+  <rect width="400" height="260" fill="url(#yardSky)"/>
+  <rect y="190" width="400" height="70" fill="#8ad2a7"/>
+  <polygon points="250,190 330,120 400,190" fill="#707971"/>
+  <rect x="250" y="190" width="150" height="40" fill="#bfc9c0"/>
+  <polygon points="90,190 60,120 120,120" fill="#005d28"/>
+  <polygon points="90,150 62,95 118,95" fill="#0d5c3a"/>
+  <polygon points="90,115 68,70 112,70" fill="#00431b"/>
+  <rect x="84" y="190" width="12" height="24" fill="#663500"/>
+  <ellipse cx="150" cy="210" rx="80" ry="16" fill="#005d28" opacity="0.25"/>
+  <rect x="0" y="196" width="230" height="30" fill="#d5e3fc"/>
+</svg>

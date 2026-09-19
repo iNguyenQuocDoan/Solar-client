@@ -32,3 +32,9 @@ pnpm-debug.log*
 
 # Test / coverage
 coverage
+
+# Screenshot doi chieu thiet ke (PROMPTS.md dung tmp/<screen>.png)
+tmp
+
+# Ban export tu Google Stitch (chi dung de doi chieu khi dung UI)
+design
