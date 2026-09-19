@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 260" width="400" height="260">
+  <defs><linearGradient id="treeSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#dce9ff"/><stop offset="1" stop-color="#f8f9ff"/></linearGradient></defs>
+  <rect width="400" height="260" fill="url(#treeSky)"/>
+  <polygon points="260,260 200,120 320,120" fill="#8a938b"/>
+  <ellipse cx="140" cy="100" rx="95" ry="72" fill="#00431b"/>
+  <ellipse cx="96" cy="128" rx="62" ry="48" fill="#005d28"/>
+  <ellipse cx="180" cy="130" rx="56" ry="42" fill="#0d5c3a"/>
+  <rect x="128" y="150" width="24" height="110" fill="#663500"/>
+  <path d="M140 200l-34 30M140 180l36 26" stroke="#663500" stroke-width="10" fill="none"/>
+  <rect y="244" width="400" height="16" fill="#8ad2a7"/>
+</svg>
