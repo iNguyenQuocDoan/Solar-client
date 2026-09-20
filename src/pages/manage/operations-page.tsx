@@ -28,17 +28,17 @@ export function ManageOperationsPage() {
           />
 
           <div className="mb-12 flex flex-wrap items-center gap-3">
-            <Select aria-label="Analysis horizon" className="h-8 w-auto">
+            <Select size="sm" aria-label="Analysis horizon" className="w-auto">
               {data.filters.horizon.map((o) => (
                 <option key={o}>{o}</option>
               ))}
             </Select>
-            <Select aria-label="Territory" className="h-8 w-auto">
+            <Select size="sm" aria-label="Territory" className="w-auto">
               {data.filters.territory.map((o) => (
                 <option key={o}>{o}</option>
               ))}
             </Select>
-            <Select aria-label="Asset class" className="h-8 w-auto">
+            <Select size="sm" aria-label="Asset class" className="w-auto">
               {data.filters.asset.map((o) => (
                 <option key={o}>{o}</option>
               ))}
@@ -46,7 +46,7 @@ export function ManageOperationsPage() {
             <span className="tnum text-body text-fg-2">{data.feeds} live telemetry feeds</span>
           </div>
 
-          <StatRow className="mb-12 md:grid-cols-5">
+          <StatRow className="mb-12 md:grid-cols-3 xl:grid-cols-5">
             {data.kpis.map((k) => (
               <Stat key={k.label} label={k.label} value={k.value} unit={k.unit} note={k.note} />
             ))}
@@ -83,15 +83,15 @@ export function ManageOperationsPage() {
           <div className="mb-12 grid gap-x-12 gap-y-12 lg:grid-cols-5 lg:items-start">
             <Panel className="lg:col-span-3">
               <PanelHeader title="Field squad operations" description="Regional deployment velocity and residential install timelines." action={<Badge>Average {data.squads.avgSpeed}</Badge>} />
-              <Table className="text-body">
+              <Table>
                 <thead>
                   <tr>
                     <Th>Squad</Th>
                     <Th className="text-right">Turnaround</Th>
                     <Th className="text-right">First-pass AHJ</Th>
                     <Th className="text-right">Active installs</Th>
-                    <Th className="text-right">Utilization</Th>
-                    <Th className="text-right">Zero-incident days</Th>
+                    <Th className="hidden text-right lg:table-cell">Utilization</Th>
+                    <Th className="hidden text-right lg:table-cell">Zero-incident days</Th>
                   </tr>
                 </thead>
                 <tbody>
@@ -106,8 +106,8 @@ export function ManageOperationsPage() {
                       <Td className="tnum text-right font-medium">{s.turnaround}</Td>
                       <Td className="tnum text-right">{s.pass}</Td>
                       <Td className="tnum text-right">{s.installs} sites</Td>
-                      <Td className="tnum text-right">{s.utilization}</Td>
-                      <Td className="tnum text-right">{s.safety}</Td>
+                      <Td className="tnum hidden text-right lg:table-cell">{s.utilization}</Td>
+                      <Td className="tnum hidden text-right lg:table-cell">{s.safety}</Td>
                     </Tr>
                   ))}
                 </tbody>
@@ -152,11 +152,11 @@ export function ManageOperationsPage() {
 
           <Panel>
             <PanelHeader title="Municipal jurisdiction (AHJ) friction" description="Bottleneck detection across local building departments and electric utility partners. Code registry syncs daily." />
-            <Table className="text-body">
+            <Table>
               <thead>
                 <tr>
                   <Th>Authority or utility</Th>
-                  <Th>Metro region</Th>
+                  <Th className="hidden md:table-cell">Metro region</Th>
                   <Th className="text-right">Avg turnaround</Th>
                   <Th className="text-right">Pass rate</Th>
                   <Th className="text-right">Active audits</Th>
@@ -170,7 +170,7 @@ export function ManageOperationsPage() {
                       <p className="font-medium">{r.authority}</p>
                       <p className="text-meta text-fg-3">{r.note}</p>
                     </Td>
-                    <Td>{r.region}</Td>
+                    <Td className="hidden md:table-cell">{r.region}</Td>
                     <Td className="tnum text-right">{r.days} days</Td>
                     <Td className="tnum text-right">{r.pass}</Td>
                     <Td className="tnum text-right">{r.audits} permits</Td>
