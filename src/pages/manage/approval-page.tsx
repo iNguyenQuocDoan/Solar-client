@@ -175,7 +175,7 @@ export function ManageApprovalPage() {
                       <div className="relative h-2 w-full rounded-control bg-surface-3" role="img" aria-label="Quotation position between cost floor and gross price">
                         <span className="absolute inset-y-0 left-0 rounded-control bg-danger/40" style={{ width: `${cogsPct}%` }} />
                         <span className="absolute inset-y-0 rounded-control bg-warn/40" style={{ left: `${cogsPct}%`, width: `${minPct - cogsPct}%` }} />
-                        <span className="absolute top-1/2 size-3 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-surface bg-accent" style={{ left: `${finalPct}%` }} />
+                        <span className="absolute top-1/2 size-3 -translate-x-1/2 -translate-y-1/2 rounded-control border-2 border-surface bg-accent" style={{ left: `${finalPct}%` }} />
                       </div>
                       <dl className="tnum mt-2 grid grid-cols-3 text-meta">
                         <div>
