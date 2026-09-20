@@ -36,11 +36,11 @@ export function EstimatePage() {
               <Panel>
                 <PanelHeader title="Estimated investment" description="Tier 1 high-efficiency hardware" />
                 <PanelBody>
-                  <p className="tnum text-display font-semibold md:text-display">
+                  <p className="tnum text-figure font-semibold md:text-display">
                     {fmt.usd(data.grossRange[0])} to {fmt.usd(data.grossRange[1])}
                   </p>
-                  <p className="mt-1 text-body text-fg-2">Gross range before incentives</p>
-                  <p className="tnum mt-4 text-figure font-semibold">
+                  <p className="mt-1 text-meta text-fg-3">Gross range before incentives</p>
+                  <p className="tnum mt-4 text-title font-semibold">
                     {fmt.usd(data.netRange[0])} to {fmt.usd(data.netRange[1])}{' '}
                     <span className="text-body font-normal text-fg-2">net after the 30% federal solar tax credit</span>
                   </p>
@@ -59,7 +59,7 @@ export function EstimatePage() {
                     {data.system.parts.map((p) => (
                       <div key={p.name}>
                         <dt className="font-medium">{p.name}</dt>
-                        <dd className="text-body text-fg-2">{p.detail}</dd>
+                        <dd className="text-meta text-fg-3">{p.detail}</dd>
                       </div>
                     ))}
                   </dl>
@@ -92,7 +92,7 @@ export function EstimatePage() {
                 </PanelBody>
               </Panel>
               <Notice title="Estimation disclaimer">{data.disclaimer}</Notice>
-              <p className="px-1 text-body text-fg-2">
+              <p className="text-body text-fg-2">
                 Numbers look off?{' '}
                 <Link to={ROUTES.customer.assessment} className="text-accent-fg hover:underline">
                   Recalculate with different inputs
