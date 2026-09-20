@@ -61,7 +61,7 @@ export function OpsDashboardPage() {
                           </div>
                           <p className="mt-1 text-body text-fg-2">{t.detail}</p>
                         </div>
-                        <Button size="sm" variant={t.dueTone === 'danger' ? 'primary' : 'secondary'}>
+                        <Button size="sm">
                           {t.action}
                         </Button>
                       </li>
@@ -159,7 +159,7 @@ export function OpsDashboardPage() {
                   </dl>
                   <div>
                     <p className="mb-2 text-meta text-fg-2">Stage distribution by value</p>
-                    <div className="flex h-2 w-full gap-1 overflow-hidden rounded-full" role="img" aria-label="Pipeline value by stage">
+                    <div className="flex h-2 w-full gap-1 overflow-hidden rounded-control" role="img" aria-label="Pipeline value by stage">
                       {data.quota.stages.map((s, i) => (
                         <span key={s.label} className={cx('h-full', STAGE_FILL[i])} style={{ width: `${s.pct}%` }} />
                       ))}
