@@ -42,7 +42,7 @@ export function ConsultationPage() {
           <div className="grid gap-x-12 gap-y-12 lg:grid-cols-3">
             <div className="space-y-8 lg:col-span-2">
               <Panel>
-                <PanelHeader title="Assigned solar expert" action={<Badge tone="ok">Assigned and active</Badge>} />
+                <PanelHeader title="Assigned solar expert" />
                 <PanelBody className="space-y-4">
                   <div className="flex items-start gap-3">
                     <Avatar name={advisor.name} size="lg" />
@@ -88,7 +88,6 @@ export function ConsultationPage() {
               <Panel>
                 <PanelHeader
                   title="Submitted photos"
-                  description="Images from your self-assessment help prepare the satellite and physical site blueprint."
                   action={
                     <Button size="sm" variant="ghost">
                       Upload more

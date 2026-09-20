@@ -37,7 +37,7 @@ export function OverviewPage() {
           />
 
           <Panel className="mb-12">
-            <PanelHeader title="Solar journey" description="From assessment to a working rooftop system." />
+            <PanelHeader title="Solar journey" />
             <PanelBody>
               <Stepper steps={data.journey} />
             </PanelBody>
@@ -151,8 +151,8 @@ export function OverviewPage() {
                   <ul className="mt-4 space-y-3">
                     {data.readiness.items.map((item) => (
                       <li key={item.label} className="flex items-start justify-between gap-3 text-body">
-                        <span>{item.label}</span>
-                        <Badge tone={item.tone}>{item.status}</Badge>
+                        <span className="min-w-0">{item.label}</span>
+                        <Badge tone={item.tone} className="shrink-0 whitespace-nowrap">{item.status}</Badge>
                       </li>
                     ))}
                   </ul>
@@ -178,7 +178,7 @@ export function OverviewPage() {
               </Panel>
 
               <Panel>
-                <PanelHeader title="Project activity" action={<Badge tone="accent">2 new</Badge>} />
+                <PanelHeader title="Project activity" />
                 <PanelBody>
                   <ActivityList items={data.activity} />
                 </PanelBody>

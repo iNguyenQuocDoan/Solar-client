@@ -72,7 +72,7 @@ export function FieldSurveyPage() {
           <div className="grid gap-x-12 gap-y-12 lg:grid-cols-5">
             <div className="space-y-8 lg:col-span-3">
               <Panel>
-                <PanelHeader title="Customer preliminary assessment" action={<Badge>Intake baseline</Badge>} />
+                <PanelHeader title="Customer preliminary assessment" />
                 <PanelBody className="space-y-4">
                   <KeyValueList columns={2} items={data.baseline} />
                   <div>
@@ -89,7 +89,7 @@ export function FieldSurveyPage() {
               </Panel>
 
               <Panel>
-                <PanelHeader title="On-site verification and measurements" description="Laser measure synced." />
+                <PanelHeader title="On-site verification and measurements" />
                 <PanelBody className="space-y-6">
                   <fieldset>
                     <legend className="mb-2 text-body font-medium">Surface geometry</legend>

@@ -41,7 +41,6 @@ export function ManagePortfolioPage() {
         <>
           <PageHeader
             title="Project portfolio"
-            description="Lifecycle governance across distributed residential and commercial arrays."
             actions={
               <>
                 <Button disabled={selected.size === 0}>
@@ -191,7 +190,6 @@ export function ManagePortfolioPage() {
             <Panel className="lg:col-span-2">
               <PanelHeader
                 title="Interconnection queue"
-                description="Throughput for municipal permitting and utility PTO clearances."
                 action={<Badge>Average {data.interconnection.avg}</Badge>}
               />
               <PanelBody>

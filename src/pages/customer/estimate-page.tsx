@@ -34,7 +34,7 @@ export function EstimatePage() {
           <div className="grid gap-x-12 gap-y-12 lg:grid-cols-3">
             <div className="space-y-8 lg:col-span-2">
               <Panel>
-                <PanelHeader title="Estimated investment" description="Tier 1 high-efficiency hardware" />
+                <PanelHeader title="Estimated investment" />
                 <PanelBody>
                   <p className="tnum text-figure font-semibold md:text-display">
                     {fmt.usd(data.grossRange[0])} to {fmt.usd(data.grossRange[1])}
@@ -53,7 +53,7 @@ export function EstimatePage() {
               </Panel>
 
               <Panel>
-                <PanelHeader title={data.system.name} description={data.system.summary} action={<Badge>Turnkey package</Badge>} />
+                <PanelHeader title={data.system.name} description={data.system.summary} />
                 <PanelBody className="space-y-6">
                   <dl className="grid gap-x-8 gap-y-4 sm:grid-cols-2">
                     {data.system.parts.map((p) => (

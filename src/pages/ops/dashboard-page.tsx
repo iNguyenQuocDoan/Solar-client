@@ -27,13 +27,13 @@ export function OpsDashboardPage() {
           />
 
           <Panel className="mb-12">
-            <PanelHeader title="Pipeline" description="Requests by stage, updated live." />
+            <PanelHeader title="Pipeline" />
             <PanelBody>
               <ol className="grid grid-cols-2 gap-y-6 sm:grid-cols-4 lg:grid-cols-8">
                 {data.pipeline.map((s) => (
-                  <li key={s.label} className="min-w-0 pr-3 lg:border-l lg:border-line lg:pl-3 lg:first:border-0 lg:first:pl-0">
-                    <p className="tnum text-figure font-semibold">{s.count}</p>
-                    <p className="text-body font-medium">{s.label}</p>
+                  <li key={s.label} className="min-w-0 pr-3">
+                    <p className="tnum text-title font-semibold">{s.count}</p>
+                    <p className="text-body">{s.label}</p>
                     <p className="text-meta text-fg-3">{s.note}</p>
                   </li>
                 ))}
@@ -44,11 +44,7 @@ export function OpsDashboardPage() {
           <div className="grid gap-x-12 gap-y-12 lg:grid-cols-3">
             <div className="space-y-8 lg:col-span-2">
               <Panel>
-                <PanelHeader
-                  title="Priority tasks"
-                  description="Critical-path SLA tasks that need closure today."
-                  action={<Badge tone="warn">{data.tasks.length} pending</Badge>}
-                />
+                <PanelHeader title="Priority tasks" />
                 <PanelBody>
                   <ul className="divide-y divide-line">
                     {data.tasks.map((t) => (
@@ -73,7 +69,6 @@ export function OpsDashboardPage() {
               <Panel>
                 <PanelHeader
                   title="Upcoming site surveys"
-                  description="Field dispatch and inspection assignments."
                   action={
                     <Link to={ROUTES.ops.surveys} className="inline-flex items-center gap-1 text-body text-accent-fg hover:underline">
                       Full field calendar

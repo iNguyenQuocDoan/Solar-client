@@ -61,7 +61,7 @@ export function QuotationPage() {
           <div className="grid gap-x-12 gap-y-12 lg:grid-cols-5">
             <div className="space-y-8 lg:col-span-3">
               <Panel>
-                <PanelHeader title="Itemized hardware and work" description={`${data.lines.length} line items`} />
+                <PanelHeader title="Itemized hardware and work" />
                 <Table className="text-body">
                   <thead>
                     <tr>
@@ -106,7 +106,7 @@ export function QuotationPage() {
             </div>
 
             <div className="space-y-8 lg:col-span-2">
-              <Panel id="accept">
+              <Panel id="accept" raised>
                 <PanelHeader title="Investment summary" />
                 <PanelBody>
                   <dl className="space-y-3 text-body">

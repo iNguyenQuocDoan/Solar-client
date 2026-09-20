@@ -92,7 +92,7 @@ export function WarrantyRequestPage() {
           <div className="grid gap-x-12 gap-y-12 lg:grid-cols-3">
             <div className="space-y-8 lg:col-span-2">
               <Panel>
-                <PanelHeader title="Reported issue" action={<Badge>Logged by homeowner</Badge>} />
+                <PanelHeader title="Reported issue" />
                 <PanelBody className="space-y-4">
                   <blockquote className="border-l-2 border-line-2 pl-3 text-body text-fg-2">{data.description}</blockquote>
                   <div>
@@ -139,7 +139,7 @@ export function WarrantyRequestPage() {
 
             <div className="space-y-8 lg:border-l lg:border-line lg:pl-8">
               <Panel>
-                <PanelHeader title="Certified specialist" action={<Badge tone="ok">Confirmed</Badge>} />
+                <PanelHeader title="Certified specialist" />
                 <PanelBody className="space-y-4">
                   <div className="flex items-start gap-3">
                     <Avatar name={data.technician.name} size="lg" />

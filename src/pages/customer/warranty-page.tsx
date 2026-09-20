@@ -52,11 +52,7 @@ export function WarrantyPage() {
           <div className="grid gap-x-12 gap-y-12 lg:grid-cols-5">
             <div className="space-y-8 lg:col-span-3">
               <Panel>
-                <PanelHeader
-                  title="Active service requests"
-                  description="Dispatched warranty visits and open technician inquiries"
-                  action={<Badge>{data.activeRequests.length} active</Badge>}
-                />
+                <PanelHeader title="Active service requests" />
                 <PanelBody>
                   <ul className="divide-y divide-line">
                     {data.activeRequests.map((r) => (
@@ -85,7 +81,6 @@ export function WarrantyPage() {
               <Panel>
                 <PanelHeader
                   title="Maintenance history"
-                  description="System diagnostics, firmware records and site servicing"
                   action={
                     <Button size="sm" variant="ghost">
                       Export log
@@ -112,8 +107,8 @@ export function WarrantyPage() {
             </div>
 
             <div className="space-y-8 lg:col-span-2">
-              <Panel>
-                <PanelHeader title="Request support" description="Zero co-pay warranty claims and maintenance" />
+              <Panel raised>
+                <PanelHeader title="Request support" />
                 {submitted ? (
                   <PanelBody>
                     <Notice tone="ok" title="Request received">

@@ -212,7 +212,7 @@ export function ManageApprovalPage() {
                   </PanelBody>
                 </Panel>
 
-                <Panel id="decision">
+                <Panel id="decision" raised>
                   <PanelHeader title="Manager authorization" description="Logged as Jonathan Mercer." />
                   {decision ? (
                     <PanelBody>
