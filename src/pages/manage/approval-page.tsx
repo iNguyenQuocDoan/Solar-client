@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
+import { Button, buttonClass } from '@/components/ui/button'
 import { Field, Select, Textarea } from '@/components/ui/field'
 import { ActivityList, KeyValueList, Notice, Photo } from '@/components/ui/lists'
 import { PageHeader } from '@/components/ui/page-header'
@@ -8,7 +8,6 @@ import { Panel, PanelBody, PanelFooter, PanelHeader } from '@/components/ui/pane
 import { Table, Td, Th, Tr } from '@/components/ui/table'
 import { ROUTES } from '@/constants/routes'
 import { approvalDetail } from '@/data/manage'
-import { cx } from '@/lib/cx'
 import { fmt } from '@/lib/format'
 import { QueryBoundary, useMockQuery } from '@/services/mock'
 
@@ -44,7 +43,7 @@ export function ManageApprovalPage() {
               actions={
                 <>
                   <Button>Preview customer PDF</Button>
-                  <a href="#decision" className="inline-flex h-9 items-center rounded-control bg-accent px-4 text-body font-medium text-on-accent hover:bg-accent-hover">
+                  <a href="#decision" className={buttonClass('secondary')}>
                     Jump to decision
                   </a>
                 </>
@@ -123,7 +122,7 @@ export function ManageApprovalPage() {
               <div className="space-y-8 lg:col-span-3">
                 <Panel>
                   <PanelHeader title="Itemized hardware and services" description={data.architecture} />
-                  <Table className="text-body">
+                  <Table>
                     <thead>
                       <tr>
                         <Th>Item</Th>
@@ -173,9 +172,9 @@ export function ManageApprovalPage() {
                   <PanelHeader title="Financial guardrails" description={`COGS basis ${fmt.usdCents(data.guardrails.cogs)}. Gross margin realization ${data.margin.pct}%, ${(data.margin.pct - data.margin.floor).toFixed(1)} points above the hard stop.`} />
                   <PanelBody className="space-y-4">
                     <div>
-                      <div className="relative h-2 w-full rounded-full bg-surface-3" role="img" aria-label="Quotation position between cost floor and gross price">
-                        <span className="absolute inset-y-0 left-0 rounded-full bg-danger/40" style={{ width: `${cogsPct}%` }} />
-                        <span className="absolute inset-y-0 rounded-full bg-warn/40" style={{ left: `${cogsPct}%`, width: `${minPct - cogsPct}%` }} />
+                      <div className="relative h-2 w-full rounded-control bg-surface-3" role="img" aria-label="Quotation position between cost floor and gross price">
+                        <span className="absolute inset-y-0 left-0 rounded-control bg-danger/40" style={{ width: `${cogsPct}%` }} />
+                        <span className="absolute inset-y-0 rounded-control bg-warn/40" style={{ left: `${cogsPct}%`, width: `${minPct - cogsPct}%` }} />
                         <span className="absolute top-1/2 size-3 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-surface bg-accent" style={{ left: `${finalPct}%` }} />
                       </div>
                       <dl className="tnum mt-2 grid grid-cols-3 text-meta">
@@ -224,7 +223,7 @@ export function ManageApprovalPage() {
                     </PanelBody>
                   ) : (
                     <PanelBody className="space-y-6">
-                      <div className="flex flex-wrap items-center justify-between gap-3 rounded-control bg-surface-2 px-4 py-3">
+                      <div className="flex flex-wrap items-center justify-between gap-3 rounded-container bg-surface-2 px-4 py-3">
                         <div className="text-body">
                           <p className="font-medium">Executive sign-off</p>
                           <p className="text-fg-2">Executes the promotional override, signs contract dispatch and triggers the DocuSign envelope to David Miller.</p>
@@ -262,23 +261,25 @@ export function ManageApprovalPage() {
                       </form>
 
                       <form
-                        className={cx('grid gap-3 border-l-2 border-danger pl-4 sm:grid-cols-[1fr_auto] sm:items-end')}
+                        className="border-l-2 border-danger pl-4"
                         onSubmit={(e) => {
                           e.preventDefault()
                           if (reason) setDecision('rejected')
                         }}
                       >
                         <Field label="Reject quotation outright" hint="Closes the opportunity file and invalidates the pricing lock." htmlFor="reason">
-                          <Select id="reason" value={reason} onChange={(e) => setReason(e.target.value)}>
-                            <option value="">Select a rejection reason</option>
-                            {data.rejectReasons.map((r) => (
-                              <option key={r}>{r}</option>
-                            ))}
-                          </Select>
+                          <div className="flex flex-wrap gap-3">
+                            <Select id="reason" value={reason} onChange={(e) => setReason(e.target.value)} className="w-full sm:w-auto sm:min-w-0 sm:flex-1">
+                              <option value="">Select a rejection reason</option>
+                              {data.rejectReasons.map((r) => (
+                                <option key={r}>{r}</option>
+                              ))}
+                            </Select>
+                            <Button type="submit" variant="danger" disabled={!reason}>
+                              Reject
+                            </Button>
+                          </div>
                         </Field>
-                        <Button type="submit" variant="danger" disabled={!reason} className="sm:mb-6">
-                          Reject
-                        </Button>
                       </form>
                     </PanelBody>
                   )}
