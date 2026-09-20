@@ -1,6 +1,6 @@
 # UI Audit — Smart Solar client
 
-Ngày audit: 2026-09-20. Trạng thái: **Phase 1 — chờ duyệt, chưa sửa gì.**
+Ngày audit: 2026-09-20. Trạng thái: **Phase 1–3 hoàn tất cùng ngày — 33 commit sau baseline `35778cf`, xem bảng trạng thái cuối file.**
 
 ## Bối cảnh đã xác định
 
@@ -15,7 +15,7 @@ Ngày audit: 2026-09-20. Trạng thái: **Phase 1 — chờ duyệt, chưa sửa
 | Baseline build | Pass (2.15s), console không có lỗi app |
 | Git | Toàn bộ `src/pages`, `src/components`, `src/data` **chưa commit** (untracked). Cần 1 commit baseline trước Phase 2 để mỗi nhóm sửa là 1 commit sạch. CLAUDE.md của project: Conventional Commits, **không** thêm `Co-Authored-By`. |
 
-Cách audit: đọc 100% code UI; grep định lượng; chạy dev server (port 5188, instance riêng vì instance 5173 đang serve cache hỏng của session trước); chụp 25 route × 4 breakpoint (360/768/1280/1440) + dark mode + loading/empty/focus/drawer/dialog; đo bằng `getBoundingClientRect`. Ảnh "before": `%TEMP%\claude\d--Solar-capstone\516f56ca-…\scratchpad\shots\` (100 file, `{route}-{width}.jpg`) — chưa copy vào repo, chờ chỉ định nơi lưu.
+Cách audit: đọc 100% code UI; grep định lượng; chạy dev server (port 5188, instance riêng vì instance 5173 đang serve cache hỏng của session trước); chụp 25 route × 4 breakpoint (360/768/1280/1440) + dark mode + loading/empty/focus/drawer/dialog; đo bằng `getBoundingClientRect`. Ảnh "before" / "after": `D:\Solar-capstone\ui-audit-shots\{before,after}\` (`{route}-{width}.jpg`, ngoài repo).
 
 ## Điểm tốt (giữ nguyên, không redesign)
 
@@ -114,6 +114,68 @@ Phase 3 theo màn hình, ưu tiên: ops consultations → manage portfolio → c
 6. **#27 xoá Notice thời tiết lặp** ở field dashboard/installation?
 7. **Screenshot before/after** lưu ở đâu? Đề xuất `Solar-Client/docs/ui-audit/{before,after}/` (≈10 MB) hoặc thư mục ngoài repo.
 
+## Kết quả đo lại sau khi sửa (cùng script Playwright như Phase 1)
+
+| Chỉ số | Trước | Sau |
+|---|---|---|
+| Bậc font-size thực tế (computed, toàn app) | ≈13 (11.25 … 36) | **5** — 13 / 15 / 18 / 24 / 32 |
+| Root font-size / kích thước rem | 15px → nút 37.5px, padding 15px | 16px → nút 40px, padding 16px (mọi rem nguyên) |
+| Table bị cắt cột ở 1280 / 1440 | quotation 16, ops 53, portfolio 166 (1440); nhiều hơn ở 1280 | **0** ở cả 1280 và 1440 (cột phụ theo tầng md / lg / wide=1408 / 2xl) |
+| Tràn ngang trang (25 route × 4 breakpoint) | manage 360: 7px; revenue 768: 33px | **0** |
+| Control < 44px ở 360/768 (trừ link inline trong câu) | 100% | **0** (button/input/select/chips/tab/link đứng riêng đều ≥ 44) |
+| Primary button trên 1 màn hình | alerts 8, approvals 7, field dashboard 3 | tối đa 1 (chưa kể nút trong dialog đang đóng) |
+| Contrast viền control `--line-2` | 2.38:1 | 3.49:1 light / 3.48:1 dark |
+| Stat baseline lệch (quotation) | 439 / 439 / 458 | 430 / 430 / 430 |
+| Gap giữa 2 item approvals | 0px | 48px + hairline |
+| Sticky bar vs mép main (assessment) | lệch 30px / thiếu 15px | trùng mép chính xác (252–1412) |
+| Build | pass | pass, không warning |
+
+Screenshot: `D:\Solar-capstone\ui-audit-shots\before\` (110 ảnh) và `…\after\` (106 ảnh), tên `{route}-{width}.jpg`, ngoài repo.
+
 ## Trạng thái từng issue
 
-Tất cả 36 issue: `open`. Cập nhật tại đây sau mỗi commit ở Phase 2/3.
+| # | Trạng thái | Commit / ghi chú |
+|---|---|---|
+| 1 | done | `5e2f68a` primitive; `c293a8e` `2dc4bae` `45cdcc3` `251c2b5` `c98bea9` `437c081` `62ea392` `298b875` từng trang; `dc3e7de` breakpoint `wide` |
+| 2 | done | `0469bba` ListRow; `b2c58ef` `7f5d2b9` `e9139df` |
+| 3 | done | `0469bba` PanelHeader wrap + Badge wrap; `298b875` `7f5d2b9` |
+| 4 | done | `64aa711` |
+| 5 | done | `c7a177a` |
+| 6 | done | `c7a177a` — 5 bậc thay vì 6: 12 và 13 chỉ chênh 1px nên bỏ 12; body 15 giữ nguyên |
+| 7 | done | `c2b2064` `dc3e7de` (`tap` cho link đứng riêng) |
+| 8 | done | `c2b2064` Input/Select `size`; các trang list |
+| 9 | done | `0707fe9` `dc3e7de` — rail gọn hơn và khối user ghim đáy khi rail vẫn cao hơn 732px (manage: 827px nội dung) |
+| 10 | done | `0469bba` ActionBar; `f0510fd` `4d9885c` `2b611c7` |
+| 11 | done | row action → secondary trên 7 trang; Approve eligible / Jump to decision / Export CSV → secondary |
+| 12 | done | `6ee5fb3` Stat subgrid + size lg; `ad41a41` `2dc4bae` `78c2679`; StatRow 5–6 cột chỉ từ xl |
+| 13 | done | `0469bba` FilterBar; `c293a8e` `2dc4bae` `e9139df` `b2c58ef` `62ea392` |
+| 14 | partial | ops 90–110 → 89–111, portfolio 116–135 → 95–109. Với 8–9 cột trong 1064px, 3 dòng/cell là sàn nếu không bỏ dữ liệu; đã bỏ avatar trong row (không mất thông tin) |
+| 15 | done | `6ee5fb3` |
+| 16 | done | `6ee5fb3` Dialog; `45cdcc3` `f0510fd` `b0d8738` |
+| 17 | done | `c98bea9` `33f044b` `f0510fd` |
+| 18 | done | `c7a177a` `7bedcde` — 2 cấp control 3 / container 6, avatar là ngoại lệ duy nhất |
+| 19 | done | `c7a177a` `c2b2064` |
+| 20 | done | `c7a177a` (map 0.5→1, 1.5→2, 2.5→3, 3.5→4, 5→6, 7→6, 10→8/12) |
+| 21 | done | quy ước ghi ở đầu `globals.css`; primitives và các dòng meta trong page đã theo |
+| 22 | deferred | giữ `href="#"` — đổi sang button disabled là thay đổi hành vi, chờ quyết định |
+| 23 | done | `827ec7d` — link về mục nav đầu tiên của portal (copy có sẵn) |
+| 24 | done | `6ee5fb3` |
+| 25 | done | `f0510fd` `f716506` |
+| 26 | done | `ad41a41` |
+| 27 | done | `c61ab80` — chỉ xoá bản lặp ở field dashboard; installation giữ vì là nơi duy nhất |
+| 28 | done | `e9139df` |
+| 29 | done | `c2b2064` ghost `-mx-3 px-3`; `c293a8e` Pagination |
+| 30 | done | `009bd84` `e9139df` |
+| 31 | done | `0707fe9` |
+| 32 | done | `0707fe9` — fallback render trong layout, xác nhận bằng screenshot skeleton có rail |
+| 33 | done | `2b611c7` |
+| 34 | done | `2dc4bae` |
+| 35 | done | `c7a177a` (text-meta 13px) |
+| 36 | deferred | ngoài phạm vi UI (mock data) |
+
+## Còn lại để ai đó tiếp tục
+
+- #22: quyết định về 14 dead link `href="#"`.
+- #14: nếu chấp nhận bỏ cột `Property` hoặc `Contact` trong ops consultations thì row về 2 dòng.
+- Bảng ở 360 vẫn cuộn ngang bên trong (có shade mép), trừ các bảng ≤ 4 cột; chưa chuyển sang card list vì đó là thay đổi cấu trúc lớn hơn phạm vi "sửa hệ thống".
+- Project không có `lint`/`test` script — DoD chỉ kiểm được `build`.
