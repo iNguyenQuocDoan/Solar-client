@@ -92,7 +92,7 @@ export function ManageRevenuePage() {
                 ))}
               </Select>
             </FilterBar>
-            <Table>
+            <Table stack>
               <thead>
                 <tr>
                   <Th>Project and customer</Th>
@@ -108,26 +108,26 @@ export function ManageRevenuePage() {
               <tbody>
                 {data.ledger.rows.map((r) => (
                   <Tr key={r.id}>
-                    <Td>
+                    <Td label="Project and customer">
                       <p className="text-meta text-fg-3">{r.id}</p>
                       <p className="font-medium">{r.customer}</p>
                       <p className="text-meta text-fg-3">{r.city}</p>
                     </Td>
-                    <Td className="hidden lg:table-cell">
+                    <Td label="Adviser" className="hidden lg:table-cell">
                       <p className="whitespace-nowrap">{r.adviser}</p>
                       <p className="text-meta text-fg-3">{r.tier}</p>
                     </Td>
-                    <Td className="hidden wide:table-cell">
+                    <Td label="System" className="hidden wide:table-cell">
                       <p>{r.system}</p>
                       <p className="text-meta text-fg-3">{r.hardware}</p>
                     </Td>
-                    <Td className="tnum hidden text-right whitespace-nowrap md:table-cell">{fmt.usd(r.gross)}</Td>
-                    <Td className={cx('tnum hidden text-right whitespace-nowrap md:table-cell', r.discount < 0 ? 'text-warn' : 'text-fg-3')}>{r.discount < 0 ? fmt.usd(r.discount) : 'None'}</Td>
-                    <Td className="tnum text-right font-medium whitespace-nowrap">{fmt.usd(r.net)}</Td>
-                    <Td className="text-right">
+                    <Td label="Gross quote" className="tnum hidden text-right whitespace-nowrap md:table-cell">{fmt.usd(r.gross)}</Td>
+                    <Td label="Discounts" className={cx('tnum hidden text-right whitespace-nowrap md:table-cell', r.discount < 0 ? 'text-warn' : 'text-fg-3')}>{r.discount < 0 ? fmt.usd(r.discount) : 'None'}</Td>
+                    <Td label="Net contract" className="tnum text-right font-medium whitespace-nowrap">{fmt.usd(r.net)}</Td>
+                    <Td label="Gross margin" className="text-right">
                       <Badge tone={r.margin < 30 ? 'danger' : 'ok'}>{r.margin}%</Badge>
                     </Td>
-                    <Td className="hidden whitespace-nowrap text-fg-2 lg:table-cell">{r.stage}</Td>
+                    <Td label="Milestone" className="hidden whitespace-nowrap text-fg-2 lg:table-cell">{r.stage}</Td>
                   </Tr>
                 ))}
               </tbody>

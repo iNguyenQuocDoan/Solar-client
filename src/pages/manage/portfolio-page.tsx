@@ -7,6 +7,7 @@ import { Input, Select } from '@/components/ui/field'
 import { FilterBar } from '@/components/ui/filter-bar'
 import { Progress } from '@/components/ui/lists'
 import { PageHeader } from '@/components/ui/page-header'
+import { PlaceholderLink } from '@/components/ui/placeholder-link'
 import { Pagination } from '@/components/ui/pagination'
 import { Panel, PanelBody, PanelFooter, PanelHeader } from '@/components/ui/panel'
 import { Stat, StatRow } from '@/components/ui/stat'
@@ -89,7 +90,7 @@ export function ManagePortfolioPage() {
                 <EmptyState title="No projects match" description="Try another stage or clear the search." />
               </PanelBody>
             ) : (
-              <Table>
+              <Table stack>
                 <thead>
                   <tr>
                     <Th className="w-10">
@@ -132,25 +133,25 @@ export function ManagePortfolioPage() {
                           }
                         />
                       </Td>
-                      <Td>
-                        <Link to={withId(ROUTES.manage.project, r.id)} className="text-body font-medium whitespace-nowrap text-accent-fg hover:underline">
+                      <Td label="Project">
+                        <Link to={withId(ROUTES.manage.project, r.id)} className="tap font-medium whitespace-nowrap text-accent-fg hover:underline">
                           {r.id}
                         </Link>
                         <p className="text-meta text-fg-3">{r.type}</p>
                       </Td>
-                      <Td>
+                      <Td label="Customer and site">
                         <p className="font-medium">{r.customer}</p>
                         <p className="text-meta text-fg-3">{r.address}</p>
                       </Td>
-                      <Td className="hidden wide:table-cell">
+                      <Td label="Sales owner" className="hidden wide:table-cell">
                         <p className="whitespace-nowrap">{r.owner}</p>
                         <p className="text-meta text-fg-3">{r.territory}</p>
                       </Td>
-                      <Td className="hidden 2xl:table-cell">
+                      <Td label="System" className="hidden 2xl:table-cell">
                         <p className="whitespace-nowrap">{r.system}</p>
                         <p className="text-meta text-fg-3">{r.hardware}</p>
                       </Td>
-                      <Td className="hidden md:table-cell">
+                      <Td label="Lifecycle stage" className="hidden md:table-cell">
                         <p className="whitespace-nowrap">{r.stageLabel}</p>
                         <p className="text-meta text-fg-3">{r.stageNote}</p>
                         <div className="mt-2 flex items-center gap-2">
@@ -160,11 +161,11 @@ export function ManagePortfolioPage() {
                           </span>
                         </div>
                       </Td>
-                      <Td className="hidden whitespace-nowrap lg:table-cell">
+                      <Td label="Timeline" className="hidden whitespace-nowrap lg:table-cell">
                         <p className="tnum">{r.milestone}</p>
                         <p className="tnum text-meta text-fg-3">PTO {r.pto}</p>
                       </Td>
-                      <Td>
+                      <Td label="Health">
                         <Badge tone={r.healthTone}>{r.health}</Badge>
                       </Td>
                       <Td className="text-right">
@@ -202,9 +203,9 @@ export function ManagePortfolioPage() {
               </PanelBody>
               <PanelFooter className="justify-between text-body text-fg-2">
                 <span>{data.interconnection.refresh}</span>
-                <Link to="#" className="text-accent-fg hover:underline">
+                <PlaceholderLink className="text-accent-fg hover:underline">
                   Download AHJ bottleneck report
-                </Link>
+                </PlaceholderLink>
               </PanelFooter>
             </Panel>
 

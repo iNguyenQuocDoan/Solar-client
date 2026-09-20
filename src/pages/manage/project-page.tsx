@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/field'
 import { ActivityList, KeyValueList, Notice, Photo, Progress } from '@/components/ui/lists'
 import { PageHeader } from '@/components/ui/page-header'
+import { PlaceholderLink } from '@/components/ui/placeholder-link'
 import { Panel, PanelBody, PanelFooter, PanelHeader } from '@/components/ui/panel'
 import { Stepper } from '@/components/ui/stepper'
 import { Table, Td, Th, Tr } from '@/components/ui/table'
@@ -125,9 +126,9 @@ export function ManageProjectPage() {
                   <div>
                     <div className="mb-2 flex items-center justify-between">
                       <p className="text-body font-medium">Crew photo uploads, mandatory gate evidence</p>
-                      <a href="#" className="tap text-body text-accent-fg hover:underline">
+                      <PlaceholderLink className="tap text-body text-accent-fg hover:underline">
                         View {data.telemetry.photoTotal} raw assets
-                      </a>
+                      </PlaceholderLink>
                     </div>
                     <ul className="grid grid-cols-3 gap-3">
                       {data.telemetry.photos.map((p) => (
@@ -142,7 +143,7 @@ export function ManageProjectPage() {
 
               <Panel>
                 <PanelHeader title="Self-assessment versus physical survey" action={<Badge tone="ok">{data.audit.tolerance}</Badge>} />
-                <Table>
+                <Table stack>
                   <thead>
                     <tr>
                       <Th>Metric</Th>
@@ -155,11 +156,11 @@ export function ManageProjectPage() {
                   <tbody>
                     {data.audit.rows.map((r) => (
                       <Tr key={r.metric}>
-                        <Td className="font-medium">{r.metric}</Td>
-                        <Td className="text-fg-2">{r.self}</Td>
-                        <Td>{r.survey}</Td>
-                        <Td className={cx(r.variance.startsWith('+') || r.variance.startsWith('-') ? 'text-warn' : 'text-fg-2')}>{r.variance}</Td>
-                        <Td className="hidden text-fg-2 md:table-cell">{r.resolution}</Td>
+                        <Td label="Metric" className="font-medium">{r.metric}</Td>
+                        <Td label="Customer self-assessment" className="text-fg-2">{r.self}</Td>
+                        <Td label="Physical site audit (Oct 19)">{r.survey}</Td>
+                        <Td label="Variance" className={cx(r.variance.startsWith('+') || r.variance.startsWith('-') ? 'text-warn' : 'text-fg-2')}>{r.variance}</Td>
+                        <Td label="Resolution" className="hidden text-fg-2 md:table-cell">{r.resolution}</Td>
                       </Tr>
                     ))}
                   </tbody>
@@ -201,9 +202,9 @@ export function ManageProjectPage() {
                   </ul>
                 </PanelBody>
                 <PanelFooter>
-                  <a href="#" className="text-body text-accent-fg hover:underline">
+                  <PlaceholderLink className="text-body text-accent-fg hover:underline">
                     View full GAAP revenue schedule
-                  </a>
+                  </PlaceholderLink>
                 </PanelFooter>
               </Panel>
 

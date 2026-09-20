@@ -151,7 +151,7 @@ export function OpsConsultationsPage() {
                 />
               </PanelBody>
             ) : (
-              <Table>
+              <Table stack>
                 <thead>
                   <tr>
                     <Th className="w-10">
@@ -165,7 +165,7 @@ export function OpsConsultationsPage() {
                     </Th>
                     <Th>Request</Th>
                     <Th>Homeowner</Th>
-                    <Th className="hidden wide:table-cell">Property</Th>
+                    <Th className="hidden 2xl:table-cell">Property</Th>
                     <Th className="hidden lg:table-cell">Intake and SLA</Th>
                     <Th>Stage and highlights</Th>
                     <Th className="hidden md:table-cell">Assigned</Th>
@@ -191,19 +191,19 @@ export function OpsConsultationsPage() {
                           className="size-4 accent-accent"
                         />
                       </Td>
-                      <Td>
+                      <Td label="Request">
                         <p className="font-medium whitespace-nowrap">{r.id}</p>
-                        <p className="text-meta text-fg-3">{r.type}</p>
+                        <p className="text-meta text-fg-3 wide:whitespace-nowrap">{r.type}</p>
                       </Td>
-                      <Td>
-                        <p className="font-medium">{r.homeowner}</p>
+                      <Td label="Homeowner">
+                        <p className="font-medium wide:whitespace-nowrap">{r.homeowner}</p>
                         <p className="text-meta text-fg-3">{r.contact}</p>
                       </Td>
-                      <Td className="hidden wide:table-cell">
-                        <p>{r.address}</p>
+                      <Td label="Property" className="hidden 2xl:table-cell">
+                        <p className="whitespace-nowrap">{r.address}</p>
                         <p className="text-meta text-fg-3">{r.city}</p>
                       </Td>
-                      <Td className="hidden lg:table-cell">
+                      <Td label="Intake and SLA" className="hidden lg:table-cell">
                         <p className="tnum">
                           <span className="whitespace-nowrap">{r.intake}</span> <span className="text-fg-3">{r.age}</span>
                         </p>
@@ -216,13 +216,13 @@ export function OpsConsultationsPage() {
                           {r.sla}
                         </p>
                       </Td>
-                      <Td>
+                      <Td label="Stage and highlights">
                         <Badge tone={r.stageTone}>{r.stageLabel}</Badge>
                         <p className="text-meta text-fg-3">
                           {r.highlights.map((h) => h.label).join(', ')}
                         </p>
                       </Td>
-                      <Td className="hidden md:table-cell">
+                      <Td label="Assigned" className="hidden md:table-cell">
                         {r.assignee ? (
                           <span className="whitespace-nowrap">{r.assignee}</span>
                         ) : (

@@ -1,8 +1,8 @@
-import { Link } from 'react-router'
 import { Badge } from '@/components/ui/badge'
 import { Button, ButtonLink } from '@/components/ui/button'
 import { ActivityList, Photo, Progress } from '@/components/ui/lists'
 import { PageHeader } from '@/components/ui/page-header'
+import { PlaceholderLink } from '@/components/ui/placeholder-link'
 import { Panel, PanelBody, PanelFooter, PanelHeader } from '@/components/ui/panel'
 import { Stat, StatRow } from '@/components/ui/stat'
 import { Table, Td, Th, Tr } from '@/components/ui/table'
@@ -94,7 +94,7 @@ export function ManageDashboardPage() {
           <div className="mb-12 grid gap-x-12 gap-y-12 lg:grid-cols-3 lg:items-start">
             <Panel className="lg:col-span-2">
               <PanelHeader title={`Week ${data.sprint.week} installation sprint`} description={data.sprint.summary} />
-              <Table>
+              <Table stack>
                 <thead>
                   <tr>
                     <Th>Project</Th>
@@ -106,21 +106,21 @@ export function ManageDashboardPage() {
                 <tbody>
                   {data.sprint.rows.map((r) => (
                     <Tr key={r.id}>
-                      <Td>
+                      <Td label="Project">
                         <p className="font-medium">{r.project}</p>
                         <p className="text-meta text-fg-3">
                           {r.location}, <span className="text-fg-2">{r.id}</span>
                         </p>
                       </Td>
-                      <Td>
+                      <Td label="System">
                         <p>{r.size}</p>
                         <p className="text-meta text-fg-3">{r.hardware}</p>
                       </Td>
-                      <Td className="hidden md:table-cell">
+                      <Td label="Crew" className="hidden md:table-cell">
                         <p>{r.crew}</p>
                         {r.lead && <p className="text-meta text-fg-3">Lead {r.lead}</p>}
                       </Td>
-                      <Td>
+                      <Td label="Milestone">
                         <Badge tone={r.tone}>{r.status}</Badge>
                       </Td>
                     </Tr>
@@ -144,9 +144,9 @@ export function ManageDashboardPage() {
                 ))}
               </PanelBody>
               <PanelFooter>
-                <Link to="#" className="inline-flex items-center gap-1 text-body text-accent-fg hover:underline">
+                <PlaceholderLink className="text-body text-accent-fg hover:underline">
                   Open safety and QA gallery ({data.photoTotal} photos)
-                </Link>
+                </PlaceholderLink>
               </PanelFooter>
             </Panel>
           </div>

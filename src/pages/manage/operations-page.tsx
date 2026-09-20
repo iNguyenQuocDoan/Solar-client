@@ -1,9 +1,9 @@
-import { Link } from 'react-router'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Select } from '@/components/ui/field'
 import { Photo, Progress } from '@/components/ui/lists'
 import { PageHeader } from '@/components/ui/page-header'
+import { PlaceholderLink } from '@/components/ui/placeholder-link'
 import { Panel, PanelBody, PanelFooter, PanelHeader } from '@/components/ui/panel'
 import { Stat, StatRow } from '@/components/ui/stat'
 import { Table, Td, Th, Tr } from '@/components/ui/table'
@@ -83,7 +83,7 @@ export function ManageOperationsPage() {
           <div className="mb-12 grid gap-x-12 gap-y-12 lg:grid-cols-5 lg:items-start">
             <Panel className="lg:col-span-3">
               <PanelHeader title="Field squad operations" description="Regional deployment velocity and residential install timelines." action={<Badge>Average {data.squads.avgSpeed}</Badge>} />
-              <Table>
+              <Table stack>
                 <thead>
                   <tr>
                     <Th>Squad</Th>
@@ -97,17 +97,17 @@ export function ManageOperationsPage() {
                 <tbody>
                   {data.squads.rows.map((s) => (
                     <Tr key={s.name}>
-                      <Td>
+                      <Td label="Squad">
                         <p className="font-medium">{s.name}</p>
                         <p className="text-meta text-fg-3">
                           {s.metro}. {s.lead}.
                         </p>
                       </Td>
-                      <Td className="tnum text-right font-medium">{s.turnaround}</Td>
-                      <Td className="tnum text-right">{s.pass}</Td>
-                      <Td className="tnum text-right">{s.installs} sites</Td>
-                      <Td className="tnum hidden text-right wide:table-cell">{s.utilization}</Td>
-                      <Td className="tnum hidden text-right wide:table-cell">{s.safety}</Td>
+                      <Td label="Turnaround" className="tnum text-right font-medium">{s.turnaround}</Td>
+                      <Td label="First-pass AHJ" className="tnum text-right">{s.pass}</Td>
+                      <Td label="Active installs" className="tnum text-right">{s.installs} sites</Td>
+                      <Td label="Utilization" className="tnum hidden text-right wide:table-cell">{s.utilization}</Td>
+                      <Td label="Zero-incident days" className="tnum hidden text-right wide:table-cell">{s.safety}</Td>
                     </Tr>
                   ))}
                 </tbody>
@@ -152,7 +152,7 @@ export function ManageOperationsPage() {
 
           <Panel>
             <PanelHeader title="Municipal jurisdiction (AHJ) friction" description="Bottleneck detection across local building departments and electric utility partners. Code registry syncs daily." />
-            <Table>
+            <Table stack>
               <thead>
                 <tr>
                   <Th>Authority or utility</Th>
@@ -166,15 +166,15 @@ export function ManageOperationsPage() {
               <tbody>
                 {data.ahj.rows.map((r) => (
                   <Tr key={r.authority}>
-                    <Td>
+                    <Td label="Authority or utility">
                       <p className="font-medium">{r.authority}</p>
                       <p className="text-meta text-fg-3">{r.note}</p>
                     </Td>
-                    <Td className="hidden md:table-cell">{r.region}</Td>
-                    <Td className="tnum text-right">{r.days} days</Td>
-                    <Td className="tnum text-right">{r.pass}</Td>
-                    <Td className="tnum text-right">{r.audits} permits</Td>
-                    <Td>
+                    <Td label="Metro region" className="hidden md:table-cell">{r.region}</Td>
+                    <Td label="Avg turnaround" className="tnum text-right">{r.days} days</Td>
+                    <Td label="Pass rate" className="tnum text-right">{r.pass}</Td>
+                    <Td label="Active audits" className="tnum text-right">{r.audits} permits</Td>
+                    <Td label="SLA risk">
                       <Badge tone={r.tone}>{r.risk}</Badge>
                     </Td>
                   </Tr>
@@ -183,9 +183,9 @@ export function ManageOperationsPage() {
             </Table>
             <PanelFooter className="justify-between text-body text-fg-2">
               <span>Showing the top 3 jurisdictions, {data.ahj.share}.</span>
-              <Link to="#" className="text-accent-fg hover:underline">
+              <PlaceholderLink className="text-accent-fg hover:underline">
                 View all {data.ahj.total} regional AHJs
-              </Link>
+              </PlaceholderLink>
             </PanelFooter>
           </Panel>
         </>
