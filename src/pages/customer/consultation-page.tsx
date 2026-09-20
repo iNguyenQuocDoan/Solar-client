@@ -48,13 +48,15 @@ export function ConsultationPage() {
                     <Avatar name={advisor.name} size="lg" />
                     <div className="min-w-0">
                       <p className="font-medium">{advisor.name}</p>
-                      <p className="text-body text-fg-2">
+                      <p className="text-meta text-fg-3">
                         {advisor.title}, {advisor.team}
                       </p>
                       <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-body">
-                        <a href={`tel:${advisor.phone}`} className="inline-flex items-center gap-1 text-fg-2 hover:text-fg"> {advisor.phone}
+                        <a href={`tel:${advisor.phone}`} className="text-fg-2 hover:text-fg">
+                          {advisor.phone}
                         </a>
-                        <a href={`mailto:${advisor.email}`} className="inline-flex items-center gap-1 text-fg-2 hover:text-fg"> {advisor.email}
+                        <a href={`mailto:${advisor.email}`} className="text-fg-2 hover:text-fg">
+                          {advisor.email}
                         </a>
                       </div>
                     </div>
