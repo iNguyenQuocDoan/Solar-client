@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Badge } from '@/components/ui/badge'
+import { ActionBar } from '@/components/ui/action-bar'
 import { Button } from '@/components/ui/button'
 import { Checkbox, Field, Input } from '@/components/ui/field'
 import { KeyValueList, Notice, Photo } from '@/components/ui/lists'
@@ -105,7 +106,7 @@ export function FieldSurveyPage() {
                           <span className="text-body text-fg-2">m</span>
                         </div>
                       </Field>
-                      <div className="rounded-control bg-surface-2 px-3 py-2">
+                      <div className="rounded-container bg-surface-2 px-3 py-2">
                         <p className="text-meta text-fg-2">Verified area</p>
                         <p className="tnum text-figure font-semibold">
                           {Number.isFinite(area) ? area.toFixed(2) : '0.00'} <span className="text-meta font-normal text-fg-2">m²</span>
@@ -184,7 +185,7 @@ export function FieldSurveyPage() {
                     <legend className="mb-2 text-body font-medium">Identified shading and obstacles</legend>
                     <ul className="divide-y divide-line border-t border-b border-line">
                       {data.obstacles.map((o) => (
-                        <li key={o.label} className="flex items-center justify-between gap-3 px-3 py-3">
+                        <li key={o.label} className="flex items-center justify-between gap-3 py-3">
                           <Checkbox checked={obstacles.has(o.label)} onChange={() => toggleObstacle(o.label)} label={o.label} />
                           <Badge>{o.note}</Badge>
                         </li>
@@ -221,7 +222,7 @@ export function FieldSurveyPage() {
                 <PanelBody className="space-y-4">
                   <button
                     type="button"
-                    className="press flex w-full flex-col items-center gap-1 rounded-control border border-dashed border-line-2 px-4 py-6 text-body text-fg-2 hover:bg-surface-2"
+                    className="press flex w-full flex-col items-center gap-1 rounded-container border border-dashed border-line-2 px-4 py-6 text-body text-fg-2 hover:bg-surface-2"
                   >
                     <span>Capture or drop a new photo</span>
                     <span className="text-meta text-fg-3">High-res JPEG or RAW with embedded GPS coordinates</span>
@@ -244,8 +245,7 @@ export function FieldSurveyPage() {
             </div>
           </div>
 
-          <div className="sticky bottom-0 z-10 mt-6 -mx-4 border-t border-line bg-canvas/95 px-4 py-3 backdrop-blur md:-mx-8 md:px-8">
-            <div className="mx-auto flex max-w-[1320px] flex-wrap items-center gap-2">
+          <ActionBar>
               <Button>Save draft</Button>
               <Button variant="danger">
                 Report blocker
@@ -258,8 +258,7 @@ export function FieldSurveyPage() {
                   Complete survey and send to sales
                 </Button>
               </div>
-            </div>
-          </div>
+          </ActionBar>
         </>
       )}
     </QueryBoundary>
