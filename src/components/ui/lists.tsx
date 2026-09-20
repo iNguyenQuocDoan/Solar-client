@@ -21,21 +21,21 @@ export function ActivityList({
       {items.map((item, i) => (
         <li
           key={i}
-          className="flex flex-col gap-0.5 py-3.5 first:pt-0 last:pb-0 @md:grid @md:grid-cols-[104px_1fr] @md:gap-4"
+          className="flex flex-col gap-1 py-4 first:pt-0 last:pb-0 @md:grid @md:grid-cols-[104px_1fr] @md:gap-4"
         >
-          <time className="tnum text-[13px] leading-5 text-fg-3">
+          <time className="tnum text-meta text-fg-3">
             {item.time}
           </time>
           <div className="min-w-0">
-            <p className="text-[15px] font-medium leading-5 text-fg">
+            <p className="text-body font-medium text-fg">
               {item.title}
             </p>
             {item.body && (
-              <p className="mt-0.5 text-[14px] leading-5 text-fg-2">
+              <p className="mt-1 text-body text-fg-2">
                 {item.body}
               </p>
             )}
-            {item.by && <p className="mt-1 text-xs text-fg-3">{item.by}</p>}
+            {item.by && <p className="mt-1 text-meta text-fg-3">{item.by}</p>}
           </div>
         </li>
       ))}
@@ -58,13 +58,20 @@ export function KeyValueList({
   return (
     <dl
       className={cx(
-        "grid gap-x-8 gap-y-2.5 text-sm",
+        "grid gap-x-8 text-body",
         columns === 2 ? "sm:grid-cols-2" : "",
         className,
       )}
     >
+      {/* Rules sit above rows, never below, so the last row is clean whatever the count. */}
       {items.map((item, i) => (
-        <div key={i} className="grid grid-cols-[minmax(140px,40%)_1fr] gap-4 border-b border-line pb-2 last:border-b-0">
+        <div
+          key={i}
+          className={cx(
+            "grid grid-cols-[minmax(140px,40%)_1fr] gap-4 border-t border-line py-2 first:border-t-0 first:pt-0",
+            columns === 2 && "sm:nth-2:border-t-0 sm:nth-2:pt-0",
+          )}
+        >
           <dt className="text-fg-2">{item.k}</dt>
           <dd className="min-w-0 font-medium text-fg">{item.v}</dd>
         </div>
@@ -91,12 +98,12 @@ export function Progress({
       aria-valuemin={0}
       aria-valuemax={100}
       className={cx(
-        "h-1 w-full overflow-hidden rounded-full bg-surface-3",
+        "h-1 w-full overflow-hidden rounded-control bg-surface-3",
         className,
       )}
     >
       <div
-        className="h-full rounded-full bg-accent"
+        className="h-full rounded-control bg-accent"
         style={{ width: `${v}%` }}
       />
     </div>
@@ -124,14 +131,14 @@ export function Photo({
         src={src}
         alt={alt}
         loading="lazy"
-        className={cx("w-full rounded-lg bg-surface-2 object-cover", ratio)}
+        className={cx("w-full rounded-container bg-surface-2 object-cover", ratio)}
       />
       {(caption || meta) && (
-        <figcaption className="mt-2 text-[14px] leading-5">
+        <figcaption className="mt-2 text-body">
           {caption && (
             <span className="block font-medium text-fg">{caption}</span>
           )}
-          {meta && <span className="block text-xs text-fg-3">{meta}</span>}
+          {meta && <span className="block text-meta text-fg-3">{meta}</span>}
         </figcaption>
       )}
     </figure>
@@ -157,9 +164,9 @@ export function Notice({
     ok: 'border-ok',
   }
   return (
-    <div className={cx('border-l-2 py-0.5 pl-4 text-[15px] leading-6', tones[tone], className)}>
+    <div className={cx('border-l-2 py-1 pl-4 text-body', tones[tone], className)}>
       {title && <p className="font-semibold text-fg">{title}</p>}
-      <div className={cx('text-fg-2', title ? 'mt-0.5' : undefined)}>{children}</div>
+      <div className={cx('text-fg-2', title ? 'mt-1' : undefined)}>{children}</div>
     </div>
   )
 }
