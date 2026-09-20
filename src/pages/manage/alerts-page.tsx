@@ -3,18 +3,17 @@ import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { FilterChips } from "@/components/ui/chips";
+import { ListRow, ListRowActions } from "@/components/ui/list-row";
 import { ActivityList, Notice, Progress } from "@/components/ui/lists";
 import { PageHeader } from "@/components/ui/page-header";
 import {
   Panel,
   PanelBody,
-  PanelFooter,
   PanelHeader,
 } from "@/components/ui/panel";
 import { Stat, StatRow } from "@/components/ui/stat";
 import { EmptyState } from "@/components/ui/states";
 import { alerts, type AlertGroup } from "@/data/manage";
-import { cx } from "@/lib/cx";
 import { fmt } from "@/lib/format";
 import { QueryBoundary, useMockQuery } from "@/services/mock";
 
@@ -111,36 +110,23 @@ export function ManageAlertsPage() {
                 )}
 
                 {sections.map((section) => (
-                  <section key={section.key} aria-labelledby={section.key}>
-                    <div className="mb-3 flex flex-wrap items-baseline justify-between gap-2">
-                      <div>
-                        <h2
-                          id={section.key}
-                          className="text-body font-semibold"
+                  <Panel key={section.key} aria-labelledby={section.key}>
+                    <PanelHeader
+                      title={<span id={section.key}>{section.title}</span>}
+                      description={section.description}
+                      action={
+                        <Badge
+                          tone={
+                            section.group === "critical" ? "danger" : "neutral"
+                          }
                         >
-                          {section.title}
-                        </h2>
-                        <p className="text-body text-fg-2">
-                          {section.description}
-                        </p>
-                      </div>
-                      <Badge
-                        tone={
-                          section.group === "critical" ? "danger" : "neutral"
-                        }
-                      >
-                        {section.count}
-                      </Badge>
-                    </div>
+                          {section.count}
+                        </Badge>
+                      }
+                    />
                     <ul className="divide-y divide-line border-t border-line">
                       {section.items.map((item) => (
-                        <li key={item.ref}>
-                          <Panel
-                            className={cx(
-                              item.critical && "border-l-2 border-l-danger",
-                            )}
-                          >
-                            <PanelBody>
+                        <ListRow key={item.ref} tone={item.critical ? "danger" : undefined}>
                               <div className="flex flex-wrap items-center gap-2">
                                 {/^[A-Z]{2,4}-\d+$/.test(item.ref) && (
                                   <span className="text-body font-medium">
@@ -155,16 +141,14 @@ export function ManageAlertsPage() {
                               <p className="mt-1 text-meta text-fg-3">
                                 {item.meta}
                               </p>
-                              <p className="mt-2 text-body text-fg-2">
+                              <p className="mt-2 max-w-prose text-body text-fg-2">
                                 {item.body}
                               </p>
-                            </PanelBody>
-                            <PanelFooter>
+                            <ListRowActions>
                               {item.actions.map((a, i) => (
                                 <Button
                                   key={a}
                                   size="sm"
-                                  variant={i === 0 ? "primary" : "secondary"}
                                   onClick={() =>
                                     i === 0
                                       ? resolve(
@@ -177,12 +161,11 @@ export function ManageAlertsPage() {
                                   {a}
                                 </Button>
                               ))}
-                            </PanelFooter>
-                          </Panel>
-                        </li>
+                            </ListRowActions>
+                        </ListRow>
                       ))}
                     </ul>
-                  </section>
+                  </Panel>
                 ))}
               </div>
 
