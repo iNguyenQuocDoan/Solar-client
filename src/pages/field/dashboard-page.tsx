@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Badge } from '@/components/ui/badge'
 import { Button, ButtonLink } from '@/components/ui/button'
 import { FilterChips } from '@/components/ui/chips'
-import { ActivityList, Notice, Progress } from '@/components/ui/lists'
+import { ActivityList, Progress } from '@/components/ui/lists'
 import { PageHeader } from '@/components/ui/page-header'
 import { Panel, PanelBody, PanelHeader } from '@/components/ui/panel'
 import { EmptyState } from '@/components/ui/states'
@@ -86,11 +86,11 @@ export function FieldDashboardPage() {
                               )}
                               <div className="mt-3">
                                 {JOB_ROUTE[job.kind] ? (
-                                  <ButtonLink to={JOB_ROUTE[job.kind]!} size="sm" variant={job.primary ? 'primary' : 'secondary'}>
+                                  <ButtonLink to={JOB_ROUTE[job.kind]!} size="sm">
                                     {job.action}
                                   </ButtonLink>
                                 ) : (
-                                  <Button size="sm" variant={job.primary ? 'primary' : 'secondary'}>
+                                  <Button size="sm">
                                     {job.action}
                                   </Button>
                                 )}
@@ -142,9 +142,6 @@ export function FieldDashboardPage() {
                   </PanelBody>
                 </Panel>
 
-                <Notice tone={data.weather.tone} title={data.weather.summary}>
-                  {data.weather.detail}. Good conditions for roof work.
-                </Notice>
               </div>
             </div>
           </>
