@@ -18,7 +18,11 @@ export const router = createBrowserRouter([
     path: customer.home,
     element: <CustomerLayout />,
     errorElement: <NotFoundPage />,
-    hydrateFallbackElement: <PageSkeleton />,
+    hydrateFallbackElement: (
+      <CustomerLayout>
+        <PageSkeleton />
+      </CustomerLayout>
+    ),
     children: [
       { index: true, lazy: () => import('@/pages/customer/overview-page').then((m) => ({ Component: m.OverviewPage })) },
       { path: customer.assessment, lazy: () => import('@/pages/customer/assessment-page').then((m) => ({ Component: m.AssessmentPage })) },
@@ -39,7 +43,11 @@ export const router = createBrowserRouter([
     path: ops.home,
     element: <OpsLayout />,
     errorElement: <NotFoundPage />,
-    hydrateFallbackElement: <PageSkeleton />,
+    hydrateFallbackElement: (
+      <OpsLayout>
+        <PageSkeleton />
+      </OpsLayout>
+    ),
     children: [
       { index: true, lazy: () => import('@/pages/ops/dashboard-page').then((m) => ({ Component: m.OpsDashboardPage })) },
       { path: ops.consultations, lazy: () => import('@/pages/ops/consultations-page').then((m) => ({ Component: m.OpsConsultationsPage })) },
@@ -54,7 +62,11 @@ export const router = createBrowserRouter([
     path: field.home,
     element: <FieldLayout />,
     errorElement: <NotFoundPage />,
-    hydrateFallbackElement: <PageSkeleton />,
+    hydrateFallbackElement: (
+      <FieldLayout>
+        <PageSkeleton />
+      </FieldLayout>
+    ),
     children: [
       { index: true, lazy: () => import('@/pages/field/dashboard-page').then((m) => ({ Component: m.FieldDashboardPage })) },
       { path: field.tasks, lazy: () => import('@/pages/field/tasks-page').then((m) => ({ Component: m.FieldTasksPage })) },
@@ -72,7 +84,11 @@ export const router = createBrowserRouter([
     path: manage.home,
     element: <ManageLayout />,
     errorElement: <NotFoundPage />,
-    hydrateFallbackElement: <PageSkeleton />,
+    hydrateFallbackElement: (
+      <ManageLayout>
+        <PageSkeleton />
+      </ManageLayout>
+    ),
     children: [
       { index: true, lazy: () => import('@/pages/manage/dashboard-page').then((m) => ({ Component: m.ManageDashboardPage })) },
       { path: manage.projects, lazy: () => import('@/pages/manage/portfolio-page').then((m) => ({ Component: m.ManagePortfolioPage })) },

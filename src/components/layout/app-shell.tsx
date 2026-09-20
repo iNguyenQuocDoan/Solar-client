@@ -1,5 +1,6 @@
 import { useEffect, useState, type ReactNode } from 'react'
 import { NavLink, useLocation, useNavigate } from 'react-router'
+import { Select } from '@/components/ui/field'
 import { PORTALS, type NavItem, type Portal, type PortalKey } from '@/constants/nav'
 import { cx } from '@/lib/cx'
 import { useTheme, type Theme } from '@/lib/theme'
@@ -7,6 +8,7 @@ import { useTheme, type Theme } from '@/lib/theme'
 /*
   The shell is a margin, not a frame: a text-only rail on the left, the page as a
   document on the right. Context and tools for the portal live in the rail.
+  Main padding is px-4 below md and px-12 from md; ActionBar and Table bleed by the same amounts.
 */
 export function AppShell({
   portal,
@@ -26,18 +28,32 @@ export function AppShell({
     setOpen(false)
   }, [location.pathname])
 
+  /* The page behind the drawer must not scroll while it is open. */
+  useEffect(() => {
+    if (!open) return
+    const previous = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => {
+      document.body.style.overflow = previous
+    }
+  }, [open])
+
   return (
     <div className="min-h-dvh">
       <a
         href="#main"
-        className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:bg-canvas focus:px-3 focus:py-2 focus:text-sm"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:bg-canvas focus:px-3 focus:py-2 focus:text-meta"
       >
         Skip to content
       </a>
 
-      <header className="sticky top-0 z-20 flex h-12 items-center justify-between border-b border-line bg-canvas px-5 lg:hidden">
-        <span className="text-[15px] font-semibold">Smart Solar</span>
-        <button type="button" className="press text-[15px] text-fg-2 underline-offset-4 hover:text-fg hover:underline" onClick={() => setOpen(true)}>
+      <header className="sticky top-0 z-20 flex h-12 items-center justify-between border-b border-line bg-canvas px-4 lg:hidden">
+        <span className="text-body font-semibold">Smart Solar</span>
+        <button
+          type="button"
+          className="press -mr-3 inline-flex h-11 items-center px-3 text-body text-fg-2 underline-offset-4 hover:text-fg hover:underline"
+          onClick={() => setOpen(true)}
+        >
           Menu
         </button>
       </header>
@@ -45,7 +61,7 @@ export function AppShell({
       <Rail portal={portal} context={context} tools={tools} open={open} onClose={() => setOpen(false)} />
 
       <div className="lg:pl-60">
-        <main id="main" className="mx-auto w-full max-w-[1160px] px-5 py-8 md:px-12 md:py-12">
+        <main id="main" className="mx-auto w-full max-w-[1160px] px-4 py-8 md:px-12 md:py-12">
           {children}
         </main>
       </div>
@@ -71,26 +87,30 @@ function Rail({
       {open && <div className="fixed inset-0 z-30 bg-fg/40 lg:hidden" aria-hidden onClick={onClose} />}
       <aside
         className={cx(
-          'fixed inset-y-0 left-0 z-40 flex w-60 flex-col overflow-y-auto border-r border-line bg-canvas px-6 py-7 transition-transform duration-200 lg:translate-x-0',
+          'fixed inset-y-0 left-0 z-40 flex w-60 flex-col overflow-y-auto overscroll-contain border-r border-line bg-canvas px-6 py-6 transition-transform duration-200 lg:translate-x-0',
           open ? 'translate-x-0' : '-translate-x-full',
         )}
         aria-label="Primary"
       >
         <div className="flex items-start justify-between">
-          <div className="leading-tight">
-            <p className="text-[15px] font-semibold">Smart Solar</p>
-            <p className="text-[13px] text-fg-2">{portal.name}</p>
+          <div>
+            <p className="text-body font-semibold">Smart Solar</p>
+            <p className="text-meta text-fg-2">{portal.name}</p>
           </div>
-          <button type="button" className="press text-[13px] text-fg-2 hover:text-fg lg:hidden" onClick={onClose}>
+          <button
+            type="button"
+            className="press -mt-3 -mr-3 inline-flex h-11 items-center px-3 text-meta text-fg-2 hover:text-fg lg:hidden"
+            onClick={onClose}
+          >
             Close
           </button>
         </div>
-        {context && <div className="mt-4 text-[13px] leading-5 text-fg-2">{context}</div>}
+        {context && <div className="mt-4 text-meta text-fg-2">{context}</div>}
 
-        <nav className="mt-8 flex-1">
+        <nav className="mt-6 flex-1">
           {portal.groups.map((group, gi) => (
-            <div key={gi} className={cx(gi > 0 && 'mt-7')}>
-              {group.label && <p className="mb-2 text-[12px] text-fg-3">{group.label}</p>}
+            <div key={gi} className={cx(gi > 0 && 'mt-6')}>
+              {group.label && <p className="mb-1 text-meta text-fg-3">{group.label}</p>}
               <ul>
                 {group.items.map((item) => (
                   <li key={item.label}>
@@ -100,9 +120,9 @@ function Rail({
               </ul>
             </div>
           ))}
-          {tools && <div className="mt-8 space-y-3">{tools}</div>}
+          {tools && <div className="mt-6 space-y-3">{tools}</div>}
           {portal.support && (
-            <ul className="mt-8 border-t border-line pt-5">
+            <ul className="mt-6 border-t border-line pt-4">
               {portal.support.map((item) => (
                 <li key={item.label}>
                   <RailLink item={item} />
@@ -112,10 +132,10 @@ function Rail({
           )}
         </nav>
 
-        <div className="mt-8 border-t border-line pt-5">
-          <p className="text-[14px] font-medium">{portal.user.name}</p>
-          <p className="text-[13px] text-fg-2">{portal.user.role}</p>
-          <div className="mt-4 space-y-2">
+        <div className="mt-6 border-t border-line pt-4">
+          <p className="text-body font-medium">{portal.user.name}</p>
+          <p className="text-meta text-fg-2">{portal.user.role}</p>
+          <div className="mt-3 space-y-2">
             <PortalSwitch current={portal.key} />
             <ThemeButton />
           </div>
@@ -125,17 +145,18 @@ function Rail({
   )
 }
 
+/* Rail rows are 44px tall in the drawer and 36px on the desktop rail. */
 function RailLink({ item }: { item: NavItem }) {
   const isPlaceholder = item.to === '#'
   const className = (active: boolean) =>
     cx(
-      '-ml-6 flex items-baseline gap-2 border-l-2 py-1.5 pl-[22px] text-[15px] leading-5',
+      '-ml-6 flex items-baseline gap-2 border-l-2 py-3 pl-[22px] text-body lg:py-2',
       active ? 'border-accent font-semibold text-fg' : 'border-transparent text-fg-2 hover:text-fg',
     )
   const inner = (
     <>
       <span className="min-w-0 flex-1 truncate">{item.label}</span>
-      {item.badge && <span className="tnum text-[13px] text-accent-fg">{item.badge}</span>}
+      {item.badge && <span className="tnum text-meta text-accent-fg">{item.badge}</span>}
     </>
   )
   if (isPlaceholder) {
@@ -155,18 +176,19 @@ function RailLink({ item }: { item: NavItem }) {
 function PortalSwitch({ current }: { current: PortalKey }) {
   const navigate = useNavigate()
   return (
-    <select
+    <Select
+      size="sm"
       aria-label="Switch portal"
       value={current}
       onChange={(e) => navigate(PORTALS[e.target.value as PortalKey].home)}
-      className="h-8 w-full rounded-md border border-line bg-transparent px-2 text-[13px] text-fg-2"
+      className="px-2 text-meta text-fg-2"
     >
       {Object.values(PORTALS).map((p) => (
         <option key={p.key} value={p.key}>
           {p.name}
         </option>
       ))}
-    </select>
+    </Select>
   )
 }
 
@@ -179,7 +201,7 @@ function ThemeButton() {
     <button
       type="button"
       onClick={() => setTheme(NEXT[theme])}
-      className="press shrink-0 text-[13px] text-fg-2 underline-offset-4 hover:text-fg hover:underline"
+      className="press inline-flex h-11 shrink-0 items-center text-meta whitespace-nowrap text-fg-2 underline-offset-4 hover:text-fg hover:underline lg:h-8"
       aria-label={`Theme: ${LABEL[theme]}. Switch theme`}
     >
       Theme: {LABEL[theme]}
