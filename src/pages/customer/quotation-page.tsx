@@ -2,6 +2,7 @@ import { useRef, useState } from 'react'
 import { Avatar } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { Dialog, DialogFooter, DialogTitle } from '@/components/ui/dialog'
 import { Checkbox, Field, Textarea } from '@/components/ui/field'
 import { Notice, Photo } from '@/components/ui/lists'
 import { PageHeader } from '@/components/ui/page-header'
@@ -131,20 +132,20 @@ export function QuotationPage() {
                     <p className="tnum text-figure font-semibold">{fmt.usdCents(data.net)}</p>
                   </div>
 
-                  <div className="mt-6 rounded-control bg-surface-2 p-4">
+                  <div className="mt-6 rounded-container bg-surface-2 p-4">
                     <div className="flex items-center justify-between">
                       <p className="text-body font-medium">Estimated monthly cash flow</p>
                       <Badge tone="ok">Save {fmt.usd(data.cashflow.savings)}/mo</Badge>
                     </div>
                     <div className="mt-3 grid grid-cols-2 gap-4">
                       <div>
-                        <p className="text-meta text-fg-2">Current electric bill</p>
+                        <p className="text-meta text-fg-3">Current electric bill</p>
                         <p className="tnum text-title font-semibold text-fg-3 line-through">{fmt.usd(data.cashflow.currentBill)}</p>
                       </div>
                       <div>
-                        <p className="text-meta text-fg-2">Solar loan payment</p>
+                        <p className="text-meta text-fg-3">Solar loan payment</p>
                         <p className="tnum text-title font-semibold">
-                          {fmt.usd(data.cashflow.loanPayment)} <span className="text-meta font-normal text-fg-2">/ mo</span>
+                          {fmt.usd(data.cashflow.loanPayment)} <span className="text-meta font-normal text-fg-3">/ mo</span>
                         </p>
                       </div>
                     </div>
@@ -184,9 +185,8 @@ export function QuotationPage() {
             </div>
           </div>
 
-          <dialog
+          <Dialog
             ref={dialogRef}
-            className="m-auto w-full max-w-md rounded-control border border-line-2 bg-canvas p-0 text-fg backdrop:bg-fg/40"
             onClose={() => {
               setSent(false)
               setQuestion('')
@@ -194,7 +194,6 @@ export function QuotationPage() {
           >
             <form
               method="dialog"
-              className="p-6"
               onSubmit={(e) => {
                 if (!sent) {
                   e.preventDefault()
@@ -202,7 +201,7 @@ export function QuotationPage() {
                 }
               }}
             >
-              <h2 className="text-title font-semibold">Consult with {advisor.name}</h2>
+              <DialogTitle>Consult with {advisor.name}</DialogTitle>
               <p className="mt-1 text-body text-fg-2">
                 Questions about equipment, adding a battery or structural mounting? {advisor.name.split(' ')[0]} replies through the portal or by phone.
               </p>
@@ -215,7 +214,7 @@ export function QuotationPage() {
                   <Textarea id="question" value={question} onChange={(e) => setQuestion(e.target.value)} />
                 </Field>
               )}
-              <div className="mt-6 flex justify-end gap-2">
+              <DialogFooter>
                 <Button type="button" variant="ghost" onClick={() => dialogRef.current?.close()}>
                   {sent ? 'Close' : 'Cancel'}
                 </Button>
@@ -224,9 +223,9 @@ export function QuotationPage() {
                     Send inquiry
                   </Button>
                 )}
-              </div>
+              </DialogFooter>
             </form>
-          </dialog>
+          </Dialog>
         </>
       )}
     </QueryBoundary>
