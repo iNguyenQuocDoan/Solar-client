@@ -21,7 +21,6 @@ export function ManageDashboardPage() {
           <PageHeader
             meta={<Badge tone="ok">Q4 run rate {data.runRate}</Badge>}
             title="Executive dashboard"
-            description={`Oversight of ${data.portfolio} portfolio installations, quotation approval gates and post-commissioning SLA commitments.`}
             actions={<Button>Batch actions</Button>}
           />
 
@@ -40,9 +39,9 @@ export function ManageDashboardPage() {
             <PanelBody>
               <ol className="grid grid-cols-2 gap-y-6 sm:grid-cols-3 lg:grid-cols-6">
                 {data.pipeline.phases.map((p) => (
-                  <li key={p.label} className="min-w-0 pr-3 lg:border-l lg:border-line lg:pl-3 lg:first:border-0 lg:first:pl-0">
-                    <p className={cx('tnum text-figure font-semibold', p.friction && 'text-warn')}>{p.count}</p>
-                    <p className="text-body font-medium">{p.label}</p>
+                  <li key={p.label} className="min-w-0 pr-3">
+                    <p className={cx('tnum text-title font-semibold', p.friction && 'text-warn')}>{p.count}</p>
+                    <p className="text-body">{p.label}</p>
                     <p className={cx('text-meta', p.friction ? 'text-warn' : 'text-fg-3')}>{p.note}</p>
                   </li>
                 ))}
@@ -137,7 +136,7 @@ export function ManageDashboardPage() {
             </Panel>
 
             <Panel>
-              <PanelHeader title="Field verification" description="Array flashing and conduit runs uploaded within the hour." />
+              <PanelHeader title="Field verification" />
               <PanelBody className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
                 {data.photos.map((p) => (
                   <Photo key={p.caption} src={p.src} alt={p.caption} ratio="aspect-[16/9]" caption={p.caption} meta={p.meta} />
@@ -153,7 +152,7 @@ export function ManageDashboardPage() {
 
           <div className="grid gap-x-12 gap-y-12 lg:grid-cols-3 lg:items-start">
             <Panel className="lg:col-span-2">
-              <PanelHeader title="Audit and milestone feed" description="Compliance checkpoints and contractual signatures." />
+              <PanelHeader title="Audit and milestone feed" />
               <PanelBody>
                 <ActivityList items={data.audit} />
               </PanelBody>

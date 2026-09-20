@@ -136,7 +136,7 @@ export function FieldDashboardPage() {
                 </Panel>
 
                 <Panel>
-                  <PanelHeader title="Completed today" action={<Badge tone="ok">{data.completed.length} synced</Badge>} />
+                  <PanelHeader title="Completed today" />
                   <PanelBody>
                     <ActivityList items={data.completed} />
                   </PanelBody>

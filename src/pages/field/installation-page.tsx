@@ -63,7 +63,6 @@ export function FieldInstallationPage() {
               <Panel>
                 <PanelHeader
                   title="Field verification checklist"
-                  description="Technician sign-offs sync with the regional deployment team."
                   action={<Badge>{completed} of {data.steps.length} complete</Badge>}
                 />
                 <PanelBody>
@@ -131,7 +130,7 @@ export function FieldInstallationPage() {
               </Panel>
 
               <Panel>
-                <PanelHeader title="Field diagnostics" description="Calibrated multimeter and insulation test results." />
+                <PanelHeader title="Field diagnostics" />
                 <PanelBody className="grid gap-4 sm:grid-cols-2">
                   {data.diagnostics.map((d) => (
                     <div key={d.label} className="border-t border-line pt-3">
@@ -161,7 +160,6 @@ export function FieldInstallationPage() {
               <Panel>
                 <PanelHeader
                   title="Site visual evidence"
-                  description="Mandatory AHJ compliance and warranty audit photos."
                   action={
                     <Button size="sm">
                       Capture

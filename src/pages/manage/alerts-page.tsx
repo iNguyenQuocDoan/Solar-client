@@ -171,10 +171,7 @@ export function ManageAlertsPage() {
 
               <div className="space-y-8 lg:border-l lg:border-line lg:pl-8">
                 <Panel>
-                  <PanelHeader
-                    title="Live fleet positioning"
-                    description="Greater Metro and Foothills sector."
-                  />
+                  <PanelHeader title="Live fleet positioning" />
                   <PanelBody>
                     <ul className="divide-y divide-line">
                       {data.fleet.map((v) => (
@@ -194,10 +191,7 @@ export function ManageAlertsPage() {
                 </Panel>
 
                 <Panel>
-                  <PanelHeader
-                    title="Duty leads"
-                    description="Escalation contacts"
-                  />
+                  <PanelHeader title="Duty leads" />
                   <PanelBody>
                     <ul className="divide-y divide-line">
                       {data.leads.map((l) => (

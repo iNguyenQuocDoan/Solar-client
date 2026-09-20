@@ -109,7 +109,7 @@ export function ProjectPage() {
               </Panel>
 
               <Panel>
-                <PanelHeader title="Installation photos" description="Inspection imagery from the original survey through hardware mounting." />
+                <PanelHeader title="Installation photos" />
                 <PanelBody>
                   <ul className="grid gap-6 sm:grid-cols-3">
                     {data.photos.map((p) => (

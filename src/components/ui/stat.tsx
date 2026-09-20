@@ -3,11 +3,12 @@ import { cx } from '@/lib/cx'
 
 /*
   Figures in a row share three subgrid tracks (label, value, note), so a label
-  that wraps never pushes its figure out of line with the others.
+  that wraps never pushes its figure out of line with the others. No dividers:
+  the gap does the separating, the figures are not tiles.
   Columns: 2 on phones, 4 on md; pass `md:grid-cols-3` or `xl:grid-cols-6` when the data calls for it.
 */
 export function StatRow({ children, className }: { children: ReactNode; className?: string }) {
-  return <dl className={cx('grid grid-cols-2 gap-x-6 gap-y-8 md:grid-cols-4', className)}>{children}</dl>
+  return <dl className={cx('grid grid-cols-2 content-start gap-x-8 gap-y-6 md:grid-cols-4', className)}>{children}</dl>
 }
 
 /* A figure with its label. Numbers only; a text value belongs in a KeyValueList. */
@@ -28,15 +29,9 @@ export function Stat({
   size?: 'md' | 'lg'
   className?: string
 }) {
-  const valueTone =
-    tone === 'danger' ? 'text-danger' : tone === 'warn' ? 'text-warn' : tone === 'ok' ? 'text-ok' : 'text-fg'
+  const valueTone = tone === 'danger' ? 'text-danger' : tone === 'warn' ? 'text-warn' : 'text-fg'
   return (
-    <div
-      className={cx(
-        'row-span-3 grid min-w-0 grid-rows-subgrid gap-y-1 md:border-l md:border-line md:pl-6 md:first:border-0 md:first:pl-0',
-        className,
-      )}
-    >
+    <div className={cx('row-span-3 grid min-w-0 grid-rows-subgrid gap-y-1', className)}>
       <dt className="text-meta text-fg-2">{label}</dt>
       <dd className="flex flex-wrap items-baseline gap-x-2">
         <span className={cx('tnum font-semibold', size === 'lg' ? 'text-display' : 'text-figure', valueTone)}>{value}</span>

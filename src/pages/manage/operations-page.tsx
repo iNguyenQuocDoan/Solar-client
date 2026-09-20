@@ -18,7 +18,6 @@ export function ManageOperationsPage() {
         <>
           <PageHeader
             title="Operational throughput and fleet velocity"
-            description="Performance across regional installation crews, AHJ pass compliance and post-PTO reliability."
             actions={
               <>
                 <Button>Export CSV</Button>
@@ -55,17 +54,16 @@ export function ManageOperationsPage() {
           <Panel className="mb-12">
             <PanelHeader
               title="End-to-end pipeline throughput"
-              description="Live volume across active contracts from initial inquiry through commercial activation."
               action={<Badge tone="ok">{data.throughput.handshakes} PTO handshakes this month</Badge>}
             />
             <PanelBody>
               <ol className="grid grid-cols-2 gap-y-6 sm:grid-cols-4 lg:grid-cols-7">
                 {data.throughput.phases.map((p, i) => (
-                  <li key={p.label} className="min-w-0 pr-3 lg:border-l lg:border-line lg:pl-3 lg:first:border-0 lg:first:pl-0">
-                    <p className="tnum text-figure font-semibold">{p.count}</p>
-                    <p className="text-body font-medium">{p.label}</p>
+                  <li key={p.label} className="min-w-0 pr-3">
+                    <p className="tnum text-title font-semibold">{p.count}</p>
+                    <p className="text-body">{p.label}</p>
                     <p className="text-meta text-fg-3">{p.note}</p>
-                    <p className={i === data.throughput.phases.length - 1 ? 'tnum mt-1 text-meta font-medium text-ok' : 'tnum mt-1 text-meta text-fg-2'}>
+                    <p className={i === data.throughput.phases.length - 1 ? 'tnum mt-1 text-meta font-medium text-fg' : 'tnum mt-1 text-meta text-fg-2'}>
                       {i === data.throughput.phases.length - 1 ? p.avg : `Avg ${p.avg}`}
                     </p>
                   </li>
@@ -82,7 +80,7 @@ export function ManageOperationsPage() {
 
           <div className="mb-12 grid gap-x-12 gap-y-12 lg:grid-cols-5 lg:items-start">
             <Panel className="lg:col-span-3">
-              <PanelHeader title="Field squad operations" description="Regional deployment velocity and residential install timelines." action={<Badge>Average {data.squads.avgSpeed}</Badge>} />
+              <PanelHeader title="Field squad operations" action={<Badge>Average {data.squads.avgSpeed}</Badge>} />
               <Table stack>
                 <thead>
                   <tr>
@@ -118,7 +116,7 @@ export function ManageOperationsPage() {
             </Panel>
 
             <Panel className="lg:col-span-2">
-              <PanelHeader title="Post-PTO reliability" description="Post-commissioning warranty incident audit." action={<Badge tone="ok">{data.reliability.uptime}</Badge>} />
+              <PanelHeader title="Post-PTO reliability" action={<Badge tone="ok">{data.reliability.uptime}</Badge>} />
               <PanelBody className="space-y-6">
                 <ul className="divide-y divide-line border-t border-line">
                   {data.reliability.incidents.map((i) => (
@@ -151,7 +149,7 @@ export function ManageOperationsPage() {
           </div>
 
           <Panel>
-            <PanelHeader title="Municipal jurisdiction (AHJ) friction" description="Bottleneck detection across local building departments and electric utility partners. Code registry syncs daily." />
+            <PanelHeader title="Municipal jurisdiction (AHJ) friction" />
             <Table stack>
               <thead>
                 <tr>

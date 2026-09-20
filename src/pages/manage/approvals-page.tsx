@@ -113,7 +113,7 @@ export function ManageApprovalsPage() {
                                 {a.gross !== a.net && <p className="text-meta text-warn">Save {fmt.usd(a.gross - a.net)}, override required</p>}
                               </div>
                             </div>
-                            <dl className={cx('mt-3 grid gap-x-6 gap-y-1 rounded-container px-3 py-3 text-body sm:grid-cols-3', active ? 'bg-surface-3' : 'bg-surface-2')}>
+                            <dl className="mt-3 grid gap-x-6 gap-y-2 border-t border-line pt-3 text-body sm:grid-cols-3">
                               {a.specs.map((s) => (
                                 <div key={s.k}>
                                   <dt className="text-meta text-fg-3">{s.k}</dt>
@@ -140,10 +140,9 @@ export function ManageApprovalsPage() {
             </div>
 
             <div className="space-y-8 lg:col-span-2">
-              <Panel>
+              <Panel raised>
                 <PanelHeader
                   title={`${selected.id}, ${selected.customer}`}
-                  description="Inline inspection"
                   action={selected.slaHours ? <Badge tone="danger">SLA overdue</Badge> : <Badge tone="warn">Priority 1</Badge>}
                 />
                 <PanelBody className="space-y-4">

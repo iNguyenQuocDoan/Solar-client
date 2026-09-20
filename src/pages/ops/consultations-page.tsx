@@ -68,7 +68,6 @@ export function OpsConsultationsPage() {
         <>
           <PageHeader
             title="Consultation requests"
-            description="Triage preliminary assessments, evaluate them and schedule site surveys."
             actions={
               <>
                 <Button>Export CSV</Button>
@@ -205,7 +204,7 @@ export function OpsConsultationsPage() {
                       </Td>
                       <Td label="Intake and SLA" className="hidden lg:table-cell">
                         <p className="tnum">
-                          <span className="whitespace-nowrap">{r.intake}</span> <span className="text-fg-3">{r.age}</span>
+                          <span className="whitespace-nowrap">{r.intake}</span> <span className="whitespace-nowrap text-fg-3">{r.age}</span>
                         </p>
                         <p
                           className={cx(

@@ -22,7 +22,6 @@ export function ManageRevenuePage() {
         <>
           <PageHeader
             title="Revenue and margin analytics"
-            description="Cash realization milestones, margin discipline and pipeline conversion across regional installation fleets."
             meta={<Badge>Regional scope: {data.scope}</Badge>}
             actions={
               <>
@@ -52,7 +51,7 @@ export function ManageRevenuePage() {
             </Panel>
 
             <Panel>
-              <PanelHeader title="Tier distribution" description="Revenue split by hardware topology." />
+              <PanelHeader title="Tier distribution" />
               <PanelBody>
                 <ul className="space-y-4">
                   {data.tiers.map((t) => (
@@ -76,7 +75,6 @@ export function ManageRevenuePage() {
           <Panel className="mb-12">
             <PanelHeader
               title="Revenue and margin ledger"
-              description="Live quotation audit with override tracking and milestone release status."
               action={<Badge>{data.ledger.filters.range}</Badge>}
             />
             <FilterBar>

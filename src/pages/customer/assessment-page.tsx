@@ -299,7 +299,7 @@ export function AssessmentPage() {
             certified engineer verifies every specification during the on-site survey.
           </Notice>
 
-          <Panel>
+          <Panel raised>
             <PanelBody className="space-y-3">
               <Checkbox
                 checked={draft.ownerConfirmed}

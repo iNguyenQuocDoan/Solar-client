@@ -5,10 +5,17 @@ import { cx } from '@/lib/cx'
   A Panel is a section of the document, not a box: no fill, no border box.
   Consecutive panels in the same column are separated by one hairline.
   For repeated records inside one list use ListRow instead.
+
+  `raised`: the one block on a page that asks for a decision or input
+  (sign a quotation, file a request, authorize) sits in a bordered field so
+  the eye finds the action without a second solid button.
 */
-export function Panel({ className, children, ...rest }: HTMLAttributes<HTMLElement>) {
+export function Panel({ raised, className, children, ...rest }: HTMLAttributes<HTMLElement> & { raised?: boolean }) {
   return (
-    <section className={cx('border-t border-line pt-6 first:border-t-0 first:pt-0', className)} {...rest}>
+    <section
+      className={cx(raised ? 'rounded-container border border-line p-5' : 'border-t border-line pt-6 first:border-t-0 first:pt-0', className)}
+      {...rest}
+    >
       {children}
     </section>
   )

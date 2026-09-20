@@ -2,7 +2,10 @@ import type { ReactNode } from 'react'
 import { Link } from 'react-router'
 import { cx } from '@/lib/cx'
 
-/* Actions align with the first line of the title, not with whatever line the description ends on. */
+/*
+  Title at figure size on every screen (display is kept for hero figures).
+  Actions align with the first line of the title, not with whatever line the description ends on.
+*/
 export function PageHeader({
   title,
   description,
@@ -32,10 +35,10 @@ export function PageHeader({
           </div>
         )}
         {meta && <div className="mb-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-meta text-fg-2">{meta}</div>}
-        <h1 className="text-figure font-semibold md:text-display">{title}</h1>
+        <h1 className="text-figure font-semibold">{title}</h1>
         {description && <p className="mt-3 text-body text-fg-2">{description}</p>}
       </div>
-      {actions && <div className="flex flex-wrap items-center gap-3 md:pt-1">{actions}</div>}
+      {actions && <div className="flex flex-wrap items-center gap-3">{actions}</div>}
     </div>
   )
 }
