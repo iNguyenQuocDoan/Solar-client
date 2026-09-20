@@ -117,7 +117,7 @@ export function ConsultationPage() {
                   <ul className="space-y-2">
                     {data.inspection.checklist.map((c) => (
                       <li key={c} className="flex gap-2">
-                        <span aria-hidden className="mt-2 size-1 shrink-0 rounded-full bg-fg-3" />
+                        <span aria-hidden className="mt-2 size-1 shrink-0 rounded-control bg-fg-3" />
                         <span>{c}</span>
                       </li>
                     ))}
