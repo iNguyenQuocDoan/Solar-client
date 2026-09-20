@@ -32,3 +32,6 @@ pnpm-debug.log*
 
 # Test / coverage
 coverage
+
+# Claude worktrees
+.claude/worktrees
