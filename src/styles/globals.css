@@ -1,1 +1,221 @@
 @import 'tailwindcss';
+@import '@fontsource-variable/schibsted-grotesk';
+
+/*
+  Design tokens. Semantic names only; every component reads these.
+  Theme follows the system preference and can be pinned with
+  <html data-theme="light|dark">.
+*/
+:root {
+  color-scheme: light;
+
+  --canvas: oklch(98.6% 0.003 110);
+  --surface: oklch(98.6% 0.003 110);
+  --surface-2: oklch(95.6% 0.006 110);
+  --surface-3: oklch(92.5% 0.008 110);
+  --line: oklch(87% 0.01 110);
+  --line-2: oklch(72% 0.014 120);
+
+  --fg: oklch(20% 0.012 130);
+  --fg-2: oklch(44% 0.014 130);
+  --fg-3: oklch(52% 0.012 130);
+
+  --accent: #0d5c3a;
+  --accent-hover: #0a4a2f;
+  --accent-soft: oklch(94.5% 0.035 160);
+  --accent-fg: oklch(38% 0.09 160);
+  --on-accent: oklch(98.5% 0.01 150);
+
+  --ok: oklch(46% 0.11 155);
+  --ok-soft: oklch(94.5% 0.04 155);
+  --warn: oklch(52% 0.13 70);
+  --warn-soft: oklch(95.5% 0.05 80);
+  --danger: oklch(50% 0.18 27);
+  --danger-soft: oklch(95.5% 0.03 25);
+  --info: oklch(48% 0.14 255);
+  --info-soft: oklch(95% 0.03 255);
+
+  --ring: oklch(55% 0.12 160);
+  --shadow-pop: 0 4px 16px -4px oklch(30% 0.03 155 / 0.18), 0 1px 2px oklch(30% 0.03 155 / 0.08);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    color-scheme: dark;
+
+    --canvas: oklch(17% 0.006 130);
+    --surface: oklch(17% 0.006 130);
+    --surface-2: oklch(22% 0.008 130);
+    --surface-3: oklch(27% 0.009 130);
+    --line: oklch(30% 0.01 130);
+    --line-2: oklch(45% 0.012 130);
+
+    --fg: oklch(95% 0.006 150);
+    --fg-2: oklch(74% 0.012 150);
+    --fg-3: oklch(68% 0.012 150);
+
+    --accent: oklch(74% 0.14 160);
+    --accent-hover: oklch(80% 0.14 160);
+    --accent-soft: oklch(28% 0.045 160);
+    --accent-fg: oklch(80% 0.13 160);
+    --on-accent: oklch(18% 0.04 160);
+
+    --ok: oklch(76% 0.13 155);
+    --ok-soft: oklch(28% 0.05 155);
+    --warn: oklch(82% 0.13 80);
+    --warn-soft: oklch(30% 0.06 75);
+    --danger: oklch(76% 0.15 25);
+    --danger-soft: oklch(30% 0.07 25);
+    --info: oklch(78% 0.11 255);
+    --info-soft: oklch(30% 0.06 255);
+
+    --ring: oklch(74% 0.14 160);
+    --shadow-pop: 0 8px 24px -6px oklch(0% 0 0 / 0.6), 0 1px 2px oklch(0% 0 0 / 0.4);
+  }
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+
+  --canvas: oklch(17% 0.006 130);
+  --surface: oklch(17% 0.006 130);
+  --surface-2: oklch(22% 0.008 130);
+  --surface-3: oklch(27% 0.009 130);
+  --line: oklch(30% 0.01 130);
+  --line-2: oklch(45% 0.012 130);
+
+  --fg: oklch(95% 0.006 150);
+  --fg-2: oklch(74% 0.012 150);
+  --fg-3: oklch(68% 0.012 150);
+
+  --accent: oklch(74% 0.14 160);
+  --accent-hover: oklch(80% 0.14 160);
+  --accent-soft: oklch(28% 0.045 160);
+  --accent-fg: oklch(80% 0.13 160);
+  --on-accent: oklch(18% 0.04 160);
+
+  --ok: oklch(76% 0.13 155);
+  --ok-soft: oklch(28% 0.05 155);
+  --warn: oklch(82% 0.13 80);
+  --warn-soft: oklch(30% 0.06 75);
+  --danger: oklch(76% 0.15 25);
+  --danger-soft: oklch(30% 0.07 25);
+  --info: oklch(78% 0.11 255);
+  --info-soft: oklch(30% 0.06 255);
+
+  --ring: oklch(74% 0.14 160);
+  --shadow-pop: 0 8px 24px -6px oklch(0% 0 0 / 0.6), 0 1px 2px oklch(0% 0 0 / 0.4);
+}
+
+@theme inline {
+  --font-sans: 'Schibsted Grotesk Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'Schibsted Grotesk Variable', ui-sans-serif, system-ui, sans-serif;
+
+  --color-canvas: var(--canvas);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
+  --color-line: var(--line);
+  --color-line-2: var(--line-2);
+  --color-fg: var(--fg);
+  --color-fg-2: var(--fg-2);
+  --color-fg-3: var(--fg-3);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-fg: var(--accent-fg);
+  --color-on-accent: var(--on-accent);
+  --color-ok: var(--ok);
+  --color-ok-soft: var(--ok-soft);
+  --color-warn: var(--warn);
+  --color-warn-soft: var(--warn-soft);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+  --color-info: var(--info);
+  --color-info-soft: var(--info-soft);
+  --color-ring: var(--ring);
+
+  /* Shape rule: everything square-ish. Controls 3px, media 4px. Nothing is a pill except avatars. */
+  --radius-sm: 2px;
+  --radius-md: 3px;
+  --radius-lg: 4px;
+
+  --shadow-pop: var(--shadow-pop);
+}
+
+@layer base {
+  html {
+    font-family: var(--font-sans);
+    font-size: 15px;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    font-feature-settings: 'tnum' 0;
+  }
+  body {
+    background: var(--color-canvas);
+    color: var(--color-fg);
+    line-height: 1.5;
+    overscroll-behavior-y: none;
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+  }
+  /* Mono is retired: identifiers use the text face at a muted weight. */
+  .font-mono {
+    letter-spacing: 0.01em;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-ring);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+  }
+  ::selection {
+    background: var(--color-accent-soft);
+  }
+  input::placeholder,
+  textarea::placeholder {
+    color: var(--color-fg-3);
+  }
+  button,
+  [role='button'] {
+    cursor: pointer;
+  }
+  button:disabled {
+    cursor: not-allowed;
+  }
+  /* Grid tracks must be allowed to shrink below their content (tables scroll inside panels). */
+  .grid > * {
+    min-width: 0;
+  }
+}
+
+@layer utilities {
+  .tnum {
+    font-variant-numeric: tabular-nums;
+  }
+  .press {
+    transition:
+      transform 120ms ease,
+      background-color 120ms ease,
+      border-color 120ms ease,
+      color 120ms ease;
+  }
+  .press:active:not(:disabled) {
+    transform: translateY(1px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
