@@ -2,6 +2,7 @@ import { useRef, useState } from 'react'
 import { Avatar } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { Dialog, DialogFooter, DialogTitle } from '@/components/ui/dialog'
 import { Field, Textarea } from '@/components/ui/field'
 import { KeyValueList, Notice, Photo } from '@/components/ui/lists'
 import { PageHeader } from '@/components/ui/page-header'
@@ -143,7 +144,7 @@ export function WarrantyRequestPage() {
                     <Avatar name={data.technician.name} size="lg" />
                     <div className="min-w-0">
                       <p className="font-medium">{data.technician.name}</p>
-                      <p className="text-body text-fg-2">{data.technician.cert}</p>
+                      <p className="text-meta text-fg-3">{data.technician.cert}</p>
                       <p className="text-meta text-fg-3">{data.technician.exp}</p>
                     </div>
                   </div>
@@ -169,7 +170,7 @@ export function WarrantyRequestPage() {
                   <Button className="w-full justify-start" onClick={() => open('reschedule')}>
                     Reschedule visit
                   </Button>
-                  <a href="tel:18005557652" className="flex h-9 items-center justify-between rounded-control px-3 text-body text-fg-2 hover:bg-surface-2">
+                  <a href="tel:18005557652" className="flex h-11 items-center justify-between rounded-control px-3 text-body text-fg-2 hover:bg-surface-2 lg:h-10">
                     <span>Call support desk</span>
                     <span className="tnum text-meta">{data.supportPhone}</span>
                   </a>
@@ -185,30 +186,26 @@ export function WarrantyRequestPage() {
             </div>
           </div>
 
-          <dialog
-            ref={dialogRef}
-            className="m-auto w-full max-w-md rounded-control border border-line-2 bg-canvas p-0 text-fg backdrop:bg-fg/40"
-          >
+          <Dialog ref={dialogRef}>
             <form
               method="dialog"
-              className="p-6"
               onSubmit={() => setSent(modal === 'message' ? `Your note was delivered to ${data.technician.name}.` : 'Your reschedule request was sent to dispatch. Expect confirmation within one business day.')}
             >
-              <h2 className="text-title font-semibold">{MODALS[modal].title}</h2>
+              <DialogTitle>{MODALS[modal].title}</DialogTitle>
               <p className="mt-1 text-body text-fg-2">{MODALS[modal].description}</p>
               <Field label="Message" htmlFor="modal-text" className="mt-4">
                 <Textarea id="modal-text" value={text} onChange={(e) => setText(e.target.value)} placeholder={MODALS[modal].placeholder} />
               </Field>
-              <div className="mt-6 flex justify-end gap-2">
+              <DialogFooter>
                 <Button type="button" variant="ghost" onClick={() => dialogRef.current?.close()}>
                   Cancel
                 </Button>
                 <Button type="submit" variant="primary" disabled={!text.trim()}>
                   Send
                 </Button>
-              </div>
+              </DialogFooter>
             </form>
-          </dialog>
+          </Dialog>
         </>
       )}
     </QueryBoundary>
