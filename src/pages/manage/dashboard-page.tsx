@@ -25,7 +25,7 @@ export function ManageDashboardPage() {
             actions={<Button>Batch actions</Button>}
           />
 
-          <StatRow className="mb-12 md:grid-cols-3 lg:grid-cols-6">
+          <StatRow className="mb-12 md:grid-cols-3 xl:grid-cols-6">
             {data.kpis.map((k) => (
               <Stat key={k.label} label={k.label} value={k.value} note={k.note} tone={k.tone} />
             ))}
@@ -50,13 +50,11 @@ export function ManageDashboardPage() {
             </PanelBody>
           </Panel>
 
-          <section className="mb-12" aria-labelledby="decisions">
-            <div className="mb-3 flex items-baseline justify-between gap-4">
-              <h2 id="decisions" className="text-body font-semibold">
-                Decisions required
-              </h2>
-              <p className="text-body text-fg-2">{data.exceptions.length} blockers need executive sign-off. Auto-refreshed 2 minutes ago.</p>
-            </div>
+          <Panel className="mb-12" aria-labelledby="decisions">
+            <PanelHeader
+              title={<span id="decisions">Decisions required</span>}
+              description={`${data.exceptions.length} blockers need executive sign-off. Auto-refreshed 2 minutes ago.`}
+            />
             <div className="grid gap-x-12 gap-y-8 md:grid-cols-2">
               {data.exceptions.map((ex) => (
                 <Panel key={ex.ref} className="flex flex-col border-t! pt-6!">
@@ -78,7 +76,6 @@ export function ManageDashboardPage() {
                           key={a}
                           to={ex.link === 'approval' ? withId(ROUTES.manage.approval, ex.ref) : ROUTES.manage.alerts}
                           size="sm"
-                          variant="primary"
                         >
                           {a}
                         </ButtonLink>
@@ -92,17 +89,17 @@ export function ManageDashboardPage() {
                 </Panel>
               ))}
             </div>
-          </section>
+          </Panel>
 
           <div className="mb-12 grid gap-x-12 gap-y-12 lg:grid-cols-3 lg:items-start">
             <Panel className="lg:col-span-2">
               <PanelHeader title={`Week ${data.sprint.week} installation sprint`} description={data.sprint.summary} />
-              <Table className="text-body">
+              <Table>
                 <thead>
                   <tr>
                     <Th>Project</Th>
                     <Th>System</Th>
-                    <Th>Crew</Th>
+                    <Th className="hidden md:table-cell">Crew</Th>
                     <Th>Milestone</Th>
                   </tr>
                 </thead>
@@ -119,7 +116,7 @@ export function ManageDashboardPage() {
                         <p>{r.size}</p>
                         <p className="text-meta text-fg-3">{r.hardware}</p>
                       </Td>
-                      <Td>
+                      <Td className="hidden md:table-cell">
                         <p>{r.crew}</p>
                         {r.lead && <p className="text-meta text-fg-3">Lead {r.lead}</p>}
                       </Td>
