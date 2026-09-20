@@ -142,14 +142,14 @@ export function ManageProjectPage() {
 
               <Panel>
                 <PanelHeader title="Self-assessment versus physical survey" action={<Badge tone="ok">{data.audit.tolerance}</Badge>} />
-                <Table className="text-body">
+                <Table>
                   <thead>
                     <tr>
                       <Th>Metric</Th>
-                      <Th>Customer self-assessment</Th>
-                      <Th>Physical site audit (Oct 19)</Th>
+                      <Th className="whitespace-normal!">Customer self-assessment</Th>
+                      <Th className="whitespace-normal!">Physical site audit (Oct 19)</Th>
                       <Th>Variance</Th>
-                      <Th>Resolution</Th>
+                      <Th className="hidden md:table-cell">Resolution</Th>
                     </tr>
                   </thead>
                   <tbody>
@@ -159,7 +159,7 @@ export function ManageProjectPage() {
                         <Td className="text-fg-2">{r.self}</Td>
                         <Td>{r.survey}</Td>
                         <Td className={cx(r.variance.startsWith('+') || r.variance.startsWith('-') ? 'text-warn' : 'text-fg-2')}>{r.variance}</Td>
-                        <Td className="text-fg-2">{r.resolution}</Td>
+                        <Td className="hidden text-fg-2 md:table-cell">{r.resolution}</Td>
                       </Tr>
                     ))}
                   </tbody>
@@ -175,7 +175,7 @@ export function ManageProjectPage() {
                     <p className="tnum text-figure font-semibold">
                       {fmt.usd(data.contract.cleared)} <span className="text-body font-normal text-fg-2">/ {fmt.usd(data.contract.total)} invoiced and collected</span>
                     </p>
-                    <div className="mt-2 flex h-2 w-full gap-1 overflow-hidden rounded-full" role="img" aria-label="Contract split by milestone">
+                    <div className="mt-2 flex h-2 w-full gap-1 overflow-hidden rounded-control" role="img" aria-label="Contract split by milestone">
                       {data.ledger.split.map((s, i) => (
                         <span key={s.label} className={cx('h-full', ['bg-accent', 'bg-accent/60', 'bg-surface-3'][i])} style={{ width: `${s.pct}%` }} />
                       ))}
@@ -235,7 +235,7 @@ export function ManageProjectPage() {
                 </PanelBody>
                 <PanelFooter>
                   <form
-                    className="flex w-full gap-2"
+                    className="flex w-full gap-3"
                     onSubmit={(e) => {
                       e.preventDefault()
                       if (!note.trim()) return
@@ -243,8 +243,8 @@ export function ManageProjectPage() {
                       setNote('')
                     }}
                   >
-                    <Textarea aria-label="Append executive note" rows={1} value={note} onChange={(e) => setNote(e.target.value)} placeholder="Append an executive note" className="min-h-9 resize-none" />
-                    <Button type="submit" size="md" variant="primary" disabled={!note.trim()}>
+                    <Textarea aria-label="Append executive note" rows={1} value={note} onChange={(e) => setNote(e.target.value)} placeholder="Append an executive note" className="min-h-11 resize-none lg:min-h-10" />
+                    <Button type="submit" disabled={!note.trim()}>
                       Send
                     </Button>
                   </form>
