@@ -1,12 +1,13 @@
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router'
-import { Avatar } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Button, ButtonLink } from '@/components/ui/button'
 import { FilterChips } from '@/components/ui/chips'
-import { Select } from '@/components/ui/field'
+import { Input, Select } from '@/components/ui/field'
+import { FilterBar } from '@/components/ui/filter-bar'
 import { Progress } from '@/components/ui/lists'
 import { PageHeader } from '@/components/ui/page-header'
+import { Pagination } from '@/components/ui/pagination'
 import { Panel, PanelBody, PanelFooter, PanelHeader } from '@/components/ui/panel'
 import { Stat, StatRow } from '@/components/ui/stat'
 import { EmptyState } from '@/components/ui/states'
@@ -45,9 +46,7 @@ export function ManagePortfolioPage() {
                 <Button disabled={selected.size === 0}>
                   Batch reassign owner{selected.size > 0 ? ` (${selected.size})` : ''}
                 </Button>
-                <Button variant="primary">
-                  Export CSV
-                </Button>
+                <Button>Export CSV</Button>
               </>
             }
           />
@@ -59,18 +58,15 @@ export function ManagePortfolioPage() {
           </StatRow>
 
           <Panel>
-            <PanelBody className="space-y-4">
-              <div className="flex flex-wrap items-center gap-3">
-                <label className="relative block w-full md:max-w-xs">
-                  <span className="sr-only">Search projects</span>
-                  <input
-                    type="search"
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                    placeholder="Project ID, customer name or address"
-                    className="h-9 w-full rounded-control border border-line-2 bg-transparent px-3 text-body placeholder:text-fg-3 focus:border-fg"
-                  />
-                </label>
+            <FilterBar tabs={<FilterChips chips={portfolioStages} value={stage} onChange={setStage} label="Filter by lifecycle stage" />}>
+                <Input
+                  type="search"
+                  aria-label="Search projects"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder="Project ID, customer name or address"
+                  className="w-full md:max-w-xs"
+                />
                 <Select aria-label="Sales staff" className="w-auto">
                   {data.filters.staff.map((o) => (
                     <option key={o}>{o}</option>
@@ -86,16 +82,14 @@ export function ManagePortfolioPage() {
                     <option key={o}>{o}</option>
                   ))}
                 </Select>
-              </div>
-              <FilterChips chips={portfolioStages} value={stage} onChange={setStage} label="Filter by lifecycle stage" />
-            </PanelBody>
+            </FilterBar>
 
             {rows.length === 0 ? (
               <PanelBody>
                 <EmptyState title="No projects match" description="Try another stage or clear the search." />
               </PanelBody>
             ) : (
-              <Table className="min-w-[1080px] text-body">
+              <Table>
                 <thead>
                   <tr>
                     <Th className="w-10">
@@ -109,10 +103,10 @@ export function ManagePortfolioPage() {
                     </Th>
                     <Th>Project</Th>
                     <Th>Customer and site</Th>
-                    <Th>Sales owner</Th>
-                    <Th>System</Th>
-                    <Th>Lifecycle stage</Th>
-                    <Th>Timeline</Th>
+                    <Th className="hidden xl:table-cell">Sales owner</Th>
+                    <Th className="hidden 2xl:table-cell">System</Th>
+                    <Th className="hidden md:table-cell">Lifecycle stage</Th>
+                    <Th className="hidden lg:table-cell">Timeline</Th>
                     <Th>Health</Th>
                     <Th>
                       <span className="sr-only">Action</span>
@@ -148,30 +142,25 @@ export function ManagePortfolioPage() {
                         <p className="font-medium">{r.customer}</p>
                         <p className="text-meta text-fg-3">{r.address}</p>
                       </Td>
-                      <Td>
-                        <span className="flex items-center gap-2 whitespace-nowrap">
-                          <Avatar name={r.owner} size="sm" />
-                          <span>
-                            <span className="block">{r.owner}</span>
-                            <span className="block text-meta text-fg-3">{r.territory}</span>
-                          </span>
-                        </span>
+                      <Td className="hidden xl:table-cell">
+                        <p className="whitespace-nowrap">{r.owner}</p>
+                        <p className="text-meta text-fg-3">{r.territory}</p>
                       </Td>
-                      <Td className="min-w-40">
+                      <Td className="hidden 2xl:table-cell">
                         <p className="whitespace-nowrap">{r.system}</p>
                         <p className="text-meta text-fg-3">{r.hardware}</p>
                       </Td>
-                      <Td className="min-w-52">
+                      <Td className="hidden md:table-cell">
                         <p className="whitespace-nowrap">{r.stageLabel}</p>
                         <p className="text-meta text-fg-3">{r.stageNote}</p>
                         <div className="mt-2 flex items-center gap-2">
-                          <Progress value={r.pct} label={`${r.id} progress`} className="w-24" />
-                          <span className="tnum text-meta text-fg-2">
+                          <Progress value={r.pct} label={`${r.id} progress`} className="w-16" />
+                          <span className="tnum text-meta whitespace-nowrap text-fg-2">
                             {r.pct}% {r.progressLabel.toLowerCase()}
                           </span>
                         </div>
                       </Td>
-                      <Td className="whitespace-nowrap">
+                      <Td className="hidden whitespace-nowrap lg:table-cell">
                         <p className="tnum">{r.milestone}</p>
                         <p className="tnum text-meta text-fg-3">PTO {r.pto}</p>
                       </Td>
@@ -179,7 +168,7 @@ export function ManagePortfolioPage() {
                         <Badge tone={r.healthTone}>{r.health}</Badge>
                       </Td>
                       <Td className="text-right">
-                        <ButtonLink to={withId(ROUTES.manage.project, r.id)} size="sm" variant={r.healthTone === 'danger' ? 'primary' : 'secondary'}>
+                        <ButtonLink to={withId(ROUTES.manage.project, r.id)} size="sm">
                           {r.action}
                         </ButtonLink>
                       </Td>
@@ -193,23 +182,7 @@ export function ManagePortfolioPage() {
               <span className="tnum">
                 Showing 1 to {rows.length} of {data.total} projects. Contract value in view {fmt.usd(data.valueInView)}.
               </span>
-              <nav aria-label="Pagination" className="flex items-center gap-1">
-                <Button size="sm" variant="ghost" disabled>
-                  Previous
-                </Button>
-                {[1, 2, 3].map((p) => (
-                  <Button key={p} size="sm" variant={p === 1 ? 'primary' : 'ghost'} aria-current={p === 1 ? 'page' : undefined} className="tnum min-w-8 px-2">
-                    {p}
-                  </Button>
-                ))}
-                <span className="px-1 text-fg-3">...</span>
-                <Button size="sm" variant="ghost" className="tnum min-w-8 px-2">
-                  15
-                </Button>
-                <Button size="sm" variant="ghost">
-                  Next
-                </Button>
-              </nav>
+              <Pagination page={1} pages={15} />
             </PanelFooter>
           </Panel>
 
@@ -221,19 +194,11 @@ export function ManagePortfolioPage() {
                 action={<Badge>Average {data.interconnection.avg}</Badge>}
               />
               <PanelBody>
-                <dl className="grid grid-cols-2 gap-6 md:grid-cols-4">
+                <StatRow>
                   {data.interconnection.queues.map((q) => (
-                    <div key={q.utility} className="md:border-l md:border-line md:pl-6 md:first:border-0 md:first:pl-0">
-                      <dt className="text-meta text-fg-2">{q.utility}</dt>
-                      <dd className="tnum text-figure font-semibold">
-                        {q.days} <span className="text-body font-normal text-fg-2">days</span>
-                      </dd>
-                      <dd>
-                        <Badge tone={q.tone}>{q.note}</Badge>
-                      </dd>
-                    </div>
+                    <Stat key={q.utility} label={q.utility} value={q.days} unit="days" note={<Badge tone={q.tone}>{q.note}</Badge>} />
                   ))}
-                </dl>
+                </StatRow>
               </PanelBody>
               <PanelFooter className="justify-between text-body text-fg-2">
                 <span>{data.interconnection.refresh}</span>
