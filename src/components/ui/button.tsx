@@ -5,26 +5,28 @@ import { cx } from '@/lib/cx'
 type Variant = 'primary' | 'secondary' | 'ghost' | 'danger'
 type Size = 'sm' | 'md'
 
+/* Disabled is a colour, not an opacity, so borders and fills stay crisp. */
 const base =
-  'press inline-flex shrink-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-md font-medium select-none disabled:opacity-40'
+  'press inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-control text-body font-medium select-none disabled:text-fg-3'
 
 /* One solid button per view; everything else is quiet. */
 const variants: Record<Variant, string> = {
-  primary: 'bg-accent text-on-accent hover:bg-accent-hover',
-  secondary: 'border border-line-2 text-fg hover:border-fg',
-  ghost: 'text-fg-2 underline-offset-4 hover:text-fg hover:underline',
-  danger: 'border border-danger/40 text-danger hover:border-danger',
+  primary: 'bg-accent text-on-accent not-disabled:hover:bg-accent-hover disabled:bg-surface-3',
+  secondary: 'border border-line-2 text-fg not-disabled:hover:border-fg disabled:border-line',
+  ghost: 'text-fg-2 underline-offset-4 not-disabled:hover:text-fg not-disabled:hover:underline',
+  danger: 'border border-danger/40 text-danger not-disabled:hover:border-danger disabled:border-line',
 }
 
+/* Every button is a 44px touch target below the desktop breakpoint. */
 const sizes: Record<Size, string> = {
-  sm: 'h-8 px-3 text-[14px]',
-  md: 'h-10 px-4 text-[15px]',
+  sm: 'h-11 px-3 lg:h-8',
+  md: 'h-11 px-4 lg:h-10',
 }
 
-/* Ghost buttons carry no horizontal padding so they align with text. */
+/* Ghost buttons keep their hit area but pull the padding back out so the label aligns with text. */
 const ghostSizes: Record<Size, string> = {
-  sm: 'h-8 px-0 text-[14px]',
-  md: 'h-10 px-0 text-[15px]',
+  sm: 'h-11 -mx-3 px-3 lg:h-8',
+  md: 'h-11 -mx-3 px-3 lg:h-10',
 }
 
 export function buttonClass(variant: Variant = 'secondary', size: Size = 'md', className?: string) {
