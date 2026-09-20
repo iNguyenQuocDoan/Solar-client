@@ -1,7 +1,8 @@
 import { useRef, useState } from 'react'
-import { Link } from 'react-router'
 import { Badge } from '@/components/ui/badge'
+import { ActionBar } from '@/components/ui/action-bar'
 import { Button, ButtonLink } from '@/components/ui/button'
+import { Dialog, DialogFooter, DialogTitle } from '@/components/ui/dialog'
 import { Checkbox, Field, Input, Select } from '@/components/ui/field'
 import { KeyValueList, Notice, Photo } from '@/components/ui/lists'
 import { PageHeader } from '@/components/ui/page-header'
@@ -179,7 +180,7 @@ export function AssessmentPage() {
                   </p>
                 )}
                 {draft.photos.length === 0 ? (
-                  <div className="rounded-control border border-dashed border-line-2 px-6 py-8 text-center text-body text-fg-2">
+                  <div className="rounded-container border border-dashed border-line-2 px-6 py-8 text-center text-body text-fg-2">
                     No photos yet. PNG, JPG or HEIC up to 15 MB each.
                   </div>
                 ) : (
@@ -277,8 +278,8 @@ export function AssessmentPage() {
           <Panel>
             <PanelHeader title="Preliminary potential" action={<Badge tone="ok">Grade {assessmentResult.grade}</Badge>} />
             <PanelBody>
-              <p className="tnum text-display font-semibold">
-                {assessmentResult.capacityKw} <span className="text-body font-normal text-fg-2">kW capacity</span>
+              <p className="tnum text-figure font-semibold">
+                {assessmentResult.capacityKw} <span className="text-body font-normal text-fg-3">kW capacity</span>
               </p>
               <p className="mt-1 text-body text-fg-2">
                 Based on {assessmentResult.usableAreaM2} m² of roof plane at {draft.tilt}° pitch and southern Illinois irradiance.
@@ -319,7 +320,7 @@ export function AssessmentPage() {
             </PanelBody>
           </Panel>
 
-          <div className="px-1 text-body text-fg-2">
+          <div className="text-body text-fg-2">
             <p className="font-medium text-fg">Assigned specialist</p>
             <p>
               {assessmentResult.specialist.name}, {assessmentResult.specialist.cert}
@@ -328,8 +329,7 @@ export function AssessmentPage() {
         </div>
       </div>
 
-      <div className="sticky bottom-0 z-10 mt-6 -mx-4 border-t border-line bg-canvas/95 px-4 py-3 backdrop-blur md:-mx-8 md:px-8">
-        <div className="mx-auto flex max-w-[1320px] flex-wrap items-center gap-2">
+      <ActionBar>
           <Button onClick={() => goTo(Math.max(0, step - 1))} disabled={step === 0}>
             Back
           </Button>
@@ -352,15 +352,10 @@ export function AssessmentPage() {
               </>
             )}
           </div>
-        </div>
-      </div>
+      </ActionBar>
 
-      <dialog
-        ref={dialogRef}
-        className="m-auto w-full max-w-md rounded-control border border-line-2 bg-canvas p-0 text-fg backdrop:bg-fg/40"
-      >
-        <div className="p-6">
-          <h2 className="text-title font-semibold">Assessment sent</h2>
+      <Dialog ref={dialogRef}>
+          <DialogTitle>Assessment sent</DialogTitle>
           <p className="mt-2 text-body text-fg-2">
             Your self-assessment for {draft.address.split(',')[0]} is logged. {assessmentResult.specialist.name} will finalize
             the preliminary system design and reach out within 2 business hours.
@@ -372,16 +367,15 @@ export function AssessmentPage() {
               { k: 'Estimated yield', v: `${assessmentResult.capacityKw} kW, ${fmt.num(assessmentResult.annualKwh)} kWh` },
             ]}
           />
-          <div className="mt-6 flex flex-wrap gap-2">
+          <DialogFooter>
+            <ButtonLink to={ROUTES.customer.home} variant="ghost">
+              Return to overview
+            </ButtonLink>
             <ButtonLink to={ROUTES.customer.estimate} variant="primary">
               View preliminary estimate
             </ButtonLink>
-            <Link to={ROUTES.customer.home} className="inline-flex h-9 items-center px-2 text-body text-fg-2 hover:text-fg">
-              Return to overview
-            </Link>
-          </div>
-        </div>
-      </dialog>
+          </DialogFooter>
+      </Dialog>
     </>
   )
 }
