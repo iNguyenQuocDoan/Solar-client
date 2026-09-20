@@ -35,7 +35,7 @@ export function WarrantyPage() {
           <Panel className="mb-12">
             <PanelBody className="grid gap-6 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
               <StatRow className="md:grid-cols-3">
-                <Stat label="Warranty expiration" value={data.expires} note={data.remaining} />
+                <Stat label="Warranty expiration" value={<span className="text-title">{data.expires}</span>} note={data.remaining} />
                 <Stat label="Array efficiency" value={`${data.telemetry.efficiencyPct}%`} note="Optimal threshold" tone="ok" />
                 <Stat label="Installation site" value={<span className="text-title">{data.site.split(',')[0]}</span>} note={data.site.split(', ')[1]} />
               </StatRow>
@@ -71,7 +71,7 @@ export function WarrantyPage() {
                           Technician {r.technician}. Arrival window {r.window}.
                         </p>
                         <div className="mt-3 flex gap-2">
-                          <ButtonLink to={withId(ROUTES.customer.warrantyRequest, r.id)} size="sm" variant="primary">
+                          <ButtonLink to={withId(ROUTES.customer.warrantyRequest, r.id)} size="sm">
                             View case details
                           </ButtonLink>
                           <Button size="sm">Reschedule</Button>
@@ -157,7 +157,7 @@ export function WarrantyPage() {
                         <p className="mb-2 text-body font-medium">Evidence or photos (optional)</p>
                         <button
                           type="button"
-                          className="press flex w-full flex-col items-center gap-1 rounded-control border border-dashed border-line-2 px-4 py-6 text-body text-fg-2 hover:bg-surface-2"
+                          className="press flex w-full flex-col items-center gap-1 rounded-container border border-dashed border-line-2 px-4 py-6 text-body text-fg-2 hover:bg-surface-2"
                         >
                           <span>Click to upload or drag and drop</span>
                           <span className="text-meta text-fg-3">PNG, JPG or PDF up to 15 MB</span>
