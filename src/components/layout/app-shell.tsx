@@ -87,7 +87,7 @@ function Rail({
       {open && <div className="fixed inset-0 z-30 bg-fg/40 lg:hidden" aria-hidden onClick={onClose} />}
       <aside
         className={cx(
-          'fixed inset-y-0 left-0 z-40 flex w-60 flex-col overflow-y-auto overscroll-contain border-r border-line bg-canvas px-6 py-6 transition-transform duration-200 lg:translate-x-0',
+          'fixed inset-y-0 left-0 z-40 flex w-60 flex-col overflow-y-auto overscroll-contain [scrollbar-width:thin] border-r border-line bg-canvas px-6 pt-6 transition-transform duration-200 lg:translate-x-0',
           open ? 'translate-x-0' : '-translate-x-full',
         )}
         aria-label="Primary"
@@ -132,7 +132,8 @@ function Rail({
           )}
         </nav>
 
-        <div className="mt-6 border-t border-line pt-4">
+        {/* The user block stays in view while a long rail scrolls above it. */}
+        <div className="sticky bottom-0 mt-6 border-t border-line bg-canvas pt-4 pb-6">
           <p className="text-body font-medium">{portal.user.name}</p>
           <p className="text-meta text-fg-2">{portal.user.role}</p>
           <div className="mt-3 space-y-2">

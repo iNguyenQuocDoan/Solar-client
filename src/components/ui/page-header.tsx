@@ -22,12 +22,14 @@ export function PageHeader({
     <div className={cx('mb-12 flex flex-wrap items-start justify-between gap-x-8 gap-y-4', className)}>
       <div className="min-w-0 max-w-[64ch]">
         {back && (
-          <Link
-            to={back.to}
-            className="mb-3 inline-block text-meta text-fg-2 underline decoration-line-2 underline-offset-4 hover:text-fg hover:decoration-fg"
-          >
-            {back.label}
-          </Link>
+          <div className="mb-3">
+            <Link
+              to={back.to}
+              className="tap text-meta text-fg-2 underline decoration-line-2 underline-offset-4 hover:text-fg hover:decoration-fg"
+            >
+              {back.label}
+            </Link>
+          </div>
         )}
         {meta && <div className="mb-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-meta text-fg-2">{meta}</div>}
         <h1 className="text-figure font-semibold md:text-display">{title}</h1>

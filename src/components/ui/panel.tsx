@@ -32,7 +32,7 @@ export function PanelHeader({
         <h2 className="text-title font-semibold">{title}</h2>
         {description && <p className="mt-1 max-w-prose text-body text-fg-2">{description}</p>}
       </div>
-      {action && <div className="flex min-w-0 items-center gap-3">{action}</div>}
+      {action && <div className="flex min-w-0 items-center gap-3 [&>a:not([class*=press])]:tap [&>button:not([class*=press])]:tap">{action}</div>}
     </header>
   )
 }
@@ -42,5 +42,5 @@ export function PanelBody({ className, children }: { className?: string; childre
 }
 
 export function PanelFooter({ className, children }: { className?: string; children: ReactNode }) {
-  return <footer className={cx('mt-6 flex flex-wrap items-center gap-3', className)}>{children}</footer>
+  return <footer className={cx('mt-6 flex flex-wrap items-center gap-3 [&>a:not([class*=press])]:tap', className)}>{children}</footer>
 }

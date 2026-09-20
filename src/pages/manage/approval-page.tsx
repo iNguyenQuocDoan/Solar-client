@@ -249,7 +249,7 @@ export function ManageApprovalPage() {
                               key={p}
                               type="button"
                               onClick={() => setCounter((c) => (c ? `${c} ${p}.` : `${p}.`))}
-                              className="press text-body text-fg-2 underline-offset-4 hover:text-fg hover:underline"
+                              className="press tap text-body text-fg-2 underline-offset-4 hover:text-fg hover:underline"
                             >
                               Preset: {p}
                             </button>
