@@ -130,7 +130,7 @@ export function ProjectPage() {
                     <Avatar name={data.crew.lead.name} />
                     <div className="min-w-0">
                       <p className="font-medium">{data.crew.lead.name}</p>
-                      <p className="text-body text-fg-2">
+                      <p className="text-meta text-fg-3">
                         {data.crew.lead.role}, {data.crew.lead.exp}
                       </p>
                       <a href={`tel:${data.crew.lead.phone}`} className="tnum text-body text-accent-fg hover:underline">
