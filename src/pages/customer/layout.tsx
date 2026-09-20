@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import { Outlet } from 'react-router'
 import { AppShell } from '@/components/layout/app-shell'
 import { ButtonLink } from '@/components/ui/button'
@@ -5,7 +6,8 @@ import { PORTALS } from '@/constants/nav'
 import { ROUTES } from '@/constants/routes'
 import { property } from '@/data/customer'
 
-export function CustomerLayout() {
+/* Children replace the Outlet while the first page module is still loading, so the rail never pops in late. */
+export function CustomerLayout({ children }: { children?: ReactNode }) {
   return (
     <AppShell
       portal={PORTALS.customer}
@@ -20,7 +22,7 @@ export function CustomerLayout() {
           <ButtonLink to={ROUTES.customer.assessment} variant="primary" size="sm">
             New assessment
           </ButtonLink>
-          <p className="text-[14px] text-fg-2">
+          <p className="text-body text-fg-2">
             <a href="#" className="underline-offset-4 hover:text-fg hover:underline">
               3 unread notifications
             </a>
@@ -28,7 +30,7 @@ export function CustomerLayout() {
         </>
       }
     >
-      <Outlet />
+      {children ?? <Outlet />}
     </AppShell>
   )
 }

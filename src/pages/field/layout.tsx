@@ -1,10 +1,12 @@
+import type { ReactNode } from 'react'
 import { Outlet } from 'react-router'
 import { AppShell } from '@/components/layout/app-shell'
 import { Button } from '@/components/ui/button'
 import { PORTALS } from '@/constants/nav'
 import { fieldContext } from '@/data/field'
 
-export function FieldLayout() {
+/* Children replace the Outlet while the first page module is still loading, so the rail never pops in late. */
+export function FieldLayout({ children }: { children?: ReactNode }) {
   return (
     <AppShell
       portal={PORTALS.field}
@@ -20,7 +22,7 @@ export function FieldLayout() {
         </Button>
       }
     >
-      <Outlet />
+      {children ?? <Outlet />}
     </AppShell>
   )
 }

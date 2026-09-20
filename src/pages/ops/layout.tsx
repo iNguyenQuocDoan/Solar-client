@@ -1,10 +1,13 @@
+import type { ReactNode } from 'react'
 import { Outlet } from 'react-router'
 import { AppShell } from '@/components/layout/app-shell'
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/field'
 import { PORTALS } from '@/constants/nav'
 import { opsContext } from '@/data/ops'
 
-export function OpsLayout() {
+/* Children replace the Outlet while the first page module is still loading, so the rail never pops in late. */
+export function OpsLayout({ children }: { children?: ReactNode }) {
   return (
     <AppShell
       portal={PORTALS.ops}
@@ -13,11 +16,7 @@ export function OpsLayout() {
         <>
           <label className="block">
             <span className="sr-only">Jump to customer, lead or quotation</span>
-            <input
-              type="search"
-              placeholder="Jump to customer, lead, quotation"
-              className="h-9 w-full rounded-md border border-line bg-transparent px-3 text-[14px] text-fg placeholder:text-fg-3 focus:border-fg"
-            />
+            <Input size="sm" type="search" placeholder="Jump to customer, lead, quotation" className="text-meta" />
           </label>
           <Button variant="primary" size="sm">
             New inquiry
@@ -25,7 +24,7 @@ export function OpsLayout() {
         </>
       }
     >
-      <Outlet />
+      {children ?? <Outlet />}
     </AppShell>
   )
 }
