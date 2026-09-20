@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/field'
 import { KeyValueList } from '@/components/ui/lists'
 import { PageHeader } from '@/components/ui/page-header'
+import { PlaceholderLink } from '@/components/ui/placeholder-link'
 import { Panel, PanelBody, PanelHeader } from '@/components/ui/panel'
 import { assistant } from '@/data/customer'
 import { cx } from '@/lib/cx'
@@ -130,12 +131,12 @@ export function AssistantPage() {
                     </div>
                   ))}
                 </dl>
-                <a href="#" className="mt-3 flex items-center gap-2 rounded-container border border-line px-3 py-2 text-body hover:bg-surface-2">
+                <PlaceholderLink className="mt-3 flex items-center gap-2 rounded-container border border-line px-3 py-2 text-body hover:bg-surface-2">
                   <span className="min-w-0">
                     <span className="block truncate font-medium">{assistant.thread[1]!.attachment!.name}</span>
                     <span className="block text-meta text-fg-3">{assistant.thread[1]!.attachment!.meta}</span>
                   </span>
-                </a>
+                </PlaceholderLink>
                 <p className="mt-3">{assistant.thread[1]!.footer}</p>
               </Bubble>
             </>

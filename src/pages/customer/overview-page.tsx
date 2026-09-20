@@ -4,6 +4,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button, ButtonLink } from '@/components/ui/button'
 import { ActivityList, KeyValueList, Progress } from '@/components/ui/lists'
 import { PageHeader } from '@/components/ui/page-header'
+import { PlaceholderLink } from '@/components/ui/placeholder-link'
 import { Panel, PanelBody, PanelFooter, PanelHeader } from '@/components/ui/panel'
 import { Stat, StatRow } from '@/components/ui/stat'
 import { Stepper } from '@/components/ui/stepper'
@@ -114,9 +115,9 @@ export function OverviewPage() {
                 <PanelHeader
                   title="Scheduled events"
                   action={
-                    <Link to="#" className="text-body text-accent-fg hover:underline">
+                    <PlaceholderLink className="text-body text-accent-fg hover:underline">
                       View calendar
-                    </Link>
+                    </PlaceholderLink>
                   }
                 />
                 <PanelBody>

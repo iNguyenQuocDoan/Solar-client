@@ -3,6 +3,7 @@ import { Outlet } from 'react-router'
 import { AppShell } from '@/components/layout/app-shell'
 import { Button } from '@/components/ui/button'
 import { Select } from '@/components/ui/field'
+import { PlaceholderLink } from '@/components/ui/placeholder-link'
 import { PORTALS } from '@/constants/nav'
 import { manageContext } from '@/data/manage'
 
@@ -23,9 +24,9 @@ export function ManageLayout({ children }: { children?: ReactNode }) {
             Export brief
           </Button>
           <p className="text-body text-fg-2">
-            <a href="#" className="underline-offset-4 hover:text-fg hover:underline">
+            <PlaceholderLink className="tap underline-offset-4 hover:text-fg hover:underline">
               3 unread notifications
-            </a>
+            </PlaceholderLink>
           </p>
         </>
       }

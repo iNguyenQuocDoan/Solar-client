@@ -2,6 +2,7 @@ import type { ReactNode } from 'react'
 import { Outlet } from 'react-router'
 import { AppShell } from '@/components/layout/app-shell'
 import { ButtonLink } from '@/components/ui/button'
+import { PlaceholderLink } from '@/components/ui/placeholder-link'
 import { PORTALS } from '@/constants/nav'
 import { ROUTES } from '@/constants/routes'
 import { property } from '@/data/customer'
@@ -23,9 +24,9 @@ export function CustomerLayout({ children }: { children?: ReactNode }) {
             New assessment
           </ButtonLink>
           <p className="text-body text-fg-2">
-            <a href="#" className="underline-offset-4 hover:text-fg hover:underline">
+            <PlaceholderLink className="tap underline-offset-4 hover:text-fg hover:underline">
               3 unread notifications
-            </a>
+            </PlaceholderLink>
           </p>
         </>
       }
