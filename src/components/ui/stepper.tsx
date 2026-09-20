@@ -20,10 +20,10 @@ export function Stepper({ steps, className }: { steps: Step[]; className?: strin
             step.state === 'upcoming' && 'border-line',
           )}
         >
-          <p className={cx('text-[15px] leading-5', step.state === 'upcoming' ? 'text-fg-3' : 'text-fg', step.state === 'active' && 'font-semibold')}>
+          <p className={cx('text-body', step.state === 'upcoming' ? 'text-fg-3' : 'text-fg', step.state === 'active' && 'font-semibold')}>
             {step.label}
           </p>
-          {step.meta && <p className="mt-0.5 text-[13px] leading-5 text-fg-3">{step.meta}</p>}
+          {step.meta && <p className="mt-1 text-meta text-fg-3">{step.meta}</p>}
         </li>
       ))}
     </ol>

@@ -44,45 +44,45 @@ export function ManageApprovalPage() {
               actions={
                 <>
                   <Button>Preview customer PDF</Button>
-                  <a href="#decision" className="inline-flex h-9 items-center rounded-md bg-accent px-3.5 text-[15px] font-medium text-on-accent hover:bg-accent-hover">
+                  <a href="#decision" className="inline-flex h-9 items-center rounded-control bg-accent px-4 text-body font-medium text-on-accent hover:bg-accent-hover">
                     Jump to decision
                   </a>
                 </>
               }
             />
 
-            <div className="mb-10 grid gap-x-12 gap-y-10 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)] lg:items-start">
+            <div className="mb-12 grid gap-x-12 gap-y-12 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)] lg:items-start">
               <Notice tone="warn" title={`${data.exception.title}. Policy ${data.exception.policy}.`}>
                 <p>{data.exception.body}</p>
                 <blockquote className="mt-3 border-l-2 border-warn/40 pl-3 text-fg-2">
-                  <p className="mb-0.5 text-[13px] text-fg-3">Marcus Chen, sales rep note</p>
+                  <p className="mb-1 text-meta text-fg-3">Marcus Chen, sales rep note</p>
                   {data.exception.repNote}
                 </blockquote>
               </Notice>
               <Panel>
-                <PanelBody className="grid grid-cols-2 gap-5">
+                <PanelBody className="grid grid-cols-2 gap-6">
                   <div>
-                    <p className="text-[14px] text-fg-2">Gross margin</p>
-                    <p className="tnum text-2xl font-semibold">{data.margin.pct}%</p>
+                    <p className="text-body text-fg-2">Gross margin</p>
+                    <p className="tnum text-figure font-semibold">{data.margin.pct}%</p>
                     <Badge tone="ok">Compliant, floor {data.margin.floor}%</Badge>
                   </div>
-                  <div className="border-l border-line pl-5">
-                    <p className="text-[14px] text-fg-2">Net deal contribution</p>
-                    <p className="tnum text-2xl font-semibold">{fmt.usdCents(data.margin.contribution)}</p>
-                    <p className="text-[13px] text-fg-3">{data.margin.tier}</p>
+                  <div className="border-l border-line pl-6">
+                    <p className="text-body text-fg-2">Net deal contribution</p>
+                    <p className="tnum text-figure font-semibold">{fmt.usdCents(data.margin.contribution)}</p>
+                    <p className="text-meta text-fg-3">{data.margin.tier}</p>
                   </div>
                 </PanelBody>
               </Panel>
             </div>
 
-            <div className="grid gap-x-12 gap-y-10 lg:grid-cols-5">
-              <div className="space-y-10 lg:col-span-2">
+            <div className="grid gap-x-12 gap-y-12 lg:grid-cols-5">
+              <div className="space-y-8 lg:col-span-2">
                 <Panel>
                   <PanelHeader title="Customer profile" action={<Badge tone="ok">{data.customer.credit}</Badge>} />
                   <PanelBody>
                     <p className="font-medium">{data.customer.name}</p>
-                    <p className="text-[14px] text-fg-2">{data.customer.address}</p>
-                    <p className="text-[13px] text-fg-3">{data.customer.profile}</p>
+                    <p className="text-body text-fg-2">{data.customer.address}</p>
+                    <p className="text-meta text-fg-3">{data.customer.profile}</p>
                     <KeyValueList
                       className="mt-4 border-t border-line pt-4"
                       items={[
@@ -106,7 +106,7 @@ export function ManageApprovalPage() {
                     <KeyValueList items={data.survey.facts} />
                   </PanelBody>
                   <PanelFooter>
-                    <a href="#" className="text-[14px] text-accent-fg hover:underline">
+                    <a href="#" className="text-body text-accent-fg hover:underline">
                       View survey package ({data.survey.attachments} files)
                     </a>
                   </PanelFooter>
@@ -120,10 +120,10 @@ export function ManageApprovalPage() {
                 </Panel>
               </div>
 
-              <div className="space-y-10 lg:col-span-3">
+              <div className="space-y-8 lg:col-span-3">
                 <Panel>
                   <PanelHeader title="Itemized hardware and services" description={data.architecture} />
-                  <Table className="text-[14px]">
+                  <Table className="text-body">
                     <thead>
                       <tr>
                         <Th>Item</Th>
@@ -137,7 +137,7 @@ export function ManageApprovalPage() {
                         <Tr key={i.name}>
                           <Td>
                             <p className="font-medium">{i.name}</p>
-                            <p className="text-[13px] text-fg-3">{i.detail}</p>
+                            <p className="text-meta text-fg-3">{i.detail}</p>
                           </Td>
                           <Td className="tnum text-right whitespace-nowrap">{i.qty}</Td>
                           <Td className="tnum text-right whitespace-nowrap text-fg-2">{fmt.usd(i.cost)}</Td>
@@ -147,7 +147,7 @@ export function ManageApprovalPage() {
                     </tbody>
                   </Table>
                   <PanelBody>
-                    <dl className="space-y-1.5 text-[15px]">
+                    <dl className="space-y-2 text-body">
                       <div className="flex justify-between gap-4">
                         <dt className="text-fg-2">Standard gross system price</dt>
                         <dd className="tnum">{fmt.usdCents(data.gross)}</dd>
@@ -161,9 +161,9 @@ export function ManageApprovalPage() {
                       <div className="flex items-end justify-between gap-4 border-t border-line pt-2">
                         <dt>
                           <span className="font-medium">Final proposed price</span>
-                          <span className="block text-[13px] text-fg-3">{data.perWatt}</span>
+                          <span className="block text-meta text-fg-3">{data.perWatt}</span>
                         </dt>
-                        <dd className="tnum text-2xl font-semibold">{fmt.usdCents(data.final)}</dd>
+                        <dd className="tnum text-figure font-semibold">{fmt.usdCents(data.final)}</dd>
                       </div>
                     </dl>
                   </PanelBody>
@@ -178,7 +178,7 @@ export function ManageApprovalPage() {
                         <span className="absolute inset-y-0 rounded-full bg-warn/40" style={{ left: `${cogsPct}%`, width: `${minPct - cogsPct}%` }} />
                         <span className="absolute top-1/2 size-3 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-surface bg-accent" style={{ left: `${finalPct}%` }} />
                       </div>
-                      <dl className="tnum mt-2 grid grid-cols-3 text-[13px]">
+                      <dl className="tnum mt-2 grid grid-cols-3 text-meta">
                         <div>
                           <dt className="text-fg-3">Cost floor</dt>
                           <dd className="font-medium">{fmt.usd(data.guardrails.cogs)}</dd>
@@ -195,18 +195,18 @@ export function ManageApprovalPage() {
                     </div>
                     <dl className="grid gap-4 border-t border-line pt-4 sm:grid-cols-2">
                       <div>
-                        <dt className="text-[13px] text-fg-2">Rep monthly discretionary budget</dt>
+                        <dt className="text-meta text-fg-2">Rep monthly discretionary budget</dt>
                         <dd className="tnum font-medium">
                           {fmt.usd(data.guardrails.budget.remaining)} of {fmt.usd(data.guardrails.budget.total)} remaining
                         </dd>
-                        <dd className="text-[13px] text-warn">{data.guardrails.budget.note}</dd>
+                        <dd className="text-meta text-warn">{data.guardrails.budget.note}</dd>
                       </div>
                       <div>
-                        <dt className="text-[13px] text-fg-2">Regional competitor baseline</dt>
+                        <dt className="text-meta text-fg-2">Regional competitor baseline</dt>
                         <dd className="font-medium">
                           {data.guardrails.competitor.name}, {data.guardrails.competitor.rate}
                         </dd>
-                        <dd className="text-[13px] text-fg-3">{data.guardrails.competitor.winRate}</dd>
+                        <dd className="text-meta text-fg-3">{data.guardrails.competitor.winRate}</dd>
                       </div>
                     </dl>
                   </PanelBody>
@@ -224,8 +224,8 @@ export function ManageApprovalPage() {
                     </PanelBody>
                   ) : (
                     <PanelBody className="space-y-6">
-                      <div className="flex flex-wrap items-center justify-between gap-3 rounded-md bg-surface-2 px-4 py-3">
-                        <div className="text-[14px]">
+                      <div className="flex flex-wrap items-center justify-between gap-3 rounded-control bg-surface-2 px-4 py-3">
+                        <div className="text-body">
                           <p className="font-medium">Executive sign-off</p>
                           <p className="text-fg-2">Executes the promotional override, signs contract dispatch and triggers the DocuSign envelope to David Miller.</p>
                         </div>
@@ -250,7 +250,7 @@ export function ManageApprovalPage() {
                               key={p}
                               type="button"
                               onClick={() => setCounter((c) => (c ? `${c} ${p}.` : `${p}.`))}
-                              className="press text-[14px] text-fg-2 underline-offset-4 hover:text-fg hover:underline"
+                              className="press text-body text-fg-2 underline-offset-4 hover:text-fg hover:underline"
                             >
                               Preset: {p}
                             </button>
@@ -276,7 +276,7 @@ export function ManageApprovalPage() {
                             ))}
                           </Select>
                         </Field>
-                        <Button type="submit" variant="danger" disabled={!reason} className="sm:mb-5">
+                        <Button type="submit" variant="danger" disabled={!reason} className="sm:mb-6">
                           Reject
                         </Button>
                       </form>
@@ -286,7 +286,7 @@ export function ManageApprovalPage() {
               </div>
             </div>
 
-            <p className="mt-6 border-t border-line pt-4 text-[13px] text-fg-3">
+            <p className="mt-6 border-t border-line pt-4 text-meta text-fg-3">
               Quote hash <span className="text-fg-2">{data.hash}</span>. Complies with Title 24 California Building Energy Efficiency Standards.
             </p>
           </>

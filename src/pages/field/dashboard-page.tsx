@@ -38,7 +38,7 @@ export function FieldDashboardPage() {
               }
             />
 
-            <div className="mb-10 flex flex-wrap gap-3">
+            <div className="mb-12 flex flex-wrap gap-3">
               <Button variant="primary">
                 Start travel
               </Button>
@@ -46,11 +46,11 @@ export function FieldDashboardPage() {
               <Button>Report site issue</Button>
             </div>
 
-            <div className="grid gap-x-12 gap-y-10 lg:grid-cols-3">
+            <div className="grid gap-x-12 gap-y-12 lg:grid-cols-3">
               <div className="lg:col-span-2">
                 <Panel>
                   <PanelHeader title="Today's schedule" description={data.date} />
-                  <PanelBody className="mb-5">
+                  <PanelBody className="mb-6">
                     <FilterChips chips={[...data.queue]} value={filter} onChange={setFilter} label="Filter today's queue" />
                   </PanelBody>
                   <PanelBody>
@@ -61,27 +61,27 @@ export function FieldDashboardPage() {
                         {jobs.map((job) => (
                           <li key={job.time} className="grid gap-3 py-4 first:pt-0 last:pb-0 sm:grid-cols-[92px_1fr]">
                             <div>
-                              <p className="tnum text-[15px] font-semibold">{job.time}</p>
-                              <p className="text-[13px] text-fg-3">{JOB_LABEL[job.kind]}</p>
+                              <p className="tnum text-body font-semibold">{job.time}</p>
+                              <p className="text-meta text-fg-3">{JOB_LABEL[job.kind]}</p>
                             </div>
                             <div className="min-w-0">
                               <div className="flex flex-wrap items-center gap-2">
-                                <p className="text-[15px] font-semibold">{job.customer}</p>
+                                <p className="text-body font-semibold">{job.customer}</p>
                                 <Badge tone={job.tone}>{job.status}</Badge>
                               </div>
-                              <p className="text-[14px] text-fg-2">{job.address}</p>
-                              <p className="mt-1 text-[14px] text-fg-2">{job.detail}</p>
+                              <p className="text-body text-fg-2">{job.address}</p>
+                              <p className="mt-1 text-body text-fg-2">{job.detail}</p>
                               {'step' in job && (
                                 <div className="mt-3 grid gap-3 sm:grid-cols-[1fr_140px]">
                                   <div>
-                                    <div className="mb-1.5 flex justify-between text-[13px]">
+                                    <div className="mb-2 flex justify-between text-meta">
                                       <span className="font-medium">{job.step}</span>
                                       <span className="tnum text-fg-2">{job.pct}%</span>
                                     </div>
                                     <Progress value={job.pct ?? 0} label="Installation progress" />
-                                    <p className="mt-1.5 text-[13px] text-fg-3">{job.onSite}</p>
+                                    <p className="mt-2 text-meta text-fg-3">{job.onSite}</p>
                                   </div>
-                                  <img src={job.photo} alt="Roof racking phase" className="aspect-[3/2] w-full rounded-lg object-cover" loading="lazy" />
+                                  <img src={job.photo} alt="Roof racking phase" className="aspect-[3/2] w-full rounded-container object-cover" loading="lazy" />
                                 </div>
                               )}
                               <div className="mt-3">
@@ -104,7 +104,7 @@ export function FieldDashboardPage() {
                 </Panel>
               </div>
 
-              <div className="space-y-8 lg:border-l lg:border-line lg:pl-10">
+              <div className="space-y-8 lg:border-l lg:border-line lg:pl-8">
                 <Panel>
                   <PanelHeader title={`Week ${data.outlook.week} outlook`} />
                   <PanelBody>
@@ -115,19 +115,19 @@ export function FieldDashboardPage() {
                         ['Warranty', data.outlook.warranty],
                       ].map(([label, n]) => (
                         <div key={label} className="px-3 first:pl-0 last:pr-0">
-                          <dd className="tnum text-2xl font-semibold">{n}</dd>
-                          <dt className="text-[13px] text-fg-2">{label}</dt>
+                          <dd className="tnum text-figure font-semibold">{n}</dd>
+                          <dt className="text-meta text-fg-2">{label}</dt>
                         </div>
                       ))}
                     </dl>
-                    <p className="mt-4 mb-2 border-t border-line pt-3 text-[14px] font-medium">Tomorrow's first calls</p>
+                    <p className="mt-4 mb-2 border-t border-line pt-3 text-body font-medium">Tomorrow's first calls</p>
                     <ul className="space-y-2">
                       {data.tomorrow.map((t) => (
-                        <li key={t.time} className="flex gap-3 text-[14px]">
+                        <li key={t.time} className="flex gap-3 text-body">
                           <span className="tnum w-20 shrink-0 text-fg-2">{t.time}</span>
                           <span>
                             <span className="font-medium">{t.kind}</span>
-                            <span className="block text-[13px] text-fg-3">{t.who}</span>
+                            <span className="block text-meta text-fg-3">{t.who}</span>
                           </span>
                         </li>
                       ))}

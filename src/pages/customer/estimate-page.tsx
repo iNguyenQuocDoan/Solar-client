@@ -31,20 +31,20 @@ export function EstimatePage() {
             }
           />
 
-          <div className="grid gap-x-12 gap-y-10 lg:grid-cols-3">
-            <div className="space-y-10 lg:col-span-2">
+          <div className="grid gap-x-12 gap-y-12 lg:grid-cols-3">
+            <div className="space-y-8 lg:col-span-2">
               <Panel>
                 <PanelHeader title="Estimated investment" description="Tier 1 high-efficiency hardware" />
                 <PanelBody>
-                  <p className="tnum text-3xl font-semibold tracking-tight md:text-4xl">
+                  <p className="tnum text-display font-semibold md:text-display">
                     {fmt.usd(data.grossRange[0])} to {fmt.usd(data.grossRange[1])}
                   </p>
-                  <p className="mt-1 text-[14px] text-fg-2">Gross range before incentives</p>
-                  <p className="tnum mt-4 text-xl font-semibold">
+                  <p className="mt-1 text-body text-fg-2">Gross range before incentives</p>
+                  <p className="tnum mt-4 text-figure font-semibold">
                     {fmt.usd(data.netRange[0])} to {fmt.usd(data.netRange[1])}{' '}
-                    <span className="text-[15px] font-normal text-fg-2">net after the 30% federal solar tax credit</span>
+                    <span className="text-body font-normal text-fg-2">net after the 30% federal solar tax credit</span>
                   </p>
-                  <StatRow className="mt-6 border-t border-line pt-5 md:grid-cols-3">
+                  <StatRow className="mt-6 border-t border-line pt-6 md:grid-cols-3">
                     <Stat label="Estimated payback" value={data.paybackYears} unit="years" />
                     <Stat label="Year 1 net savings" value={`~${fmt.usd(data.year1Savings)}`} unit="/ yr" />
                     <Stat label="Lifetime CO₂ reduction" value={data.lifetimeCo2Tons} unit="metric tons" />
@@ -54,12 +54,12 @@ export function EstimatePage() {
 
               <Panel>
                 <PanelHeader title={data.system.name} description={data.system.summary} action={<Badge>Turnkey package</Badge>} />
-                <PanelBody className="space-y-5">
+                <PanelBody className="space-y-6">
                   <dl className="grid gap-x-8 gap-y-4 sm:grid-cols-2">
                     {data.system.parts.map((p) => (
                       <div key={p.name}>
                         <dt className="font-medium">{p.name}</dt>
-                        <dd className="text-[14px] text-fg-2">{p.detail}</dd>
+                        <dd className="text-body text-fg-2">{p.detail}</dd>
                       </div>
                     ))}
                   </dl>
@@ -74,25 +74,25 @@ export function EstimatePage() {
               </Panel>
             </div>
 
-            <div className="space-y-8 lg:border-l lg:border-line lg:pl-10">
+            <div className="space-y-8 lg:border-l lg:border-line lg:pl-8">
               <Panel>
                 <PanelHeader title="System assumptions" />
                 <PanelBody>
                   <dl className="divide-y divide-line">
                     {data.assumptions.map((a) => (
-                      <div key={a.k} className="flex items-start justify-between gap-4 py-2.5 first:pt-0 last:pb-0">
+                      <div key={a.k} className="flex items-start justify-between gap-4 py-3 first:pt-0 last:pb-0">
                         <div>
-                          <dt className="text-[15px]">{a.k}</dt>
-                          <dd className="text-[13px] text-fg-3">{a.note}</dd>
+                          <dt className="text-body">{a.k}</dt>
+                          <dd className="text-meta text-fg-3">{a.note}</dd>
                         </div>
-                        <dd className="tnum shrink-0 text-right text-[15px] font-semibold">{a.v}</dd>
+                        <dd className="tnum shrink-0 text-right text-body font-semibold">{a.v}</dd>
                       </div>
                     ))}
                   </dl>
                 </PanelBody>
               </Panel>
               <Notice title="Estimation disclaimer">{data.disclaimer}</Notice>
-              <p className="px-1 text-[14px] text-fg-2">
+              <p className="px-1 text-body text-fg-2">
                 Numbers look off?{' '}
                 <Link to={ROUTES.customer.assessment} className="text-accent-fg hover:underline">
                   Recalculate with different inputs

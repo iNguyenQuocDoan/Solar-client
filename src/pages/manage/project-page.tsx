@@ -43,25 +43,25 @@ export function ManageProjectPage() {
             }
           />
 
-          <Panel className="mb-10">
+          <Panel className="mb-12">
             <PanelBody className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)_minmax(0,1.2fr)]">
               <div>
-                <p className="text-[14px] text-fg-2">Total turnkey contract value</p>
-                <p className="tnum mt-1 text-3xl font-semibold tracking-tight">{fmt.usd(data.contract.total)}</p>
-                <p className="tnum text-[14px] text-fg-2">
+                <p className="text-body text-fg-2">Total turnkey contract value</p>
+                <p className="tnum mt-1 text-display font-semibold">{fmt.usd(data.contract.total)}</p>
+                <p className="tnum text-body text-fg-2">
                   {fmt.usd(data.contract.cleared)} cleared ({data.contract.clearedPct}% invoiced)
                 </p>
                 <Progress value={data.contract.clearedPct} label="Invoiced share" className="mt-3" />
               </div>
               <ul className="space-y-3 lg:border-l lg:border-line lg:pl-6">
                 {data.people.map((p) => (
-                  <li key={p.role} className="flex items-center gap-2.5">
+                  <li key={p.role} className="flex items-center gap-3">
                     <Avatar name={p.name} size="sm" />
-                    <div className="leading-tight">
-                      <p className="text-[14px] font-medium">
+                    <div className="">
+                      <p className="text-body font-medium">
                         {p.name} {p.note && <span className="font-normal text-fg-3">({p.note})</span>}
                       </p>
-                      <p className="text-[13px] text-fg-3">{p.role}</p>
+                      <p className="text-meta text-fg-3">{p.role}</p>
                     </div>
                   </li>
                 ))}
@@ -70,7 +70,7 @@ export function ManageProjectPage() {
             </PanelBody>
           </Panel>
 
-          <Panel className="mb-10">
+          <Panel className="mb-12">
             <PanelHeader
               title="Delivery lifecycle"
               description={`${data.stage}. ${data.variance}.`}
@@ -80,7 +80,7 @@ export function ManageProjectPage() {
               <Stepper steps={data.steps} />
               <Notice tone="ok" title={`Field execution: ${data.pulse.title}`}>
                 {data.pulse.body}
-                <span className="mt-2 flex flex-wrap gap-1.5">
+                <span className="mt-2 flex flex-wrap gap-2">
                   {data.pulse.tags.map((t) => (
                     <Badge key={t}>{t}</Badge>
                   ))}
@@ -89,22 +89,22 @@ export function ManageProjectPage() {
             </PanelBody>
           </Panel>
 
-          <div className="grid gap-x-12 gap-y-10 lg:grid-cols-5">
-            <div className="space-y-10 lg:col-span-3">
+          <div className="grid gap-x-12 gap-y-12 lg:grid-cols-5">
+            <div className="space-y-8 lg:col-span-3">
               <Panel>
                 <PanelHeader title="Engineering and hardware manifest" action={<Badge tone="ok">{data.bom.rev}</Badge>} />
-                <PanelBody className="space-y-5">
+                <PanelBody className="space-y-6">
                   <dl className="grid gap-4 sm:grid-cols-3">
                     {data.bom.items.map((i) => (
                       <div key={i.k}>
-                        <dt className="text-[13px] text-fg-2">{i.k}</dt>
+                        <dt className="text-meta text-fg-2">{i.k}</dt>
                         <dd className="font-semibold">{i.v}</dd>
-                        <dd className="text-[13px] text-fg-3">{i.note}</dd>
+                        <dd className="text-meta text-fg-3">{i.note}</dd>
                       </div>
                     ))}
                   </dl>
                   <div className="border-t border-line pt-4">
-                    <p className="mb-2 text-[14px] font-medium">Array configuration</p>
+                    <p className="mb-2 text-body font-medium">Array configuration</p>
                     <KeyValueList columns={2} items={data.bom.arrays} />
                   </div>
                 </PanelBody>
@@ -112,20 +112,20 @@ export function ManageProjectPage() {
 
               <Panel>
                 <PanelHeader title="Field crew telemetry and quality" description={data.telemetry.crew} />
-                <PanelBody className="space-y-5">
+                <PanelBody className="space-y-6">
                   <dl className="grid gap-4 sm:grid-cols-3">
                     {data.telemetry.readings.map((r) => (
                       <div key={r.k} className="sm:border-l sm:border-line sm:pl-4 sm:first:border-0 sm:first:pl-0">
-                        <dt className="text-[13px] text-fg-2">{r.k}</dt>
-                        <dd className="tnum text-lg font-semibold">{r.v}</dd>
-                        <dd className="text-[13px] text-fg-3">{r.note}</dd>
+                        <dt className="text-meta text-fg-2">{r.k}</dt>
+                        <dd className="tnum text-title font-semibold">{r.v}</dd>
+                        <dd className="text-meta text-fg-3">{r.note}</dd>
                       </div>
                     ))}
                   </dl>
                   <div>
                     <div className="mb-2 flex items-center justify-between">
-                      <p className="text-[14px] font-medium">Crew photo uploads, mandatory gate evidence</p>
-                      <a href="#" className="text-[14px] text-accent-fg hover:underline">
+                      <p className="text-body font-medium">Crew photo uploads, mandatory gate evidence</p>
+                      <a href="#" className="text-body text-accent-fg hover:underline">
                         View {data.telemetry.photoTotal} raw assets
                       </a>
                     </div>
@@ -142,7 +142,7 @@ export function ManageProjectPage() {
 
               <Panel>
                 <PanelHeader title="Self-assessment versus physical survey" action={<Badge tone="ok">{data.audit.tolerance}</Badge>} />
-                <Table className="text-[14px]">
+                <Table className="text-body">
                   <thead>
                     <tr>
                       <Th>Metric</Th>
@@ -167,20 +167,20 @@ export function ManageProjectPage() {
               </Panel>
             </div>
 
-            <div className="space-y-10 lg:col-span-2">
+            <div className="space-y-8 lg:col-span-2">
               <Panel>
                 <PanelHeader title="Financial ledger" action={<Badge tone="ok">{data.ledger.status}</Badge>} />
                 <PanelBody className="space-y-4">
                   <div>
-                    <p className="tnum text-xl font-semibold">
-                      {fmt.usd(data.contract.cleared)} <span className="text-[15px] font-normal text-fg-2">/ {fmt.usd(data.contract.total)} invoiced and collected</span>
+                    <p className="tnum text-figure font-semibold">
+                      {fmt.usd(data.contract.cleared)} <span className="text-body font-normal text-fg-2">/ {fmt.usd(data.contract.total)} invoiced and collected</span>
                     </p>
-                    <div className="mt-2 flex h-2 w-full gap-0.5 overflow-hidden rounded-full" role="img" aria-label="Contract split by milestone">
+                    <div className="mt-2 flex h-2 w-full gap-1 overflow-hidden rounded-full" role="img" aria-label="Contract split by milestone">
                       {data.ledger.split.map((s, i) => (
                         <span key={s.label} className={cx('h-full', ['bg-accent', 'bg-accent/60', 'bg-surface-3'][i])} style={{ width: `${s.pct}%` }} />
                       ))}
                     </div>
-                    <ul className="mt-1.5 flex flex-wrap gap-x-4 text-[13px] text-fg-2">
+                    <ul className="mt-2 flex flex-wrap gap-x-4 text-meta text-fg-2">
                       {data.ledger.split.map((s) => (
                         <li key={s.label} className="tnum">
                           {s.label} {s.pct}%
@@ -190,18 +190,18 @@ export function ManageProjectPage() {
                   </div>
                   <ul className="divide-y divide-line">
                     {data.ledger.rows.map((r) => (
-                      <li key={r.name} className="flex items-start justify-between gap-3 py-2.5 first:pt-0 last:pb-0">
+                      <li key={r.name} className="flex items-start justify-between gap-3 py-3 first:pt-0 last:pb-0">
                         <div className="min-w-0">
-                          <p className="text-[14px] font-medium">{r.name}</p>
-                          <p className="text-[13px] text-fg-3">{r.note}</p>
+                          <p className="text-body font-medium">{r.name}</p>
+                          <p className="text-meta text-fg-3">{r.note}</p>
                         </div>
-                        <span className={cx('tnum shrink-0 text-[14px] font-semibold', r.state === 'pending' && 'text-fg-2')}>{fmt.usdCents(r.amount)}</span>
+                        <span className={cx('tnum shrink-0 text-body font-semibold', r.state === 'pending' && 'text-fg-2')}>{fmt.usdCents(r.amount)}</span>
                       </li>
                     ))}
                   </ul>
                 </PanelBody>
                 <PanelFooter>
-                  <a href="#" className="text-[14px] text-accent-fg hover:underline">
+                  <a href="#" className="text-body text-accent-fg hover:underline">
                     View full GAAP revenue schedule
                   </a>
                 </PanelFooter>
@@ -214,18 +214,18 @@ export function ManageProjectPage() {
                     {data.permits.map((p) => (
                       <li key={p.ref} className="py-3 first:pt-0 last:pb-0">
                         <div className="flex items-center justify-between gap-2">
-                          <p className="text-[13px] text-fg-2">{p.authority}</p>
+                          <p className="text-meta text-fg-2">{p.authority}</p>
                           <Badge tone={p.tone}>{p.status}</Badge>
                         </div>
-                        <p className="mt-1 text-[14px] font-medium">
-                          {p.name} <span className="text-[14px] font-normal text-fg-3">{p.ref}</span>
+                        <p className="mt-1 text-body font-medium">
+                          {p.name} <span className="text-body font-normal text-fg-3">{p.ref}</span>
                         </p>
-                        <p className="text-[13px] text-fg-2">{p.body}</p>
+                        <p className="text-meta text-fg-2">{p.body}</p>
                       </li>
                     ))}
                   </ul>
                 </PanelBody>
-                <PanelFooter className="text-[14px] text-fg-2">{data.permitSla}</PanelFooter>
+                <PanelFooter className="text-body text-fg-2">{data.permitSla}</PanelFooter>
               </Panel>
 
               <Panel>
@@ -253,7 +253,7 @@ export function ManageProjectPage() {
             </div>
           </div>
 
-          <p className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-line pt-4 text-[14px] text-fg-2">
+          <p className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-line pt-4 text-body text-fg-2">
             <span>{data.compliance}</span>
             <span>
               Squad emergency hotline{' '}

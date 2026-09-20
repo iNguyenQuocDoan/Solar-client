@@ -25,37 +25,37 @@ export function ManageDashboardPage() {
             actions={<Button>Batch actions</Button>}
           />
 
-          <StatRow className="mb-10 md:grid-cols-3 lg:grid-cols-6">
+          <StatRow className="mb-12 md:grid-cols-3 lg:grid-cols-6">
             {data.kpis.map((k) => (
               <Stat key={k.label} label={k.label} value={k.value} note={k.note} tone={k.tone} />
             ))}
           </StatRow>
 
-          <Panel className="mb-10">
+          <Panel className="mb-12">
             <PanelHeader
               title="Lifecycle velocity and pipeline balance"
               description={`${data.pipeline.live} projects live. Median pipeline cycle time ${data.pipeline.medianCycle}.`}
               action={<Badge tone="warn">Bottleneck: {data.pipeline.bottleneck}</Badge>}
             />
             <PanelBody>
-              <ol className="grid grid-cols-2 gap-y-5 sm:grid-cols-3 lg:grid-cols-6">
+              <ol className="grid grid-cols-2 gap-y-6 sm:grid-cols-3 lg:grid-cols-6">
                 {data.pipeline.phases.map((p) => (
                   <li key={p.label} className="min-w-0 pr-3 lg:border-l lg:border-line lg:pl-3 lg:first:border-0 lg:first:pl-0">
-                    <p className={cx('tnum text-2xl font-semibold leading-8', p.friction && 'text-warn')}>{p.count}</p>
-                    <p className="text-[14px] font-medium leading-5">{p.label}</p>
-                    <p className={cx('text-[13px]', p.friction ? 'text-warn' : 'text-fg-3')}>{p.note}</p>
+                    <p className={cx('tnum text-figure font-semibold', p.friction && 'text-warn')}>{p.count}</p>
+                    <p className="text-body font-medium">{p.label}</p>
+                    <p className={cx('text-meta', p.friction ? 'text-warn' : 'text-fg-3')}>{p.note}</p>
                   </li>
                 ))}
               </ol>
             </PanelBody>
           </Panel>
 
-          <section className="mb-10" aria-labelledby="decisions">
+          <section className="mb-12" aria-labelledby="decisions">
             <div className="mb-3 flex items-baseline justify-between gap-4">
-              <h2 id="decisions" className="text-[15px] font-semibold">
+              <h2 id="decisions" className="text-body font-semibold">
                 Decisions required
               </h2>
-              <p className="text-[14px] text-fg-2">{data.exceptions.length} blockers need executive sign-off. Auto-refreshed 2 minutes ago.</p>
+              <p className="text-body text-fg-2">{data.exceptions.length} blockers need executive sign-off. Auto-refreshed 2 minutes ago.</p>
             </div>
             <div className="grid gap-x-12 gap-y-8 md:grid-cols-2">
               {data.exceptions.map((ex) => (
@@ -63,13 +63,13 @@ export function ManageDashboardPage() {
                   <PanelBody className="flex-1">
                     <div className="flex flex-wrap items-center justify-between gap-2">
                       <Badge tone={ex.tone}>{ex.kind}</Badge>
-                      <span className="tnum text-[14px] font-medium">{ex.value}</span>
+                      <span className="tnum text-body font-medium">{ex.value}</span>
                     </div>
                     <p className="mt-2 font-medium">
-                      {ex.title} <span className="text-[14px] font-normal text-fg-3">{ex.ref}</span>
+                      {ex.title} <span className="text-body font-normal text-fg-3">{ex.ref}</span>
                     </p>
-                    <p className="mt-1 text-[14px] text-fg-2">{ex.body}</p>
-                    <p className="mt-2 text-[13px] text-fg-3">{ex.meta}</p>
+                    <p className="mt-1 text-body text-fg-2">{ex.body}</p>
+                    <p className="mt-2 text-meta text-fg-3">{ex.meta}</p>
                   </PanelBody>
                   <PanelFooter>
                     {ex.actions.map((a, i) =>
@@ -94,10 +94,10 @@ export function ManageDashboardPage() {
             </div>
           </section>
 
-          <div className="mb-10 grid gap-x-12 gap-y-10 lg:grid-cols-3 lg:items-start">
+          <div className="mb-12 grid gap-x-12 gap-y-12 lg:grid-cols-3 lg:items-start">
             <Panel className="lg:col-span-2">
               <PanelHeader title={`Week ${data.sprint.week} installation sprint`} description={data.sprint.summary} />
-              <Table className="text-[14px]">
+              <Table className="text-body">
                 <thead>
                   <tr>
                     <Th>Project</Th>
@@ -111,17 +111,17 @@ export function ManageDashboardPage() {
                     <Tr key={r.id}>
                       <Td>
                         <p className="font-medium">{r.project}</p>
-                        <p className="text-[13px] text-fg-3">
+                        <p className="text-meta text-fg-3">
                           {r.location}, <span className="text-fg-2">{r.id}</span>
                         </p>
                       </Td>
                       <Td>
                         <p>{r.size}</p>
-                        <p className="text-[13px] text-fg-3">{r.hardware}</p>
+                        <p className="text-meta text-fg-3">{r.hardware}</p>
                       </Td>
                       <Td>
                         <p>{r.crew}</p>
-                        {r.lead && <p className="text-[13px] text-fg-3">Lead {r.lead}</p>}
+                        {r.lead && <p className="text-meta text-fg-3">Lead {r.lead}</p>}
                       </Td>
                       <Td>
                         <Badge tone={r.tone}>{r.status}</Badge>
@@ -130,7 +130,7 @@ export function ManageDashboardPage() {
                   ))}
                 </tbody>
               </Table>
-              <PanelFooter className="gap-x-6 text-[14px]">
+              <PanelFooter className="gap-x-6 text-body">
                 {data.sprint.stats.map((s) => (
                   <span key={s.k}>
                     <span className="text-fg-2">{s.k}</span> <span className="tnum font-medium">{s.v}</span>
@@ -147,14 +147,14 @@ export function ManageDashboardPage() {
                 ))}
               </PanelBody>
               <PanelFooter>
-                <Link to="#" className="inline-flex items-center gap-1 text-[14px] text-accent-fg hover:underline">
+                <Link to="#" className="inline-flex items-center gap-1 text-body text-accent-fg hover:underline">
                   Open safety and QA gallery ({data.photoTotal} photos)
                 </Link>
               </PanelFooter>
             </Panel>
           </div>
 
-          <div className="grid gap-x-12 gap-y-10 lg:grid-cols-3 lg:items-start">
+          <div className="grid gap-x-12 gap-y-12 lg:grid-cols-3 lg:items-start">
             <Panel className="lg:col-span-2">
               <PanelHeader title="Audit and milestone feed" description="Compliance checkpoints and contractual signatures." />
               <PanelBody>
@@ -163,11 +163,11 @@ export function ManageDashboardPage() {
             </Panel>
 
             <Panel>
-              <PanelHeader title="Q4 revenue pace" action={<span className="tnum text-lg font-semibold">{data.revenue.pct}%</span>} />
-              <PanelBody className="space-y-5">
+              <PanelHeader title="Q4 revenue pace" action={<span className="tnum text-title font-semibold">{data.revenue.pct}%</span>} />
+              <PanelBody className="space-y-6">
                 <div>
                   <Progress value={data.revenue.pct} label="Q4 revenue achieved" />
-                  <dl className="tnum mt-2 flex justify-between text-[13px] text-fg-2">
+                  <dl className="tnum mt-2 flex justify-between text-meta text-fg-2">
                     <div>
                       <dt className="inline">Recognized </dt>
                       <dd className="inline font-medium text-fg">{data.revenue.recognized}</dd>
@@ -181,7 +181,7 @@ export function ManageDashboardPage() {
                 <ul className="divide-y divide-line border-t border-line">
                   {data.revenue.mix.map((m) => (
                     <li key={m.label}>
-                      <div className="mb-1 flex justify-between gap-3 text-[14px]">
+                      <div className="mb-1 flex justify-between gap-3 text-body">
                         <span>{m.label}</span>
                         <span className="tnum text-fg-2">
                           {fmt.usd(m.value)} ({m.pct}%)

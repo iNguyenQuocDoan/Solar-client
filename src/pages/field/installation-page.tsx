@@ -41,7 +41,7 @@ export function FieldInstallationPage() {
             description={`${data.customer}, ${data.address}`}
             actions={
               <>
-                <Badge tone="ok" className="h-8 px-2.5">
+                <Badge tone="ok" className="h-8 px-3">
                   {data.safetyBrief}
                 </Badge>
                 <Button>Call client</Button>
@@ -49,22 +49,22 @@ export function FieldInstallationPage() {
             }
           />
 
-          <Panel className="mb-10">
+          <Panel className="mb-12">
             <PanelBody>
-              <dl className="grid grid-cols-2 gap-x-5 gap-y-4 md:grid-cols-4">
+              <dl className="grid grid-cols-2 gap-x-6 gap-y-4 md:grid-cols-4">
                 {data.specs.map((s) => (
-                  <div key={s.k} className="md:border-l md:border-line md:pl-5 md:first:border-0 md:first:pl-0">
-                    <dt className="text-[13px] text-fg-2">{s.k}</dt>
-                    <dd className="tnum text-lg font-semibold">{s.v}</dd>
-                    <dd className="text-[13px] text-fg-3">{s.note}</dd>
+                  <div key={s.k} className="md:border-l md:border-line md:pl-6 md:first:border-0 md:first:pl-0">
+                    <dt className="text-meta text-fg-2">{s.k}</dt>
+                    <dd className="tnum text-title font-semibold">{s.v}</dd>
+                    <dd className="text-meta text-fg-3">{s.note}</dd>
                   </div>
                 ))}
               </dl>
             </PanelBody>
           </Panel>
 
-          <div className="grid gap-x-12 gap-y-10 lg:grid-cols-5">
-            <div className="space-y-10 lg:col-span-3">
+          <div className="grid gap-x-12 gap-y-12 lg:grid-cols-5">
+            <div className="space-y-8 lg:col-span-3">
               <Panel>
                 <PanelHeader
                   title="Field verification checklist"
@@ -93,21 +93,21 @@ export function FieldInstallationPage() {
                               </p>
                               {isDone ? <Badge tone="ok">Done</Badge> : isActive ? <Badge tone="accent">In progress</Badge> : <Badge>Pending</Badge>}
                             </div>
-                            <p className="mt-0.5 text-[14px] text-fg-2">{step.body}</p>
+                            <p className="mt-1 text-body text-fg-2">{step.body}</p>
                             {'signed' in step && isDone && (
-                              <p className="mt-1.5 text-[13px] text-fg-3">
+                              <p className="mt-2 text-meta text-fg-3">
                                 Signed by {step.signed}. Logged {step.logged}.
                               </p>
                             )}
                             {'panels' in step && (
-                              <div className="mt-3 rounded-md bg-surface-2 px-3 py-3">
+                              <div className="mt-3 rounded-control bg-surface-2 px-3 py-3">
                                 <div className="flex flex-wrap items-center justify-between gap-2">
-                                  <p className="text-[14px] font-medium">Panels clamped and wired</p>
+                                  <p className="text-body font-medium">Panels clamped and wired</p>
                                   <div className="flex items-center gap-2">
                                     <Button size="sm" aria-label="Remove one panel" onClick={() => setPanels((p) => Math.max(0, p - 1))} disabled={isDone}>
                                       Remove one
                                     </Button>
-                                    <span className="tnum min-w-20 text-center text-[15px] font-semibold">
+                                    <span className="tnum min-w-20 text-center text-body font-semibold">
                                       {panels} of {total}
                                     </span>
                                     <Button size="sm" aria-label="Add one panel" onClick={() => setPanels((p) => Math.min(total, p + 1))} disabled={isDone}>
@@ -116,17 +116,17 @@ export function FieldInstallationPage() {
                                   </div>
                                 </div>
                                 <Progress value={(panels / total) * 100} label="Panels mounted" className="mt-2" />
-                                <p className="mt-2 text-[13px] text-fg-3">
+                                <p className="mt-2 text-meta text-fg-3">
                                   Lead tech {step.lead}. Updated {step.updated}.
                                 </p>
                               </div>
                             )}
                             {'prerequisite' in step && (
-                              <p className="mt-1.5 text-[13px] text-fg-3">
+                              <p className="mt-2 text-meta text-fg-3">
                                 Prerequisite: {step.prerequisite}. Estimated duration {step.duration}.
                               </p>
                             )}
-                            {'requirement' in step && <p className="mt-1.5 text-[13px] text-fg-3">{step.requirement}.</p>}
+                            {'requirement' in step && <p className="mt-2 text-meta text-fg-3">{step.requirement}.</p>}
                           </div>
                         </li>
                       )
@@ -141,13 +141,13 @@ export function FieldInstallationPage() {
                   {data.diagnostics.map((d) => (
                     <div key={d.label} className="border-t border-line pt-3">
                       <div className="flex items-start justify-between gap-2">
-                        <p className="text-[13px] text-fg-2">{d.label}</p>
+                        <p className="text-meta text-fg-2">{d.label}</p>
                         <Badge tone={d.tone}>{d.status}</Badge>
                       </div>
-                      <p className="tnum mt-1 text-2xl font-semibold">
-                        {d.value} <span className="text-[15px] font-normal text-fg-2">{d.unit}</span>
+                      <p className="tnum mt-1 text-figure font-semibold">
+                        {d.value} <span className="text-body font-normal text-fg-2">{d.unit}</span>
                       </p>
-                      <p className="text-[13px] text-fg-3">{d.note}</p>
+                      <p className="text-meta text-fg-3">{d.note}</p>
                     </div>
                   ))}
                 </PanelBody>
@@ -162,7 +162,7 @@ export function FieldInstallationPage() {
               </Panel>
             </div>
 
-            <div className="space-y-10 lg:col-span-2">
+            <div className="space-y-8 lg:col-span-2">
               <Panel>
                 <PanelHeader
                   title="Site visual evidence"
@@ -173,10 +173,10 @@ export function FieldInstallationPage() {
                     </Button>
                   }
                 />
-                <PanelBody className="space-y-5">
+                <PanelBody className="space-y-6">
                   <div>
                     <div className="mb-2 flex items-center justify-between">
-                      <p className="text-[14px] font-medium">Before pre-work records ({data.before.length})</p>
+                      <p className="text-body font-medium">Before pre-work records ({data.before.length})</p>
                       <Badge tone="ok">Verified by QA</Badge>
                     </div>
                     <ul className="grid grid-cols-2 gap-3">
@@ -189,7 +189,7 @@ export function FieldInstallationPage() {
                   </div>
                   <div>
                     <div className="mb-2 flex items-center justify-between">
-                      <p className="text-[14px] font-medium">Active construction ({data.during.length + 2})</p>
+                      <p className="text-body font-medium">Active construction ({data.during.length + 2})</p>
                       <Badge tone="warn">1 pending after photo</Badge>
                     </div>
                     {data.during.map((p) => (
@@ -197,10 +197,10 @@ export function FieldInstallationPage() {
                     ))}
                     <button
                       type="button"
-                      className="press mt-3 flex w-full flex-col items-center gap-1 rounded-md border border-dashed border-line-2 px-4 py-5 text-[14px] text-fg-2 hover:bg-surface-2"
+                      className="press mt-3 flex w-full flex-col items-center gap-1 rounded-control border border-dashed border-line-2 px-4 py-6 text-body text-fg-2 hover:bg-surface-2"
                     >
                       <span className="font-medium text-fg">Upload inverter and battery final setup</span>
-                      <span className="text-center text-[13px] text-fg-3">AC disconnect, inverter sticker ratings and the finished array for the inspection handoff.</span>
+                      <span className="text-center text-meta text-fg-3">AC disconnect, inverter sticker ratings and the finished array for the inspection handoff.</span>
                     </button>
                   </div>
                 </PanelBody>
@@ -214,9 +214,9 @@ export function FieldInstallationPage() {
 
           <div className="sticky bottom-0 z-10 mt-6 -mx-4 border-t border-line bg-canvas/95 px-4 py-3 backdrop-blur md:-mx-8 md:px-8">
             <div className="mx-auto flex max-w-[1320px] flex-wrap items-center gap-x-4 gap-y-2">
-              <div className="text-[14px]">
+              <div className="text-body">
                 <p className="font-medium">Active session: {data.session.tech}</p>
-                <p className="tnum text-[13px] text-fg-2">
+                <p className="tnum text-meta text-fg-2">
                   {data.session.timer}. {data.session.wrap}.
                 </p>
               </div>

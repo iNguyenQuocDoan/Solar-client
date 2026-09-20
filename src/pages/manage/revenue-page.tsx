@@ -31,20 +31,20 @@ export function ManageRevenuePage() {
             }
           />
 
-          <StatRow className="mb-10 md:grid-cols-5">
+          <StatRow className="mb-12 md:grid-cols-5">
             {data.kpis.map((k) => (
-              <Stat key={k.label} label={k.label} value={<span className="text-[22px]">{k.value}</span>} note={k.note} tone={k.tone} />
+              <Stat key={k.label} label={k.label} value={<span className="text-figure">{k.value}</span>} note={k.note} tone={k.tone} />
             ))}
           </StatRow>
 
-          <div className="mb-10 grid gap-x-12 gap-y-10 lg:grid-cols-3 lg:items-start">
+          <div className="mb-12 grid gap-x-12 gap-y-12 lg:grid-cols-3 lg:items-start">
             <Panel className="lg:col-span-2">
               <PanelHeader title="Milestone cash flow versus booked contracts" description="Six-month trace, in millions of dollars." />
               <PanelBody>
                 <LineChart months={data.series.months} booked={data.series.booked} realized={data.series.realized} />
-                <p className="mt-3 text-[13px] text-fg-3">{data.series.note}</p>
+                <p className="mt-3 text-meta text-fg-3">{data.series.note}</p>
               </PanelBody>
-              <PanelFooter className="justify-between text-[14px]">
+              <PanelFooter className="justify-between text-body">
                 <span className="text-fg-2">{data.series.insight}</span>
                 <Badge tone="ok">+14.2% YoY</Badge>
               </PanelFooter>
@@ -56,32 +56,32 @@ export function ManageRevenuePage() {
                 <ul className="space-y-4">
                   {data.tiers.map((t) => (
                     <li key={t.label}>
-                      <div className="mb-1 flex justify-between gap-3 text-[14px]">
+                      <div className="mb-1 flex justify-between gap-3 text-body">
                         <span className="font-medium">{t.label}</span>
                         <span className="tnum">{fmt.usd(t.value)}</span>
                       </div>
                       <Progress value={t.pct} label={`${t.label} share`} />
-                      <p className="tnum mt-1 text-[13px] text-fg-3">
+                      <p className="tnum mt-1 text-meta text-fg-3">
                         {t.pct}%. {t.note}
                       </p>
                     </li>
                   ))}
                 </ul>
               </PanelBody>
-              <PanelFooter className="text-[14px] text-fg-2">Hardware backlog clearance: {data.backlog}</PanelFooter>
+              <PanelFooter className="text-body text-fg-2">Hardware backlog clearance: {data.backlog}</PanelFooter>
             </Panel>
           </div>
 
-          <Panel className="mb-10">
+          <Panel className="mb-12">
             <PanelHeader
               title="Revenue and margin ledger"
               description="Live quotation audit with override tracking and milestone release status."
               action={<Badge>{data.ledger.filters.range}</Badge>}
             />
-            <PanelBody className="mb-5 flex flex-wrap items-center gap-3">
+            <PanelBody className="mb-6 flex flex-wrap items-center gap-3">
               <label className="relative block w-full sm:max-w-xs">
                 <span className="sr-only">Filter project or client</span>
-                <input type="search" placeholder="Filter project or client" className="h-9 w-full rounded-md border border-line-2 bg-transparent px-3 text-[15px] placeholder:text-fg-3 focus:border-fg" />
+                <input type="search" placeholder="Filter project or client" className="h-9 w-full rounded-control border border-line-2 bg-transparent px-3 text-body placeholder:text-fg-3 focus:border-fg" />
               </label>
               <Select aria-label="Sales adviser" className="w-auto">
                 {data.ledger.filters.advisers.map((o) => (
@@ -94,7 +94,7 @@ export function ManageRevenuePage() {
                 ))}
               </Select>
             </PanelBody>
-            <Table className="text-[14px]">
+            <Table className="text-body">
               <thead>
                 <tr>
                   <Th>Project and customer</Th>
@@ -111,22 +111,22 @@ export function ManageRevenuePage() {
                 {data.ledger.rows.map((r) => (
                   <Tr key={r.id}>
                     <Td>
-                      <p className="text-[14px] text-fg-3">{r.id}</p>
+                      <p className="text-body text-fg-3">{r.id}</p>
                       <p className="font-medium">{r.customer}</p>
-                      <p className="text-[13px] text-fg-3">{r.city}</p>
+                      <p className="text-meta text-fg-3">{r.city}</p>
                     </Td>
                     <Td>
                       <span className="flex items-center gap-2 whitespace-nowrap">
                         <Avatar name={r.adviser} size="sm" />
                         <span>
                           <span className="block">{r.adviser}</span>
-                          <span className="block text-[13px] text-fg-3">{r.tier}</span>
+                          <span className="block text-meta text-fg-3">{r.tier}</span>
                         </span>
                       </span>
                     </Td>
                     <Td>
                       <p>{r.system}</p>
-                      <p className="text-[13px] text-fg-3">{r.hardware}</p>
+                      <p className="text-meta text-fg-3">{r.hardware}</p>
                     </Td>
                     <Td className="tnum text-right whitespace-nowrap">{fmt.usd(r.gross)}</Td>
                     <Td className={cx('tnum text-right whitespace-nowrap', r.discount < 0 ? 'text-warn' : 'text-fg-3')}>{r.discount < 0 ? fmt.usd(r.discount) : 'None'}</Td>
@@ -139,7 +139,7 @@ export function ManageRevenuePage() {
                 ))}
               </tbody>
             </Table>
-            <PanelFooter className="justify-between text-[14px] text-fg-2">
+            <PanelFooter className="justify-between text-body text-fg-2">
               <span className="tnum">
                 Showing {data.ledger.rows.length} of {data.ledger.total} active accounts. <span className="text-warn">{data.ledger.flagged} account requires margin review (under 30%).</span>
               </span>
@@ -165,13 +165,13 @@ export function ManageRevenuePage() {
               <dl className="grid gap-6 md:grid-cols-3 md:divide-x md:divide-line">
                 {data.phases.map((p, i) => (
                   <div key={p.label} className={cx(i > 0 && 'md:pl-6')}>
-                    <dt className="flex items-center justify-between gap-2 text-[14px] font-medium">
+                    <dt className="flex items-center justify-between gap-2 text-body font-medium">
                       {p.label}
                       <Badge tone={p.tone}>{p.note.split(',')[0]}</Badge>
                     </dt>
-                    <dd className="tnum mt-1 text-2xl font-semibold">{fmt.usd(p.amount)}</dd>
-                    <dd className="text-[14px] text-fg-2">{p.body}</dd>
-                    <dd className="mt-1 text-[13px] text-fg-3">{p.note}</dd>
+                    <dd className="tnum mt-1 text-figure font-semibold">{fmt.usd(p.amount)}</dd>
+                    <dd className="text-body text-fg-2">{p.body}</dd>
+                    <dd className="mt-1 text-meta text-fg-3">{p.note}</dd>
                   </div>
                 ))}
               </dl>
@@ -212,7 +212,7 @@ function LineChart({ months, booked, realized }: { months: string[]; booked: num
           <circle key={`r${i}`} cx={x(i)} cy={y(v)} r={3.5} className="fill-fg-3" />
         ))}
       </svg>
-      <div className="tnum mt-1 grid text-center text-[13px] text-fg-2" style={{ gridTemplateColumns: `repeat(${months.length}, minmax(0, 1fr))` }}>
+      <div className="tnum mt-1 grid text-center text-meta text-fg-2" style={{ gridTemplateColumns: `repeat(${months.length}, minmax(0, 1fr))` }}>
         {months.map((m, i) => (
           <span key={m}>
             <span className="block font-medium text-fg">{m}</span>
@@ -220,11 +220,11 @@ function LineChart({ months, booked, realized }: { months: string[]; booked: num
           </span>
         ))}
       </div>
-      <figcaption className="mt-3 flex flex-wrap gap-x-5 gap-y-1 text-[13px] text-fg-2">
-        <span className="inline-flex items-center gap-1.5">
+      <figcaption className="mt-3 flex flex-wrap gap-x-6 gap-y-1 text-meta text-fg-2">
+        <span className="inline-flex items-center gap-2">
           <span aria-hidden className="h-0.5 w-4 bg-accent" /> Booked contract value
         </span>
-        <span className="inline-flex items-center gap-1.5">
+        <span className="inline-flex items-center gap-2">
           <span aria-hidden className="h-0.5 w-4 border-t-2 border-dashed border-fg-3" /> Realized cash collections
         </span>
       </figcaption>

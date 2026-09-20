@@ -56,7 +56,7 @@ export function FieldTasksPage() {
             description={`${data.activeToday} active for today. ${data.sync}.`}
           />
 
-          <StatRow className="mb-10">
+          <StatRow className="mb-12">
             <Stat label="Today's jobs" value={data.stats.jobs.done} unit={`/ ${data.stats.jobs.planned} planned`} />
             <Stat label="Travel distance" value={data.stats.miles} unit="mi" note={`Next leg ${data.stats.nextLeg}`} />
             <Stat label="Critical and high" value={data.stats.critical} unit="need sign-off" note={data.stats.criticalNote} tone="danger" />
@@ -73,7 +73,7 @@ export function FieldTasksPage() {
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                     placeholder="Customer name, street address or work order"
-                    className="h-9 w-full rounded-md border border-line-2 bg-transparent px-3 text-[15px] placeholder:text-fg-3 focus:border-fg"
+                    className="h-9 w-full rounded-control border border-line-2 bg-transparent px-3 text-body placeholder:text-fg-3 focus:border-fg"
                   />
                 </label>
                 <Select aria-label="Priority" className="w-auto" value={priority} onChange={(e) => setPriority(e.target.value)}>
@@ -93,11 +93,11 @@ export function FieldTasksPage() {
               </div>
               <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
                 <div className="flex items-center gap-2">
-                  <span className="text-[13px] text-fg-2">Timeline</span>
+                  <span className="text-meta text-fg-2">Timeline</span>
                   <FilterChips chips={[...data.timelines]} value={timeline} onChange={setTimeline} label="Timeline" />
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-[13px] text-fg-2">Type</span>
+                  <span className="text-meta text-fg-2">Type</span>
                   <FilterChips chips={[...data.types]} value={type} onChange={setType} label="Job type" />
                 </div>
               </div>
@@ -106,7 +106,7 @@ export function FieldTasksPage() {
 
           {rows.length === 0 ? (
             <EmptyState
-              className="mt-5"
+              className="mt-6"
               title="No work orders match"
               description={timeline === 'today' ? 'Your route for today is clear under these filters.' : 'Nothing scheduled under these filters.'}
               action={
@@ -133,31 +133,31 @@ export function FieldTasksPage() {
                         <Checkbox
                           checked={selected.has(o.id)}
                           onChange={() => toggle(o.id)}
-                          label={<span className="text-[14px] font-medium">{o.id}</span>}
+                          label={<span className="text-body font-medium">{o.id}</span>}
                         />
                         <div className="mt-2 flex flex-wrap gap-1">
                           <Badge tone="accent">{JOB_LABEL[o.kind]}</Badge>
                           <Badge tone={PRIORITY_TONE[o.priority]}>{o.priority}</Badge>
                         </div>
-                        <p className="tnum mt-2 text-[14px]">{o.window}</p>
-                        <p className="text-[13px] text-fg-2">{o.status}</p>
+                        <p className="tnum mt-2 text-body">{o.window}</p>
+                        <p className="text-meta text-fg-2">{o.status}</p>
                       </div>
 
                       <div className="min-w-0">
                         <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-                          <p className="text-[15px] font-semibold">{o.customer}</p>
-                          <a href={`tel:${o.phone}`} className="tnum inline-flex items-center gap-1 text-[14px] text-accent-fg hover:underline"> {o.phone}
+                          <p className="text-body font-semibold">{o.customer}</p>
+                          <a href={`tel:${o.phone}`} className="tnum inline-flex items-center gap-1 text-body text-accent-fg hover:underline"> {o.phone}
                           </a>
                         </div>
-                        <p className="text-[14px] text-fg-2">
+                        <p className="text-body text-fg-2">
                           {o.address} <span className="text-fg-3">({o.distance})</span>
                         </p>
-                        <div className="mt-3 rounded-md bg-surface-2 px-3 py-2.5 text-[14px]">
+                        <div className="mt-3 rounded-control bg-surface-2 px-3 py-3 text-body">
                           <div className="flex flex-wrap justify-between gap-x-4 gap-y-1">
                             <p className="font-medium">{o.scope}</p>
                             <p className="tnum text-fg-2">{o.progress}</p>
                           </div>
-                          <p className="text-[13px] text-fg-3">{o.scopeNote}</p>
+                          <p className="text-meta text-fg-3">{o.scopeNote}</p>
                           {o.pct !== undefined && <Progress value={o.pct} label={`${o.id} progress`} className="mt-2" />}
                         </div>
                       </div>
@@ -183,8 +183,8 @@ export function FieldTasksPage() {
             </ul>
           )}
 
-          <Panel className="mt-10">
-            <PanelFooter className="justify-between border-t-0 text-[14px] text-fg-2">
+          <Panel className="mt-12">
+            <PanelFooter className="justify-between border-t-0 text-body text-fg-2">
               <span>{data.footer.safety}</span>
               <span className="flex flex-wrap gap-x-4">
                 <span>
