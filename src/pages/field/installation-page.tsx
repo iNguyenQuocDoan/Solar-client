@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Badge } from '@/components/ui/badge'
+import { ActionBar } from '@/components/ui/action-bar'
 import { Button } from '@/components/ui/button'
 import { Field, Textarea } from '@/components/ui/field'
 import { Notice, Photo, Progress } from '@/components/ui/lists'
@@ -35,18 +36,12 @@ export function FieldInstallationPage() {
                 <span className="text-fg-2">{data.id}</span>
                 <span>{data.day}</span>
                 <Badge tone="accent">{data.status}</Badge>
+                <Badge tone="ok">{data.safetyBrief}</Badge>
               </>
             }
             title={data.title}
             description={`${data.customer}, ${data.address}`}
-            actions={
-              <>
-                <Badge tone="ok" className="h-8 px-3">
-                  {data.safetyBrief}
-                </Badge>
-                <Button>Call client</Button>
-              </>
-            }
+            actions={<Button>Call client</Button>}
           />
 
           <Panel className="mb-12">
@@ -100,7 +95,7 @@ export function FieldInstallationPage() {
                               </p>
                             )}
                             {'panels' in step && (
-                              <div className="mt-3 rounded-control bg-surface-2 px-3 py-3">
+                              <div className="mt-3 rounded-container bg-surface-2 px-3 py-3">
                                 <div className="flex flex-wrap items-center justify-between gap-2">
                                   <p className="text-body font-medium">Panels clamped and wired</p>
                                   <div className="flex items-center gap-2">
@@ -197,7 +192,7 @@ export function FieldInstallationPage() {
                     ))}
                     <button
                       type="button"
-                      className="press mt-3 flex w-full flex-col items-center gap-1 rounded-control border border-dashed border-line-2 px-4 py-6 text-body text-fg-2 hover:bg-surface-2"
+                      className="press mt-3 flex w-full flex-col items-center gap-1 rounded-container border border-dashed border-line-2 px-4 py-6 text-body text-fg-2 hover:bg-surface-2"
                     >
                       <span className="font-medium text-fg">Upload inverter and battery final setup</span>
                       <span className="text-center text-meta text-fg-3">AC disconnect, inverter sticker ratings and the finished array for the inspection handoff.</span>
@@ -212,11 +207,10 @@ export function FieldInstallationPage() {
             </div>
           </div>
 
-          <div className="sticky bottom-0 z-10 mt-6 -mx-4 border-t border-line bg-canvas/95 px-4 py-3 backdrop-blur md:-mx-8 md:px-8">
-            <div className="mx-auto flex max-w-[1320px] flex-wrap items-center gap-x-4 gap-y-2">
+          <ActionBar>
               <div className="text-body">
                 <p className="font-medium">Active session: {data.session.tech}</p>
-                <p className="tnum text-meta text-fg-2">
+                <p className="tnum text-meta text-fg-3">
                   {data.session.timer}. {data.session.wrap}.
                 </p>
               </div>
@@ -228,8 +222,7 @@ export function FieldInstallationPage() {
                   {activeIndex === -1 ? 'All steps complete' : `Complete step ${activeIndex + 1}`}
                 </Button>
               </div>
-            </div>
-          </div>
+          </ActionBar>
         </>
       )}
     </QueryBoundary>
