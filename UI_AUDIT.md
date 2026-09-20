@@ -175,6 +175,21 @@ Screenshot: `D:\Solar-capstone\ui-audit-shots\before\` (110 ảnh) và `…\afte
 | 35 | done | `c7a177a` (text-meta 13px) |
 | 36 | deferred | ngoài phạm vi UI (mock data) |
 
+## Pass 3 — bớt "template" (`c847484`)
+
+Phản hồi sau pass 2: "vẫn quá AI". Đo lại thì các tell nằm ở *nội dung trình bày*, không phải scale: 84 subtitle dưới tiêu đề section, 26 badge trang trí ở đầu panel, 86 chữ trạng thái có màu (37 xanh "ok"), 13 hàng số kẻ vạch dọc, tiêu đề trang 32px + một câu mô tả ở mọi trang, mọi trang cùng một khung header → stat → 2:1.
+
+| Tell | Trước | Sau |
+|---|---|---|
+| Chữ trạng thái có màu (ok/info/accent) | 86 badge, 37 xanh | màu chỉ cho warn/danger; ok/info/accent là chữ thường — `Badge`, `Stat` |
+| Subtitle filler dưới tiêu đề section | 84 | 30 câu giải thích bị bỏ; giữ cái mang thông tin (giai đoạn, đếm, ngày, giao thức) |
+| Badge trang trí ở đầu panel | 26 | 14 bỏ ("Assigned and active", "Logged by homeowner", "2 new"…); giữ số/trạng thái thật |
+| Tiêu đề trang | 32px + mô tả | 24px; `display` chỉ cho con số hero; 6 mô tả "trang này để làm gì" bỏ ở ops/manage |
+| Số liệu kẻ vạch dọc | 13 hàng | không vạch; pipeline strip hạ xuống 18px dưới KPI |
+| Nơi hành động chính | không phân biệt | `Panel raised` cho đúng 5 khối quyết định/nhập liệu |
+
+Còn có thể tiếp: copy mock ("Tier-1 all-black monocrystalline", "Certified energy advisor") là dữ liệu, không sửa; ảnh picsum ngẫu nhiên.
+
 ## Còn lại để ai đó tiếp tục
 
 - #36: ảnh mock picsum ngẫu nhiên (dữ liệu, ngoài phạm vi UI).
