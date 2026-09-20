@@ -247,6 +247,52 @@
   .tnum {
     font-variant-numeric: tabular-nums;
   }
+  /*
+    Stacked table (see Table). Selectors are scoped under .scroll-x so they win
+    over the cell utilities (px-3, border-b, text-right, hidden) without !important.
+  */
+  @media (width < 64rem) {
+    .scroll-x .table-stack,
+    .scroll-x .table-stack tbody {
+      display: block;
+    }
+    .scroll-x .table-stack thead {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+    }
+    .scroll-x .table-stack tr {
+      display: block;
+      padding-block: 16px;
+      border-bottom: 1px solid var(--color-line);
+    }
+    .scroll-x .table-stack td {
+      display: grid;
+      grid-template-columns: minmax(96px, 35%) minmax(0, 1fr);
+      column-gap: 16px;
+      padding: 4px 0;
+      border: 0;
+      text-align: start;
+    }
+    /* The label owns column 1 for every line of the cell; the cell's own lines flow down column 2. */
+    .scroll-x .table-stack td[data-label]::before {
+      grid-row: 1 / span 12;
+      content: attr(data-label);
+      color: var(--color-fg-3);
+      font-size: var(--text-meta);
+      line-height: var(--text-meta--line-height);
+    }
+    .scroll-x .table-stack td:not([data-label]) {
+      display: block;
+    }
+    /* Stacked cells wrap; nowrap only makes sense in columns. */
+    .scroll-x .table-stack td,
+    .scroll-x .table-stack td * {
+      white-space: normal;
+    }
+  }
   .press {
     transition:
       transform 120ms ease,
@@ -264,7 +310,6 @@
   */
   .scroll-x {
     overflow-x: auto;
-    scrollbar-width: thin;
     background:
       linear-gradient(90deg, var(--color-canvas) 40%, transparent) left / 48px 100% no-repeat local,
       linear-gradient(270deg, var(--color-canvas) 40%, transparent) right / 48px 100% no-repeat local,
