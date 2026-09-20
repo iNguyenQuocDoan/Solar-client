@@ -1,9 +1,9 @@
 import { useMemo, useState } from "react";
-import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { FilterChips } from "@/components/ui/chips";
-import { Select } from "@/components/ui/field";
+import { Input, Select } from "@/components/ui/field";
+import { FilterBar } from "@/components/ui/filter-bar";
 import { Progress } from "@/components/ui/lists";
 import { PageHeader } from "@/components/ui/page-header";
 import {
@@ -12,6 +12,7 @@ import {
   PanelFooter,
   PanelHeader,
 } from "@/components/ui/panel";
+import { Pagination } from "@/components/ui/pagination";
 import { Stat, StatRow } from "@/components/ui/stat";
 import { EmptyState } from "@/components/ui/states";
 import { Table, Td, Th, Tr } from "@/components/ui/table";
@@ -21,6 +22,7 @@ import {
   requestStages,
   type RequestStage,
 } from "@/data/ops";
+import { cx } from "@/lib/cx";
 import { QueryBoundary, useMockQuery } from "@/services/mock";
 
 type StageFilter = RequestStage | "all";
@@ -90,24 +92,24 @@ export function OpsConsultationsPage() {
           </StatRow>
 
           <Panel>
-            <PanelBody className="space-y-4">
-              <FilterChips
-                chips={requestStages}
-                value={stage}
-                onChange={setStage}
-                label="Filter by stage"
-              />
-              <div className="flex flex-wrap items-center gap-3">
-                <label className="relative block w-full md:max-w-xs">
-                  <span className="sr-only">Search requests</span>
-                  <input
-                    type="search"
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                    placeholder="Customer, request ID or address"
-                    className="h-9 w-full rounded-control border border-line-2 bg-transparent px-3 text-body placeholder:text-fg-3 focus:border-fg"
-                  />
-                </label>
+            <FilterBar
+              tabs={
+                <FilterChips
+                  chips={requestStages}
+                  value={stage}
+                  onChange={setStage}
+                  label="Filter by stage"
+                />
+              }
+            >
+                <Input
+                  type="search"
+                  aria-label="Search requests"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder="Customer, request ID or address"
+                  className="w-full md:max-w-xs"
+                />
                 <Select aria-label="Assessment status" className="w-auto">
                   {data.filters.assessment.map((o) => (
                     <option key={o}>{o}</option>
@@ -128,8 +130,7 @@ export function OpsConsultationsPage() {
                     <option key={o}>{o}</option>
                   ))}
                 </Select>
-              </div>
-            </PanelBody>
+            </FilterBar>
 
             {rows.length === 0 ? (
               <PanelBody>
@@ -150,7 +151,7 @@ export function OpsConsultationsPage() {
                 />
               </PanelBody>
             ) : (
-              <Table className="min-w-[1040px] text-body">
+              <Table>
                 <thead>
                   <tr>
                     <Th className="w-10">
@@ -164,10 +165,10 @@ export function OpsConsultationsPage() {
                     </Th>
                     <Th>Request</Th>
                     <Th>Homeowner</Th>
-                    <Th>Property</Th>
-                    <Th>Intake and SLA</Th>
+                    <Th className="hidden lg:table-cell">Property</Th>
+                    <Th className="hidden lg:table-cell">Intake and SLA</Th>
                     <Th>Stage and highlights</Th>
-                    <Th>Assigned</Th>
+                    <Th className="hidden md:table-cell">Assigned</Th>
                     <Th>
                       <span className="sr-only">Action</span>
                     </Th>
@@ -191,56 +192,45 @@ export function OpsConsultationsPage() {
                         />
                       </Td>
                       <Td>
-                        <p className="text-body font-medium whitespace-nowrap">
-                          {r.id}
-                        </p>
+                        <p className="font-medium whitespace-nowrap">{r.id}</p>
                         <p className="text-meta text-fg-3">{r.type}</p>
                       </Td>
                       <Td>
                         <p className="font-medium">{r.homeowner}</p>
                         <p className="text-meta text-fg-3">{r.contact}</p>
                       </Td>
-                      <Td>
-                        <p className="whitespace-nowrap">{r.address}</p>
-                        <p className="text-meta whitespace-nowrap text-fg-3">{r.city}</p>
+                      <Td className="hidden lg:table-cell">
+                        <p>{r.address}</p>
+                        <p className="text-meta text-fg-3">{r.city}</p>
                       </Td>
-                      <Td>
-                        <p className="tnum whitespace-nowrap">
-                          {r.intake} <span className="text-fg-3">{r.age}</span>
+                      <Td className="hidden lg:table-cell">
+                        <p className="tnum">
+                          <span className="whitespace-nowrap">{r.intake}</span> <span className="text-fg-3">{r.age}</span>
                         </p>
                         <p
-                          className={
-                            r.slaTone === "warn"
-                              ? "text-meta font-medium text-warn"
-                              : "text-meta text-fg-3"
-                          }
+                          className={cx(
+                            "text-meta",
+                            r.slaTone === "warn" ? "font-medium text-warn" : "text-fg-3",
+                          )}
                         >
                           {r.sla}
                         </p>
                       </Td>
                       <Td>
                         <Badge tone={r.stageTone}>{r.stageLabel}</Badge>
-                        <p className="mt-1 text-meta text-fg-3">
+                        <p className="text-meta text-fg-3">
                           {r.highlights.map((h) => h.label).join(', ')}
                         </p>
                       </Td>
-                      <Td>
+                      <Td className="hidden md:table-cell">
                         {r.assignee ? (
-                          <span className="flex items-center gap-2 whitespace-nowrap">
-                            <Avatar name={r.assignee} size="sm" />
-                            {r.assignee}
-                          </span>
+                          <span className="whitespace-nowrap">{r.assignee}</span>
                         ) : (
                           <span className="text-fg-3">Unassigned</span>
                         )}
                       </Td>
                       <Td className="text-right">
-                        <Button
-                          size="sm"
-                          variant={r.assignee ? "secondary" : "primary"}
-                        >
-                          {r.action}
-                        </Button>
+                        <Button size="sm">{r.action}</Button>
                       </Td>
                     </Tr>
                   ))}
@@ -256,7 +246,8 @@ export function OpsConsultationsPage() {
                 <label className="flex items-center gap-2 whitespace-nowrap">
                   Rows per page
                   <Select
-                    className="h-8 w-auto"
+                    size="sm"
+                    className="w-auto"
                     aria-label="Rows per page"
                     defaultValue="10"
                   >
@@ -265,36 +256,7 @@ export function OpsConsultationsPage() {
                     <option>50</option>
                   </Select>
                 </label>
-                <nav
-                  aria-label="Pagination"
-                  className="flex items-center gap-1"
-                >
-                  <Button size="sm" variant="ghost" disabled>
-                    Previous
-                  </Button>
-                  {[1, 2, 3].map((p) => (
-                    <Button
-                      key={p}
-                      size="sm"
-                      variant={p === 1 ? "primary" : "ghost"}
-                      aria-current={p === 1 ? "page" : undefined}
-                      className="tnum min-w-8 px-2"
-                    >
-                      {p}
-                    </Button>
-                  ))}
-                  <span className="px-1 text-fg-3">...</span>
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    className="tnum min-w-8 px-2"
-                  >
-                    5
-                  </Button>
-                  <Button size="sm" variant="ghost">
-                    Next
-                  </Button>
-                </nav>
+                <Pagination page={1} pages={5} />
               </div>
             </PanelFooter>
           </Panel>
@@ -331,7 +293,7 @@ export function OpsConsultationsPage() {
                 <p className="tnum mt-2 text-figure font-semibold">
                   {data.region.triage.avg}
                 </p>
-                <p className="text-meta text-fg-2">
+                <p className="text-meta text-fg-3">
                   Average first contact to scheduling
                 </p>
                 <Badge tone="ok" className="mt-2">
