@@ -1,8 +1,9 @@
 import { useId } from 'react'
-import { Avatar } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Select } from '@/components/ui/field'
+import { Input, Select } from '@/components/ui/field'
+import { FilterBar } from '@/components/ui/filter-bar'
+import { Pagination } from '@/components/ui/pagination'
 import { Progress } from '@/components/ui/lists'
 import { PageHeader } from '@/components/ui/page-header'
 import { Panel, PanelBody, PanelFooter, PanelHeader } from '@/components/ui/panel'
@@ -31,9 +32,9 @@ export function ManageRevenuePage() {
             }
           />
 
-          <StatRow className="mb-12 md:grid-cols-5">
+          <StatRow className="mb-12 md:grid-cols-3 xl:grid-cols-5">
             {data.kpis.map((k) => (
-              <Stat key={k.label} label={k.label} value={<span className="text-figure">{k.value}</span>} note={k.note} tone={k.tone} />
+              <Stat key={k.label} label={k.label} value={k.value} note={k.note} tone={k.tone} />
             ))}
           </StatRow>
 
@@ -78,11 +79,8 @@ export function ManageRevenuePage() {
               description="Live quotation audit with override tracking and milestone release status."
               action={<Badge>{data.ledger.filters.range}</Badge>}
             />
-            <PanelBody className="mb-6 flex flex-wrap items-center gap-3">
-              <label className="relative block w-full sm:max-w-xs">
-                <span className="sr-only">Filter project or client</span>
-                <input type="search" placeholder="Filter project or client" className="h-9 w-full rounded-control border border-line-2 bg-transparent px-3 text-body placeholder:text-fg-3 focus:border-fg" />
-              </label>
+            <FilterBar>
+              <Input type="search" aria-label="Filter project or client" placeholder="Filter project or client" className="w-full sm:max-w-xs" />
               <Select aria-label="Sales adviser" className="w-auto">
                 {data.ledger.filters.advisers.map((o) => (
                   <option key={o}>{o}</option>
@@ -93,48 +91,43 @@ export function ManageRevenuePage() {
                   <option key={o}>{o}</option>
                 ))}
               </Select>
-            </PanelBody>
-            <Table className="text-body">
+            </FilterBar>
+            <Table>
               <thead>
                 <tr>
                   <Th>Project and customer</Th>
-                  <Th>Adviser</Th>
-                  <Th>System</Th>
-                  <Th className="text-right">Gross quote</Th>
-                  <Th className="text-right">Discounts</Th>
+                  <Th className="hidden lg:table-cell">Adviser</Th>
+                  <Th className="hidden xl:table-cell">System</Th>
+                  <Th className="hidden text-right md:table-cell">Gross quote</Th>
+                  <Th className="hidden text-right md:table-cell">Discounts</Th>
                   <Th className="text-right">Net contract</Th>
                   <Th className="text-right">Gross margin</Th>
-                  <Th>Milestone</Th>
+                  <Th className="hidden lg:table-cell">Milestone</Th>
                 </tr>
               </thead>
               <tbody>
                 {data.ledger.rows.map((r) => (
                   <Tr key={r.id}>
                     <Td>
-                      <p className="text-body text-fg-3">{r.id}</p>
+                      <p className="text-meta text-fg-3">{r.id}</p>
                       <p className="font-medium">{r.customer}</p>
                       <p className="text-meta text-fg-3">{r.city}</p>
                     </Td>
-                    <Td>
-                      <span className="flex items-center gap-2 whitespace-nowrap">
-                        <Avatar name={r.adviser} size="sm" />
-                        <span>
-                          <span className="block">{r.adviser}</span>
-                          <span className="block text-meta text-fg-3">{r.tier}</span>
-                        </span>
-                      </span>
+                    <Td className="hidden lg:table-cell">
+                      <p className="whitespace-nowrap">{r.adviser}</p>
+                      <p className="text-meta text-fg-3">{r.tier}</p>
                     </Td>
-                    <Td>
+                    <Td className="hidden xl:table-cell">
                       <p>{r.system}</p>
                       <p className="text-meta text-fg-3">{r.hardware}</p>
                     </Td>
-                    <Td className="tnum text-right whitespace-nowrap">{fmt.usd(r.gross)}</Td>
-                    <Td className={cx('tnum text-right whitespace-nowrap', r.discount < 0 ? 'text-warn' : 'text-fg-3')}>{r.discount < 0 ? fmt.usd(r.discount) : 'None'}</Td>
+                    <Td className="tnum hidden text-right whitespace-nowrap md:table-cell">{fmt.usd(r.gross)}</Td>
+                    <Td className={cx('tnum hidden text-right whitespace-nowrap md:table-cell', r.discount < 0 ? 'text-warn' : 'text-fg-3')}>{r.discount < 0 ? fmt.usd(r.discount) : 'None'}</Td>
                     <Td className="tnum text-right font-medium whitespace-nowrap">{fmt.usd(r.net)}</Td>
                     <Td className="text-right">
                       <Badge tone={r.margin < 30 ? 'danger' : 'ok'}>{r.margin}%</Badge>
                     </Td>
-                    <Td className="whitespace-nowrap text-fg-2">{r.stage}</Td>
+                    <Td className="hidden whitespace-nowrap text-fg-2 lg:table-cell">{r.stage}</Td>
                   </Tr>
                 ))}
               </tbody>
@@ -143,19 +136,7 @@ export function ManageRevenuePage() {
               <span className="tnum">
                 Showing {data.ledger.rows.length} of {data.ledger.total} active accounts. <span className="text-warn">{data.ledger.flagged} account requires margin review (under 30%).</span>
               </span>
-              <nav aria-label="Pagination" className="flex items-center gap-1">
-                <Button size="sm" variant="ghost" disabled>
-                  Previous
-                </Button>
-                {[1, 2, 3].map((p) => (
-                  <Button key={p} size="sm" variant={p === 1 ? 'primary' : 'ghost'} aria-current={p === 1 ? 'page' : undefined} className="tnum min-w-8 px-2">
-                    {p}
-                  </Button>
-                ))}
-                <Button size="sm" variant="ghost">
-                  Next
-                </Button>
-              </nav>
+              <Pagination page={1} pages={3} />
             </PanelFooter>
           </Panel>
 
