@@ -1,6 +1,6 @@
 # UI Audit — Smart Solar client
 
-Ngày audit: 2026-09-20. Trạng thái: **Phase 1–3 hoàn tất cùng ngày — 33 commit sau baseline `35778cf`, xem bảng trạng thái cuối file.**
+Ngày audit: 2026-09-20. Trạng thái: **Phase 1–3 hoàn tất cùng ngày — 36 commit sau baseline `35778cf`, xem bảng trạng thái cuối file. Chưa push (theo yêu cầu).**
 
 ## Bối cảnh đã xác định
 
@@ -121,6 +121,8 @@ Phase 3 theo màn hình, ưu tiên: ops consultations → manage portfolio → c
 | Bậc font-size thực tế (computed, toàn app) | ≈13 (11.25 … 36) | **5** — 13 / 15 / 18 / 24 / 32 |
 | Root font-size / kích thước rem | 15px → nút 37.5px, padding 15px | 16px → nút 40px, padding 16px (mọi rem nguyên) |
 | Table bị cắt cột ở 1280 / 1440 | quotation 16, ops 53, portfolio 166 (1440); nhiều hơn ở 1280 | **0** ở cả 1280 và 1440 (cột phụ theo tầng md / lg / wide=1408 / 2xl) |
+| Table ở 360 / 768 | cuộn ngang, 1–2 cột nhìn thấy | 7 bảng danh sách **xếp chồng label/value** dưới lg, đủ mọi cột; bảng item (3–4 cột) vẫn là bảng và vừa màn |
+| Dead link `href="#"` | 14 | **0** — 14 `PlaceholderLink` (role=link, aria-disabled, title như RailLink) |
 | Tràn ngang trang (25 route × 4 breakpoint) | manage 360: 7px; revenue 768: 33px | **0** |
 | Control < 44px ở 360/768 (trừ link inline trong câu) | 100% | **0** (button/input/select/chips/tab/link đứng riêng đều ≥ 44) |
 | Primary button trên 1 màn hình | alerts 8, approvals 7, field dashboard 3 | tối đa 1 (chưa kể nút trong dialog đang đóng) |
@@ -149,7 +151,7 @@ Screenshot: `D:\Solar-capstone\ui-audit-shots\before\` (110 ảnh) và `…\afte
 | 11 | done | row action → secondary trên 7 trang; Approve eligible / Jump to decision / Export CSV → secondary |
 | 12 | done | `6ee5fb3` Stat subgrid + size lg; `ad41a41` `2dc4bae` `78c2679`; StatRow 5–6 cột chỉ từ xl |
 | 13 | done | `0469bba` FilterBar; `c293a8e` `2dc4bae` `e9139df` `b2c58ef` `62ea392` |
-| 14 | partial | ops 90–110 → 89–111, portfolio 116–135 → 95–109. Với 8–9 cột trong 1064px, 3 dòng/cell là sàn nếu không bỏ dữ liệu; đã bỏ avatar trong row (không mất thông tin) |
+| 14 | done | ops: row đồng nhất 87px ở 1440 (Property chỉ hiện từ 2xl, ô 1 dòng từ `wide`), 89–109 ở 1280; portfolio 95–109. Dưới lg bảng xếp chồng nên không còn khái niệm row cao |
 | 15 | done | `6ee5fb3` |
 | 16 | done | `6ee5fb3` Dialog; `45cdcc3` `f0510fd` `b0d8738` |
 | 17 | done | `c98bea9` `33f044b` `f0510fd` |
@@ -157,7 +159,7 @@ Screenshot: `D:\Solar-capstone\ui-audit-shots\before\` (110 ảnh) và `…\afte
 | 19 | done | `c7a177a` `c2b2064` |
 | 20 | done | `c7a177a` (map 0.5→1, 1.5→2, 2.5→3, 3.5→4, 5→6, 7→6, 10→8/12) |
 | 21 | done | quy ước ghi ở đầu `globals.css`; primitives và các dòng meta trong page đã theo |
-| 22 | deferred | giữ `href="#"` — đổi sang button disabled là thay đổi hành vi, chờ quyết định |
+| 22 | done | `d6440b5` `4ed3d7c` — 14 link → `PlaceholderLink` (span role=link, aria-disabled, tabIndex, title "Not available in this build"); click không còn nhảy lên đầu trang. Là thay đổi hành vi, làm theo yêu cầu "sửa luôn" |
 | 23 | done | `827ec7d` — link về mục nav đầu tiên của portal (copy có sẵn) |
 | 24 | done | `6ee5fb3` |
 | 25 | done | `f0510fd` `f716506` |
@@ -175,7 +177,6 @@ Screenshot: `D:\Solar-capstone\ui-audit-shots\before\` (110 ảnh) và `…\afte
 
 ## Còn lại để ai đó tiếp tục
 
-- #22: quyết định về 14 dead link `href="#"`.
-- #14: nếu chấp nhận bỏ cột `Property` hoặc `Contact` trong ops consultations thì row về 2 dòng.
-- Bảng ở 360 vẫn cuộn ngang bên trong (có shade mép), trừ các bảng ≤ 4 cột; chưa chuyển sang card list vì đó là thay đổi cấu trúc lớn hơn phạm vi "sửa hệ thống".
+- #36: ảnh mock picsum ngẫu nhiên (dữ liệu, ngoài phạm vi UI).
 - Project không có `lint`/`test` script — DoD chỉ kiểm được `build`.
+- Chưa push: local `main` đi trước `origin/main` 38 commit.
