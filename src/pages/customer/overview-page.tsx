@@ -5,6 +5,7 @@ import { Button, ButtonLink } from '@/components/ui/button'
 import { ActivityList, KeyValueList, Progress } from '@/components/ui/lists'
 import { PageHeader } from '@/components/ui/page-header'
 import { Panel, PanelBody, PanelFooter, PanelHeader } from '@/components/ui/panel'
+import { Stat, StatRow } from '@/components/ui/stat'
 import { Stepper } from '@/components/ui/stepper'
 import { ROUTES, withId } from '@/constants/routes'
 import { advisor, overview, property } from '@/data/customer'
@@ -52,15 +53,15 @@ export function OverviewPage() {
                 <PanelBody className="space-y-6">
                   <div className="grid gap-6 sm:grid-cols-2">
                     <div>
-                      <p className="text-body text-fg-2">When</p>
+                      <p className="text-meta text-fg-3">When</p>
                       <p className="mt-1 font-medium">{data.consultation.date}</p>
-                      <p className="text-body text-fg-2">{data.consultation.duration}</p>
+                      <p className="text-meta text-fg-3">{data.consultation.duration}</p>
                     </div>
                     <div className="flex items-start gap-3">
                       <Avatar name={advisor.name} />
                       <div className="min-w-0">
                         <p className="font-medium">{advisor.name}</p>
-                        <p className="text-body text-fg-2">Certified energy advisor</p>
+                        <p className="text-meta text-fg-3">Certified energy advisor</p>
                         <a href={`mailto:${advisor.email}`} className="text-body text-accent-fg hover:underline">
                           {advisor.email}
                         </a>
@@ -91,27 +92,11 @@ export function OverviewPage() {
                   action={<Badge tone="warn">{data.proposal.status}</Badge>}
                 />
                 <PanelBody>
-                  <div className="grid gap-6 sm:grid-cols-3">
-                    <div>
-                      <p className="text-body text-fg-2">System size</p>
-                      <p className="tnum mt-1 text-figure font-semibold">
-                        {data.proposal.sizeKw} <span className="text-body font-normal text-fg-2">kW DC</span>
-                      </p>
-                      <p className="text-meta text-fg-3">{data.proposal.panels} panels</p>
-                    </div>
-                    <div>
-                      <p className="text-body text-fg-2">Estimated annual offset</p>
-                      <p className="tnum mt-1 text-figure font-semibold">{data.proposal.offsetPct}%</p>
-                      <p className="text-meta text-fg-3">Covers {fmt.num(data.proposal.coversKwh)} kWh per year</p>
-                    </div>
-                    <div>
-                      <p className="text-body text-fg-2">Estimated savings</p>
-                      <p className="tnum mt-1 text-figure font-semibold">
-                        {fmt.usd(data.proposal.savingsPerYear)} <span className="text-body font-normal text-fg-2">/ yr</span>
-                      </p>
-                      <p className="text-meta text-fg-3">Includes the 30% federal tax credit</p>
-                    </div>
-                  </div>
+                  <StatRow className="md:grid-cols-3">
+                    <Stat label="System size" value={data.proposal.sizeKw} unit="kW DC" note={`${data.proposal.panels} panels`} />
+                    <Stat label="Estimated annual offset" value={`${data.proposal.offsetPct}%`} note={`Covers ${fmt.num(data.proposal.coversKwh)} kWh per year`} />
+                    <Stat label="Estimated savings" value={fmt.usd(data.proposal.savingsPerYear)} unit="/ yr" note="Includes the 30% federal tax credit" />
+                  </StatRow>
                   <KeyValueList
                     className="mt-6 border-t border-line pt-4"
                     items={[
@@ -196,11 +181,13 @@ export function OverviewPage() {
                 <PanelBody>
                   <ActivityList items={data.activity} />
                 </PanelBody>
-                <PanelFooter className="text-body text-fg-2">
-                  Questions about permits?{' '}
-                  <Link to={ROUTES.customer.assistant} className="text-accent-fg hover:underline">
-                    Ask the assistant
-                  </Link>
+                <PanelFooter>
+                  <p className="text-body text-fg-2">
+                    Questions about permits?{' '}
+                    <Link to={ROUTES.customer.assistant} className="text-accent-fg hover:underline">
+                      Ask the assistant
+                    </Link>
+                  </p>
                 </PanelFooter>
               </Panel>
             </div>
