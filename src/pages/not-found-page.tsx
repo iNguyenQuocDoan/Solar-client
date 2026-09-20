@@ -1,4 +1,5 @@
-import { isRouteErrorResponse, Link, useRouteError } from 'react-router'
+import { isRouteErrorResponse, useRouteError } from 'react-router'
+import { Button, ButtonLink } from '@/components/ui/button'
 import { ROUTES } from '@/constants/routes'
 
 /* Root error boundary: 404s and unexpected render errors land here. */
@@ -14,14 +15,12 @@ export function NotFoundPage() {
       <p className="mt-2 text-body text-fg-2">
         {notFound ? 'The link may be out of date or the record may have moved.' : 'Reload the page or go back to the overview. If it keeps happening, contact your advisor.'}
       </p>
-      {message && <pre className="mt-3 overflow-x-auto rounded-control bg-surface-2 px-3 py-2 font-mono text-meta text-fg-2">{message}</pre>}
-      <div className="mt-6 flex flex-wrap gap-2">
-        <Link to={ROUTES.customer.home} className="press inline-flex h-9 items-center rounded-control bg-accent px-4 text-body font-medium text-on-accent hover:bg-accent-hover">
+      {message && <pre className="mt-3 overflow-x-auto rounded-container bg-surface-2 px-3 py-2 font-mono text-meta text-fg-2">{message}</pre>}
+      <div className="mt-6 flex flex-wrap gap-3">
+        <ButtonLink to={ROUTES.customer.home} variant="primary">
           Go to overview
-        </Link>
-        <button type="button" onClick={() => window.location.reload()} className="press inline-flex h-9 items-center rounded-control border border-line-2 bg-surface px-4 text-body font-medium hover:bg-surface-2">
-          Reload
-        </button>
+        </ButtonLink>
+        <Button onClick={() => window.location.reload()}>Reload</Button>
       </div>
     </main>
   )
