@@ -3,6 +3,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/field'
 import { KeyValueList } from '@/components/ui/lists'
+import { PageHeader } from '@/components/ui/page-header'
 import { Panel, PanelBody, PanelHeader } from '@/components/ui/panel'
 import { assistant } from '@/data/customer'
 import { cx } from '@/lib/cx'
@@ -37,9 +38,14 @@ export function AssistantPage() {
   }
 
   return (
+    <>
+      <PageHeader
+        title="Solar assistant"
+        description="Answers from your Oakwood Residence system specs and project contract. Available 24/7."
+        actions={<Button onClick={() => setMessages([])}>New conversation</Button>}
+      />
     <div className="grid gap-x-12 gap-y-12 lg:grid-cols-[260px_minmax(0,1fr)]">
-      <aside className="space-y-8">
-        <Button onClick={() => setMessages([])}>New conversation</Button>
+      <aside className="order-2 space-y-8 lg:order-1">
 
         <Panel>
           <PanelHeader title="System profile" action={<Badge tone="ok">{assistant.profile.status}</Badge>} />
@@ -65,9 +71,9 @@ export function AssistantPage() {
           <PanelHeader
             title="Recent conversations"
             action={
-              <button type="button" className="text-body text-accent-fg hover:underline">
+              <Button size="sm" variant="ghost">
                 View all
-              </button>
+              </Button>
             }
           />
           <PanelBody>
@@ -86,13 +92,8 @@ export function AssistantPage() {
         </Panel>
       </aside>
 
-      <Panel className="flex min-h-[70dvh] flex-col border-t-0! pt-0!">
-        <PanelHeader
-          title="Solar assistant"
-          description="Answers from your Oakwood Residence system specs and project contract. Available 24/7."
-        />
-
-        <div ref={streamRef} className="flex-1 space-y-6 overflow-y-auto border-t border-line px-6 py-6">
+      <Panel className="order-1 flex min-h-[70dvh] flex-col border-t-0! pt-0! lg:order-2">
+        <div ref={streamRef} className="flex-1 space-y-6 overflow-y-auto border-t border-line px-4 py-6 md:px-6">
           <div>
             <p className="mb-2 text-meta text-fg-3">Suggested for Oakwood Residence</p>
             <ul className="flex flex-col items-start gap-2">
@@ -101,7 +102,7 @@ export function AssistantPage() {
                   <button
                     type="button"
                     onClick={() => send(s)}
-                    className="press text-left text-body text-fg-2 underline-offset-4 hover:text-fg hover:underline"
+                    className="press inline-flex min-h-11 items-center text-left text-body text-fg-2 underline-offset-4 hover:text-fg hover:underline lg:min-h-8"
                   >
                     {s}
                   </button>
@@ -120,7 +121,7 @@ export function AssistantPage() {
                 <p className="mt-1">{assistant.thread[1]!.text}</p>
                 <dl className="mt-3 grid gap-3 sm:grid-cols-3">
                   {assistant.thread[1]!.tiers!.map((t) => (
-                    <div key={t.name} className="rounded-control bg-surface-2 p-3">
+                    <div key={t.name} className="rounded-container bg-surface-2 p-3">
                       <dt className="text-body font-medium">
                         <span className="tnum block text-meta text-fg-3">{t.years}</span>
                         {t.name}
@@ -129,7 +130,7 @@ export function AssistantPage() {
                     </div>
                   ))}
                 </dl>
-                <a href="#" className="mt-3 flex items-center gap-2 rounded-control border border-line px-3 py-2 text-body hover:bg-surface-2">
+                <a href="#" className="mt-3 flex items-center gap-2 rounded-container border border-line px-3 py-2 text-body hover:bg-surface-2">
                   <span className="min-w-0">
                     <span className="block truncate font-medium">{assistant.thread[1]!.attachment!.name}</span>
                     <span className="block text-meta text-fg-3">{assistant.thread[1]!.attachment!.meta}</span>
@@ -152,8 +153,8 @@ export function AssistantPage() {
           )}
         </div>
 
-        <form onSubmit={onSubmit} className="border-t border-line px-6 py-4">
-          <div className="flex items-end gap-2">
+        <form onSubmit={onSubmit} className="border-t border-line px-4 py-4 md:px-6">
+          <div className="flex items-end gap-3">
             <Button type="button" variant="ghost" size="sm">
               Attach
             </Button>
@@ -169,7 +170,7 @@ export function AssistantPage() {
                 }
               }}
               placeholder="Ask anything about your solar installation, equipment or billing"
-              className="min-h-9 resize-none"
+              className="min-h-11 resize-none lg:min-h-10"
             />
             <Button type="submit" variant="primary" disabled={!draft.trim()}>
               Send
@@ -179,6 +180,7 @@ export function AssistantPage() {
         </form>
       </Panel>
     </div>
+    </>
   )
 }
 
@@ -187,12 +189,12 @@ function Bubble({ role, time, children }: { role: 'user' | 'assistant'; time: st
   return (
     <div className={cx('flex gap-3', isUser && 'justify-end')}>
       {!isUser && (
-        <span className="w-16 shrink-0 pt-3 text-body text-fg-3">Assistant</span>
+        <span className="hidden w-16 shrink-0 pt-3 text-meta text-fg-3 sm:block">Assistant</span>
       )}
-      <div className={cx('max-w-[720px] min-w-0', isUser && 'text-right')}>
+      <div className={cx('min-w-0 max-w-full lg:max-w-prose', isUser && 'text-right')}>
         <div
           className={cx(
-            'inline-block rounded-control px-4 py-3 text-left text-body',
+            'inline-block max-w-full rounded-container px-4 py-3 text-left text-body',
             isUser ? 'bg-accent text-on-accent' : 'border border-line bg-surface',
           )}
         >
