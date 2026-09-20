@@ -97,7 +97,7 @@ export function ManageRevenuePage() {
                 <tr>
                   <Th>Project and customer</Th>
                   <Th className="hidden lg:table-cell">Adviser</Th>
-                  <Th className="hidden xl:table-cell">System</Th>
+                  <Th className="hidden wide:table-cell">System</Th>
                   <Th className="hidden text-right md:table-cell">Gross quote</Th>
                   <Th className="hidden text-right md:table-cell">Discounts</Th>
                   <Th className="text-right">Net contract</Th>
@@ -117,7 +117,7 @@ export function ManageRevenuePage() {
                       <p className="whitespace-nowrap">{r.adviser}</p>
                       <p className="text-meta text-fg-3">{r.tier}</p>
                     </Td>
-                    <Td className="hidden xl:table-cell">
+                    <Td className="hidden wide:table-cell">
                       <p>{r.system}</p>
                       <p className="text-meta text-fg-3">{r.hardware}</p>
                     </Td>

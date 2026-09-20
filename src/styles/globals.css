@@ -172,6 +172,9 @@
   --radius-container: 6px;
 
   --shadow-pop: var(--shadow-pop);
+
+  /* Between xl and 2xl: a 1440px desktop with the rail still has a 1064px column, wide enough for one more table column. */
+  --breakpoint-wide: 88rem;
 }
 
 @layer base {
@@ -222,6 +225,21 @@
   /* Grid tracks must be allowed to shrink below their content (tables scroll inside panels). */
   .grid > * {
     min-width: 0;
+  }
+}
+
+/*
+  Text-styled links and buttons that stand alone (panel actions, back links, phone numbers)
+  keep a 44px hit area on touch screens without taking that much room in the layout.
+*/
+@utility tap {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  margin-block: -12px;
+  @media (width >= 64rem) {
+    min-height: 32px;
+    margin-block: -6px;
   }
 }
 

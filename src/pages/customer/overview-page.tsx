@@ -62,7 +62,7 @@ export function OverviewPage() {
                       <div className="min-w-0">
                         <p className="font-medium">{advisor.name}</p>
                         <p className="text-meta text-fg-3">Certified energy advisor</p>
-                        <a href={`mailto:${advisor.email}`} className="text-body text-accent-fg hover:underline">
+                        <a href={`mailto:${advisor.email}`} className="tap text-body text-accent-fg hover:underline">
                           {advisor.email}
                         </a>
                       </div>

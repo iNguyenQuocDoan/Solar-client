@@ -147,7 +147,7 @@ export function FieldTasksPage() {
                       <div className="min-w-0">
                         <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
                           <p className="text-body font-semibold">{o.customer}</p>
-                          <a href={`tel:${o.phone}`} className="tnum text-body text-accent-fg hover:underline">
+                          <a href={`tel:${o.phone}`} className="tap tnum text-body text-accent-fg hover:underline">
                             {o.phone}
                           </a>
                         </div>
@@ -189,7 +189,7 @@ export function FieldTasksPage() {
                 <span>
                   Emergency dispatch <a href="tel:18005557652" className="tnum font-medium text-fg hover:underline">{data.footer.dispatch}</a>
                 </span>
-                <a href="#" className="text-accent-fg hover:underline">
+                <a href="#" className="tap text-accent-fg hover:underline">
                   Equipment returns
                 </a>
               </span>

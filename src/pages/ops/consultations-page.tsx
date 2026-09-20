@@ -165,7 +165,7 @@ export function OpsConsultationsPage() {
                     </Th>
                     <Th>Request</Th>
                     <Th>Homeowner</Th>
-                    <Th className="hidden lg:table-cell">Property</Th>
+                    <Th className="hidden wide:table-cell">Property</Th>
                     <Th className="hidden lg:table-cell">Intake and SLA</Th>
                     <Th>Stage and highlights</Th>
                     <Th className="hidden md:table-cell">Assigned</Th>
@@ -199,7 +199,7 @@ export function OpsConsultationsPage() {
                         <p className="font-medium">{r.homeowner}</p>
                         <p className="text-meta text-fg-3">{r.contact}</p>
                       </Td>
-                      <Td className="hidden lg:table-cell">
+                      <Td className="hidden wide:table-cell">
                         <p>{r.address}</p>
                         <p className="text-meta text-fg-3">{r.city}</p>
                       </Td>
@@ -263,8 +263,8 @@ export function OpsConsultationsPage() {
 
           <Panel className="mt-12">
             <PanelHeader title="Austin metro snapshot" />
-            <PanelBody className="grid gap-6 md:grid-cols-3 md:divide-x md:divide-line">
-              <div className="md:pr-6">
+            <PanelBody className="grid gap-6 lg:grid-cols-3 lg:divide-x lg:divide-line">
+              <div className="lg:pr-6">
                 <p className="text-body font-medium">
                   Lead density by cluster
                 </p>
@@ -288,7 +288,7 @@ export function OpsConsultationsPage() {
                   {data.region.clusterNote}
                 </p>
               </div>
-              <div className="md:px-6">
+              <div className="lg:px-6">
                 <p className="text-body font-medium">Triage response</p>
                 <p className="tnum mt-2 text-figure font-semibold">
                   {data.region.triage.avg}
@@ -303,7 +303,7 @@ export function OpsConsultationsPage() {
                   {data.region.triage.note}
                 </p>
               </div>
-              <div className="md:pl-6">
+              <div className="lg:pl-6">
                 <p className="text-body font-medium">Field survey fleet</p>
                 <p className="tnum mt-2 text-figure font-semibold">
                   {data.region.fleet.vans}{" "}

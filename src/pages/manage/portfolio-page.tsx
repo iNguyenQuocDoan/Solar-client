@@ -103,7 +103,7 @@ export function ManagePortfolioPage() {
                     </Th>
                     <Th>Project</Th>
                     <Th>Customer and site</Th>
-                    <Th className="hidden xl:table-cell">Sales owner</Th>
+                    <Th className="hidden wide:table-cell">Sales owner</Th>
                     <Th className="hidden 2xl:table-cell">System</Th>
                     <Th className="hidden md:table-cell">Lifecycle stage</Th>
                     <Th className="hidden lg:table-cell">Timeline</Th>
@@ -142,7 +142,7 @@ export function ManagePortfolioPage() {
                         <p className="font-medium">{r.customer}</p>
                         <p className="text-meta text-fg-3">{r.address}</p>
                       </Td>
-                      <Td className="hidden xl:table-cell">
+                      <Td className="hidden wide:table-cell">
                         <p className="whitespace-nowrap">{r.owner}</p>
                         <p className="text-meta text-fg-3">{r.territory}</p>
                       </Td>

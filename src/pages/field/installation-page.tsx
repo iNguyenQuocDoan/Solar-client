@@ -98,7 +98,7 @@ export function FieldInstallationPage() {
                               <div className="mt-3 rounded-container bg-surface-2 px-3 py-3">
                                 <div className="flex flex-wrap items-center justify-between gap-2">
                                   <p className="text-body font-medium">Panels clamped and wired</p>
-                                  <div className="flex items-center gap-2">
+                                  <div className="flex flex-wrap items-center gap-2">
                                     <Button size="sm" aria-label="Remove one panel" onClick={() => setPanels((p) => Math.max(0, p - 1))} disabled={isDone}>
                                       Remove one
                                     </Button>

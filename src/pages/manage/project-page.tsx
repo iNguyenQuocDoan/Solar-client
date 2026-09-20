@@ -125,7 +125,7 @@ export function ManageProjectPage() {
                   <div>
                     <div className="mb-2 flex items-center justify-between">
                       <p className="text-body font-medium">Crew photo uploads, mandatory gate evidence</p>
-                      <a href="#" className="text-body text-accent-fg hover:underline">
+                      <a href="#" className="tap text-body text-accent-fg hover:underline">
                         View {data.telemetry.photoTotal} raw assets
                       </a>
                     </div>

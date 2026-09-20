@@ -96,7 +96,7 @@ export function ManageApprovalsPage() {
                       <ListRow key={a.id} tone={a.slaHours ? 'danger' : undefined} selected={active}>
                             <div className="flex flex-wrap items-start justify-between gap-3">
                               <div className="min-w-0 flex-1 basis-64">
-                                <button type="button" onClick={() => setSelectedId(a.id)} className="text-left text-body font-semibold hover:underline">
+                                <button type="button" onClick={() => setSelectedId(a.id)} className="tap text-left text-body font-semibold hover:underline">
                                   {a.customer}
                                 </button>
                                 <span className="ml-2 text-meta text-fg-3">{a.id}</span>

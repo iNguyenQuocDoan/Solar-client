@@ -133,7 +133,7 @@ export function ProjectPage() {
                       <p className="text-meta text-fg-3">
                         {data.crew.lead.role}, {data.crew.lead.exp}
                       </p>
-                      <a href={`tel:${data.crew.lead.phone}`} className="tnum text-body text-accent-fg hover:underline">
+                      <a href={`tel:${data.crew.lead.phone}`} className="tap tnum text-body text-accent-fg hover:underline">
                         {data.crew.lead.phone}
                       </a>
                     </div>

@@ -90,8 +90,8 @@ export function ManageOperationsPage() {
                     <Th className="text-right">Turnaround</Th>
                     <Th className="text-right">First-pass AHJ</Th>
                     <Th className="text-right">Active installs</Th>
-                    <Th className="hidden text-right lg:table-cell">Utilization</Th>
-                    <Th className="hidden text-right lg:table-cell">Zero-incident days</Th>
+                    <Th className="hidden text-right wide:table-cell">Utilization</Th>
+                    <Th className="hidden text-right wide:table-cell">Zero-incident days</Th>
                   </tr>
                 </thead>
                 <tbody>
@@ -106,8 +106,8 @@ export function ManageOperationsPage() {
                       <Td className="tnum text-right font-medium">{s.turnaround}</Td>
                       <Td className="tnum text-right">{s.pass}</Td>
                       <Td className="tnum text-right">{s.installs} sites</Td>
-                      <Td className="tnum hidden text-right lg:table-cell">{s.utilization}</Td>
-                      <Td className="tnum hidden text-right lg:table-cell">{s.safety}</Td>
+                      <Td className="tnum hidden text-right wide:table-cell">{s.utilization}</Td>
+                      <Td className="tnum hidden text-right wide:table-cell">{s.safety}</Td>
                     </Tr>
                   ))}
                 </tbody>

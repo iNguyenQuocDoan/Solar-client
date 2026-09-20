@@ -52,10 +52,10 @@ export function ConsultationPage() {
                         {advisor.title}, {advisor.team}
                       </p>
                       <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-body">
-                        <a href={`tel:${advisor.phone}`} className="text-fg-2 hover:text-fg">
+                        <a href={`tel:${advisor.phone}`} className="tap text-fg-2 hover:text-fg">
                           {advisor.phone}
                         </a>
-                        <a href={`mailto:${advisor.email}`} className="text-fg-2 hover:text-fg">
+                        <a href={`mailto:${advisor.email}`} className="tap text-fg-2 hover:text-fg">
                           {advisor.email}
                         </a>
                       </div>
