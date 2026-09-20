@@ -6,6 +6,7 @@ import { Dialog, DialogFooter, DialogTitle } from '@/components/ui/dialog'
 import { Field, Textarea } from '@/components/ui/field'
 import { KeyValueList, Notice, Photo } from '@/components/ui/lists'
 import { PageHeader } from '@/components/ui/page-header'
+import { PlaceholderLink } from '@/components/ui/placeholder-link'
 import { Panel, PanelBody, PanelFooter, PanelHeader } from '@/components/ui/panel'
 import { Stepper } from '@/components/ui/stepper'
 import { ROUTES } from '@/constants/routes'
@@ -179,9 +180,9 @@ export function WarrantyRequestPage() {
 
               <Notice title="Protection guarantee">
                 {data.guarantee}{' '}
-                <a href="#" className="text-accent-fg hover:underline">
+                <PlaceholderLink className="text-accent-fg hover:underline">
                   Read the warranty terms
-                </a>
+                </PlaceholderLink>
               </Notice>
             </div>
           </div>

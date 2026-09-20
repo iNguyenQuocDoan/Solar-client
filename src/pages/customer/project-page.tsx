@@ -4,6 +4,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { ActivityList, KeyValueList, Photo, Progress } from '@/components/ui/lists'
 import { PageHeader } from '@/components/ui/page-header'
+import { PlaceholderLink } from '@/components/ui/placeholder-link'
 import { Panel, PanelBody, PanelFooter, PanelHeader } from '@/components/ui/panel'
 import { Stepper } from '@/components/ui/stepper'
 import { ROUTES } from '@/constants/routes'
@@ -155,9 +156,9 @@ export function ProjectPage() {
                   <ActivityList items={data.feed} />
                 </PanelBody>
                 <PanelFooter>
-                  <Link to="#" className="text-body text-accent-fg hover:underline">
+                  <PlaceholderLink className="text-body text-accent-fg hover:underline">
                     View complete dispatch log ({data.feedTotal} entries)
-                  </Link>
+                  </PlaceholderLink>
                 </PanelFooter>
               </Panel>
 
@@ -188,9 +189,9 @@ export function ProjectPage() {
               Message the concierge
             </Link>{' '}
             or read the{' '}
-            <Link to="#" className="text-accent-fg hover:underline">
+            <PlaceholderLink className="text-accent-fg hover:underline">
               installation FAQ
-            </Link>
+            </PlaceholderLink>
             .
           </p>
         </>

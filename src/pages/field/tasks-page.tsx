@@ -7,6 +7,7 @@ import { FilterBar } from '@/components/ui/filter-bar'
 import { ListRow } from '@/components/ui/list-row'
 import { Progress } from '@/components/ui/lists'
 import { PageHeader } from '@/components/ui/page-header'
+import { PlaceholderLink } from '@/components/ui/placeholder-link'
 import { Panel, PanelFooter } from '@/components/ui/panel'
 import { Stat, StatRow } from '@/components/ui/stat'
 import { EmptyState } from '@/components/ui/states'
@@ -189,9 +190,9 @@ export function FieldTasksPage() {
                 <span>
                   Emergency dispatch <a href="tel:18005557652" className="tnum font-medium text-fg hover:underline">{data.footer.dispatch}</a>
                 </span>
-                <a href="#" className="tap text-accent-fg hover:underline">
+                <PlaceholderLink className="tap text-accent-fg hover:underline">
                   Equipment returns
-                </a>
+                </PlaceholderLink>
               </span>
             </PanelFooter>
           </Panel>

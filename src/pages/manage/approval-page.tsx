@@ -4,6 +4,7 @@ import { Button, buttonClass } from '@/components/ui/button'
 import { Field, Select, Textarea } from '@/components/ui/field'
 import { ActivityList, KeyValueList, Notice, Photo } from '@/components/ui/lists'
 import { PageHeader } from '@/components/ui/page-header'
+import { PlaceholderLink } from '@/components/ui/placeholder-link'
 import { Panel, PanelBody, PanelFooter, PanelHeader } from '@/components/ui/panel'
 import { Table, Td, Th, Tr } from '@/components/ui/table'
 import { ROUTES } from '@/constants/routes'
@@ -105,9 +106,9 @@ export function ManageApprovalPage() {
                     <KeyValueList items={data.survey.facts} />
                   </PanelBody>
                   <PanelFooter>
-                    <a href="#" className="text-body text-accent-fg hover:underline">
+                    <PlaceholderLink className="text-body text-accent-fg hover:underline">
                       View survey package ({data.survey.attachments} files)
-                    </a>
+                    </PlaceholderLink>
                   </PanelFooter>
                 </Panel>
 
