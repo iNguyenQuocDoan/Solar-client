@@ -246,6 +246,7 @@
   */
   .scroll-x {
     overflow-x: auto;
+    scrollbar-width: thin;
     background:
       linear-gradient(90deg, var(--color-canvas) 40%, transparent) left / 48px 100% no-repeat local,
       linear-gradient(270deg, var(--color-canvas) 40%, transparent) right / 48px 100% no-repeat local,

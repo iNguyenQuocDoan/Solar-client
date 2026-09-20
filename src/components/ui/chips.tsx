@@ -18,7 +18,7 @@ export function FilterChips<T extends string>({
   className?: string
 }) {
   return (
-    <div role="tablist" aria-label={label} className={cx('scroll-x flex gap-x-6 shadow-[inset_0_-1px_0_var(--color-line)]', className)}>
+    <div role="tablist" aria-label={label} className={cx('scroll-x flex gap-x-6 shadow-[inset_0_-1px_0_var(--color-line)] [scrollbar-width:none]', className)}>
       {chips.map((c) => {
         const active = c.value === value
         return (

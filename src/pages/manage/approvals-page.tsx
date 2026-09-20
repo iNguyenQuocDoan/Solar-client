@@ -3,6 +3,8 @@ import { Badge } from '@/components/ui/badge'
 import { Button, ButtonLink } from '@/components/ui/button'
 import { FilterChips } from '@/components/ui/chips'
 import { Field, Select, Textarea } from '@/components/ui/field'
+import { FilterBar } from '@/components/ui/filter-bar'
+import { ListRow, ListRowActions } from '@/components/ui/list-row'
 import { KeyValueList, Notice, Photo } from '@/components/ui/lists'
 import { PageHeader } from '@/components/ui/page-header'
 import { Panel, PanelBody, PanelFooter, PanelHeader } from '@/components/ui/panel'
@@ -47,7 +49,6 @@ export function ManageApprovalsPage() {
               <>
                 <Button>Batch parameters</Button>
                 <Button
-                  variant="primary"
                   disabled={eligible.length === 0}
                   onClick={() => {
                     setDecided((d) => ({ ...d, ...Object.fromEntries(eligible.map((a) => [a.id, 'approved' as const])) }))
@@ -74,17 +75,16 @@ export function ManageApprovalsPage() {
 
           <div className="grid gap-x-12 gap-y-12 lg:grid-cols-5">
             <div className="space-y-8 lg:col-span-3">
-              <div className="flex flex-wrap items-center justify-between gap-3">
-                <FilterChips chips={[...data.chips]} value={filter} onChange={setFilter} label="Filter approvals" />
-                <label className="flex items-center gap-2 text-body whitespace-nowrap text-fg-2">
+              <FilterBar className="mb-0" tabs={<FilterChips chips={[...data.chips]} value={filter} onChange={setFilter} label="Filter approvals" />}>
+                <label className="flex items-center gap-2 text-meta whitespace-nowrap text-fg-2">
                   Sort by
-                  <Select className="h-8 w-auto" aria-label="Sort by">
+                  <Select size="sm" className="w-auto" aria-label="Sort by">
                     {data.sorts.map((s) => (
                       <option key={s}>{s}</option>
                     ))}
                   </Select>
                 </label>
-              </div>
+              </FilterBar>
 
               {rows.length === 0 ? (
                 <EmptyState title="Queue is clear" description={`Nothing pending under this filter. ${data.recentlyApproved} quotations were approved recently.`} />
@@ -93,15 +93,13 @@ export function ManageApprovalsPage() {
                   {rows.map((a) => {
                     const active = a.id === selectedId
                     return (
-                      <li key={a.id}>
-                        <Panel className={cx(active && 'border-accent/50', a.slaHours ? 'border-l-2 border-l-danger' : undefined)}>
-                          <PanelBody>
+                      <ListRow key={a.id} tone={a.slaHours ? 'danger' : undefined} selected={active}>
                             <div className="flex flex-wrap items-start justify-between gap-3">
-                              <div className="min-w-0">
+                              <div className="min-w-0 flex-1 basis-64">
                                 <button type="button" onClick={() => setSelectedId(a.id)} className="text-left text-body font-semibold hover:underline">
                                   {a.customer}
                                 </button>
-                                <span className="ml-2 text-body text-fg-3">{a.id}</span>
+                                <span className="ml-2 text-meta text-fg-3">{a.id}</span>
                                 <div className="mt-1 flex flex-wrap items-center gap-2">
                                   <Badge tone={a.flagTone}>{a.flag}</Badge>
                                   <span className="text-meta text-fg-3">
@@ -109,13 +107,13 @@ export function ManageApprovalsPage() {
                                   </span>
                                 </div>
                               </div>
-                              <div className="text-right">
+                              <div className="shrink-0 text-right">
                                 {a.gross !== a.net && <p className="tnum text-meta text-fg-3 line-through">{fmt.usd(a.gross)}</p>}
                                 <p className="tnum text-figure font-semibold">{fmt.usd(a.net)}</p>
                                 {a.gross !== a.net && <p className="text-meta text-warn">Save {fmt.usd(a.gross - a.net)}, override required</p>}
                               </div>
                             </div>
-                            <dl className="mt-3 grid gap-x-6 gap-y-1 rounded-control bg-surface-2 px-3 py-3 text-body sm:grid-cols-3">
+                            <dl className={cx('mt-3 grid gap-x-6 gap-y-1 rounded-container px-3 py-3 text-body sm:grid-cols-3', active ? 'bg-surface-3' : 'bg-surface-2')}>
                               {a.specs.map((s) => (
                                 <div key={s.k}>
                                   <dt className="text-meta text-fg-3">{s.k}</dt>
@@ -126,17 +124,15 @@ export function ManageApprovalsPage() {
                             <p className="mt-2 text-meta text-fg-3">
                               Submitted {a.submitted}. {a.stage}.
                             </p>
-                          </PanelBody>
-                          <PanelFooter>
+                          <ListRowActions>
                             <ButtonLink to={withId(ROUTES.manage.approval, a.id)} size="sm">
                               {a.actionLabel}
                             </ButtonLink>
-                            <Button size="sm" variant="primary" onClick={() => decide(a.id, 'approved', `${a.id} authorized and sent to ${a.customer}.`)}>
+                            <Button size="sm" onClick={() => decide(a.id, 'approved', `${a.id} authorized and sent to ${a.customer}.`)}>
                               Quick approve
                             </Button>
-                          </PanelFooter>
-                        </Panel>
-                      </li>
+                          </ListRowActions>
+                      </ListRow>
                     )
                   })}
                 </ul>
@@ -191,7 +187,7 @@ export function ManageApprovalsPage() {
                     <Button variant="primary" onClick={() => decide(selected.id, 'approved', `${selected.id} authorized with a digital manager stamp and dispatched to the customer.`)}>
                       Authorize and dispatch to customer
                     </Button>
-                    <div className="grid grid-cols-2 gap-2">
+                    <div className="grid grid-cols-2 gap-3">
                       <Button onClick={() => decide(selected.id, 'redline', `Revision notes for ${selected.id} sent back to ${selected.rep}.`)}>Request redline</Button>
                       <Button variant="danger" onClick={() => decide(selected.id, 'rejected', `${selected.id} marked as rejected. ${selected.rep} will be notified.`)}>
                         Reject terms
