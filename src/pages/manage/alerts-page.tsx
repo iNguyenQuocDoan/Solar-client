@@ -82,7 +82,7 @@ export function ManageAlertsPage() {
               </Notice>
             )}
 
-            <StatRow className="mb-10">
+            <StatRow className="mb-12">
               {data.stats.map((s) => (
                 <Stat
                   key={s.label}
@@ -94,8 +94,8 @@ export function ManageAlertsPage() {
               ))}
             </StatRow>
 
-            <div className="grid gap-x-12 gap-y-10 lg:grid-cols-3">
-              <div className="space-y-10 lg:col-span-2">
+            <div className="grid gap-x-12 gap-y-12 lg:grid-cols-3">
+              <div className="space-y-8 lg:col-span-2">
                 <FilterChips
                   chips={[...data.chips]}
                   value={filter}
@@ -116,11 +116,11 @@ export function ManageAlertsPage() {
                       <div>
                         <h2
                           id={section.key}
-                          className="text-[15px] font-semibold"
+                          className="text-body font-semibold"
                         >
                           {section.title}
                         </h2>
-                        <p className="text-[14px] text-fg-2">
+                        <p className="text-body text-fg-2">
                           {section.description}
                         </p>
                       </div>
@@ -143,7 +143,7 @@ export function ManageAlertsPage() {
                             <PanelBody>
                               <div className="flex flex-wrap items-center gap-2">
                                 {/^[A-Z]{2,4}-\d+$/.test(item.ref) && (
-                                  <span className="text-[14px] font-medium">
+                                  <span className="text-body font-medium">
                                     {item.ref}
                                   </span>
                                 )}
@@ -152,10 +152,10 @@ export function ManageAlertsPage() {
                                 </span>
                                 <Badge tone={item.tone}>{item.tag}</Badge>
                               </div>
-                              <p className="mt-1 text-[13px] text-fg-3">
+                              <p className="mt-1 text-meta text-fg-3">
                                 {item.meta}
                               </p>
-                              <p className="mt-2 text-[14px] text-fg-2">
+                              <p className="mt-2 text-body text-fg-2">
                                 {item.body}
                               </p>
                             </PanelBody>
@@ -186,7 +186,7 @@ export function ManageAlertsPage() {
                 ))}
               </div>
 
-              <div className="space-y-8 lg:border-l lg:border-line lg:pl-10">
+              <div className="space-y-8 lg:border-l lg:border-line lg:pl-8">
                 <Panel>
                   <PanelHeader
                     title="Live fleet positioning"
@@ -197,11 +197,11 @@ export function ManageAlertsPage() {
                       {data.fleet.map((v) => (
                         <li
                           key={v.van}
-                          className="flex items-center justify-between gap-3 py-2.5 first:pt-0 last:pb-0"
+                          className="flex items-center justify-between gap-3 py-3 first:pt-0 last:pb-0"
                         >
                           <div>
-                            <p className="text-[14px] font-medium">{v.van}</p>
-                            <p className="text-[13px] text-fg-3">{v.note}</p>
+                            <p className="text-body font-medium">{v.van}</p>
+                            <p className="text-meta text-fg-3">{v.note}</p>
                           </div>
                           <Badge tone={v.tone}>{v.status}</Badge>
                         </li>
@@ -220,12 +220,12 @@ export function ManageAlertsPage() {
                       {data.leads.map((l) => (
                         <li
                           key={l.name}
-                          className="flex items-center gap-2.5 py-2.5 first:pt-0 last:pb-0"
+                          className="flex items-center gap-3 py-3 first:pt-0 last:pb-0"
                         >
                           <Avatar name={l.name} size="sm" />
-                          <div className="min-w-0 flex-1 leading-tight">
-                            <p className="text-[14px] font-medium">{l.name}</p>
-                            <p className="text-[13px] text-fg-3">{l.role}</p>
+                          <div className="min-w-0 flex-1">
+                            <p className="text-body font-medium">{l.name}</p>
+                            <p className="text-meta text-fg-3">{l.role}</p>
                           </div>
                           <Button size="sm" variant="ghost">
                             Call
@@ -240,7 +240,7 @@ export function ManageAlertsPage() {
                   <PanelHeader
                     title="Executive SLA compliance"
                     action={
-                      <span className="tnum text-lg font-semibold">
+                      <span className="tnum text-title font-semibold">
                         {data.sla.current}%
                       </span>
                     }
@@ -250,10 +250,10 @@ export function ManageAlertsPage() {
                       value={data.sla.current}
                       label="SLA compliance this month"
                     />
-                    <p className="tnum mt-1.5 text-[13px] text-fg-2">
+                    <p className="tnum mt-2 text-meta text-fg-2">
                       Target {data.sla.target}%
                     </p>
-                    <p className="mt-3 text-[14px] text-fg-2">
+                    <p className="mt-3 text-body text-fg-2">
                       {data.sla.note}
                     </p>
                   </PanelBody>

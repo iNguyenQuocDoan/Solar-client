@@ -27,7 +27,7 @@ export function ManageOperationsPage() {
             }
           />
 
-          <div className="mb-10 flex flex-wrap items-center gap-3">
+          <div className="mb-12 flex flex-wrap items-center gap-3">
             <Select aria-label="Analysis horizon" className="h-8 w-auto">
               {data.filters.horizon.map((o) => (
                 <option key={o}>{o}</option>
@@ -43,36 +43,36 @@ export function ManageOperationsPage() {
                 <option key={o}>{o}</option>
               ))}
             </Select>
-            <span className="tnum text-[14px] text-fg-2">{data.feeds} live telemetry feeds</span>
+            <span className="tnum text-body text-fg-2">{data.feeds} live telemetry feeds</span>
           </div>
 
-          <StatRow className="mb-10 md:grid-cols-5">
+          <StatRow className="mb-12 md:grid-cols-5">
             {data.kpis.map((k) => (
               <Stat key={k.label} label={k.label} value={k.value} unit={k.unit} note={k.note} />
             ))}
           </StatRow>
 
-          <Panel className="mb-10">
+          <Panel className="mb-12">
             <PanelHeader
               title="End-to-end pipeline throughput"
               description="Live volume across active contracts from initial inquiry through commercial activation."
               action={<Badge tone="ok">{data.throughput.handshakes} PTO handshakes this month</Badge>}
             />
             <PanelBody>
-              <ol className="grid grid-cols-2 gap-y-5 sm:grid-cols-4 lg:grid-cols-7">
+              <ol className="grid grid-cols-2 gap-y-6 sm:grid-cols-4 lg:grid-cols-7">
                 {data.throughput.phases.map((p, i) => (
                   <li key={p.label} className="min-w-0 pr-3 lg:border-l lg:border-line lg:pl-3 lg:first:border-0 lg:first:pl-0">
-                    <p className="tnum text-2xl font-semibold leading-8">{p.count}</p>
-                    <p className="text-[14px] font-medium leading-5">{p.label}</p>
-                    <p className="text-[13px] text-fg-3">{p.note}</p>
-                    <p className={i === data.throughput.phases.length - 1 ? 'tnum mt-1 text-[13px] font-medium text-ok' : 'tnum mt-1 text-[13px] text-fg-2'}>
+                    <p className="tnum text-figure font-semibold">{p.count}</p>
+                    <p className="text-body font-medium">{p.label}</p>
+                    <p className="text-meta text-fg-3">{p.note}</p>
+                    <p className={i === data.throughput.phases.length - 1 ? 'tnum mt-1 text-meta font-medium text-ok' : 'tnum mt-1 text-meta text-fg-2'}>
                       {i === data.throughput.phases.length - 1 ? p.avg : `Avg ${p.avg}`}
                     </p>
                   </li>
                 ))}
               </ol>
             </PanelBody>
-            <PanelFooter className="justify-between text-[14px] text-fg-2">
+            <PanelFooter className="justify-between text-body text-fg-2">
               <span>Pipeline funnel distribution, 142 cumulative active projects</span>
               <span>
                 Conversion rate <span className="tnum font-medium text-fg">{data.throughput.conversion}</span>
@@ -80,10 +80,10 @@ export function ManageOperationsPage() {
             </PanelFooter>
           </Panel>
 
-          <div className="mb-10 grid gap-x-12 gap-y-10 lg:grid-cols-5 lg:items-start">
+          <div className="mb-12 grid gap-x-12 gap-y-12 lg:grid-cols-5 lg:items-start">
             <Panel className="lg:col-span-3">
               <PanelHeader title="Field squad operations" description="Regional deployment velocity and residential install timelines." action={<Badge>Average {data.squads.avgSpeed}</Badge>} />
-              <Table className="text-[14px]">
+              <Table className="text-body">
                 <thead>
                   <tr>
                     <Th>Squad</Th>
@@ -99,7 +99,7 @@ export function ManageOperationsPage() {
                     <Tr key={s.name}>
                       <Td>
                         <p className="font-medium">{s.name}</p>
-                        <p className="text-[13px] text-fg-3">
+                        <p className="text-meta text-fg-3">
                           {s.metro}. {s.lead}.
                         </p>
                       </Td>
@@ -119,30 +119,30 @@ export function ManageOperationsPage() {
 
             <Panel className="lg:col-span-2">
               <PanelHeader title="Post-PTO reliability" description="Post-commissioning warranty incident audit." action={<Badge tone="ok">{data.reliability.uptime}</Badge>} />
-              <PanelBody className="space-y-5">
+              <PanelBody className="space-y-6">
                 <ul className="divide-y divide-line border-t border-line">
                   {data.reliability.incidents.map((i) => (
                     <li key={i.label}>
-                      <div className="mb-1 flex justify-between gap-3 text-[14px]">
+                      <div className="mb-1 flex justify-between gap-3 text-body">
                         <span className="font-medium">{i.label}</span>
                         <span className="tnum text-fg-2">{i.pct}%</span>
                       </div>
                       <Progress value={i.pct} label={`${i.label} share of incidents`} />
-                      <p className="mt-1 text-[13px] text-fg-3">{i.note}</p>
+                      <p className="mt-1 text-meta text-fg-3">{i.note}</p>
                     </li>
                   ))}
                 </ul>
                 <dl className="grid grid-cols-2 gap-4 border-t border-line pt-4">
                   <div>
-                    <dt className="text-[13px] text-fg-2">Closed and resolved</dt>
-                    <dd className="tnum text-xl font-semibold">{data.reliability.closed} tickets</dd>
+                    <dt className="text-meta text-fg-2">Closed and resolved</dt>
+                    <dd className="tnum text-figure font-semibold">{data.reliability.closed} tickets</dd>
                   </div>
                   <div>
-                    <dt className="text-[13px] text-fg-2">Open in field</dt>
-                    <dd className="tnum text-xl font-semibold">{data.reliability.open} under SLA</dd>
+                    <dt className="text-meta text-fg-2">Open in field</dt>
+                    <dd className="tnum text-figure font-semibold">{data.reliability.open} under SLA</dd>
                   </div>
                 </dl>
-                <p className="text-[13px] text-fg-3">MTTR resolution trend: {data.reliability.mttrTrend}.</p>
+                <p className="text-meta text-fg-3">MTTR resolution trend: {data.reliability.mttrTrend}.</p>
               </PanelBody>
               <PanelFooter>
                 <Button size="sm">Dispatch warranty special unit</Button>
@@ -152,7 +152,7 @@ export function ManageOperationsPage() {
 
           <Panel>
             <PanelHeader title="Municipal jurisdiction (AHJ) friction" description="Bottleneck detection across local building departments and electric utility partners. Code registry syncs daily." />
-            <Table className="text-[14px]">
+            <Table className="text-body">
               <thead>
                 <tr>
                   <Th>Authority or utility</Th>
@@ -168,7 +168,7 @@ export function ManageOperationsPage() {
                   <Tr key={r.authority}>
                     <Td>
                       <p className="font-medium">{r.authority}</p>
-                      <p className="text-[13px] text-fg-3">{r.note}</p>
+                      <p className="text-meta text-fg-3">{r.note}</p>
                     </Td>
                     <Td>{r.region}</Td>
                     <Td className="tnum text-right">{r.days} days</Td>
@@ -181,7 +181,7 @@ export function ManageOperationsPage() {
                 ))}
               </tbody>
             </Table>
-            <PanelFooter className="justify-between text-[14px] text-fg-2">
+            <PanelFooter className="justify-between text-body text-fg-2">
               <span>Showing the top 3 jurisdictions, {data.ahj.share}.</span>
               <Link to="#" className="text-accent-fg hover:underline">
                 View all {data.ahj.total} regional AHJs

@@ -66,17 +66,17 @@ export function ManageApprovalsPage() {
             </Notice>
           )}
 
-          <StatRow className="mb-10">
+          <StatRow className="mb-12">
             {data.stats.map((s) => (
               <Stat key={s.label} label={s.label} value={s.value} unit={s.unit} note={s.note} tone={s.tone} />
             ))}
           </StatRow>
 
-          <div className="grid gap-x-12 gap-y-10 lg:grid-cols-5">
-            <div className="space-y-10 lg:col-span-3">
+          <div className="grid gap-x-12 gap-y-12 lg:grid-cols-5">
+            <div className="space-y-8 lg:col-span-3">
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <FilterChips chips={[...data.chips]} value={filter} onChange={setFilter} label="Filter approvals" />
-                <label className="flex items-center gap-2 text-[14px] whitespace-nowrap text-fg-2">
+                <label className="flex items-center gap-2 text-body whitespace-nowrap text-fg-2">
                   Sort by
                   <Select className="h-8 w-auto" aria-label="Sort by">
                     {data.sorts.map((s) => (
@@ -98,32 +98,32 @@ export function ManageApprovalsPage() {
                           <PanelBody>
                             <div className="flex flex-wrap items-start justify-between gap-3">
                               <div className="min-w-0">
-                                <button type="button" onClick={() => setSelectedId(a.id)} className="text-left text-[15px] font-semibold hover:underline">
+                                <button type="button" onClick={() => setSelectedId(a.id)} className="text-left text-body font-semibold hover:underline">
                                   {a.customer}
                                 </button>
-                                <span className="ml-2 text-[14px] text-fg-3">{a.id}</span>
+                                <span className="ml-2 text-body text-fg-3">{a.id}</span>
                                 <div className="mt-1 flex flex-wrap items-center gap-2">
                                   <Badge tone={a.flagTone}>{a.flag}</Badge>
-                                  <span className="text-[13px] text-fg-3">
+                                  <span className="text-meta text-fg-3">
                                     {a.address}. Rep {a.rep}.
                                   </span>
                                 </div>
                               </div>
                               <div className="text-right">
-                                {a.gross !== a.net && <p className="tnum text-[13px] text-fg-3 line-through">{fmt.usd(a.gross)}</p>}
-                                <p className="tnum text-xl font-semibold">{fmt.usd(a.net)}</p>
-                                {a.gross !== a.net && <p className="text-[13px] text-warn">Save {fmt.usd(a.gross - a.net)}, override required</p>}
+                                {a.gross !== a.net && <p className="tnum text-meta text-fg-3 line-through">{fmt.usd(a.gross)}</p>}
+                                <p className="tnum text-figure font-semibold">{fmt.usd(a.net)}</p>
+                                {a.gross !== a.net && <p className="text-meta text-warn">Save {fmt.usd(a.gross - a.net)}, override required</p>}
                               </div>
                             </div>
-                            <dl className="mt-3 grid gap-x-6 gap-y-1 rounded-md bg-surface-2 px-3 py-2.5 text-[14px] sm:grid-cols-3">
+                            <dl className="mt-3 grid gap-x-6 gap-y-1 rounded-control bg-surface-2 px-3 py-3 text-body sm:grid-cols-3">
                               {a.specs.map((s) => (
                                 <div key={s.k}>
-                                  <dt className="text-[13px] text-fg-3">{s.k}</dt>
+                                  <dt className="text-meta text-fg-3">{s.k}</dt>
                                   <dd className="font-medium">{s.v}</dd>
                                 </div>
                               ))}
                             </dl>
-                            <p className="mt-2 text-[13px] text-fg-3">
+                            <p className="mt-2 text-meta text-fg-3">
                               Submitted {a.submitted}. {a.stage}.
                             </p>
                           </PanelBody>
@@ -143,7 +143,7 @@ export function ManageApprovalsPage() {
               )}
             </div>
 
-            <div className="space-y-10 lg:col-span-2">
+            <div className="space-y-8 lg:col-span-2">
               <Panel>
                 <PanelHeader
                   title={`${selected.id}, ${selected.customer}`}
@@ -152,8 +152,8 @@ export function ManageApprovalsPage() {
                 />
                 <PanelBody className="space-y-4">
                   <div>
-                    <p className="mb-1.5 text-[13px] text-fg-2">Trigger criteria</p>
-                    <ul className="flex flex-wrap gap-1.5">
+                    <p className="mb-2 text-meta text-fg-2">Trigger criteria</p>
+                    <ul className="flex flex-wrap gap-2">
                       {selected.criteria.map((c) => (
                         <li key={c.label}>
                           <Badge tone={c.tone}>{c.label}</Badge>
@@ -161,7 +161,7 @@ export function ManageApprovalsPage() {
                       ))}
                     </ul>
                   </div>
-                  <dl className="space-y-1.5 text-[14px]">
+                  <dl className="space-y-2 text-body">
                     {selected.breakdown.map((b) => (
                       <div key={b.label} className="flex justify-between gap-3">
                         <dt className="text-fg-2">{b.label}</dt>
@@ -170,12 +170,12 @@ export function ManageApprovalsPage() {
                     ))}
                     <div className="flex justify-between gap-3 border-t border-line pt-2">
                       <dt className="font-medium">Target final contract</dt>
-                      <dd className="tnum text-lg font-semibold">{fmt.usd(selected.net)}</dd>
+                      <dd className="tnum text-title font-semibold">{fmt.usd(selected.net)}</dd>
                     </div>
                   </dl>
                   <KeyValueList items={[{ k: 'Projected gross margin', v: selected.margin }]} />
-                  <blockquote className="border-l-2 border-line-2 pl-3 text-[14px] text-fg-2">
-                    <p className="mb-0.5 text-[13px] text-fg-3">Sales note from {selected.rep}</p>
+                  <blockquote className="border-l-2 border-line-2 pl-3 text-body text-fg-2">
+                    <p className="mb-1 text-meta text-fg-3">Sales note from {selected.rep}</p>
                     {selected.note}
                   </blockquote>
                   {decided[selected.id] ? (

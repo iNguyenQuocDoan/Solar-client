@@ -96,14 +96,14 @@ export function AssessmentPage() {
         meta={<span>Step {step + 1} of 4</span>}
       />
 
-      <Panel className="mb-10 border-t-0! pt-0!">
+      <Panel className="mb-12 border-t-0! pt-0!">
         <PanelBody>
           <Stepper steps={steps} />
         </PanelBody>
       </Panel>
 
-      <div className="grid gap-x-12 gap-y-10 lg:grid-cols-3">
-        <div className="space-y-10 lg:col-span-2">
+      <div className="grid gap-x-12 gap-y-12 lg:grid-cols-3">
+        <div className="space-y-8 lg:col-span-2">
           {step === 0 && (
             <Panel>
               <PanelHeader title="Installation location" />
@@ -122,7 +122,7 @@ export function AssessmentPage() {
                 <Field label="Roof age" htmlFor="roofAge" hint="Roofs under 10 years old qualify for standard racking." error={errors.roofAge}>
                   <div className="flex items-center gap-2">
                     <Input id="roofAge" inputMode="numeric" value={draft.roofAge} onChange={(e) => update({ roofAge: e.target.value })} aria-invalid={Boolean(errors.roofAge)} />
-                    <span className="text-[15px] text-fg-2">years</span>
+                    <span className="text-body text-fg-2">years</span>
                   </div>
                 </Field>
               </PanelBody>
@@ -136,25 +136,25 @@ export function AssessmentPage() {
                 <Field label="Plane length" htmlFor="length" error={errors.length}>
                   <div className="flex items-center gap-2">
                     <Input id="length" inputMode="decimal" value={draft.length} onChange={(e) => update({ length: e.target.value })} aria-invalid={Boolean(errors.length)} />
-                    <span className="text-[15px] text-fg-2">m</span>
+                    <span className="text-body text-fg-2">m</span>
                   </div>
                 </Field>
                 <Field label="Plane width" htmlFor="width" hint={Number.isFinite(areaM2) && areaM2 > 0 ? `About ${fmt.num(areaM2)} m² usable plane` : undefined} error={errors.width}>
                   <div className="flex items-center gap-2">
                     <Input id="width" inputMode="decimal" value={draft.width} onChange={(e) => update({ width: e.target.value })} aria-invalid={Boolean(errors.width)} />
-                    <span className="text-[15px] text-fg-2">m</span>
+                    <span className="text-body text-fg-2">m</span>
                   </div>
                 </Field>
                 <Field label="Tilt angle" htmlFor="tilt" hint="28° south is the optimal pitch for Springfield." error={errors.tilt}>
                   <div className="flex items-center gap-2">
                     <Input id="tilt" inputMode="numeric" value={draft.tilt} onChange={(e) => update({ tilt: e.target.value })} aria-invalid={Boolean(errors.tilt)} />
-                    <span className="text-[15px] text-fg-2">degrees</span>
+                    <span className="text-body text-fg-2">degrees</span>
                   </div>
                 </Field>
                 <Field label="Azimuth" htmlFor="azimuth" hint="180° is due south." error={errors.azimuth}>
                   <div className="flex items-center gap-2">
                     <Input id="azimuth" inputMode="numeric" value={draft.azimuth} onChange={(e) => update({ azimuth: e.target.value })} aria-invalid={Boolean(errors.azimuth)} />
-                    <span className="text-[15px] text-fg-2">degrees</span>
+                    <span className="text-body text-fg-2">degrees</span>
                   </div>
                 </Field>
               </PanelBody>
@@ -174,12 +174,12 @@ export function AssessmentPage() {
               />
               <PanelBody>
                 {errors.photos && (
-                  <p className="mb-3 text-[13px] text-danger" role="alert">
+                  <p className="mb-3 text-meta text-danger" role="alert">
                     {errors.photos}
                   </p>
                 )}
                 {draft.photos.length === 0 ? (
-                  <div className="rounded-md border border-dashed border-line-2 px-6 py-10 text-center text-[14px] text-fg-2">
+                  <div className="rounded-control border border-dashed border-line-2 px-6 py-8 text-center text-body text-fg-2">
                     No photos yet. PNG, JPG or HEIC up to 15 MB each.
                   </div>
                 ) : (
@@ -190,7 +190,7 @@ export function AssessmentPage() {
                         <Button
                           size="sm"
                           variant="ghost"
-                          className="mt-1.5"
+                          className="mt-2"
                           onClick={() => update({ photos: draft.photos.filter((x) => x.name !== p.name) })}
                         >
                           Remove
@@ -273,14 +273,14 @@ export function AssessmentPage() {
           )}
         </div>
 
-        <div className="space-y-8 lg:border-l lg:border-line lg:pl-10">
+        <div className="space-y-8 lg:border-l lg:border-line lg:pl-8">
           <Panel>
             <PanelHeader title="Preliminary potential" action={<Badge tone="ok">Grade {assessmentResult.grade}</Badge>} />
             <PanelBody>
-              <p className="tnum text-3xl font-semibold tracking-tight">
-                {assessmentResult.capacityKw} <span className="text-base font-normal text-fg-2">kW capacity</span>
+              <p className="tnum text-display font-semibold">
+                {assessmentResult.capacityKw} <span className="text-body font-normal text-fg-2">kW capacity</span>
               </p>
-              <p className="mt-1 text-[14px] text-fg-2">
+              <p className="mt-1 text-body text-fg-2">
                 Based on {assessmentResult.usableAreaM2} m² of roof plane at {draft.tilt}° pitch and southern Illinois irradiance.
               </p>
               <KeyValueList
@@ -307,7 +307,7 @@ export function AssessmentPage() {
                 aria-invalid={Boolean(errors.ownerConfirmed)}
               />
               {errors.ownerConfirmed && (
-                <p className="text-[13px] text-danger" role="alert">
+                <p className="text-meta text-danger" role="alert">
                   {errors.ownerConfirmed}
                 </p>
               )}
@@ -319,7 +319,7 @@ export function AssessmentPage() {
             </PanelBody>
           </Panel>
 
-          <div className="px-1 text-[14px] text-fg-2">
+          <div className="px-1 text-body text-fg-2">
             <p className="font-medium text-fg">Assigned specialist</p>
             <p>
               {assessmentResult.specialist.name}, {assessmentResult.specialist.cert}
@@ -342,7 +342,7 @@ export function AssessmentPage() {
             ) : (
               <>
                 {Object.keys(errors).length > 0 && (
-                  <span className="text-[14px] text-danger" role="alert">
+                  <span className="text-body text-danger" role="alert">
                     Fix the highlighted fields to submit.
                   </span>
                 )}
@@ -357,11 +357,11 @@ export function AssessmentPage() {
 
       <dialog
         ref={dialogRef}
-        className="m-auto w-full max-w-md rounded-md border border-line-2 bg-canvas p-0 text-fg backdrop:bg-fg/40"
+        className="m-auto w-full max-w-md rounded-control border border-line-2 bg-canvas p-0 text-fg backdrop:bg-fg/40"
       >
         <div className="p-6">
-          <h2 className="text-lg font-semibold">Assessment sent</h2>
-          <p className="mt-2 text-[15px] text-fg-2">
+          <h2 className="text-title font-semibold">Assessment sent</h2>
+          <p className="mt-2 text-body text-fg-2">
             Your self-assessment for {draft.address.split(',')[0]} is logged. {assessmentResult.specialist.name} will finalize
             the preliminary system design and reach out within 2 business hours.
           </p>
@@ -376,7 +376,7 @@ export function AssessmentPage() {
             <ButtonLink to={ROUTES.customer.estimate} variant="primary">
               View preliminary estimate
             </ButtonLink>
-            <Link to={ROUTES.customer.home} className="inline-flex h-9 items-center px-2 text-[15px] text-fg-2 hover:text-fg">
+            <Link to={ROUTES.customer.home} className="inline-flex h-9 items-center px-2 text-body text-fg-2 hover:text-fg">
               Return to overview
             </Link>
           </div>

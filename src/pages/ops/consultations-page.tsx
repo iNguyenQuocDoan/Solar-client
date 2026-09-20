@@ -79,7 +79,7 @@ export function OpsConsultationsPage() {
             }
           />
 
-          <StatRow className="mb-10 md:grid-cols-3 lg:max-w-2xl">
+          <StatRow className="mb-12 md:grid-cols-3 lg:max-w-2xl">
             <Stat label="Active intake" value={data.stats.activeIntake} />
             <Stat label="Average triage SLA" value={data.stats.avgTriageSla} />
             <Stat
@@ -105,7 +105,7 @@ export function OpsConsultationsPage() {
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                     placeholder="Customer, request ID or address"
-                    className="h-9 w-full rounded-md border border-line-2 bg-transparent px-3 text-[15px] placeholder:text-fg-3 focus:border-fg"
+                    className="h-9 w-full rounded-control border border-line-2 bg-transparent px-3 text-body placeholder:text-fg-3 focus:border-fg"
                   />
                 </label>
                 <Select aria-label="Assessment status" className="w-auto">
@@ -150,7 +150,7 @@ export function OpsConsultationsPage() {
                 />
               </PanelBody>
             ) : (
-              <Table className="min-w-[1040px] text-[14px]">
+              <Table className="min-w-[1040px] text-body">
                 <thead>
                   <tr>
                     <Th className="w-10">
@@ -191,18 +191,18 @@ export function OpsConsultationsPage() {
                         />
                       </Td>
                       <Td>
-                        <p className="text-[14px] font-medium whitespace-nowrap">
+                        <p className="text-body font-medium whitespace-nowrap">
                           {r.id}
                         </p>
-                        <p className="text-[13px] text-fg-3">{r.type}</p>
+                        <p className="text-meta text-fg-3">{r.type}</p>
                       </Td>
                       <Td>
                         <p className="font-medium">{r.homeowner}</p>
-                        <p className="text-[13px] text-fg-3">{r.contact}</p>
+                        <p className="text-meta text-fg-3">{r.contact}</p>
                       </Td>
                       <Td>
                         <p className="whitespace-nowrap">{r.address}</p>
-                        <p className="text-[13px] whitespace-nowrap text-fg-3">{r.city}</p>
+                        <p className="text-meta whitespace-nowrap text-fg-3">{r.city}</p>
                       </Td>
                       <Td>
                         <p className="tnum whitespace-nowrap">
@@ -211,8 +211,8 @@ export function OpsConsultationsPage() {
                         <p
                           className={
                             r.slaTone === "warn"
-                              ? "text-[13px] font-medium text-warn"
-                              : "text-[13px] text-fg-3"
+                              ? "text-meta font-medium text-warn"
+                              : "text-meta text-fg-3"
                           }
                         >
                           {r.sla}
@@ -220,7 +220,7 @@ export function OpsConsultationsPage() {
                       </Td>
                       <Td>
                         <Badge tone={r.stageTone}>{r.stageLabel}</Badge>
-                        <p className="mt-0.5 text-[13px] text-fg-3">
+                        <p className="mt-1 text-meta text-fg-3">
                           {r.highlights.map((h) => h.label).join(', ')}
                         </p>
                       </Td>
@@ -248,7 +248,7 @@ export function OpsConsultationsPage() {
               </Table>
             )}
 
-            <PanelFooter className="justify-between text-[14px] text-fg-2">
+            <PanelFooter className="justify-between text-body text-fg-2">
               <span className="tnum">
                 Showing 1 to {rows.length} of {data.total} consultation requests
               </span>
@@ -299,17 +299,17 @@ export function OpsConsultationsPage() {
             </PanelFooter>
           </Panel>
 
-          <Panel className="mt-10">
+          <Panel className="mt-12">
             <PanelHeader title="Austin metro snapshot" />
             <PanelBody className="grid gap-6 md:grid-cols-3 md:divide-x md:divide-line">
               <div className="md:pr-6">
-                <p className="text-[14px] font-medium">
+                <p className="text-body font-medium">
                   Lead density by cluster
                 </p>
                 <ul className="mt-3 space-y-3">
                   {data.region.clusters.map((c) => (
                     <li key={c.area}>
-                      <div className="mb-1 flex justify-between text-[14px]">
+                      <div className="mb-1 flex justify-between text-body">
                         <span>{c.area}</span>
                         <span className="tnum text-fg-2">
                           {c.pct}% ({c.leads} leads)
@@ -322,34 +322,34 @@ export function OpsConsultationsPage() {
                     </li>
                   ))}
                 </ul>
-                <p className="mt-3 text-[13px] text-fg-3">
+                <p className="mt-3 text-meta text-fg-3">
                   {data.region.clusterNote}
                 </p>
               </div>
               <div className="md:px-6">
-                <p className="text-[14px] font-medium">Triage response</p>
-                <p className="tnum mt-2 text-2xl font-semibold">
+                <p className="text-body font-medium">Triage response</p>
+                <p className="tnum mt-2 text-figure font-semibold">
                   {data.region.triage.avg}
                 </p>
-                <p className="text-[13px] text-fg-2">
+                <p className="text-meta text-fg-2">
                   Average first contact to scheduling
                 </p>
                 <Badge tone="ok" className="mt-2">
                   {data.region.triage.health}
                 </Badge>
-                <p className="mt-3 text-[13px] text-fg-3">
+                <p className="mt-3 text-meta text-fg-3">
                   {data.region.triage.note}
                 </p>
               </div>
               <div className="md:pl-6">
-                <p className="text-[14px] font-medium">Field survey fleet</p>
-                <p className="tnum mt-2 text-2xl font-semibold">
+                <p className="text-body font-medium">Field survey fleet</p>
+                <p className="tnum mt-2 text-figure font-semibold">
                   {data.region.fleet.vans}{" "}
-                  <span className="text-[15px] font-normal text-fg-2">
+                  <span className="text-body font-normal text-fg-2">
                     vans active
                   </span>
                 </p>
-                <p className="mt-1 text-[14px] text-fg-2">
+                <p className="mt-1 text-body text-fg-2">
                   Next certified roof technician slot:{" "}
                   <span className="font-medium text-fg">
                     {data.region.fleet.nextSlot}

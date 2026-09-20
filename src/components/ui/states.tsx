@@ -6,7 +6,7 @@ export function Skeleton({ className }: { className?: string }) {
   return (
     <div
       aria-hidden
-      className={cx("animate-pulse rounded-sm bg-surface-3", className)}
+      className={cx("animate-pulse rounded-control bg-surface-3", className)}
     />
   );
 }
@@ -19,7 +19,7 @@ export function PageSkeleton() {
         <Skeleton className="h-7 w-72" />
         <Skeleton className="h-4 w-96 max-w-full" />
       </div>
-      <div className="grid grid-cols-2 gap-5 md:grid-cols-4">
+      <div className="grid grid-cols-2 gap-6 md:grid-cols-4">
         {Array.from({ length: 4 }).map((_, i) => (
           <div key={i} className="space-y-2">
             <Skeleton className="h-3 w-24" />
@@ -27,7 +27,7 @@ export function PageSkeleton() {
           </div>
         ))}
       </div>
-      <div className="grid gap-5 lg:grid-cols-3">
+      <div className="grid gap-6 lg:grid-cols-3">
         <Skeleton className="h-64 lg:col-span-2" />
         <Skeleton className="h-64" />
       </div>
@@ -49,13 +49,13 @@ export function EmptyState({
   return (
     <div
       className={cx(
-        "rounded-md border border-dashed border-line-2 px-6 py-10 text-center",
+        "rounded-container border border-dashed border-line-2 px-6 py-8 text-center",
         className,
       )}
     >
-      <p className="text-[15px] font-medium text-fg">{title}</p>
+      <p className="text-body font-medium text-fg">{title}</p>
       {description && (
-        <p className="mx-auto mt-1 max-w-[46ch] text-[14px] text-fg-2">
+        <p className="mx-auto mt-1 max-w-[46ch] text-body text-fg-2">
           {description}
         </p>
       )}
@@ -76,10 +76,10 @@ export function ErrorState({
       role="alert"
       className="border-l-2 border-danger pl-4"
     >
-      <p className="text-sm font-medium text-danger">
+      <p className="text-meta font-medium text-danger">
         Something went wrong while loading this page.
       </p>
-      {message && <p className="mt-1 text-[13px] text-fg-2">{message}</p>}
+      {message && <p className="mt-1 text-meta text-fg-2">{message}</p>}
       {onRetry && (
         <Button size="sm" className="mt-3" onClick={onRetry}>
           Try again

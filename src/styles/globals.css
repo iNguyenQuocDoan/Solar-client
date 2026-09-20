@@ -5,6 +5,11 @@
   Design tokens. Semantic names only; every component reads these.
   Theme follows the system preference and can be pinned with
   <html data-theme="light|dark">.
+
+  Text colour rule:
+    fg    primary text, headings, figures
+    fg-2  secondary body: descriptions, key labels, supporting sentences
+    fg-3  tertiary meta: timestamps, captions, units, hints, sub-lines in lists
 */
 :root {
   color-scheme: light;
@@ -14,7 +19,8 @@
   --surface-2: oklch(95.6% 0.006 110);
   --surface-3: oklch(92.5% 0.008 110);
   --line: oklch(87% 0.01 110);
-  --line-2: oklch(72% 0.014 120);
+  /* Control boundary: 3.5:1 on canvas, 3.2:1 on surface-2 (WCAG 1.4.11). */
+  --line-2: oklch(62% 0.014 120);
 
   --fg: oklch(20% 0.012 130);
   --fg-2: oklch(44% 0.014 130);
@@ -48,7 +54,7 @@
     --surface-2: oklch(22% 0.008 130);
     --surface-3: oklch(27% 0.009 130);
     --line: oklch(30% 0.01 130);
-    --line-2: oklch(45% 0.012 130);
+    --line-2: oklch(52% 0.012 130);
 
     --fg: oklch(95% 0.006 150);
     --fg-2: oklch(74% 0.012 150);
@@ -82,7 +88,7 @@
   --surface-2: oklch(22% 0.008 130);
   --surface-3: oklch(27% 0.009 130);
   --line: oklch(30% 0.01 130);
-  --line-2: oklch(45% 0.012 130);
+  --line-2: oklch(52% 0.012 130);
 
   --fg: oklch(95% 0.006 150);
   --fg-2: oklch(74% 0.012 150);
@@ -135,18 +141,44 @@
   --color-info-soft: var(--info-soft);
   --color-ring: var(--ring);
 
-  /* Shape rule: everything square-ish. Controls 3px, media 4px. Nothing is a pill except avatars. */
-  --radius-sm: 2px;
-  --radius-md: 3px;
-  --radius-lg: 4px;
+  /*
+    Type scale: five steps, one family. Adjacent steps differ by at least 2px.
+      meta     13/20  timestamps, captions, units, hints, sub-lines
+      body     15/22  everything else
+      title    18/24  panel and section titles (h2)
+      figure   24/28  key figures, page title on small screens
+      display  32/36  page title, hero figure
+    The Tailwind defaults (text-xs … text-4xl) are removed so a size outside
+    the scale cannot be reached by accident.
+  */
+  --text-*: initial;
+  --text-meta: 13px;
+  --text-meta--line-height: 20px;
+  --text-body: 15px;
+  --text-body--line-height: 22px;
+  --text-title: 18px;
+  --text-title--line-height: 24px;
+  --text-title--letter-spacing: -0.01em;
+  --text-figure: 24px;
+  --text-figure--line-height: 28px;
+  --text-figure--letter-spacing: -0.015em;
+  --text-display: 32px;
+  --text-display--line-height: 36px;
+  --text-display--letter-spacing: -0.02em;
+
+  /* Shape rule: two radii. Controls and small fills 3px, containers (media, dialog, tinted blocks) 6px. Only avatars are round. */
+  --radius-*: initial;
+  --radius-control: 3px;
+  --radius-container: 6px;
 
   --shadow-pop: var(--shadow-pop);
 }
 
 @layer base {
+  /* Root stays 16px so every rem-based spacing and size lands on whole pixels. */
   html {
     font-family: var(--font-sans);
-    font-size: 15px;
+    font-size: 16px;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
     font-feature-settings: 'tnum' 0;
@@ -154,14 +186,14 @@
   body {
     background: var(--color-canvas);
     color: var(--color-fg);
-    line-height: 1.5;
+    font-size: var(--text-body);
+    line-height: var(--text-body--line-height);
     overscroll-behavior-y: none;
   }
   h1,
   h2,
   h3,
   h4 {
-    letter-spacing: -0.015em;
     text-wrap: balance;
   }
   /* Mono is retired: identifiers use the text face at a muted weight. */
@@ -171,7 +203,7 @@
   :focus-visible {
     outline: 2px solid var(--color-ring);
     outline-offset: 2px;
-    border-radius: var(--radius-sm);
+    border-radius: var(--radius-control);
   }
   ::selection {
     background: var(--color-accent-soft);
@@ -206,6 +238,19 @@
   }
   .press:active:not(:disabled) {
     transform: translateY(1px);
+  }
+  /*
+    Horizontal scroller that shades whichever edge still has content
+    (the shade is painted with background-attachment: scroll, the cover with local,
+    so it only shows while there is something to scroll to).
+  */
+  .scroll-x {
+    overflow-x: auto;
+    background:
+      linear-gradient(90deg, var(--color-canvas) 40%, transparent) left / 48px 100% no-repeat local,
+      linear-gradient(270deg, var(--color-canvas) 40%, transparent) right / 48px 100% no-repeat local,
+      linear-gradient(90deg, oklch(from var(--color-fg) l c h / 0.12), transparent) left / 16px 100% no-repeat scroll,
+      linear-gradient(270deg, oklch(from var(--color-fg) l c h / 0.12), transparent) right / 16px 100% no-repeat scroll;
   }
 }
 

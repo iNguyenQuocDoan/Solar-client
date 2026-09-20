@@ -33,18 +33,18 @@ export function ProjectPage() {
             }
           />
 
-          <Panel className="mb-10">
+          <Panel className="mb-12">
             <PanelHeader title="Installation lifecycle" description={`Stage ${data.stage} of ${data.stageCount}`} />
             <PanelBody>
               <Stepper steps={data.steps} />
             </PanelBody>
           </Panel>
 
-          <Panel className="mb-10">
+          <Panel className="mb-12">
             <PanelBody className="grid gap-6 md:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
               <div>
-                <h2 className="text-lg font-semibold tracking-tight">{data.current.title}</h2>
-                <p className="mt-1 max-w-[60ch] text-[14px] text-fg-2">{data.current.summary}</p>
+                <h2 className="text-title font-semibold">{data.current.title}</h2>
+                <p className="mt-1 max-w-[60ch] text-body text-fg-2">{data.current.summary}</p>
               </div>
               <div className="space-y-3">
                 <KeyValueList
@@ -54,7 +54,7 @@ export function ProjectPage() {
                   ]}
                 />
                 <div>
-                  <div className="mb-1.5 flex justify-between text-[13px] text-fg-2">
+                  <div className="mb-2 flex justify-between text-meta text-fg-2">
                     <span>Overall progress</span>
                     <span className="tnum">{data.current.pct}%</span>
                   </div>
@@ -64,8 +64,8 @@ export function ProjectPage() {
             </PanelBody>
           </Panel>
 
-          <div className="grid gap-x-12 gap-y-10 lg:grid-cols-3">
-            <div className="space-y-10 lg:col-span-2">
+          <div className="grid gap-x-12 gap-y-12 lg:grid-cols-3">
+            <div className="space-y-8 lg:col-span-2">
               <Panel>
                 <PanelHeader title="Daily build schedule" description="Pacific time" />
                 <PanelBody>
@@ -73,17 +73,17 @@ export function ProjectPage() {
                     {data.schedule.map((s) => (
                       <li key={s.title} className="grid gap-3 py-4 first:pt-0 last:pb-0 sm:grid-cols-[96px_1fr]">
                         <div>
-                          <p className="text-[14px] font-medium">{s.day}</p>
-                          <p className="text-[13px] text-fg-3">{s.when}</p>
+                          <p className="text-body font-medium">{s.day}</p>
+                          <p className="text-meta text-fg-3">{s.when}</p>
                         </div>
                         <div className="min-w-0">
                           <div className="flex flex-wrap items-center gap-2">
                             <p className="font-medium">{s.title}</p>
                             <Badge tone={s.tone}>{s.status}</Badge>
                           </div>
-                          <p className="mt-1 text-[14px] text-fg-2">{s.body}</p>
+                          <p className="mt-1 text-body text-fg-2">{s.body}</p>
                           {'notes' in s && (
-                            <ul className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-[13px] text-fg-3">
+                            <ul className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-meta text-fg-3">
                               {s.notes.map((n) => (
                                 <li key={n}>{n}</li>
                               ))}
@@ -91,7 +91,7 @@ export function ProjectPage() {
                           )}
                           {'progress' in s && (
                             <div className="mt-3">
-                              <div className="mb-1.5 flex justify-between text-[13px] text-fg-2">
+                              <div className="mb-2 flex justify-between text-meta text-fg-2">
                                 <span>
                                   {s.progress.done} of {s.progress.total} panels mounted and tested
                                 </span>
@@ -110,11 +110,11 @@ export function ProjectPage() {
               <Panel>
                 <PanelHeader title="Installation photos" description="Inspection imagery from the original survey through hardware mounting." />
                 <PanelBody>
-                  <ul className="grid gap-5 sm:grid-cols-3">
+                  <ul className="grid gap-6 sm:grid-cols-3">
                     {data.photos.map((p) => (
                       <li key={p.caption}>
                         <Photo src={p.src} alt={p.caption} caption={p.caption} meta={p.meta} />
-                        <p className="mt-1.5 text-[14px] text-fg-2">{p.body}</p>
+                        <p className="mt-2 text-body text-fg-2">{p.body}</p>
                       </li>
                     ))}
                   </ul>
@@ -122,7 +122,7 @@ export function ProjectPage() {
               </Panel>
             </div>
 
-            <div className="space-y-8 lg:border-l lg:border-line lg:pl-10">
+            <div className="space-y-8 lg:border-l lg:border-line lg:pl-8">
               <Panel>
                 <PanelHeader title="Field crew" description={data.crew.squad} />
                 <PanelBody className="space-y-4">
@@ -130,10 +130,10 @@ export function ProjectPage() {
                     <Avatar name={data.crew.lead.name} />
                     <div className="min-w-0">
                       <p className="font-medium">{data.crew.lead.name}</p>
-                      <p className="text-[14px] text-fg-2">
+                      <p className="text-body text-fg-2">
                         {data.crew.lead.role}, {data.crew.lead.exp}
                       </p>
-                      <a href={`tel:${data.crew.lead.phone}`} className="tnum text-[14px] text-accent-fg hover:underline">
+                      <a href={`tel:${data.crew.lead.phone}`} className="tnum text-body text-accent-fg hover:underline">
                         {data.crew.lead.phone}
                       </a>
                     </div>
@@ -155,7 +155,7 @@ export function ProjectPage() {
                   <ActivityList items={data.feed} />
                 </PanelBody>
                 <PanelFooter>
-                  <Link to="#" className="text-[14px] text-accent-fg hover:underline">
+                  <Link to="#" className="text-body text-accent-fg hover:underline">
                     View complete dispatch log ({data.feedTotal} entries)
                   </Link>
                 </PanelFooter>
@@ -166,10 +166,10 @@ export function ProjectPage() {
                 <PanelBody>
                   <ul className="divide-y divide-line">
                     {data.documents.map((d) => (
-                      <li key={d.name} className="flex items-center justify-between gap-3 py-2.5 first:pt-0 last:pb-0">
+                      <li key={d.name} className="flex items-center justify-between gap-3 py-3 first:pt-0 last:pb-0">
                         <div className="min-w-0">
-                          <p className="text-[14px] font-medium">{d.name}</p>
-                          <p className="text-[13px] text-fg-3">{d.meta}</p>
+                          <p className="text-body font-medium">{d.name}</p>
+                          <p className="text-meta text-fg-3">{d.meta}</p>
                         </div>
                         <Button size="sm" variant="ghost" aria-label={`Download ${d.name}`}>
                           Download
@@ -182,7 +182,7 @@ export function ProjectPage() {
             </div>
           </div>
 
-          <p className="mt-6 border-t border-line pt-4 text-[14px] text-fg-2">
+          <p className="mt-6 border-t border-line pt-4 text-body text-fg-2">
             Questions about noise, access or power shutoff?{' '}
             <Link to={ROUTES.customer.assistant} className="text-accent-fg hover:underline">
               Message the concierge

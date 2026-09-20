@@ -52,7 +52,7 @@ export function ManagePortfolioPage() {
             }
           />
 
-          <StatRow className="mb-10">
+          <StatRow className="mb-12">
             {data.stats.map((s) => (
               <Stat key={s.label} label={s.label} value={s.value} note={s.note} tone={s.tone} />
             ))}
@@ -68,7 +68,7 @@ export function ManagePortfolioPage() {
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                     placeholder="Project ID, customer name or address"
-                    className="h-9 w-full rounded-md border border-line-2 bg-transparent px-3 text-[15px] placeholder:text-fg-3 focus:border-fg"
+                    className="h-9 w-full rounded-control border border-line-2 bg-transparent px-3 text-body placeholder:text-fg-3 focus:border-fg"
                   />
                 </label>
                 <Select aria-label="Sales staff" className="w-auto">
@@ -95,7 +95,7 @@ export function ManagePortfolioPage() {
                 <EmptyState title="No projects match" description="Try another stage or clear the search." />
               </PanelBody>
             ) : (
-              <Table className="min-w-[1080px] text-[14px]">
+              <Table className="min-w-[1080px] text-body">
                 <thead>
                   <tr>
                     <Th className="w-10">
@@ -139,41 +139,41 @@ export function ManagePortfolioPage() {
                         />
                       </Td>
                       <Td>
-                        <Link to={withId(ROUTES.manage.project, r.id)} className="text-[14px] font-medium whitespace-nowrap text-accent-fg hover:underline">
+                        <Link to={withId(ROUTES.manage.project, r.id)} className="text-body font-medium whitespace-nowrap text-accent-fg hover:underline">
                           {r.id}
                         </Link>
-                        <p className="text-[13px] text-fg-3">{r.type}</p>
+                        <p className="text-meta text-fg-3">{r.type}</p>
                       </Td>
                       <Td>
                         <p className="font-medium">{r.customer}</p>
-                        <p className="text-[13px] text-fg-3">{r.address}</p>
+                        <p className="text-meta text-fg-3">{r.address}</p>
                       </Td>
                       <Td>
                         <span className="flex items-center gap-2 whitespace-nowrap">
                           <Avatar name={r.owner} size="sm" />
                           <span>
                             <span className="block">{r.owner}</span>
-                            <span className="block text-[13px] text-fg-3">{r.territory}</span>
+                            <span className="block text-meta text-fg-3">{r.territory}</span>
                           </span>
                         </span>
                       </Td>
                       <Td className="min-w-40">
                         <p className="whitespace-nowrap">{r.system}</p>
-                        <p className="text-[13px] text-fg-3">{r.hardware}</p>
+                        <p className="text-meta text-fg-3">{r.hardware}</p>
                       </Td>
                       <Td className="min-w-52">
                         <p className="whitespace-nowrap">{r.stageLabel}</p>
-                        <p className="text-[13px] text-fg-3">{r.stageNote}</p>
+                        <p className="text-meta text-fg-3">{r.stageNote}</p>
                         <div className="mt-2 flex items-center gap-2">
                           <Progress value={r.pct} label={`${r.id} progress`} className="w-24" />
-                          <span className="tnum text-[13px] text-fg-2">
+                          <span className="tnum text-meta text-fg-2">
                             {r.pct}% {r.progressLabel.toLowerCase()}
                           </span>
                         </div>
                       </Td>
                       <Td className="whitespace-nowrap">
                         <p className="tnum">{r.milestone}</p>
-                        <p className="tnum text-[13px] text-fg-3">PTO {r.pto}</p>
+                        <p className="tnum text-meta text-fg-3">PTO {r.pto}</p>
                       </Td>
                       <Td>
                         <Badge tone={r.healthTone}>{r.health}</Badge>
@@ -189,7 +189,7 @@ export function ManagePortfolioPage() {
               </Table>
             )}
 
-            <PanelFooter className="justify-between text-[14px] text-fg-2">
+            <PanelFooter className="justify-between text-body text-fg-2">
               <span className="tnum">
                 Showing 1 to {rows.length} of {data.total} projects. Contract value in view {fmt.usd(data.valueInView)}.
               </span>
@@ -213,7 +213,7 @@ export function ManagePortfolioPage() {
             </PanelFooter>
           </Panel>
 
-          <div className="mt-10 grid gap-x-12 gap-y-10 lg:grid-cols-3 lg:items-start">
+          <div className="mt-12 grid gap-x-12 gap-y-12 lg:grid-cols-3 lg:items-start">
             <Panel className="lg:col-span-2">
               <PanelHeader
                 title="Interconnection queue"
@@ -221,12 +221,12 @@ export function ManagePortfolioPage() {
                 action={<Badge>Average {data.interconnection.avg}</Badge>}
               />
               <PanelBody>
-                <dl className="grid grid-cols-2 gap-5 md:grid-cols-4">
+                <dl className="grid grid-cols-2 gap-6 md:grid-cols-4">
                   {data.interconnection.queues.map((q) => (
-                    <div key={q.utility} className="md:border-l md:border-line md:pl-5 md:first:border-0 md:first:pl-0">
-                      <dt className="text-[13px] text-fg-2">{q.utility}</dt>
-                      <dd className="tnum text-2xl font-semibold">
-                        {q.days} <span className="text-[15px] font-normal text-fg-2">days</span>
+                    <div key={q.utility} className="md:border-l md:border-line md:pl-6 md:first:border-0 md:first:pl-0">
+                      <dt className="text-meta text-fg-2">{q.utility}</dt>
+                      <dd className="tnum text-figure font-semibold">
+                        {q.days} <span className="text-body font-normal text-fg-2">days</span>
                       </dd>
                       <dd>
                         <Badge tone={q.tone}>{q.note}</Badge>
@@ -235,7 +235,7 @@ export function ManagePortfolioPage() {
                   ))}
                 </dl>
               </PanelBody>
-              <PanelFooter className="justify-between text-[14px] text-fg-2">
+              <PanelFooter className="justify-between text-body text-fg-2">
                 <span>{data.interconnection.refresh}</span>
                 <Link to="#" className="text-accent-fg hover:underline">
                   Download AHJ bottleneck report
@@ -248,10 +248,10 @@ export function ManagePortfolioPage() {
               <PanelBody>
                 <ul className="divide-y divide-line">
                   {data.crews.rows.map((c) => (
-                    <li key={c.crew} className="flex items-center justify-between gap-3 py-2.5 first:pt-0 last:pb-0">
+                    <li key={c.crew} className="flex items-center justify-between gap-3 py-3 first:pt-0 last:pb-0">
                       <div className="min-w-0">
-                        <p className="text-[14px] font-medium">{c.crew}</p>
-                        <p className="text-[13px] text-fg-3">{c.task}</p>
+                        <p className="text-body font-medium">{c.crew}</p>
+                        <p className="text-meta text-fg-3">{c.task}</p>
                       </div>
                       <Badge tone={c.tone}>{c.status}</Badge>
                     </li>

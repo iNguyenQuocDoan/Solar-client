@@ -32,15 +32,15 @@ export function ConsultationPage() {
             actions={<Button>Download summary</Button>}
           />
 
-          <Panel className="mb-10">
+          <Panel className="mb-12">
             <PanelHeader title={data.status} description={`Estimated step completion: ${data.estimatedCompletion}`} />
             <PanelBody>
               <Stepper steps={data.steps} />
             </PanelBody>
           </Panel>
 
-          <div className="grid gap-x-12 gap-y-10 lg:grid-cols-3">
-            <div className="space-y-10 lg:col-span-2">
+          <div className="grid gap-x-12 gap-y-12 lg:grid-cols-3">
+            <div className="space-y-8 lg:col-span-2">
               <Panel>
                 <PanelHeader title="Assigned solar expert" action={<Badge tone="ok">Assigned and active</Badge>} />
                 <PanelBody className="space-y-4">
@@ -48,10 +48,10 @@ export function ConsultationPage() {
                     <Avatar name={advisor.name} size="lg" />
                     <div className="min-w-0">
                       <p className="font-medium">{advisor.name}</p>
-                      <p className="text-[14px] text-fg-2">
+                      <p className="text-body text-fg-2">
                         {advisor.title}, {advisor.team}
                       </p>
-                      <div className="mt-1.5 flex flex-wrap gap-x-4 gap-y-1 text-[14px]">
+                      <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-body">
                         <a href={`tel:${advisor.phone}`} className="inline-flex items-center gap-1 text-fg-2 hover:text-fg"> {advisor.phone}
                         </a>
                         <a href={`mailto:${advisor.email}`} className="inline-flex items-center gap-1 text-fg-2 hover:text-fg"> {advisor.email}
@@ -105,14 +105,14 @@ export function ConsultationPage() {
               </Panel>
             </div>
 
-            <div className="space-y-8 lg:border-l lg:border-line lg:pl-10">
+            <div className="space-y-8 lg:border-l lg:border-line lg:pl-8">
               <Panel>
                 <PanelHeader title="What happens on Oct 24?" />
-                <PanelBody className="space-y-4 text-[14px]">
+                <PanelBody className="space-y-4 text-body">
                   <p className="text-fg-2">
                     The survey takes {data.inspection.duration}. {data.inspection.access}
                   </p>
-                  <ul className="space-y-1.5">
+                  <ul className="space-y-2">
                     {data.inspection.checklist.map((c) => (
                       <li key={c} className="flex gap-2">
                         <span aria-hidden className="mt-2 size-1 shrink-0 rounded-full bg-fg-3" />
@@ -138,14 +138,14 @@ export function ConsultationPage() {
               <Panel>
                 <PanelHeader title="Notes for the inspector" />
                 <PanelBody className="space-y-4">
-                  <blockquote className="border-l-2 border-line-2 pl-3 text-[14px] text-fg-2">
+                  <blockquote className="border-l-2 border-line-2 pl-3 text-body text-fg-2">
                     <p>{data.homeownerNote}</p>
-                    <footer className="mt-1 text-[13px] text-fg-3">{data.homeownerNoteMeta}</footer>
+                    <footer className="mt-1 text-meta text-fg-3">{data.homeownerNoteMeta}</footer>
                   </blockquote>
                   {notes.map((n, i) => (
-                    <blockquote key={i} className="border-l-2 border-accent pl-3 text-[14px] text-fg-2">
+                    <blockquote key={i} className="border-l-2 border-accent pl-3 text-body text-fg-2">
                       <p>{n}</p>
-                      <footer className="mt-1 text-[13px] text-fg-3">Eleanor V., just now</footer>
+                      <footer className="mt-1 text-meta text-fg-3">Eleanor V., just now</footer>
                     </blockquote>
                   ))}
                   <form
@@ -175,7 +175,7 @@ export function ConsultationPage() {
             </div>
           </div>
 
-          <p className="mt-6 border-t border-line pt-4 text-[14px] text-fg-2">
+          <p className="mt-6 border-t border-line pt-4 text-body text-fg-2">
             Need help with this booking? {data.support}{' '}
             <a href="tel:18005557652" className="text-accent-fg hover:underline">
               Call desk support

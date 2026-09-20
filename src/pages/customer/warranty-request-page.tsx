@@ -70,16 +70,16 @@ export function WarrantyRequestPage() {
             </Notice>
           )}
 
-          <Panel className="mb-10">
+          <Panel className="mb-12">
             <PanelBody className="grid gap-6 lg:grid-cols-[minmax(0,3fr)_minmax(0,1fr)]">
               <div>
-                <p className="mb-3 text-[14px] font-medium">Ticket lifecycle, stage 4 of 5</p>
+                <p className="mb-3 text-body font-medium">Ticket lifecycle, stage 4 of 5</p>
                 <Stepper steps={data.steps} />
               </div>
               <div className="lg:border-l lg:border-line lg:pl-6">
-                <p className="text-[14px] text-fg-2">Service window</p>
-                <p className="mt-0.5 text-lg font-semibold">{data.window.date}</p>
-                <p className="tnum text-[14px] text-fg-2">{data.window.time}</p>
+                <p className="text-body text-fg-2">Service window</p>
+                <p className="mt-1 text-title font-semibold">{data.window.date}</p>
+                <p className="tnum text-body text-fg-2">{data.window.time}</p>
                 <Badge tone="ok" className="mt-2">
                   {data.window.access}
                 </Badge>
@@ -87,14 +87,14 @@ export function WarrantyRequestPage() {
             </PanelBody>
           </Panel>
 
-          <div className="grid gap-x-12 gap-y-10 lg:grid-cols-3">
-            <div className="space-y-10 lg:col-span-2">
+          <div className="grid gap-x-12 gap-y-12 lg:grid-cols-3">
+            <div className="space-y-8 lg:col-span-2">
               <Panel>
                 <PanelHeader title="Reported issue" action={<Badge>Logged by homeowner</Badge>} />
                 <PanelBody className="space-y-4">
-                  <blockquote className="border-l-2 border-line-2 pl-3 text-[15px] text-fg-2">{data.description}</blockquote>
+                  <blockquote className="border-l-2 border-line-2 pl-3 text-body text-fg-2">{data.description}</blockquote>
                   <div>
-                    <p className="mb-2 text-[14px] font-medium">Attached images ({data.photos.length})</p>
+                    <p className="mb-2 text-body font-medium">Attached images ({data.photos.length})</p>
                     <ul className="grid gap-4 sm:grid-cols-2">
                       {data.photos.map((p) => (
                         <li key={p.caption}>
@@ -109,33 +109,33 @@ export function WarrantyRequestPage() {
               <Panel>
                 <PanelHeader title="Technician assessment and plan" description={`Dispatch brief prepared by ${data.technician.name}`} />
                 <PanelBody className="space-y-4">
-                  <blockquote className="border-l-2 border-accent pl-3 text-[15px] text-fg-2">{data.plan.brief}</blockquote>
+                  <blockquote className="border-l-2 border-accent pl-3 text-body text-fg-2">{data.plan.brief}</blockquote>
                   <KeyValueList items={data.plan.impact} />
                 </PanelBody>
               </Panel>
 
               <Panel>
                 <PanelHeader title="Service verification" description={`Submission baseline versus post-service sign-off. Protocol ${data.verification.protocol}.`} />
-                <PanelBody className="grid gap-5 sm:grid-cols-2">
+                <PanelBody className="grid gap-6 sm:grid-cols-2">
                   <div>
-                    <p className="text-[14px] font-medium">Incident reference</p>
-                    <p className="text-[13px] text-fg-3">Submitted {data.verification.before.date}</p>
+                    <p className="text-body font-medium">Incident reference</p>
+                    <p className="text-meta text-fg-3">Submitted {data.verification.before.date}</p>
                     <Photo src={data.verification.before.src} alt="Client baseline photo" className="mt-2" />
-                    <p className="mt-2 text-[14px] text-fg-2">{data.verification.before.body}</p>
+                    <p className="mt-2 text-body text-fg-2">{data.verification.before.body}</p>
                   </div>
                   <div>
-                    <p className="text-[14px] font-medium">Post-service inspection</p>
-                    <p className="text-[13px] text-fg-3">Pending visit</p>
-                    <div className="mt-2 flex aspect-[4/3] items-center justify-center rounded-lg border border-dashed border-line-2 px-4 text-center text-[14px] text-fg-2">
+                    <p className="text-body font-medium">Post-service inspection</p>
+                    <p className="text-meta text-fg-3">Pending visit</p>
+                    <div className="mt-2 flex aspect-[4/3] items-center justify-center rounded-container border border-dashed border-line-2 px-4 text-center text-body text-fg-2">
                       Awaiting field completion
                     </div>
-                    <p className="mt-2 text-[14px] text-fg-2">{data.verification.after}</p>
+                    <p className="mt-2 text-body text-fg-2">{data.verification.after}</p>
                   </div>
                 </PanelBody>
               </Panel>
             </div>
 
-            <div className="space-y-8 lg:border-l lg:border-line lg:pl-10">
+            <div className="space-y-8 lg:border-l lg:border-line lg:pl-8">
               <Panel>
                 <PanelHeader title="Certified specialist" action={<Badge tone="ok">Confirmed</Badge>} />
                 <PanelBody className="space-y-4">
@@ -143,8 +143,8 @@ export function WarrantyRequestPage() {
                     <Avatar name={data.technician.name} size="lg" />
                     <div className="min-w-0">
                       <p className="font-medium">{data.technician.name}</p>
-                      <p className="text-[14px] text-fg-2">{data.technician.cert}</p>
-                      <p className="text-[13px] text-fg-3">{data.technician.exp}</p>
+                      <p className="text-body text-fg-2">{data.technician.cert}</p>
+                      <p className="text-meta text-fg-3">{data.technician.exp}</p>
                     </div>
                   </div>
                   <KeyValueList
@@ -169,9 +169,9 @@ export function WarrantyRequestPage() {
                   <Button className="w-full justify-start" onClick={() => open('reschedule')}>
                     Reschedule visit
                   </Button>
-                  <a href="tel:18005557652" className="flex h-9 items-center justify-between rounded-md px-3 text-[15px] text-fg-2 hover:bg-surface-2">
+                  <a href="tel:18005557652" className="flex h-9 items-center justify-between rounded-control px-3 text-body text-fg-2 hover:bg-surface-2">
                     <span>Call support desk</span>
-                    <span className="tnum text-[13px]">{data.supportPhone}</span>
+                    <span className="tnum text-meta">{data.supportPhone}</span>
                   </a>
                 </PanelBody>
               </Panel>
@@ -187,19 +187,19 @@ export function WarrantyRequestPage() {
 
           <dialog
             ref={dialogRef}
-            className="m-auto w-full max-w-md rounded-md border border-line-2 bg-canvas p-0 text-fg backdrop:bg-fg/40"
+            className="m-auto w-full max-w-md rounded-control border border-line-2 bg-canvas p-0 text-fg backdrop:bg-fg/40"
           >
             <form
               method="dialog"
               className="p-6"
               onSubmit={() => setSent(modal === 'message' ? `Your note was delivered to ${data.technician.name}.` : 'Your reschedule request was sent to dispatch. Expect confirmation within one business day.')}
             >
-              <h2 className="text-lg font-semibold">{MODALS[modal].title}</h2>
-              <p className="mt-1 text-[15px] text-fg-2">{MODALS[modal].description}</p>
+              <h2 className="text-title font-semibold">{MODALS[modal].title}</h2>
+              <p className="mt-1 text-body text-fg-2">{MODALS[modal].description}</p>
               <Field label="Message" htmlFor="modal-text" className="mt-4">
                 <Textarea id="modal-text" value={text} onChange={(e) => setText(e.target.value)} placeholder={MODALS[modal].placeholder} />
               </Field>
-              <div className="mt-5 flex justify-end gap-2">
+              <div className="mt-6 flex justify-end gap-2">
                 <Button type="button" variant="ghost" onClick={() => dialogRef.current?.close()}>
                   Cancel
                 </Button>

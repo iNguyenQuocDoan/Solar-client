@@ -7,7 +7,7 @@ export function Avatar({ name, size = 'md', className }: { name: string; size?: 
     .slice(0, 2)
     .map((p) => p[0]?.toUpperCase())
     .join('')
-  const dims = size === 'sm' ? 'size-7 text-[11px]' : size === 'lg' ? 'size-12 text-base' : 'size-9 text-xs'
+  const dims = size === 'sm' ? 'size-7 text-meta' : size === 'lg' ? 'size-12 text-body' : 'size-9 text-meta'
   return (
     <span
       aria-hidden
