@@ -2,10 +2,12 @@ import { useMemo, useState } from 'react'
 import { Badge, type Tone } from '@/components/ui/badge'
 import { Button, ButtonLink } from '@/components/ui/button'
 import { FilterChips } from '@/components/ui/chips'
-import { Checkbox, Select } from '@/components/ui/field'
+import { Checkbox, Input, Select } from '@/components/ui/field'
+import { FilterBar } from '@/components/ui/filter-bar'
+import { ListRow } from '@/components/ui/list-row'
 import { Progress } from '@/components/ui/lists'
 import { PageHeader } from '@/components/ui/page-header'
-import { Panel, PanelBody, PanelFooter } from '@/components/ui/panel'
+import { Panel, PanelFooter } from '@/components/ui/panel'
 import { Stat, StatRow } from '@/components/ui/stat'
 import { EmptyState } from '@/components/ui/states'
 import { ROUTES, withId } from '@/constants/routes'
@@ -64,18 +66,29 @@ export function FieldTasksPage() {
           </StatRow>
 
           <Panel>
-            <PanelBody className="space-y-4">
-              <div className="flex flex-wrap items-center gap-3">
-                <label className="relative block w-full md:max-w-sm">
-                  <span className="sr-only">Search work orders</span>
-                  <input
-                    type="search"
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                    placeholder="Customer name, street address or work order"
-                    className="h-9 w-full rounded-control border border-line-2 bg-transparent px-3 text-body placeholder:text-fg-3 focus:border-fg"
-                  />
-                </label>
+            <FilterBar
+              className="mb-0"
+              tabs={
+                <div className="grid gap-4 lg:grid-cols-2">
+                  <div>
+                    <p className="mb-1 text-meta text-fg-3">Timeline</p>
+                    <FilterChips chips={[...data.timelines]} value={timeline} onChange={setTimeline} label="Timeline" />
+                  </div>
+                  <div>
+                    <p className="mb-1 text-meta text-fg-3">Type</p>
+                    <FilterChips chips={[...data.types]} value={type} onChange={setType} label="Job type" />
+                  </div>
+                </div>
+              }
+            >
+                <Input
+                  type="search"
+                  aria-label="Search work orders"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder="Customer name, street address or work order"
+                  className="w-full md:max-w-sm"
+                />
                 <Select aria-label="Priority" className="w-auto" value={priority} onChange={(e) => setPriority(e.target.value)}>
                   <option value="all">Priority: all levels</option>
                   <option value="Urgent">Urgent / critical</option>
@@ -90,18 +103,7 @@ export function FieldTasksPage() {
                   <option>Reschedule batch</option>
                   <option>Export offline packets</option>
                 </Select>
-              </div>
-              <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
-                <div className="flex items-center gap-2">
-                  <span className="text-meta text-fg-2">Timeline</span>
-                  <FilterChips chips={[...data.timelines]} value={timeline} onChange={setTimeline} label="Timeline" />
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-meta text-fg-2">Type</span>
-                  <FilterChips chips={[...data.types]} value={type} onChange={setType} label="Job type" />
-                </div>
-              </div>
-            </PanelBody>
+            </FilterBar>
           </Panel>
 
           {rows.length === 0 ? (
@@ -124,11 +126,10 @@ export function FieldTasksPage() {
               }
             />
           ) : (
-            <ul className="mt-8 divide-y divide-line border-t border-line">
+            <ul className="mt-2 divide-y divide-line">
               {rows.map((o) => (
-                <li key={o.id} className="py-6">
-                  <Panel>
-                    <PanelBody className="grid gap-4 md:grid-cols-[180px_1fr_auto]">
+                <ListRow key={o.id}>
+                    <div className="grid gap-4 md:grid-cols-[180px_1fr_auto]">
                       <div>
                         <Checkbox
                           checked={selected.has(o.id)}
@@ -146,13 +147,14 @@ export function FieldTasksPage() {
                       <div className="min-w-0">
                         <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
                           <p className="text-body font-semibold">{o.customer}</p>
-                          <a href={`tel:${o.phone}`} className="tnum inline-flex items-center gap-1 text-body text-accent-fg hover:underline"> {o.phone}
+                          <a href={`tel:${o.phone}`} className="tnum text-body text-accent-fg hover:underline">
+                            {o.phone}
                           </a>
                         </div>
                         <p className="text-body text-fg-2">
                           {o.address} <span className="text-fg-3">({o.distance})</span>
                         </p>
-                        <div className="mt-3 rounded-control bg-surface-2 px-3 py-3 text-body">
+                        <div className="mt-3 rounded-container bg-surface-2 px-3 py-3 text-body">
                           <div className="flex flex-wrap justify-between gap-x-4 gap-y-1">
                             <p className="font-medium">{o.scope}</p>
                             <p className="tnum text-fg-2">{o.progress}</p>
@@ -162,10 +164,8 @@ export function FieldTasksPage() {
                         </div>
                       </div>
 
-                      <div className="flex flex-row gap-2 md:w-40 md:flex-col">
-                        <Button size="sm" variant={o.actionPrimary ? 'primary' : 'secondary'}>
-                          {o.action}
-                        </Button>
+                      <div className="flex flex-row flex-wrap gap-3 md:w-40 md:flex-col">
+                        <Button size="sm">{o.action}</Button>
                         {DETAIL_ROUTE[o.kind] ? (
                           <ButtonLink to={DETAIL_ROUTE[o.kind]!} size="sm" variant="ghost">
                             Work order
@@ -176,9 +176,8 @@ export function FieldTasksPage() {
                           </Button>
                         )}
                       </div>
-                    </PanelBody>
-                  </Panel>
-                </li>
+                    </div>
+                </ListRow>
               ))}
             </ul>
           )}
