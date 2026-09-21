@@ -1,8 +1,8 @@
 import type { TaskBucket, TaskPriorityFilter, TaskTypeFilter } from '@/components/tech/TaskFilterBar'
 import type { ViewOption } from '@/components/tech/ViewToggle'
-import type { ButtonVariant } from '@/components/ui/Button'
-import type { StatusVariant } from '@/components/ui/StatusBadge'
-import type { TaskAccent } from '@/components/ui/TaskCard'
+import type { ButtonVariant } from '@/components/stitch-ui/Button'
+import type { StatusVariant } from '@/components/stitch-ui/StatusBadge'
+import type { TaskAccent } from '@/components/stitch-ui/TaskCard'
 
 /*
  * Dữ liệu giả cho /tech/tasks, nội dung lấy từ my_tasks_1/screen.png.

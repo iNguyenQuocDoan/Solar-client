@@ -1,6 +1,6 @@
 import * as CheckboxPrimitive from '@radix-ui/react-checkbox'
 import type { ComponentProps } from 'react'
-import { Icon } from '@/components/ui/Icon'
+import { Icon } from '@/components/stitch-ui/Icon'
 import { cn } from '@/lib/cn'
 
 export type CheckboxProps = Omit<ComponentProps<typeof CheckboxPrimitive.Root>, 'asChild'> & {

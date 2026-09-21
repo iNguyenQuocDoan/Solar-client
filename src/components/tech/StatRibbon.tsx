@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { Card } from '@/components/ui/Card'
-import { Icon } from '@/components/ui/Icon'
+import { Card } from '@/components/stitch-ui/Card'
+import { Icon } from '@/components/stitch-ui/Icon'
 import { cn } from '@/lib/cn'
 
 /* Dải "Quick Status / Daily Metrics" đầu technician_dashboard_1: 4 ô số liệu + trạng thái điều phối. */

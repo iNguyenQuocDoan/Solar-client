@@ -1,5 +1,5 @@
-import { Card } from '@/components/ui/Card'
-import { Icon } from '@/components/ui/Icon'
+import { Card } from '@/components/stitch-ui/Card'
+import { Icon } from '@/components/stitch-ui/Icon'
 import { cn } from '@/lib/cn'
 
 /* Thẻ trong khối "Recently Completed" của technician_dashboard_1. */

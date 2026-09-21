@@ -1,10 +1,10 @@
-import type { ChecklistState } from '@/components/ui/ChecklistItem'
-import type { SelectOption } from '@/components/ui/FilterBar'
-import type { MetricCardProps } from '@/components/ui/MetricCard'
-import type { PhotoCardProps } from '@/components/ui/PhotoGrid'
-import type { StatusVariant } from '@/components/ui/StatusBadge'
-import type { TaskCardProps } from '@/components/ui/TaskCard'
-import type { TimelineStepState } from '@/components/ui/Timeline'
+import type { ChecklistState } from '@/components/stitch-ui/ChecklistItem'
+import type { SelectOption } from '@/components/stitch-ui/FilterBar'
+import type { MetricCardProps } from '@/components/stitch-ui/MetricCard'
+import type { PhotoCardProps } from '@/components/stitch-ui/PhotoGrid'
+import type { StatusVariant } from '@/components/stitch-ui/StatusBadge'
+import type { TaskCardProps } from '@/components/stitch-ui/TaskCard'
+import type { TimelineStepState } from '@/components/stitch-ui/Timeline'
 
 /* Dữ liệu demo cho /styleguide, lấy từ nội dung các screen.png. */
 

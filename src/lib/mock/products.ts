@@ -1,6 +1,6 @@
-import type { Crumb } from '@/components/ui/Breadcrumb'
-import type { SelectOption } from '@/components/ui/FilterBar'
-import type { MetricCardProps } from '@/components/ui/MetricCard'
+import type { Crumb } from '@/components/stitch-ui/Breadcrumb'
+import type { SelectOption } from '@/components/stitch-ui/FilterBar'
+import type { MetricCardProps } from '@/components/stitch-ui/MetricCard'
 
 /* Dữ liệu giả cho /admin/products, nội dung lấy từ product_catalogue/screen.png. */
 

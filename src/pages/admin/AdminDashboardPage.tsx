@@ -17,7 +17,7 @@ import {
   PageHeader,
   ProgressBar,
   StatusBadge,
-} from '@/components/ui'
+} from '@/components/stitch-ui'
 import { ROUTES } from '@/constants/routes'
 import { cn } from '@/lib/cn'
 import {

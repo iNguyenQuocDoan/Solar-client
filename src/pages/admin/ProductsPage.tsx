@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react'
 import { ProductDetailPanel } from '@/components/admin/ProductDetailPanel'
 import { ProductFilterBar, type ProductFilterValue } from '@/components/admin/ProductFilterBar'
 import { ProductsTable } from '@/components/admin/ProductsTable'
-import { Button, IconButton, MetricCard, PageHeader, StatusBadge } from '@/components/ui'
+import { Button, IconButton, MetricCard, PageHeader, StatusBadge } from '@/components/stitch-ui'
 import {
   inventoryPanel,
   productCategoryOptions,

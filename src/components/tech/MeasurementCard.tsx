@@ -1,4 +1,4 @@
-import { Icon, ProgressBar } from '@/components/ui'
+import { Icon, ProgressBar } from '@/components/stitch-ui'
 import { cn } from '@/lib/cn'
 
 /*

@@ -3,7 +3,7 @@ import { CompletedTaskCard } from '@/components/tech/CompletedTaskCard'
 import { ScheduleList } from '@/components/tech/ScheduleList'
 import { SectionHeading } from '@/components/tech/SectionHeading'
 import { StatRibbon } from '@/components/tech/StatRibbon'
-import { TaskCard } from '@/components/ui'
+import { TaskCard } from '@/components/stitch-ui'
 import { techTaskPath } from '@/constants/routes'
 import {
   completedHeading,

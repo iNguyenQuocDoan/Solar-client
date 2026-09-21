@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { Icon } from '@/components/ui/Icon'
+import { Icon } from '@/components/stitch-ui/Icon'
 import { cn } from '@/lib/cn'
 
 /* Dải thông báo trên bảng my_tasks_1: icon + câu tóm tắt bên trái, ghi chú bên phải. */

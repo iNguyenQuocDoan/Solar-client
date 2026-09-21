@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { Button } from '@/components/ui/Button'
-import { Icon } from '@/components/ui/Icon'
+import { Button } from '@/components/stitch-ui/Button'
+import { Icon } from '@/components/stitch-ui/Icon'
 import { cn } from '@/lib/cn'
 
 /* Khối "Add Field Note" bên phải task_detail_timeline: nút ghi âm, ô nhập và nút gửi. */

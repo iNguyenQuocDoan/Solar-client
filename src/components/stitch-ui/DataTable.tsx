@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
-import { Card } from '@/components/ui/Card'
-import { Checkbox } from '@/components/ui/Checkbox'
-import { Pagination, type PaginationProps } from '@/components/ui/Pagination'
+import { Card } from '@/components/stitch-ui/Card'
+import { Checkbox } from '@/components/stitch-ui/Checkbox'
+import { Pagination, type PaginationProps } from '@/components/stitch-ui/Pagination'
 import { cn } from '@/lib/cn'
 
 /*

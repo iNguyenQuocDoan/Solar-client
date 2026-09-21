@@ -9,7 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
   Icon,
-} from '@/components/ui'
+} from '@/components/stitch-ui'
 
 /*
  * "Customer Handover & Signature" của installation_task_checklist: tóm tắt hạng mục bàn giao,

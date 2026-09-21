@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { Checkbox, Icon, StatusBadge } from '@/components/ui'
+import { Checkbox, Icon, StatusBadge } from '@/components/stitch-ui'
 import { cn } from '@/lib/cn'
 
 /*

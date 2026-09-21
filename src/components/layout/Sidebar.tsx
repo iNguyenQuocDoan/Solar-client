@@ -1,5 +1,5 @@
 import { Link, NavLink } from 'react-router'
-import { Icon } from '@/components/ui/Icon'
+import { Icon } from '@/components/stitch-ui/Icon'
 import { cn } from '@/lib/cn'
 import type { NavItem } from '@/lib/nav'
 

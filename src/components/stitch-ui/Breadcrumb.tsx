@@ -1,6 +1,6 @@
 import { Fragment } from 'react'
 import { Link } from 'react-router'
-import { Icon } from '@/components/ui/Icon'
+import { Icon } from '@/components/stitch-ui/Icon'
 import { cn } from '@/lib/cn'
 
 export type Crumb = { label: string; href?: string; icon?: string }

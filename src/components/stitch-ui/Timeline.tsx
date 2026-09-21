@@ -1,5 +1,5 @@
 import type { CSSProperties } from 'react'
-import { Icon } from '@/components/ui/Icon'
+import { Icon } from '@/components/stitch-ui/Icon'
 import { cn } from '@/lib/cn'
 
 /* Theo "Lifecycle Progression" trong task_detail_timeline: stepper ngang, mỗi stage là một ô. */

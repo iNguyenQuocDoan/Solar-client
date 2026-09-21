@@ -1,8 +1,8 @@
 import { useId, type ReactNode } from 'react'
-import { Checkbox } from '@/components/ui/Checkbox'
-import { Icon } from '@/components/ui/Icon'
-import { ProgressBar } from '@/components/ui/ProgressBar'
-import { StatusBadge } from '@/components/ui/StatusBadge'
+import { Checkbox } from '@/components/stitch-ui/Checkbox'
+import { Icon } from '@/components/stitch-ui/Icon'
+import { ProgressBar } from '@/components/stitch-ui/ProgressBar'
+import { StatusBadge } from '@/components/stitch-ui/StatusBadge'
 import { cn } from '@/lib/cn'
 
 /* Theo checklist trong installation_task_checklist: done / pending / active (đang làm, có progress). */

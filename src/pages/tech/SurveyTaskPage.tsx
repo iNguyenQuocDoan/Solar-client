@@ -10,7 +10,7 @@ import {
   SurveyHomeownerAside,
   TaskHeaderCard,
 } from '@/components/tech'
-import { Button, Icon, StatusBadge, Switch, Toast, buttonVariants } from '@/components/ui'
+import { Button, Icon, StatusBadge, Switch, Toast, buttonVariants } from '@/components/stitch-ui'
 import { surveyPhotosPath } from '@/constants/routes'
 import { cn } from '@/lib/cn'
 import { notFound } from '@/lib/notFound'

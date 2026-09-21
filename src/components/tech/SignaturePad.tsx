@@ -1,5 +1,5 @@
 import { useImperativeHandle, useRef, useState, type PointerEvent as ReactPointerEvent, type Ref } from 'react'
-import { Icon } from '@/components/ui'
+import { Icon } from '@/components/stitch-ui'
 import { cn } from '@/lib/cn'
 
 /*

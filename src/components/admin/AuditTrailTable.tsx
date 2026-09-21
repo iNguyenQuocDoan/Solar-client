@@ -1,5 +1,5 @@
-import { DataTable, type DataTableColumn } from '@/components/ui/DataTable'
-import { StatusBadge, type StatusVariant } from '@/components/ui/StatusBadge'
+import { DataTable, type DataTableColumn } from '@/components/stitch-ui/DataTable'
+import { StatusBadge, type StatusVariant } from '@/components/stitch-ui/StatusBadge'
 import { cn } from '@/lib/cn'
 
 /* "Enterprise Audit Trail" trong admin_dashboard: bảng gọn 5 cột. */

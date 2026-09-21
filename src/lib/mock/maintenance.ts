@@ -10,7 +10,7 @@ import type { InfoTileData } from '@/components/tech/InfoTile'
 import type { JobHeaderAction } from '@/components/tech/JobHeaderCard'
 import type { StatTileProps } from '@/components/tech/StatTile'
 import type { YieldSeriesPoint } from '@/components/tech/YieldImpactChart'
-import type { StatusVariant } from '@/components/ui/StatusBadge'
+import type { StatusVariant } from '@/components/stitch-ui/StatusBadge'
 
 /** Một bước của "Standardized Protocol Checklist"; bước đang đo có bảng số liệu riêng. */
 export type MaintenanceStep = ExecutionStepItem & {

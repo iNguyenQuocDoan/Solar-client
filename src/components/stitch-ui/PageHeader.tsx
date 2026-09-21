@@ -1,8 +1,8 @@
 import type { ReactNode } from 'react'
-import { Breadcrumb, type Crumb } from '@/components/ui/Breadcrumb'
+import { Breadcrumb, type Crumb } from '@/components/stitch-ui/Breadcrumb'
 import { cn } from '@/lib/cn'
 
-export type { Crumb } from '@/components/ui/Breadcrumb'
+export type { Crumb } from '@/components/stitch-ui/Breadcrumb'
 
 /* Theo phần đầu trang admin_dashboard / user_management: breadcrumb, eyebrow, h1 headline-xl, mô tả, nút. */
 export type PageHeaderProps = {

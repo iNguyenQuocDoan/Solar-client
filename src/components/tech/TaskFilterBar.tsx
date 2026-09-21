@@ -1,5 +1,5 @@
-import { Card } from '@/components/ui/Card'
-import { FilterChip, SearchInput } from '@/components/ui/FilterBar'
+import { Card } from '@/components/stitch-ui/Card'
+import { FilterChip, SearchInput } from '@/components/stitch-ui/FilterBar'
 import { cn } from '@/lib/cn'
 
 /* Thanh lọc trong my_tasks_1: hàng chip thời gian + ưu tiên, hàng omnibar + chip loại việc. */

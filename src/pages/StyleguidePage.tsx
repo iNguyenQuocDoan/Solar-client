@@ -20,7 +20,7 @@ import {
   TaskCard,
   Timeline,
   type DataTableColumn,
-} from '@/components/ui'
+} from '@/components/stitch-ui'
 import { ROUTES } from '@/constants/routes'
 import {
   styleguideBadges,

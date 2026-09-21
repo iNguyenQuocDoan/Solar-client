@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { Icon } from '@/components/ui/Icon'
+import { Icon } from '@/components/stitch-ui/Icon'
 import { cn } from '@/lib/cn'
 
 /*

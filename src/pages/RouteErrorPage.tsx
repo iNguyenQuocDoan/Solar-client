@@ -1,7 +1,7 @@
 import { Link, isRouteErrorResponse, useRouteError } from 'react-router'
-import { Button } from '@/components/ui/Button'
-import { Card } from '@/components/ui/Card'
-import { Icon } from '@/components/ui/Icon'
+import { Button } from '@/components/stitch-ui/Button'
+import { Card } from '@/components/stitch-ui/Card'
+import { Icon } from '@/components/stitch-ui/Icon'
 import { ROUTES } from '@/constants/routes'
 
 /*

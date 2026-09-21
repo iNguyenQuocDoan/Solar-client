@@ -26,7 +26,7 @@ import {
   StatusBadge,
   Toast,
   buttonVariants,
-} from '@/components/ui'
+} from '@/components/stitch-ui'
 import { ROUTES, surveyPhotosPath } from '@/constants/routes'
 import { cn } from '@/lib/cn'
 import { notFound } from '@/lib/notFound'

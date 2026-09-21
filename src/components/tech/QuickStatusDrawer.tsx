@@ -1,5 +1,5 @@
 import { useEffect, useId, useState } from 'react'
-import { Button, Checkbox, Icon, IconButton } from '@/components/ui'
+import { Button, Checkbox, Icon, IconButton } from '@/components/stitch-ui'
 import { cn } from '@/lib/cn'
 import { quickStatusDrawer } from '@/lib/mock/tasks'
 import type { WorkOrder } from '@/lib/mock/tasks'

@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 import { InfoTileGrid, type InfoTileData } from '@/components/tech/InfoTile'
-import { Card, Icon, ProgressBar, StatusBadge, type StatusVariant } from '@/components/ui'
+import { Card, Icon, ProgressBar, StatusBadge, type StatusVariant } from '@/components/stitch-ui'
 import { cn } from '@/lib/cn'
 
 /*
