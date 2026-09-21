@@ -1,6 +1,6 @@
-import { IconButton } from '@/components/ui/Button'
-import { Card } from '@/components/ui/Card'
-import { SearchInput, Select, type SelectOption } from '@/components/ui/FilterBar'
+import { IconButton } from '@/components/stitch-ui/Button'
+import { Card } from '@/components/stitch-ui/Card'
+import { SearchInput, Select, type SelectOption } from '@/components/stitch-ui/FilterBar'
 import { cn } from '@/lib/cn'
 
 /* Thanh lọc trong product_catalogue: search + 3 select + nút xóa lọc. State do trang giữ. */

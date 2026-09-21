@@ -1,4 +1,4 @@
-import { Card, Icon } from '@/components/ui'
+import { Card, Icon } from '@/components/stitch-ui'
 import { cn } from '@/lib/cn'
 
 /*

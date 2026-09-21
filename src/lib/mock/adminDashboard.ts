@@ -2,8 +2,8 @@ import type { AuditEntry } from '@/components/admin/AuditTrailTable'
 import type { DistributionSegment } from '@/components/admin/DistributionBar'
 import type { KeyValueRowProps } from '@/components/admin/KeyValueList'
 import type { QuickLaunchCardProps } from '@/components/admin/QuickLaunchCard'
-import type { MetricCardProps } from '@/components/ui/MetricCard'
-import type { Crumb } from '@/components/ui/PageHeader'
+import type { MetricCardProps } from '@/components/stitch-ui/MetricCard'
+import type { Crumb } from '@/components/stitch-ui/PageHeader'
 import { ROUTES } from '@/constants/routes'
 
 /* Dữ liệu giả cho /admin, nội dung lấy từ admin_dashboard/screen.png. */

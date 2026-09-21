@@ -1,5 +1,5 @@
 import { Link } from 'react-router'
-import { Icon } from '@/components/ui/Icon'
+import { Icon } from '@/components/stitch-ui/Icon'
 import { cn } from '@/lib/cn'
 
 /* "Governance Quick Launchpads" trong admin_dashboard: nav phụ dạng thẻ bấm được. */

@@ -12,7 +12,7 @@ import {
   SearchInput,
   StatusBadge,
   Toast,
-} from '@/components/ui'
+} from '@/components/stitch-ui'
 import { cn } from '@/lib/cn'
 import {
   auditTrailFooter,

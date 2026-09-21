@@ -1,5 +1,5 @@
-import type { Crumb } from '@/components/ui/Breadcrumb'
-import type { StatusVariant } from '@/components/ui/StatusBadge'
+import type { Crumb } from '@/components/stitch-ui/Breadcrumb'
+import type { StatusVariant } from '@/components/stitch-ui/StatusBadge'
 import { ROUTES } from '@/constants/routes'
 
 /* Dữ liệu giả cho /admin/roles, nội dung lấy từ roles_permissions/screen.png. */

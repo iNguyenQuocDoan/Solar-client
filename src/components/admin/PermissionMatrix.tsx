@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { Checkbox } from '@/components/ui/Checkbox'
-import { Icon } from '@/components/ui/Icon'
+import { Checkbox } from '@/components/stitch-ui/Checkbox'
+import { Icon } from '@/components/stitch-ui/Icon'
 import { cn } from '@/lib/cn'
 import type { PermissionModule } from '@/lib/mock/roles'
 

@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
-import { Card } from '@/components/ui/Card'
-import { Icon } from '@/components/ui/Icon'
-import { StatusBadge } from '@/components/ui/StatusBadge'
+import { Card } from '@/components/stitch-ui/Card'
+import { Icon } from '@/components/stitch-ui/Icon'
+import { StatusBadge } from '@/components/stitch-ui/StatusBadge'
 import { cn } from '@/lib/cn'
 
 /*

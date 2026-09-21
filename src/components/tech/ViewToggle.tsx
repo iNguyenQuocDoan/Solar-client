@@ -1,4 +1,4 @@
-import { Icon } from '@/components/ui/Icon'
+import { Icon } from '@/components/stitch-ui/Icon'
 import { cn } from '@/lib/cn'
 
 /* Nút chuyển chế độ xem "List Matrix / Bento Cards" ở đầu my_tasks_1. */

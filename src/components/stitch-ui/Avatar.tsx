@@ -1,4 +1,4 @@
-import { Icon } from '@/components/ui/Icon'
+import { Icon } from '@/components/stitch-ui/Icon'
 import { cn } from '@/lib/cn'
 
 export type AvatarTone = 'primary' | 'secondary' | 'tertiary' | 'error' | 'neutral'

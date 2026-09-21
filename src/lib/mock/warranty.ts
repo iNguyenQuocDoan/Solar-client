@@ -5,7 +5,7 @@
  */
 
 import type { MeasurementReading } from '@/components/tech/MeasurementCard'
-import type { StatusVariant } from '@/components/ui/StatusBadge'
+import type { StatusVariant } from '@/components/stitch-ui/StatusBadge'
 
 export type WarrantyStat = {
   label: string

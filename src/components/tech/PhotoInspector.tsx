@@ -1,7 +1,7 @@
-import { Button } from '@/components/ui/Button'
-import { Card } from '@/components/ui/Card'
-import { Icon } from '@/components/ui/Icon'
-import { StatusBadge } from '@/components/ui/StatusBadge'
+import { Button } from '@/components/stitch-ui/Button'
+import { Card } from '@/components/stitch-ui/Card'
+import { Icon } from '@/components/stitch-ui/Icon'
+import { StatusBadge } from '@/components/stitch-ui/StatusBadge'
 import { cn } from '@/lib/cn'
 import type { SurveyPhotoAsset, SurveyPhotoDoc } from '@/lib/mock/surveyPhotos'
 

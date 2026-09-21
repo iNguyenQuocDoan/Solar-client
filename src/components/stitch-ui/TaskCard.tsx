@@ -1,7 +1,7 @@
-import { Button, type ButtonVariant } from '@/components/ui/Button'
-import { Card } from '@/components/ui/Card'
-import { Icon } from '@/components/ui/Icon'
-import { StatusBadge, type StatusVariant } from '@/components/ui/StatusBadge'
+import { Button, type ButtonVariant } from '@/components/stitch-ui/Button'
+import { Card } from '@/components/stitch-ui/Card'
+import { Icon } from '@/components/stitch-ui/Icon'
+import { StatusBadge, type StatusVariant } from '@/components/stitch-ui/StatusBadge'
 import { cn } from '@/lib/cn'
 
 /* Theo 4 thẻ "Today's Assignments" trong technician_dashboard_1 (my_tasks_1 là dạng bảng). */

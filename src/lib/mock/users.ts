@@ -1,7 +1,7 @@
-import type { SelectOption } from '@/components/ui/FilterBar'
-import type { MetricCardProps } from '@/components/ui/MetricCard'
-import type { Crumb } from '@/components/ui/PageHeader'
-import type { StatusVariant } from '@/components/ui/StatusBadge'
+import type { SelectOption } from '@/components/stitch-ui/FilterBar'
+import type { MetricCardProps } from '@/components/stitch-ui/MetricCard'
+import type { Crumb } from '@/components/stitch-ui/PageHeader'
+import type { StatusVariant } from '@/components/stitch-ui/StatusBadge'
 
 /* Dữ liệu giả cho /admin/users, nội dung lấy từ user_management/screen.png. */
 

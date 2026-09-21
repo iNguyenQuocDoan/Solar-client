@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { UserFormDialog, type UserFormValues } from '@/components/admin/UserFormDialog'
 import { UsersTable } from '@/components/admin/UsersTable'
-import { Button, FilterBar, Icon, MetricCard, PageHeader, StatusBadge } from '@/components/ui'
+import { Button, FilterBar, Icon, MetricCard, PageHeader, StatusBadge } from '@/components/stitch-ui'
 import { cn } from '@/lib/cn'
 import {
   users as initialUsers,

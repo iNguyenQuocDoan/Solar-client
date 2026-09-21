@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
-import { Button } from '@/components/ui/Button'
-import { Card } from '@/components/ui/Card'
-import { Icon } from '@/components/ui/Icon'
+import { Button } from '@/components/stitch-ui/Button'
+import { Card } from '@/components/stitch-ui/Card'
+import { Icon } from '@/components/stitch-ui/Icon'
 import { cn } from '@/lib/cn'
 
 /* Theo lưới ảnh trong survey_image_documentation: thẻ ảnh có tag, giờ, GPS, ghi chú + ô trống để thêm ảnh. */

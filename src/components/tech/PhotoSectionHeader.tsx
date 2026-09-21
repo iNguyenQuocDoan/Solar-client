@@ -1,5 +1,5 @@
-import { Icon } from '@/components/ui/Icon'
-import { StatusBadge } from '@/components/ui/StatusBadge'
+import { Icon } from '@/components/stitch-ui/Icon'
+import { StatusBadge } from '@/components/stitch-ui/StatusBadge'
 import { cn } from '@/lib/cn'
 
 /*

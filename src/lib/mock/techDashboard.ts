@@ -1,9 +1,9 @@
 import type { CompletedTask } from '@/components/tech/CompletedTaskCard'
 import type { ScheduleDay } from '@/components/tech/ScheduleList'
 import type { StatRibbonItem } from '@/components/tech/StatRibbon'
-import type { ButtonVariant } from '@/components/ui/Button'
-import type { StatusVariant } from '@/components/ui/StatusBadge'
-import type { TaskAccent, TaskSpec } from '@/components/ui/TaskCard'
+import type { ButtonVariant } from '@/components/stitch-ui/Button'
+import type { StatusVariant } from '@/components/stitch-ui/StatusBadge'
+import type { TaskAccent, TaskSpec } from '@/components/stitch-ui/TaskCard'
 
 /*
  * Dữ liệu giả cho /tech, nội dung lấy từ technician_dashboard_1/screen.png.

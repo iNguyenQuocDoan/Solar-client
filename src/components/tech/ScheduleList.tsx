@@ -1,6 +1,6 @@
-import { Card } from '@/components/ui/Card'
-import { Icon } from '@/components/ui/Icon'
-import { StatusBadge, type StatusVariant } from '@/components/ui/StatusBadge'
+import { Card } from '@/components/stitch-ui/Card'
+import { Icon } from '@/components/stitch-ui/Icon'
+import { StatusBadge, type StatusVariant } from '@/components/stitch-ui/StatusBadge'
 import { cn } from '@/lib/cn'
 
 /* Khối "Upcoming Schedule (3-Day)" trong technician_dashboard_1: nhóm theo ngày, mỗi việc là một hàng. */

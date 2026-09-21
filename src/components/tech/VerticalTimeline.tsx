@@ -1,7 +1,7 @@
-import { Avatar, type AvatarTone } from '@/components/ui/Avatar'
-import { Card } from '@/components/ui/Card'
-import { Icon } from '@/components/ui/Icon'
-import { StatusBadge, type StatusVariant } from '@/components/ui/StatusBadge'
+import { Avatar, type AvatarTone } from '@/components/stitch-ui/Avatar'
+import { Card } from '@/components/stitch-ui/Card'
+import { Icon } from '@/components/stitch-ui/Icon'
+import { StatusBadge, type StatusVariant } from '@/components/stitch-ui/StatusBadge'
 import { cn } from '@/lib/cn'
 
 /*

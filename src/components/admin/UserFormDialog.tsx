@@ -2,7 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useId } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { z } from 'zod'
-import { Button } from '@/components/ui/Button'
+import { Button } from '@/components/stitch-ui/Button'
 import {
   Dialog,
   DialogClose,
@@ -11,12 +11,12 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/Dialog'
-import { Field } from '@/components/ui/Field'
-import { Select } from '@/components/ui/FilterBar'
-import { Icon } from '@/components/ui/Icon'
-import { Input } from '@/components/ui/Input'
-import { Switch } from '@/components/ui/Switch'
+} from '@/components/stitch-ui/Dialog'
+import { Field } from '@/components/stitch-ui/Field'
+import { Select } from '@/components/stitch-ui/FilterBar'
+import { Icon } from '@/components/stitch-ui/Icon'
+import { Input } from '@/components/stitch-ui/Input'
+import { Switch } from '@/components/stitch-ui/Switch'
 import { cn } from '@/lib/cn'
 import { regionZones, userRoleMap, userRoleValues, userRoles, type UserRecord } from '@/lib/mock/users'
 

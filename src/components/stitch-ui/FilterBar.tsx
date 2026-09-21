@@ -1,6 +1,6 @@
 import type { ComponentProps, ReactNode } from 'react'
-import { Card } from '@/components/ui/Card'
-import { Icon } from '@/components/ui/Icon'
+import { Card } from '@/components/stitch-ui/Card'
+import { Icon } from '@/components/stitch-ui/Icon'
 import { cn } from '@/lib/cn'
 
 /* Theo thanh lọc trong user_management (search + select + active scopes) và my_tasks_1 (chip Today/Upcoming, chip loại). */
