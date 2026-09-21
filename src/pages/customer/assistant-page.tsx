@@ -196,7 +196,7 @@ function Bubble({ role, time, children }: { role: 'user' | 'assistant'; time: st
         <div
           className={cx(
             'inline-block max-w-full rounded-container px-4 py-3 text-left text-body',
-            isUser ? 'bg-accent text-on-accent' : 'border border-line bg-surface',
+            isUser ? 'bg-accent text-on-accent' : 'border border-line bg-canvas',
           )}
         >
           {children}
