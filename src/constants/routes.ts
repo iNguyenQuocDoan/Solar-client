@@ -1,6 +1,14 @@
 export const ROUTES = {
   HOME: '/',
   STYLEGUIDE: '/styleguide',
+  /** Màn công khai & xác thực (landing_home, auth_portal) */
+  LOGIN: '/login',
+  REGISTER: '/register',
+  FORGOT_PASSWORD: '/forgot-password',
+  RESET_PASSWORD: '/reset-password',
+  VERIFY_EMAIL: '/verify-email',
+  FORBIDDEN: '/403',
+  COMING_SOON: '/coming-soon',
   ADMIN: {
     DASHBOARD: '/admin',
     USERS: '/admin/users',
