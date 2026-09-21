@@ -7,6 +7,9 @@ import { OpsLayout } from '@/pages/ops/layout'
 import { PlaceholderPage } from '@/pages/placeholder-page'
 import { PageSkeleton } from '@/components/ui/states'
 import { NotFoundPage } from '@/pages/not-found-page'
+import { AdminLayout } from '@/layouts/AdminLayout'
+import { TechLayout } from '@/layouts/TechLayout'
+import { RouteErrorPage } from '@/pages/RouteErrorPage'
 
 const customer = ROUTES.customer
 const ops = ROUTES.ops
@@ -100,6 +103,41 @@ export const router = createBrowserRouter([
       { path: manage.alerts, lazy: () => import('@/pages/manage/alerts-page').then((m) => ({ Component: m.ManageAlertsPage })) },
       { path: manage.notifications, element: <PlaceholderPage title="Notifications" portal="manage" /> },
       { path: manage.profile, element: <PlaceholderPage title="Profile" portal="manage" /> },
+    ],
+  },
+
+  /* Admin and technician portals built on src/components/stitch-ui. */
+  {
+    path: ROUTES.STYLEGUIDE,
+    lazy: () => import('@/pages/StyleguidePage').then((m) => ({ Component: m.StyleguidePage })),
+  },
+  {
+    path: ROUTES.ADMIN.DASHBOARD,
+    element: <AdminLayout />,
+    errorElement: <NotFoundPage />,
+    children: [
+      { index: true, lazy: () => import('@/pages/admin/AdminDashboardPage').then((m) => ({ Component: m.AdminDashboardPage })) },
+      { path: 'users', lazy: () => import('@/pages/admin/UsersPage').then((m) => ({ Component: m.UsersPage })) },
+      { path: 'roles', lazy: () => import('@/pages/admin/RolesPage').then((m) => ({ Component: m.RolesPage })) },
+      { path: 'products', lazy: () => import('@/pages/admin/ProductsPage').then((m) => ({ Component: m.ProductsPage })) },
+    ],
+  },
+  {
+    path: ROUTES.TECH.DASHBOARD,
+    element: <TechLayout />,
+    errorElement: <NotFoundPage />,
+    children: [
+      { index: true, lazy: () => import('@/pages/tech/TechDashboardPage').then((m) => ({ Component: m.TechDashboardPage })) },
+      { path: 'tasks', lazy: () => import('@/pages/tech/TasksPage').then((m) => ({ Component: m.TasksPage })) },
+      /* Routes with an id throw a 404 Response from notFound(); RouteErrorPage renders inside the TechLayout outlet. */
+      { path: 'tasks/:id', lazy: () => import('@/pages/tech/TaskDetailPage').then((m) => ({ Component: m.TaskDetailPage })), errorElement: <RouteErrorPage /> },
+      { path: 'surveys/:id', lazy: () => import('@/pages/tech/SurveyTaskPage').then((m) => ({ Component: m.SurveyTaskPage })), errorElement: <RouteErrorPage /> },
+      { path: 'surveys/:id/verify', lazy: () => import('@/pages/tech/SurveyVerificationPage').then((m) => ({ Component: m.SurveyVerificationPage })), errorElement: <RouteErrorPage /> },
+      { path: 'surveys/:id/photos', lazy: () => import('@/pages/tech/SurveyPhotosPage').then((m) => ({ Component: m.SurveyPhotosPage })), errorElement: <RouteErrorPage /> },
+      { path: 'installations/:id', lazy: () => import('@/pages/tech/InstallationTaskPage').then((m) => ({ Component: m.InstallationTaskPage })), errorElement: <RouteErrorPage /> },
+      { path: 'installations/:id/checklist', lazy: () => import('@/pages/tech/InstallationChecklistPage').then((m) => ({ Component: m.InstallationChecklistPage })), errorElement: <RouteErrorPage /> },
+      { path: 'maintenance/:id', lazy: () => import('@/pages/tech/MaintenanceTaskPage').then((m) => ({ Component: m.MaintenanceTaskPage })), errorElement: <RouteErrorPage /> },
+      { path: 'warranty/:id', lazy: () => import('@/pages/tech/WarrantyRequestPage').then((m) => ({ Component: m.WarrantyRequestPage })), errorElement: <RouteErrorPage /> },
     ],
   },
   { path: '*', element: <NotFoundPage /> },
