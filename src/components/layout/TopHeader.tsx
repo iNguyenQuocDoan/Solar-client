@@ -41,7 +41,7 @@ function MenuButton({ onClick }: { onClick?: () => void }) {
   return (
     <button
       type="button"
-      aria-label="Open navigation"
+      aria-label="Mở menu"
       onClick={onClick}
       className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-surface-container-low text-on-surface-variant transition-colors hover:bg-surface-container-high lg:hidden"
     >
@@ -79,7 +79,7 @@ export function TopHeader(props: TopHeaderProps) {
           <div className="relative flex items-center">
             <button
               type="button"
-              aria-label="Notifications"
+              aria-label="Thông báo"
               className="flex h-9 w-9 items-center justify-center rounded-xl bg-surface-container-low text-on-surface-variant transition-colors hover:bg-surface-container-high"
             >
               <Icon name="notifications" className="text-[20px]" />
@@ -124,7 +124,7 @@ export function TopHeader(props: TopHeaderProps) {
         <div className="flex items-center gap-space-sm">
           <Link
             to={props.alertsHref}
-            aria-label="Alerts"
+            aria-label="Cảnh báo"
             className="relative flex h-9 w-9 items-center justify-center rounded-xl bg-surface-container text-on-surface-variant transition-all hover:bg-surface-container-high hover:text-on-surface"
           >
             <Icon name="notifications" className="text-[20px]" />
@@ -132,7 +132,7 @@ export function TopHeader(props: TopHeaderProps) {
               <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-secondary-container ring-2 ring-surface-container-lowest" />
             )}
           </Link>
-          <Link to={props.profileHref} aria-label="Profile" className="flex items-center gap-space-xs pl-space-xs">
+          <Link to={props.profileHref} aria-label="Tài khoản" className="flex items-center gap-space-xs pl-space-xs">
             <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary">
               <Icon name="person" className="text-[18px] text-on-primary" />
             </div>

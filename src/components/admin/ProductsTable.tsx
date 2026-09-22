@@ -13,7 +13,7 @@ function buildColumns(selectedId: string | null): DataTableColumn<ProductRecord>
   return [
     {
       key: 'product',
-      header: 'Product / SKU',
+      header: 'Sản phẩm / SKU',
       render: (product) => {
         const selected = product.id === selectedId
         return (
@@ -38,7 +38,7 @@ function buildColumns(selectedId: string | null): DataTableColumn<ProductRecord>
     },
     {
       key: 'category',
-      header: 'Category',
+      header: 'Nhóm hàng',
       render: (product) => (
         <span className="whitespace-nowrap rounded-full bg-surface-container px-2.5 py-1 text-label-sm text-on-surface-variant">
           {product.categoryLabel}
@@ -47,7 +47,7 @@ function buildColumns(selectedId: string | null): DataTableColumn<ProductRecord>
     },
     {
       key: 'specs',
-      header: 'Key Specs',
+      header: 'Thông số chính',
       render: (product) => (
         <div className="flex flex-col">
           <span className="text-label-md font-medium text-on-surface">{product.specPrimary}</span>
@@ -57,13 +57,13 @@ function buildColumns(selectedId: string | null): DataTableColumn<ProductRecord>
     },
     {
       key: 'cost',
-      header: 'Base Cost',
+      header: 'Giá gốc',
       align: 'right',
       render: (product) => <span className="text-label-lg font-semibold text-on-surface">{formatUsd(product.baseCost)}</span>,
     },
     {
       key: 'status',
-      header: 'Status',
+      header: 'Trạng thái',
       align: 'center',
       render: (product) => (
         <StatusBadge

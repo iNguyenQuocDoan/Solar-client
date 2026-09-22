@@ -10,7 +10,7 @@ export function TechLayout() {
     <AppShell
       sidebar={{
         variant: 'technician',
-        brand: { title: 'Smart Solar', subtitle: 'Field Operations', logoSrc: '/placeholders/logo.svg' },
+        brand: { title: 'Smart Solar', subtitle: 'Kỹ thuật hiện trường', logoSrc: '/placeholders/logo.svg' },
         eyebrow: technicianSession.syncStatus,
         items: technicianNav,
         rootHref: ROUTES.TECH.DASHBOARD,

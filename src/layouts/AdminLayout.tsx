@@ -10,8 +10,8 @@ export function AdminLayout() {
     <AppShell
       sidebar={{
         variant: 'admin',
-        brand: { title: 'Smart Solar', subtitle: 'System Administration', logoSrc: '/placeholders/logo.svg' },
-        eyebrow: 'Platform Governance',
+        brand: { title: 'Smart Solar', subtitle: 'Quản trị hệ thống', logoSrc: '/placeholders/logo.svg' },
+        eyebrow: 'Quản trị nền tảng',
         items: adminNav,
         rootHref: ROUTES.ADMIN.DASHBOARD,
         user: { ...adminSession.user, href: ROUTES.ADMIN.PROFILE },

@@ -98,11 +98,11 @@ function UserForm({ mode, user, onSubmit }: Pick<UserFormDialogProps, 'mode' | '
 
       {!isEdit && (
         <>
-          <Field label="Full Name" htmlFor={`${idPrefix}-name`} error={errors.name?.message}>
-            <Input id={`${idPrefix}-name`} placeholder="e.g. Jordan Ellis" invalid={!!errors.name} {...register('name')} />
+          <Field label="Họ và tên" htmlFor={`${idPrefix}-name`} error={errors.name?.message}>
+            <Input id={`${idPrefix}-name`} placeholder="Ví dụ: Nguyễn Văn An" invalid={!!errors.name} {...register('name')} />
           </Field>
           <div className="grid grid-cols-1 gap-space-md sm:grid-cols-2">
-            <Field label="Work Email" htmlFor={`${idPrefix}-email`} error={errors.email?.message}>
+            <Field label="Email công việc" htmlFor={`${idPrefix}-email`} error={errors.email?.message}>
               <Input
                 id={`${idPrefix}-email`}
                 type="email"
@@ -111,10 +111,10 @@ function UserForm({ mode, user, onSubmit }: Pick<UserFormDialogProps, 'mode' | '
                 {...register('email')}
               />
             </Field>
-            <Field label="Department" htmlFor={`${idPrefix}-department`} error={errors.department?.message}>
+            <Field label="Bộ phận" htmlFor={`${idPrefix}-department`} error={errors.department?.message}>
               <Input
                 id={`${idPrefix}-department`}
-                placeholder="e.g. Field Operations"
+                placeholder="Ví dụ: Kỹ thuật hiện trường"
                 invalid={!!errors.department}
                 {...register('department')}
               />
@@ -124,7 +124,7 @@ function UserForm({ mode, user, onSubmit }: Pick<UserFormDialogProps, 'mode' | '
       )}
 
       <Field
-        label="Primary Platform Role"
+        label="Vai trò chính"
         htmlFor={`${idPrefix}-role`}
         hint={`Clearance: ${role.clearance}`}
         help={role.description}
@@ -139,7 +139,7 @@ function UserForm({ mode, user, onSubmit }: Pick<UserFormDialogProps, 'mode' | '
         render={({ field }) => {
           const remaining = regionZones.filter((zone) => !field.value.includes(zone.value))
           return (
-            <Field label="Regional Access Authority" error={errors.regions?.message}>
+            <Field label="Khu vực được truy cập" error={errors.regions?.message}>
               <div className="flex flex-wrap gap-1.5">
                 {field.value.map((zoneValue) => {
                   const zone = regionZones.find((z) => z.value === zoneValue)
@@ -163,14 +163,14 @@ function UserForm({ mode, user, onSubmit }: Pick<UserFormDialogProps, 'mode' | '
                 {remaining.length > 0 && (
                   <label className="relative inline-flex items-center gap-1 rounded-lg bg-surface-container-low px-3 py-1 text-label-sm text-primary transition-colors hover:bg-surface-container">
                     <Icon name="add" className="text-[14px]" />
-                    <span>Add Zone</span>
+                    <span>Thêm khu vực</span>
                     <select
-                      aria-label="Add regional zone"
+                      aria-label="Thêm khu vực"
                       value=""
                       onChange={(e) => e.target.value && field.onChange([...field.value, e.target.value])}
                       className="absolute inset-0 cursor-pointer opacity-0"
                     >
-                      <option value="">Add Zone</option>
+                      <option value="">Thêm khu vực</option>
                       {remaining.map((zone) => (
                         <option key={zone.value} value={zone.value}>
                           {zone.label}
@@ -209,7 +209,7 @@ function UserForm({ mode, user, onSubmit }: Pick<UserFormDialogProps, 'mode' | '
                 </div>
               </div>
               <Switch
-                aria-label="Enforce hardware MFA"
+                aria-label="Bắt buộc MFA phần cứng"
                 checked={field.value}
                 onChange={(e) => field.onChange(e.target.checked)}
               />
@@ -221,7 +221,7 @@ function UserForm({ mode, user, onSubmit }: Pick<UserFormDialogProps, 'mode' | '
             <div className="flex items-center gap-2">
               <Icon name="key" className="text-[20px] text-outline" />
               <div className="flex flex-col">
-                <span className="text-label-md font-semibold text-on-surface">API Secret Tokens</span>
+                <span className="text-label-md font-semibold text-on-surface">Khoá API</span>
                 <span className="text-label-sm text-outline">{user.apiTokens} active personal keys</span>
               </div>
             </div>
@@ -234,7 +234,7 @@ function UserForm({ mode, user, onSubmit }: Pick<UserFormDialogProps, 'mode' | '
 
       {isEdit && user && user.identityLog.length > 0 && (
         <div className="flex flex-col gap-1.5">
-          <span className="text-label-sm font-semibold text-outline">Recent Identity Log</span>
+          <span className="text-label-sm font-semibold text-outline">Nhật ký tài khoản</span>
           <ul className="flex flex-col gap-1.5 rounded-xl bg-surface-container-low/50 p-2.5 text-label-sm text-outline">
             {user.identityLog.map((entry) => (
               <li key={entry.event} className="flex items-center justify-between">

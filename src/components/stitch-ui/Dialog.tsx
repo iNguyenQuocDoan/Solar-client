@@ -35,7 +35,7 @@ export function DialogContent({ className, children, size = 'md', ...rest }: Dia
       >
         {children}
         <DialogPrimitive.Close
-          aria-label="Close"
+          aria-label="Đóng"
           className="absolute right-space-md top-space-md flex h-8 w-8 items-center justify-center rounded-full bg-surface-container-low text-on-surface-variant transition-colors hover:bg-surface-container-high"
         >
           <Icon name="close" className="text-[18px]" />

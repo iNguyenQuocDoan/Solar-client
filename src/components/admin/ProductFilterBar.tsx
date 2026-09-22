@@ -35,7 +35,7 @@ export function ProductFilterBar({ value, onChange, onClear, options, placeholde
         <div className="flex flex-wrap items-center gap-space-xs sm:flex-nowrap">
           <Select
             size="md"
-            aria-label="Category"
+            aria-label="Nhóm hàng"
             options={options.categories}
             value={value.category}
             onChange={(e) => update({ category: e.target.value })}
@@ -43,7 +43,7 @@ export function ProductFilterBar({ value, onChange, onClear, options, placeholde
           />
           <Select
             size="md"
-            aria-label="Manufacturer"
+            aria-label="Hãng sản xuất"
             options={options.oems}
             value={value.oem}
             onChange={(e) => update({ oem: e.target.value })}
@@ -51,7 +51,7 @@ export function ProductFilterBar({ value, onChange, onClear, options, placeholde
           />
           <Select
             size="md"
-            aria-label="Status"
+            aria-label="Trạng thái"
             options={options.statuses}
             value={value.status}
             onChange={(e) => update({ status: e.target.value })}
@@ -59,7 +59,7 @@ export function ProductFilterBar({ value, onChange, onClear, options, placeholde
           />
           <IconButton
             icon="filter_alt_off"
-            label="Clear filters"
+            label="Xoá bộ lọc"
             size="md"
             onClick={onClear}
             className="h-11 w-11 hover:bg-surface-container hover:text-on-surface-variant"
