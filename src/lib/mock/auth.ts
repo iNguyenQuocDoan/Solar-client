@@ -13,7 +13,7 @@ export const authPanel = {
     src: '/placeholders/villa-solar.svg',
     alt: 'Biệt thự có mái lắp tấm pin mặt trời dưới nắng sớm, sân vườn xanh mát',
   },
-  systemBadge: 'Hệ thống 8.4 kWp • Đang hòa lưới',
+  systemBadge: 'Hệ thống 8.4 kWp, Đang hòa lưới',
   metrics: [
     { label: 'Hiệu suất tháng', value: '1,240 kWh', tone: 'text-tertiary-fixed' },
     { label: 'Tiết kiệm điện', value: '~3.85 Tr ₫', tone: 'text-secondary-fixed' },
@@ -32,7 +32,7 @@ export const authPanel = {
 /** /login */
 export const loginContent = {
   badge: 'Cổng đăng nhập',
-  tls: '• Đã kiểm tra bảo mật TLS 1.3',
+  tls: 'Đã kiểm tra bảo mật TLS 1.3',
   title: 'Chào mừng trở lại với Smart Solar',
   descriptionBefore: 'Hệ thống tự động chuyển hướng đúng quyền hạn (',
   descriptionRoles: 'Khách hàng, Kỹ thuật viên, Kinh doanh, Quản lý, Quản trị viên',

@@ -54,7 +54,7 @@ export function MeasurementCard({
               ? 'text-label-md font-bold text-error'
               : icon
                 ? 'text-label-md font-bold text-on-surface'
-                : 'text-label-sm font-semibold uppercase text-on-surface-variant',
+                : 'text-label-sm font-semibold text-on-surface-variant',
           )}
         >
           {icon && <Icon name={icon} className={cn('text-[20px]', isError ? 'text-error' : 'text-primary')} />}
@@ -66,7 +66,7 @@ export function MeasurementCard({
             className={cn(
               'shrink-0 rounded-full px-2 py-0.5 text-label-sm',
               isError
-                ? 'animate-pulse bg-error font-bold text-on-error'
+                ? 'bg-error font-bold text-on-error'
                 : 'bg-surface-container-highest font-semibold text-primary',
             )}
           >

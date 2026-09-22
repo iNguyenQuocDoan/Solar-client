@@ -67,7 +67,7 @@ export function YieldImpactChart({
         <path d={toArea(postWash)} fill="url(#yield-post)" />
         <path d={toLine(postWash)} fill="none" stroke="#0d5c3a" strokeWidth="2.5" strokeLinecap="round" />
 
-        {marker && <circle cx={marker.x} cy={marker.y} r="4.5" fill="#0d5c3a" className="animate-pulse" />}
+        {marker && <circle cx={marker.x} cy={marker.y} r="4.5" fill="#0d5c3a" />}
       </svg>
 
       <div className="flex items-center justify-between pt-1 text-label-sm text-on-surface-variant">

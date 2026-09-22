@@ -88,7 +88,7 @@ export function WorkOrderHeaderCard({
           <div key={metric.label} className="flex items-center gap-space-md">
             {index > 0 && <span aria-hidden="true" className="h-10 w-px bg-surface-container-highest" />}
             <div className="flex flex-col">
-              <span className="text-label-sm uppercase text-on-surface-variant">{metric.label}</span>
+              <span className="text-label-sm text-on-surface-variant">{metric.label}</span>
               <span
                 className={cn(
                   'text-headline-md font-bold',

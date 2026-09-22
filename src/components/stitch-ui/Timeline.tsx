@@ -59,7 +59,7 @@ export function TimelineStep({ index, title, description, timestamp, state, stag
         <div className={cn('flex h-8 w-8 items-center justify-center rounded-lg', s.iconBox)}>
           <Icon name={icon ?? s.icon} className="text-[16px]" />
         </div>
-        <span className={cn('text-label-sm font-bold uppercase tracking-wider', s.stage)}>
+        <span className={cn('text-label-sm font-bold', s.stage)}>
           {stageLabel ?? `Stage ${String(index).padStart(2, '0')}`}
         </span>
       </div>

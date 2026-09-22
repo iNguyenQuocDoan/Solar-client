@@ -16,7 +16,7 @@ export function Faq() {
     <LandingSection id="faq" tone="low">
       <div className="mx-auto flex w-full max-w-[880px] flex-col gap-space-xl px-margin-mobile md:px-margin-tablet lg:px-margin-desktop">
         <div className="flex flex-col gap-space-2xs text-center">
-          <span className="text-label-lg uppercase tracking-wider text-primary-container">{eyebrow}</span>
+          <span className="text-label-lg text-primary-container">{eyebrow}</span>
           <h2 className="text-headline-xl-mobile text-primary md:text-headline-xl">{title}</h2>
           <p className="text-body-md text-on-surface-variant">{description}</p>
         </div>

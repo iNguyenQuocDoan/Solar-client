@@ -10,8 +10,6 @@ import type { TaskAccent } from '@/components/stitch-ui/TaskCard'
  */
 
 export const tasksHeader = {
-  eyebrow: 'Field Dispatch Operations',
-  eyebrowAccent: 'Zone 04 • Priority Queue',
   title: 'Technician Work Orders',
   quickAction: 'Quick Dispatch Action',
 }
@@ -101,10 +99,10 @@ export const workOrders: WorkOrder[] = [
     customer: {
       name: 'Elena Rostova',
       phone: '+1 (415) 883-9021',
-      property: '2-Story Residential • Tile',
+      property: '2-Story Residential, Tile',
       propertyIcon: 'home',
     },
-    site: { street: '742 Evergreen Terrace', zone: 'San Rafael • Zone NorCal 4B', distance: '1.2 mi away' },
+    site: { street: '742 Evergreen Terrace', zone: 'San Rafael, Zone NorCal 4B', distance: '1.2 mi away' },
     schedule: { time: 'Today, 08:30 AM', duration: 'Duration: 90 mins', note: 'Active slot', noteTone: 'primary' },
     status: { label: 'In Progress', variant: 'success', pulse: true },
     lifecycleStage: 3,
@@ -122,10 +120,10 @@ export const workOrders: WorkOrder[] = [
     customer: {
       name: 'David Chen',
       phone: '+1 (510) 412-8809',
-      property: 'Single Family • Composite',
+      property: 'Single Family, Composite',
       propertyIcon: 'home',
     },
-    site: { street: '1204 Oak Ridge Way', zone: 'Novato • Zone NorCal 4B', distance: '5.4 mi away' },
+    site: { street: '1204 Oak Ridge Way', zone: 'Novato, Zone NorCal 4B', distance: '5.4 mi away' },
     schedule: { time: 'Today, 11:00 AM', duration: 'Duration: 180 mins', note: 'Next queue', noteTone: 'muted' },
     status: { label: 'En Route', variant: 'warning' },
     lifecycleStage: 2,
@@ -139,14 +137,14 @@ export const workOrders: WorkOrder[] = [
     typeKey: 'warranty',
     highPriority: true,
     work: { label: 'Battery BMS Rapid Discharge Audit', icon: 'shield_with_heart', iconClassName: 'text-error' },
-    reference: 'Tesla Powerwall 2 • Batt #44',
+    reference: 'Tesla Powerwall 2, Batt #44',
     customer: {
       name: 'Kavita Patel',
       phone: '+1 (415) 309-1120',
-      property: 'Townhouse • Flat Deck',
+      property: 'Townhouse, Flat Deck',
       propertyIcon: 'apartment',
     },
-    site: { street: '410 Vista Grande', zone: 'Mill Valley • Zone NorCal 4B', distance: '11.8 mi away' },
+    site: { street: '410 Vista Grande', zone: 'Mill Valley, Zone NorCal 4B', distance: '11.8 mi away' },
     schedule: { time: 'Today, 02:30 PM', duration: 'Duration: 60 mins', note: 'Afternoon Window', noteTone: 'muted' },
     status: { label: 'Scheduled', variant: 'neutral' },
     lifecycleStage: 1,
@@ -160,14 +158,14 @@ export const workOrders: WorkOrder[] = [
     typeKey: 'maintenance',
     highPriority: false,
     work: { label: 'Array Rewire & Optimizers Check', icon: 'tune', iconClassName: 'text-tertiary-container' },
-    reference: 'SolEdge P401 • Strings A+B',
+    reference: 'SolEdge P401, Strings A+B',
     customer: {
       name: 'Robert Morales',
       phone: '+1 (415) 771-4923',
-      property: 'Single Family • Standing Seam Metal',
+      property: 'Single Family, Standing Seam Metal',
       propertyIcon: 'home',
     },
-    site: { street: '89 Circle Drive', zone: 'Tiburon • Zone NorCal 4B', distance: '14.2 mi away' },
+    site: { street: '89 Circle Drive', zone: 'Tiburon, Zone NorCal 4B', distance: '14.2 mi away' },
     schedule: { time: 'Today, 04:45 PM', duration: 'Duration: 45 mins', note: 'Wrap-up inspection', noteTone: 'muted' },
     status: { label: 'Awaiting Signoff', variant: 'pending' },
     lifecycleStage: 4,
@@ -205,8 +203,8 @@ export type DrawerPhoto = {
 export const quickStatusDrawer = {
   sync: { label: 'Field Sync Engine Active' },
   closeLabel: 'Close quick status drawer',
-  /** drawerCustomer trong code.html: "<tên khách> • <địa chỉ>" */
-  customerSeparator: ' • ',
+  /** drawerCustomer trong code.html: "<tên khách>, <địa chỉ>" */
+  customerSeparator: ', ',
   lifecycle: {
     title: 'Shift Job Lifecycle Stage',
     stages: [

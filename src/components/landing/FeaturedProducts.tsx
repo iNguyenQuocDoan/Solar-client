@@ -1,6 +1,5 @@
 import { Link } from 'react-router'
 import { LANDING_CONTAINER, LandingSection } from '@/components/landing/section'
-import { Icon } from '@/components/stitch-ui/Icon'
 import { ROUTES } from '@/constants/routes'
 import { cn } from '@/lib/cn'
 import { featuredProducts } from '@/lib/mock/landing'
@@ -14,7 +13,7 @@ export function FeaturedProducts() {
       <div className={cn('flex flex-col gap-space-2xl', LANDING_CONTAINER)}>
         <div className="flex flex-col justify-between gap-space-md md:flex-row md:items-end">
           <div className="flex flex-col gap-space-2xs">
-            <span className="text-label-lg uppercase tracking-wider text-primary-container">{eyebrow}</span>
+            <span className="text-label-lg text-primary-container">{eyebrow}</span>
             <h2 className="text-headline-xl-mobile text-primary md:text-headline-xl">{title}</h2>
           </div>
           <Link
@@ -22,7 +21,6 @@ export function FeaturedProducts() {
             className="inline-flex items-center gap-space-xs text-label-lg text-primary-container transition-colors hover:text-primary"
           >
             <span>{allLink}</span>
-            <Icon name="arrow_forward" className="text-[18px]" />
           </Link>
         </div>
 

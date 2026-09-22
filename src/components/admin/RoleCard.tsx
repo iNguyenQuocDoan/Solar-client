@@ -63,7 +63,7 @@ export function RoleCard({ role, selected, onSelect, onClone, onEdit, className 
               </span>
               {selected && <span aria-hidden="true" className="h-2 w-2 shrink-0 rounded-full bg-tertiary-container" />}
             </div>
-            <span className="truncate text-[11px] text-outline">{role.tagline}</span>
+            <span className="truncate text-label-sm text-outline">{role.tagline}</span>
           </div>
         </div>
         <span
@@ -78,7 +78,7 @@ export function RoleCard({ role, selected, onSelect, onClone, onEdit, className 
 
       <p className="mt-2 line-clamp-2 text-[12px] text-on-surface-variant">{role.description}</p>
 
-      <div className="mt-3 flex items-center justify-between pt-2 text-[11px] text-outline">
+      <div className="mt-3 flex items-center justify-between pt-2 text-label-sm text-outline">
         <span className={cn('flex items-center gap-1', scopeToneClasses[role.scopeTone])}>
           <Icon name={role.scopeIcon} className="text-[14px]" /> {role.scopeLabel}
         </span>

@@ -34,7 +34,7 @@ export type TopHeaderProps = MenuProps &
   )
 
 const headerBase =
-  'fixed left-0 right-0 top-0 z-40 flex h-16 items-center justify-between bg-surface-container-lowest/90 shadow-[0_1px_8px_rgba(0,0,0,0.04)] backdrop-blur-xl lg:left-72'
+  'fixed left-0 right-0 top-0 z-40 flex h-16 items-center justify-between border-b border-outline-variant/40 bg-surface-container-lowest lg:left-72'
 
 function MenuButton({ onClick }: { onClick?: () => void }) {
   if (!onClick) return null
@@ -69,7 +69,7 @@ export function TopHeader(props: TopHeaderProps) {
 
         <div className="flex items-center gap-space-md">
           <div className="hidden items-center gap-space-xs rounded-full bg-surface-container-low px-3 py-1 text-on-surface-variant xl:flex">
-            <span className="h-2 w-2 animate-pulse rounded-full bg-tertiary-container" />
+            <span className="h-2 w-2 rounded-full bg-tertiary-container" />
             <span className="text-label-sm font-semibold text-on-surface">{props.environment}</span>
           </div>
           <div className="hidden items-center gap-space-2xs rounded-full bg-surface-container-low px-3 py-1 text-on-surface-variant md:flex">
@@ -85,7 +85,7 @@ export function TopHeader(props: TopHeaderProps) {
               <Icon name="notifications" className="text-[20px]" />
             </button>
             {props.unreadNotifications > 0 && (
-              <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-secondary text-[10px] font-bold text-on-secondary">
+              <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-secondary text-label-sm font-bold text-on-secondary">
                 {props.unreadNotifications}
               </span>
             )}
@@ -95,7 +95,7 @@ export function TopHeader(props: TopHeaderProps) {
               <span className="text-label-md font-semibold leading-tight text-on-surface">
                 {props.user.name}
               </span>
-              <span className="text-[10px] font-medium text-tertiary-container">{props.user.status}</span>
+              <span className="text-label-sm font-medium text-tertiary-container">{props.user.status}</span>
             </div>
             <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary">
               <Icon name="person" className="text-[18px] text-on-primary" />

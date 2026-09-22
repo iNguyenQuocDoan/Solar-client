@@ -39,7 +39,7 @@ export function PublicLayout() {
 
   return (
     <div className="flex min-h-screen flex-col bg-surface">
-      <header className="fixed left-0 right-0 top-0 z-50 w-full bg-surface-container-lowest/90 shadow-[0_1px_8px_rgba(0,0,0,0.04)] backdrop-blur-xl">
+      <header className="fixed left-0 right-0 top-0 z-50 w-full border-b border-outline-variant/40 bg-surface-container-lowest">
         <div className={cn('flex h-20 items-center justify-between gap-space-md', CONTAINER)}>
           <Link to={ROUTES.HOME} className="flex shrink-0 items-center gap-space-sm">
             <img src="/placeholders/logo.svg" alt="Smart Solar logo" className="h-8 w-auto object-contain" />
@@ -68,13 +68,13 @@ export function PublicLayout() {
           <div className="flex shrink-0 items-center gap-space-sm">
             <Link
               to={ROUTES.LOGIN}
-              className="hidden items-center justify-center whitespace-nowrap rounded-xl bg-surface-container-lowest px-space-md py-space-xs text-label-lg text-primary-container shadow-[0_1px_8px_rgba(0,0,0,0.04)] transition-colors hover:bg-surface-container-low hover:text-primary sm:inline-flex"
+              className="hidden items-center justify-center whitespace-nowrap rounded-lg border border-outline-variant px-space-md py-space-xs text-label-lg text-primary transition-colors hover:bg-surface-container-low sm:inline-flex"
             >
               Đăng nhập
             </Link>
             <Link
               to={ROUTES.customer.assessment}
-              className="inline-flex items-center justify-center whitespace-nowrap rounded-xl bg-primary-container px-space-lg py-space-xs text-label-lg text-on-primary shadow-[0_4px_16px_-4px_rgba(15,23,42,0.05)] transition-colors hover:bg-primary"
+              className="inline-flex items-center justify-center whitespace-nowrap rounded-lg bg-primary-container px-space-lg py-space-xs text-label-lg text-on-primary transition-colors hover:bg-primary"
             >
               Khảo sát mái nhà
             </Link>
@@ -123,7 +123,7 @@ export function PublicLayout() {
         <Outlet />
       </main>
 
-      <footer className="mt-space-3xl w-full bg-surface-container-lowest shadow-[0_-1px_8px_rgba(0,0,0,0.03)]">
+      <footer className="mt-space-3xl w-full border-t border-outline-variant/40 bg-surface-container-lowest">
         <div className={cn('pb-space-2xl pt-space-3xl', CONTAINER)}>
           <div className="grid grid-cols-1 gap-space-xl md:grid-cols-2 lg:grid-cols-5">
             <div className="flex flex-col gap-space-md lg:col-span-2">

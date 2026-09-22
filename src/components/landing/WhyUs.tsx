@@ -26,7 +26,7 @@ export function WhyUs() {
 
           <div className="flex flex-col gap-space-lg lg:col-span-7">
             <div className="flex flex-col gap-space-2xs">
-              <span className="text-label-lg uppercase tracking-wider text-primary-container">{eyebrow}</span>
+              <span className="text-label-lg text-primary-container">{eyebrow}</span>
               <h2 className="text-headline-xl-mobile text-primary md:text-headline-xl">{title}</h2>
               <p className="text-body-md text-on-surface-variant">{description}</p>
             </div>

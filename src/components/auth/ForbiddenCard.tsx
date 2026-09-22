@@ -39,7 +39,7 @@ export function ForbiddenCard() {
         </div>
         <p className="mt-1 text-body-md text-on-surface-variant">
           {forbiddenContent.descriptionBefore}
-          <span className="font-semibold text-primary">{currentRoleLabel}</span>
+          <span className="text-on-surface">{currentRoleLabel}</span>
           {forbiddenContent.descriptionAfter}
         </p>
         <div className="mt-space-sm flex flex-wrap gap-2">

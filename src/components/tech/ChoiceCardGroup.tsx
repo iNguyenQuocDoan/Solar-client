@@ -52,7 +52,7 @@ export function ChoiceCardGroup({
             <Icon name={option.icon} className="text-[24px]" />
             <span className="mt-1 text-label-md font-bold">{option.label}</span>
             {option.caption && (
-              <span className={cn('text-[10px]', isSelected ? 'opacity-80' : 'text-on-surface-variant')}>
+              <span className={cn('text-label-sm', isSelected ? 'opacity-80' : 'text-on-surface-variant')}>
                 {option.caption}
               </span>
             )}

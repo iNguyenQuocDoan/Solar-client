@@ -12,7 +12,7 @@ const toneClasses: Record<AvatarTone, string> = {
 }
 
 const sizeClasses = {
-  sm: 'h-6 w-6 text-[10px] font-semibold',
+  sm: 'h-6 w-6 text-label-sm font-semibold',
   md: 'h-10 w-10 text-headline-md font-bold',
   lg: 'h-12 w-12 text-headline-md font-bold',
 } as const

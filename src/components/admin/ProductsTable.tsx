@@ -30,7 +30,7 @@ function buildColumns(selectedId: string | null): DataTableColumn<ProductRecord>
               <span className={cn('truncate text-label-lg', selected ? 'font-bold text-primary' : 'font-semibold text-on-surface')}>
                 {product.name}
               </span>
-              <span className="truncate text-[11px] text-outline">{product.sku}</span>
+              <span className="truncate text-label-sm text-outline">{product.sku}</span>
             </div>
           </div>
         )
@@ -51,7 +51,7 @@ function buildColumns(selectedId: string | null): DataTableColumn<ProductRecord>
       render: (product) => (
         <div className="flex flex-col">
           <span className="text-label-md font-medium text-on-surface">{product.specPrimary}</span>
-          <span className="text-[11px] text-on-surface-variant">{product.specSecondary}</span>
+          <span className="text-label-sm text-on-surface-variant">{product.specSecondary}</span>
         </div>
       ),
     },

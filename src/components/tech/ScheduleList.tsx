@@ -11,7 +11,7 @@ export type ScheduleRow = {
   icon: string
   iconTone: ScheduleRowTone
   title: string
-  /** Khách hàng • địa chỉ */
+  /** Khách hàng, địa chỉ */
   subtitle: string
   time: string
   /** Ghi chú dưới giờ, ví dụ "Plans On-Site" */
@@ -21,7 +21,7 @@ export type ScheduleRow = {
 
 export type ScheduleDay = {
   id: string
-  /** "Tomorrow • Thu Oct 24" */
+  /** "Tomorrow, Thu Oct 24" */
   label: string
   /** primary cho ngày gần nhất, default cho các ngày sau */
   tone?: 'primary' | 'default'
@@ -55,7 +55,7 @@ export function ScheduleList({ days, className }: ScheduleListProps) {
           <div className="mb-space-sm flex flex-wrap items-center gap-space-xs">
             <span
               className={cn(
-                'text-label-md font-bold uppercase tracking-wider',
+                'text-label-md font-bold',
                 day.tone === 'default' ? 'text-on-surface' : 'text-primary',
               )}
             >

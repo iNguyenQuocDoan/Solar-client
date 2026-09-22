@@ -41,7 +41,7 @@ export function InfoTile({
   if (layout === 'stacked') {
     return (
       <div className="flex flex-col gap-1 rounded-xl bg-surface-container-low p-space-md">
-        <span className="flex items-center gap-1 text-label-sm uppercase tracking-wider text-on-surface-variant">
+        <span className="flex items-center gap-1 text-label-sm text-on-surface-variant">
           <Icon name={icon} className={cn('text-[16px]', toneClasses[tone])} />
           {label}
         </span>

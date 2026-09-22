@@ -36,21 +36,21 @@ export function Field({
         className={cn(
           'flex items-center justify-between',
           variant === 'caps'
-            ? 'text-label-sm uppercase tracking-wider text-outline'
+            ? 'text-label-sm text-outline'
             : 'text-label-md font-semibold text-on-surface',
           labelClassName,
         )}
       >
         <span>{label}</span>
-        {hint && <span className="text-[11px] font-medium normal-case tracking-normal text-tertiary-container">{hint}</span>}
+        {hint && <span className="text-label-sm font-medium normal-case tracking-normal text-tertiary-container">{hint}</span>}
       </label>
       {children}
       {error ? (
-        <p role="alert" className="text-[11px] font-medium text-error">
+        <p role="alert" className="text-label-sm font-medium text-error">
           {error}
         </p>
       ) : (
-        help && <p className="text-[11px] text-outline">{help}</p>
+        help && <p className="text-label-sm text-outline">{help}</p>
       )}
     </div>
   )

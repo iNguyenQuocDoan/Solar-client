@@ -84,7 +84,7 @@ export function TaskHeaderCard({
                     <Icon name={contact.icon} className="text-[18px]" />
                   </div>
                   <div className="flex min-w-0 flex-col">
-                    <span className="text-label-sm uppercase text-on-surface-variant">{contact.label}</span>
+                    <span className="text-label-sm text-on-surface-variant">{contact.label}</span>
                     <span className="truncate text-label-lg text-on-surface">{contact.value}</span>
                   </div>
                 </div>

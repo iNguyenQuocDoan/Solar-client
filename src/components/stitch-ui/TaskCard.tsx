@@ -21,7 +21,7 @@ export type TaskCardProps = {
   accent?: TaskAccent
   type: { label: string; variant?: StatusVariant }
   priority?: { label: string; variant?: StatusVariant }
-  /** Góc phải trên: giờ hẹn hoặc "Next Up • Starts in 24m" (boxed) */
+  /** Góc phải trên: giờ hẹn hoặc "Next Up, Starts in 24m" (boxed) */
   meta?: { icon?: string; emphasis?: string; text: string; boxed?: boolean }
   title: string
   /** Nếu có, tiêu đề thành nút mở trang chi tiết (my_tasks_1 dạng Bento) */

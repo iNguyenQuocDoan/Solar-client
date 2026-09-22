@@ -37,14 +37,14 @@ export function AdvisoryCard({
           <Icon name={icon} className="text-[20px]" />
         </div>
         <div>
-          <span className="text-label-sm font-bold uppercase tracking-wider text-secondary">{eyebrow}</span>
+          <span className="text-label-sm font-bold text-secondary">{eyebrow}</span>
           <h4 className="mt-0.5 text-body-lg font-semibold text-on-surface">{title}</h4>
           <p className="mt-1 text-body-sm text-on-surface-variant">{children}</p>
         </div>
       </div>
       {(reference || actionLabel) && (
         <div className="mt-space-md flex items-center justify-between pt-space-xs">
-          {reference && <span className="whitespace-nowrap text-[11px] text-outline">{reference}</span>}
+          {reference && <span className="whitespace-nowrap text-label-sm text-outline">{reference}</span>}
           {actionLabel && (
             <button
               type="button"

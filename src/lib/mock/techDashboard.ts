@@ -35,7 +35,7 @@ export type TodayAssignment = {
   accent: TaskAccent
   type: { label: string; variant: StatusVariant }
   priority: { label: string; variant: StatusVariant }
-  /** Góc phải thẻ: "Next Up • Starts in 24m" (boxed) hoặc khung giờ */
+  /** Góc phải thẻ: "Next Up, Starts in 24m" (boxed) hoặc khung giờ */
   meta: { icon: string; emphasis?: string; text: string; boxed?: boolean }
   title: string
   address: string
@@ -51,14 +51,14 @@ export const todayAssignments: TodayAssignment[] = [
     accent: 'primary',
     type: { label: 'Site Survey', variant: 'primary' },
     priority: { label: 'High Priority', variant: 'error' },
-    meta: { icon: 'timer', emphasis: 'Next Up', text: '• Starts in 24m', boxed: true },
+    meta: { icon: 'timer', emphasis: 'Next Up', text: 'Starts in 24m', boxed: true },
     title: 'Elena Rostova',
     address: '842 Crestview Terrace, Los Gatos, CA',
     phoneHref: 'tel:5550192834',
     specs: [
       { label: 'Window', value: '09:00 - 10:30 AM' },
       { label: 'Roof Material', value: 'Spanish Tile (28°)' },
-      { label: 'System Estimate', value: '11.4 kW • 26 Mod' },
+      { label: 'System Estimate', value: '11.4 kW, 26 Mod' },
     ],
     primaryAction: { label: 'Start Survey', icon: 'play_arrow' },
     mapAction: { label: 'Map', icon: 'directions' },
@@ -69,7 +69,7 @@ export const todayAssignments: TodayAssignment[] = [
     type: { label: 'Installation (Day 2 of 2)', variant: 'warning' },
     priority: { label: 'Standard', variant: 'neutral' },
     meta: { icon: 'schedule', text: '11:15 AM - 02:30 PM' },
-    title: 'David Chen • The Chen Residence',
+    title: 'David Chen, The Chen Residence',
     address: '1240 Oak Knolls Way, Saratoga, CA',
     phoneHref: 'tel:5550482910',
     specs: [
@@ -86,7 +86,7 @@ export const todayAssignments: TodayAssignment[] = [
     type: { label: 'Warranty Dispatch', variant: 'error' },
     priority: { label: 'High Priority', variant: 'error' },
     meta: { icon: 'schedule', text: '03:00 - 04:15 PM' },
-    title: 'Garrett • Highland Plaza',
+    title: 'Garrett, Highland Plaza',
     address: '339 Redwood Ave, San Jose, CA',
     phoneHref: 'tel:5550991122',
     specs: [
@@ -107,7 +107,7 @@ export const todayAssignments: TodayAssignment[] = [
     address: '510 Skyview Ridge, Cupertino, CA',
     phoneHref: 'tel:5550239918',
     specs: [
-      { label: 'Scope', value: 'Attic • MSP • Rafters' },
+      { label: 'Scope', value: 'Attic, MSP, Rafters' },
       { label: 'Panel Upgrade', value: 'Required (125A → 200A)' },
       { label: 'Drone Flight', value: 'Permit Cleared' },
     ],
@@ -124,7 +124,7 @@ export const upcomingHeading = {
 export const upcomingSchedule: ScheduleDay[] = [
   {
     id: 'thu-oct-24',
-    label: 'Tomorrow • Thu Oct 24',
+    label: 'Tomorrow, Thu Oct 24',
     tone: 'primary',
     note: '2 Inspections, 1 Comm Check',
     rows: [
@@ -133,7 +133,7 @@ export const upcomingSchedule: ScheduleDay[] = [
         icon: 'verified',
         iconTone: 'primary',
         title: 'City AHJ Rough Inspection',
-        subtitle: 'B. Sterling • 4410 Paseo Dr, Campbell',
+        subtitle: 'B. Sterling, 4410 Paseo Dr, Campbell',
         time: '08:30 AM',
         detail: 'Plans On-Site',
         badge: { label: 'Permit Ready', variant: 'ready' },
@@ -143,7 +143,7 @@ export const upcomingSchedule: ScheduleDay[] = [
         icon: 'solar_power',
         iconTone: 'secondary',
         title: 'Array Commissioning',
-        subtitle: 'R. Patel • 900 Monte Vista, Sunnyvale',
+        subtitle: 'R. Patel, 900 Monte Vista, Sunnyvale',
         time: '01:00 PM',
         detail: 'SolarEdge SE7600',
         badge: { label: 'Pre-Staged', variant: 'neutral' },
@@ -152,7 +152,7 @@ export const upcomingSchedule: ScheduleDay[] = [
   },
   {
     id: 'fri-oct-25',
-    label: 'Friday • Oct 25',
+    label: 'Friday, Oct 25',
     tone: 'default',
     note: '1 Full Install kickoff',
     rows: [
@@ -161,7 +161,7 @@ export const upcomingSchedule: ScheduleDay[] = [
         icon: 'roofing',
         iconTone: 'primary',
         title: 'Full Mount & Rail Installation',
-        subtitle: 'Dr. J. Miller • 108 Blossom Hill, Los Gatos',
+        subtitle: 'Dr. J. Miller, 108 Blossom Hill, Los Gatos',
         time: '07:30 AM',
         detail: 'IronRidge XR100',
         badge: { label: 'Staged', variant: 'warning' },
@@ -180,7 +180,7 @@ export const recentlyCompleted: CompletedTask[] = [
     id: 'CMP-8821',
     title: 'Site Survey #8821',
     address: '420 University Ave, Palo Alto',
-    timestamp: 'Today • 08:15 AM',
+    timestamp: 'Today, 08:15 AM',
     evidence: '18 Photos Uploaded',
     verification: 'Customer Signed',
   },
@@ -188,7 +188,7 @@ export const recentlyCompleted: CompletedTask[] = [
     id: 'CMP-8814',
     title: 'Inverter Gateway Reset',
     address: '1921 Sunny Glen Way, San Jose',
-    timestamp: 'Yesterday • 4:40 PM',
+    timestamp: 'Yesterday, 4:40 PM',
     evidence: '6 Photos Uploaded',
     verification: 'Remote Sync Active',
   },
@@ -196,8 +196,8 @@ export const recentlyCompleted: CompletedTask[] = [
     id: 'CMP-8809',
     title: 'Main Lug Only Conversion',
     address: '885 Almaden Expy, San Jose',
-    timestamp: 'Yesterday • 2:10 PM',
-    evidence: '12 Photos • Torque Cert',
+    timestamp: 'Yesterday, 2:10 PM',
+    evidence: '12 Photos, Torque Cert',
     verification: 'Passed QA',
   },
 ]

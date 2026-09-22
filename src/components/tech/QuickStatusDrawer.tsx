@@ -71,8 +71,8 @@ export function QuickStatusDrawer({ order, open, onClose, onCommit }: QuickStatu
             <div className="flex flex-col gap-space-md overflow-y-auto p-space-xl">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-space-xs">
-                  <span aria-hidden="true" className="h-3 w-3 animate-pulse rounded-full bg-primary" />
-                  <span className="text-label-sm font-bold uppercase tracking-wider text-primary">
+                  <span aria-hidden="true" className="h-3 w-3 rounded-full bg-primary" />
+                  <span className="text-label-sm font-bold text-primary">
                     {d.sync.label}
                   </span>
                 </div>
@@ -99,7 +99,7 @@ export function QuickStatusDrawer({ order, open, onClose, onCommit }: QuickStatu
 
               {/* Shift Job Lifecycle Stage */}
               <div className="flex flex-col gap-space-sm rounded-2xl bg-surface-container-low p-space-md">
-                <span className="text-label-sm font-bold uppercase tracking-wider text-on-surface">
+                <span className="text-label-sm font-bold text-on-surface">
                   {d.lifecycle.title}
                 </span>
                 <div className="grid grid-cols-2 gap-space-xs">

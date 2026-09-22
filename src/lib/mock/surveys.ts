@@ -126,9 +126,9 @@ export const surveys: SurveyRecord[] = [
     contacts: [
       { icon: 'person', label: 'Customer', value: 'Marcus Vance' },
       { icon: 'phone_iphone', label: 'Direct Contact', value: '(555) 349-8201' },
-      { icon: 'calendar_clock', label: 'Window Slot', value: 'Today • 10:00 - 12:00 PM' },
+      { icon: 'calendar_clock', label: 'Window Slot', value: 'Today, 10:00 - 12:00 PM' },
     ],
-    location: { address: '742 Evergreen Terrace', meta: 'Springfield • Parcel ID #094-11' },
+    location: { address: '742 Evergreen Terrace', meta: 'Springfield, Parcel ID #094-11' },
     homeowner: {
       title: 'Homeowner Submission',
       subtitle: 'Self-reported preliminary portal data',
@@ -254,7 +254,7 @@ export const surveys: SurveyRecord[] = [
         panel: {
           icon: 'electrical_services',
           title: 'Main Service Panel Rating',
-          description: 'Square D Homeline • Outdoor enclosure',
+          description: 'Square D Homeline, Outdoor enclosure',
           rating: '200 Ampere',
         },
         breaker: {
@@ -432,7 +432,7 @@ const surveyVerifications: Record<string, SurveyVerification> = {
         icon: 'roofing',
         title: 'Architectural Asphalt Shingle',
         // Ghi chú của chủ nhà ở màn 8: lợp lại mái 3 năm trước
-        description: 'Installed 3 yrs ago • Expected life 25y',
+        description: 'Installed 3 yrs ago, Expected life 25y',
         badge: 'Confirmed',
       },
       photos: {

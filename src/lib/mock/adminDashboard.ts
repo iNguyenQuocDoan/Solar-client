@@ -12,10 +12,8 @@ export const adminDashboardHeader = {
   breadcrumb: [{ label: 'Administration' }, { label: 'System Overview' }] satisfies Crumb[],
   clusterNode: 'Cluster Node: US-Central-Primary (Active)',
   engineVersion: 'Engine v3.4.2',
-  eyebrow: 'System Core Management',
-  title: 'System Administration & Governance Cockpit',
-  description:
-    'Real-time surveillance of platform telemetry, algorithmic constant configurations, and enterprise audit trails.',
+  title: 'System Overview',
+  description: 'Platform metrics, calculation defaults, and the audit log.',
   actions: {
     healthCheck: 'Run System Health Check',
     exportLogs: 'Export Audit Logs (CSV)',
@@ -104,10 +102,8 @@ export const adminKpis: AdminKpi[] = [
 ]
 
 export const auditTrail = {
-  title: 'Enterprise Audit Trail',
-  description:
-    'Immutable governance journal capturing all credential modifications, configuration tweaks, and SKU promotions.',
-  streamLabel: 'Live Stream',
+  title: 'Audit Trail',
+  streamLabel: 'Live',
   total: 1290,
   periodLabel: 'logged in the past 7 days',
   linkLabel: 'View Complete Audit Trail',
@@ -166,7 +162,6 @@ export const auditTrail = {
 
 export const engineDefaults = {
   title: 'Engine Defaults',
-  description: 'Active solar physics variables applied to all consumer proposals.',
   editLabel: 'Edit',
   rows: [
     { icon: 'screen_rotation', label: 'Standard Tilt Default', sublabel: 'CA/TX Baseline', value: '25.0°' },
@@ -205,7 +200,6 @@ export const engineDefaults = {
 export const userDistribution = {
   title: 'User Distribution',
   total: 1428,
-  description: 'Real-time breakdown of provisioned system identities.',
   linkLabel: 'Access User Management Directory',
   linkHref: ROUTES.ADMIN.USERS,
   segments: [
@@ -218,15 +212,13 @@ export const userDistribution = {
 }
 
 export const launchpads = {
-  title: 'Governance Quick Launchpads',
-  caption: 'Common Operations',
+  title: 'Common Tasks',
   items: [
     {
       icon: 'person_add',
       tone: 'primary',
       title: 'Provision New Staff Member',
-      description:
-        'Initiate verified onboarding workflow, role provisioning, and OAuth2 security tokens for field or office personnel.',
+      description: 'Create an account and assign its role.',
       ctaLabel: 'Open Staff Onboarding',
       href: ROUTES.ADMIN.USERS,
     },
@@ -234,8 +226,7 @@ export const launchpads = {
       icon: 'tune',
       tone: 'secondary',
       title: 'Configure Solar Yield Constants',
-      description:
-        'Recalibrate irradiance derating coefficients, temperature losses, and tilt-azimuth calculations globally.',
+      description: 'Change the derating, loss, and tilt values used in every estimate.',
       ctaLabel: 'Technical Configuration',
       href: ROUTES.ADMIN.TECH_CONFIG,
     },
@@ -243,8 +234,7 @@ export const launchpads = {
       icon: 'auto_stories',
       tone: 'primary-container',
       title: 'Index Customer FAQs for AI Assistant',
-      description:
-        'Chunk and vectorize newly ratified net metering guidelines, warranty manuals, or billing policy documents.',
+      description: 'Add documents the assistant can answer from.',
       ctaLabel: 'Access AI Knowledge Base',
       href: ROUTES.ADMIN.KNOWLEDGE_BASE,
     },
@@ -252,8 +242,7 @@ export const launchpads = {
       icon: 'policy',
       tone: 'tertiary',
       title: 'Manage Role Permission Matrices',
-      description:
-        'Granularly audit access privileges, customer PII masking parameters, and engineering approval permissions.',
+      description: 'Review what each role can see and approve.',
       ctaLabel: 'Configure RBAC Matrix',
       href: ROUTES.ADMIN.ROLES,
     },

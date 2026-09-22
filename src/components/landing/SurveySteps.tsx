@@ -14,7 +14,7 @@ export function SurveySteps() {
       <div className={cn('flex flex-col gap-space-xl', LANDING_CONTAINER)}>
         <div className="flex flex-col justify-between gap-space-md md:flex-row md:items-end">
           <div className="flex flex-col gap-space-2xs">
-            <span className="text-label-lg uppercase tracking-wider text-primary-container">{eyebrow}</span>
+            <span className="text-label-lg text-primary-container">{eyebrow}</span>
             <h2 className="text-headline-xl-mobile text-primary md:text-headline-xl">{title}</h2>
           </div>
           <p className="max-w-md text-body-md text-on-surface-variant">{description}</p>

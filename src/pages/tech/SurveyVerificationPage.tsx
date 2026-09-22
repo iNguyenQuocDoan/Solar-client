@@ -162,7 +162,7 @@ function SurveyVerificationView({
           <Breadcrumb items={breadcrumb} />
           <div className="flex flex-wrap items-center gap-space-sm">
             <div className="flex items-center gap-space-xs rounded-full bg-surface-container-high px-space-sm py-1 text-on-surface-variant">
-              <span aria-hidden="true" className="h-2 w-2 animate-pulse rounded-full bg-primary-container" />
+              <span aria-hidden="true" className="h-2 w-2 rounded-full bg-primary-container" />
               <span className="text-label-sm">{verification.syncLabel}</span>
             </div>
             <StatusBadge variant="primary" size="md" className="bg-surface-container-low text-primary-container">
@@ -174,10 +174,9 @@ function SurveyVerificationView({
         <TaskHeaderCard
           eyebrow={
             <>
-              <span className="text-label-sm font-bold uppercase tracking-wider text-primary">
+              <span className="text-label-sm font-bold text-primary">
                 {verification.cluster}
               </span>
-              <span className="text-xs text-outline">•</span>
               <span className="text-label-sm text-on-surface-variant">{verification.assignee}</span>
             </>
           }

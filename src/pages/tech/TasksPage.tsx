@@ -153,13 +153,6 @@ export function TasksPage() {
       <div className="mb-space-2xl flex flex-col gap-space-lg">
         <PageHeader
           bottomSpacing="none"
-          eyebrow={
-            <span className="flex items-center gap-space-xs text-label-sm uppercase tracking-widest text-on-surface-variant">
-              <span>{tasksHeader.eyebrow}</span>
-              <span aria-hidden="true" className="h-1 w-1 rounded-full bg-outline" />
-              <span className="font-bold text-primary">{tasksHeader.eyebrowAccent}</span>
-            </span>
-          }
           title={tasksHeader.title}
           actions={
             <>

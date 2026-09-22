@@ -80,7 +80,7 @@ export function SignatureDialog({
         <p className="text-body-sm text-on-surface-variant">{consent}</p>
 
         <div className="flex flex-col gap-1">
-          <span className="text-label-sm font-bold uppercase text-on-surface-variant">{canvasLabel}</span>
+          <span className="text-label-sm font-bold text-on-surface-variant">{canvasLabel}</span>
           <SignaturePad ref={padRef} label={canvasLabel} hint={hint} onSignedChange={setHasSignature} />
           <button
             type="button"

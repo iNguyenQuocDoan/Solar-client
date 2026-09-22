@@ -67,16 +67,10 @@ export function LoginPage() {
   return (
     <AuthCard>
       <div className="mb-space-lg flex flex-col gap-1">
-        <div className="mb-1 flex items-center gap-2">
-          <span className="rounded-full bg-surface-container-high px-2.5 py-0.5 text-label-sm font-semibold text-primary">
-            {loginContent.badge}
-          </span>
-          <span className="text-label-sm text-on-surface-variant">{loginContent.tls}</span>
-        </div>
         <h1 className="text-headline-xl text-on-surface">{loginContent.title}</h1>
         <p className="text-body-md text-on-surface-variant">
           {loginContent.descriptionBefore}
-          <span className="font-semibold text-primary">{loginContent.descriptionRoles}</span>
+          <span className="text-on-surface">{loginContent.descriptionRoles}</span>
           {loginContent.descriptionAfter}
         </p>
       </div>
@@ -176,14 +170,13 @@ export function LoginPage() {
         >
           {submitting && <Icon name="progress_activity" className="animate-spin text-[20px]" />}
           <span>{submitting ? loginContent.submitting : loginContent.submit}</span>
-          {!submitting && <Icon name="arrow_forward" className="text-[18px]" />}
         </button>
       </form>
 
       {/* Chỉ hiện khi chạy dev và có khai báo tài khoản mẫu trong .env.development.local */}
       {import.meta.env.DEV && demoAccounts.length > 0 && (
         <div className="mt-space-lg border-t border-surface-container-highest pt-space-md">
-          <span className="mb-2 block text-label-sm uppercase tracking-wider text-on-surface-variant">
+          <span className="mb-2 block text-label-sm text-on-surface-variant">
             {loginContent.quickTitle}
           </span>
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
@@ -196,7 +189,7 @@ export function LoginPage() {
                 className="flex flex-col rounded-lg bg-surface-container px-2.5 py-1.5 text-left transition-colors hover:bg-surface-container-high disabled:opacity-60"
               >
                 <span className="text-label-sm font-semibold text-primary">{account.roleLabel}</span>
-                <span className="text-[11px] text-on-surface-variant">{account.description}</span>
+                <span className="text-label-sm font-normal text-on-surface-variant">{account.description}</span>
               </button>
             ))}
             <button
@@ -205,7 +198,7 @@ export function LoginPage() {
               className="flex flex-col rounded-lg bg-error-container/40 px-2.5 py-1.5 text-left transition-colors hover:bg-error-container"
             >
               <span className="text-label-sm font-semibold text-error">{loginContent.expiredLabel}</span>
-              <span className="text-[11px] text-error">{loginContent.expiredHint}</span>
+              <span className="text-label-sm font-normal text-error">{loginContent.expiredHint}</span>
             </button>
           </div>
         </div>

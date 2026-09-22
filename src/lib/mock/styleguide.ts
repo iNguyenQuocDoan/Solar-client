@@ -169,14 +169,14 @@ export const styleguideTaskCards: TaskCardProps[] = [
     accent: 'primary',
     type: { label: 'Site Survey', variant: 'primary' },
     priority: { label: 'High Priority', variant: 'error' },
-    meta: { icon: 'timer', emphasis: 'Next Up', text: '• Starts in 24m', boxed: true },
+    meta: { icon: 'timer', emphasis: 'Next Up', text: 'Starts in 24m', boxed: true },
     title: 'Elena Rostova',
     address: '842 Crestview Terrace, Los Gatos, CA',
     phoneHref: 'tel:5550192834',
     specs: [
       { label: 'Window', value: '09:00 - 10:30 AM' },
       { label: 'Roof Material', value: 'Spanish Tile (28°)' },
-      { label: 'System Estimate', value: '11.4 kW • 26 Mod' },
+      { label: 'System Estimate', value: '11.4 kW, 26 Mod' },
     ],
     primaryAction: { label: 'Start Survey', icon: 'play_arrow' },
     secondaryAction: { label: 'Map', icon: 'directions' },
@@ -186,7 +186,7 @@ export const styleguideTaskCards: TaskCardProps[] = [
     type: { label: 'Warranty Dispatch', variant: 'error' },
     priority: { label: 'High Priority', variant: 'error' },
     meta: { icon: 'schedule', text: '03:00 - 04:15 PM' },
-    title: 'Garrett • Highland Plaza',
+    title: 'Garrett, Highland Plaza',
     address: '339 Redwood Ave, San Jose, CA',
     phoneHref: 'tel:5550192835',
     specs: [
@@ -205,10 +205,10 @@ export const styleguideTimeline: {
   timestamp: string
   state: TimelineStepState
 }[] = [
-  { title: 'Assigned', description: 'Sarah Jenkins (Dispatch)', timestamp: 'Oct 22 • 02:15 PM', state: 'done' },
-  { title: 'Scheduled & Confirmed', description: 'SMS Confirmed by Client', timestamp: 'Oct 22 • 03:30 PM', state: 'done' },
-  { title: 'En Route', description: 'GPS Telemetry Check-in', timestamp: 'Oct 23 • 08:15 AM', state: 'done' },
-  { title: 'On-Site In Progress', description: 'Surveyor Marcus Vance', timestamp: 'Oct 23 • 08:35 AM', state: 'current' },
+  { title: 'Assigned', description: 'Sarah Jenkins (Dispatch)', timestamp: 'Oct 22, 02:15 PM', state: 'done' },
+  { title: 'Scheduled & Confirmed', description: 'SMS Confirmed by Client', timestamp: 'Oct 22, 03:30 PM', state: 'done' },
+  { title: 'En Route', description: 'GPS Telemetry Check-in', timestamp: 'Oct 23, 08:15 AM', state: 'done' },
+  { title: 'On-Site In Progress', description: 'Surveyor Marcus Vance', timestamp: 'Oct 23, 08:35 AM', state: 'current' },
   { title: 'Documentation & QA', description: 'Sign-Off & Sync', timestamp: 'Pending', state: 'upcoming' },
 ]
 
@@ -320,8 +320,7 @@ export const styleguideTypeChips: { key: string; label: string; icon?: string; i
 export const styleguidePageHeader = {
   breadcrumb: [{ label: 'Administration', href: '/admin' }, { label: 'System Overview' }],
   metaText: 'Cluster Node: US-Central-Primary (Active)',
-  eyebrow: 'System Core Management',
-  title: 'System Administration & Governance Cockpit',
+  title: 'System Overview',
   description:
     'Real-time surveillance of platform telemetry, algorithmic constant configurations, and enterprise audit trails.',
 }

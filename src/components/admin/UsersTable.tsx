@@ -41,13 +41,13 @@ const columns: DataTableColumn<UserRecord>[] = [
             <div className={cn('flex items-center gap-2 text-body-sm', locked ? 'text-error' : 'text-outline')}>
               <span
                 className={cn(
-                  'rounded px-1.5 py-0.5 font-mono text-[11px]',
+                  'rounded px-1.5 py-0.5 font-mono text-label-sm',
                   locked ? 'bg-error-container/40' : 'bg-surface-container-low text-on-surface-variant',
                 )}
               >
                 {user.employeeId}
               </span>
-              <span>• {user.department}</span>
+              <span>{user.department}</span>
             </div>
           </div>
         </div>
@@ -115,7 +115,7 @@ const columns: DataTableColumn<UserRecord>[] = [
         >
           {user.lastActivity}
         </span>
-        <span className="text-[11px] text-outline">{user.lastDevice}</span>
+        <span className="text-label-sm text-outline">{user.lastDevice}</span>
       </div>
     ),
   },

@@ -117,7 +117,7 @@ function Hero() {
         className={cn(LANDING_CONTAINER, "grid gap-space-md lg:grid-cols-12")}
       >
         <div className="flex flex-col gap-space-md lg:col-span-6">
-          <span className="text-label-lg uppercase tracking-wider text-primary-container">
+          <span className="text-label-lg text-primary-container">
             Trang chủ
           </span>
           <PlaceholderBox label="Tiêu đề + mô tả" tall />

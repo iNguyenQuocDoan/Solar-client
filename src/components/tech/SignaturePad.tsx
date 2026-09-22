@@ -14,7 +14,7 @@ export type SignaturePadProps = {
   label: string
   /** Chữ mờ giữa ô khi chưa ký */
   hint: string
-  /** Chữ mờ góc phải dưới ("Elena Rostova • Sign & Verify") */
+  /** Chữ mờ góc phải dưới ("Elena Rostova, Sign & Verify") */
   caption?: string
   /** Báo cho form biết đã có nét ký hay chưa */
   onSignedChange?: (signed: boolean) => void

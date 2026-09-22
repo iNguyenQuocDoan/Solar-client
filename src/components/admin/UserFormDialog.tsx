@@ -86,12 +86,12 @@ function UserForm({ mode, user, onSubmit }: Pick<UserFormDialogProps, 'mode' | '
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-space-md" noValidate>
       <DialogHeader>
-        <span className="text-label-sm font-semibold uppercase tracking-wider text-outline">
+        <span className="text-label-sm font-semibold text-outline">
           {isEdit ? 'Governance Drawer' : 'Invite New User'}
         </span>
         <DialogTitle className="mt-0.5">{isEdit && user ? user.name : 'New platform account'}</DialogTitle>
-        <DialogDescription className="font-mono text-[11px]">
-          {isEdit && user ? `${user.employeeId} • ${user.department}` : 'Provision credentials, role and regional scope'}
+        <DialogDescription className="font-mono text-label-sm">
+          {isEdit && user ? `${user.employeeId}, ${user.department}` : 'Provision credentials, role and regional scope'}
         </DialogDescription>
       </DialogHeader>
       <div className="h-px w-full bg-surface-container-high" />
@@ -200,7 +200,7 @@ function UserForm({ mode, user, onSubmit }: Pick<UserFormDialogProps, 'mode' | '
                   <span className="text-label-md font-semibold text-on-surface">Hardware FIDO2 / MFA</span>
                   <span
                     className={cn(
-                      'text-[11px] font-medium',
+                      'text-label-sm font-medium',
                       field.value ? 'text-tertiary-container' : 'text-outline',
                     )}
                   >
@@ -222,7 +222,7 @@ function UserForm({ mode, user, onSubmit }: Pick<UserFormDialogProps, 'mode' | '
               <Icon name="key" className="text-[20px] text-outline" />
               <div className="flex flex-col">
                 <span className="text-label-md font-semibold text-on-surface">API Secret Tokens</span>
-                <span className="text-[11px] text-outline">{user.apiTokens} active personal keys</span>
+                <span className="text-label-sm text-outline">{user.apiTokens} active personal keys</span>
               </div>
             </div>
             <button type="button" className="text-label-sm text-error hover:underline">
@@ -234,8 +234,8 @@ function UserForm({ mode, user, onSubmit }: Pick<UserFormDialogProps, 'mode' | '
 
       {isEdit && user && user.identityLog.length > 0 && (
         <div className="flex flex-col gap-1.5">
-          <span className="text-label-sm font-semibold uppercase tracking-wider text-outline">Recent Identity Log</span>
-          <ul className="flex flex-col gap-1.5 rounded-xl bg-surface-container-low/50 p-2.5 text-[11px] text-outline">
+          <span className="text-label-sm font-semibold text-outline">Recent Identity Log</span>
+          <ul className="flex flex-col gap-1.5 rounded-xl bg-surface-container-low/50 p-2.5 text-label-sm text-outline">
             {user.identityLog.map((entry) => (
               <li key={entry.event} className="flex items-center justify-between">
                 <span>{entry.event}</span>

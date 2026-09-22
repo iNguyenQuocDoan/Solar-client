@@ -25,7 +25,7 @@ export function ArrayTopologyMap({
   return (
     <div className={cn('rounded-xl bg-surface p-space-sm', className)}>
       <div className="mb-2 flex items-center justify-between gap-space-xs">
-        <span className="text-label-sm font-bold uppercase text-on-surface-variant">{title}</span>
+        <span className="text-label-sm font-bold text-on-surface-variant">{title}</span>
         <span className="text-label-sm font-semibold text-primary">{note}</span>
       </div>
 

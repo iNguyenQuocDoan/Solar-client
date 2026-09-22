@@ -4,7 +4,7 @@ export const adminSession = {
   user: {
     name: 'Eleanor Sterling',
     title: 'Super Administrator',
-    status: 'Active • Super Admin',
+    status: 'Active, Super Admin',
     icon: 'account_circle',
   },
   environment: 'PROD - Cluster 01',
@@ -19,8 +19,8 @@ export const technicianSession = {
     title: 'Lead Field Specialist #4402',
     icon: 'engineering',
   },
-  syncStatus: 'Field Tech Hub • Active Sync',
-  location: 'NorCal Zone 4 • Service Unit 12',
+  syncStatus: 'Field Tech Hub, Active Sync',
+  location: 'NorCal Zone 4, Service Unit 12',
   telemetry: 'Telemetry Online',
   hasUnreadAlerts: true,
 }

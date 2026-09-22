@@ -24,7 +24,7 @@ const valueToneClasses = {
 export function StatTile({ label, value, unit, caption, valueTone = 'default', className }: StatTileProps) {
   return (
     <div className={cn('flex flex-col gap-1 rounded-xl bg-surface-container-low p-space-sm', className)}>
-      <span className="text-label-sm uppercase text-on-surface-variant">{label}</span>
+      <span className="text-label-sm text-on-surface-variant">{label}</span>
       <span className={cn('text-headline-lg font-bold', valueToneClasses[valueTone])}>
         {value}
         {unit && <span className="text-body-md font-normal text-on-surface-variant"> {unit}</span>}

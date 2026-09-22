@@ -61,7 +61,7 @@ function SurveyPhotosView({
         <div className="flex flex-col justify-between gap-space-md lg:flex-row lg:items-center">
           <div className="flex flex-col gap-1">
             <div className="flex flex-wrap items-center gap-space-xs">
-              <span className="rounded bg-surface-container-low px-2 py-0.5 text-label-sm uppercase tracking-wider text-on-surface-variant">
+              <span className="rounded bg-surface-container-low px-2 py-0.5 text-label-sm text-on-surface-variant">
                 {doc.header.projectRef}
               </span>
               <span aria-hidden="true" className="h-1 w-1 rounded-full bg-outline-variant" />
@@ -111,10 +111,10 @@ function SurveyPhotosView({
         <div className="flex flex-col gap-space-xs rounded-xl bg-surface-container-low p-space-md">
           <div className="flex flex-wrap items-center justify-between gap-space-xs text-label-md">
             <div className="flex flex-wrap items-center gap-space-xs">
-              <span aria-hidden="true" className="h-2 w-2 animate-pulse rounded-full bg-primary" />
+              <span aria-hidden="true" className="h-2 w-2 rounded-full bg-primary" />
               <span className="font-semibold text-on-surface">{doc.progress.title}</span>
               <span className="font-normal text-on-surface-variant">
-                {`• ${fill(doc.progress.capturedTemplate, {
+                {`${fill(doc.progress.capturedTemplate, {
                   captured: progress.captured,
                   required: progress.required,
                 })}`}
@@ -153,7 +153,7 @@ function SurveyPhotosView({
             const countLabel = isOptional
               ? `${shots} Recorded`
               : fulfilled
-                ? `${shots} of ${section.requiredCount} Captured • 100%`
+                ? `${shots} of ${section.requiredCount} Captured, 100%`
                 : `${shots} of ${section.requiredCount} Captured`
 
             return (
@@ -229,7 +229,7 @@ function SurveyPhotosView({
           <div className="flex flex-col">
             <div className="flex items-center gap-space-xs">
               <span className="text-headline-md font-bold text-on-surface">{doc.dock.title}</span>
-              <span aria-hidden="true" className="h-2 w-2 animate-pulse rounded-full bg-primary" />
+              <span aria-hidden="true" className="h-2 w-2 rounded-full bg-primary" />
             </div>
             <p className="text-body-sm text-on-surface-variant">
               {fill(doc.dock.descriptionTemplate, { total: progress.total, remaining: progress.remaining })}
