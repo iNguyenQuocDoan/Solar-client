@@ -40,7 +40,7 @@ export function Pagination({
   onPageChange,
   pageSizeOptions,
   onPageSizeChange,
-  itemLabel = 'entries',
+  itemLabel = 'mục',
   visibleCount,
   className,
 }: PaginationProps) {
@@ -58,15 +58,15 @@ export function Pagination({
     >
       <div className="flex items-center gap-space-md">
         <span className="text-body-sm text-on-surface-variant">
-          Showing{' '}
+          Hiển thị{' '}
           <strong className="font-semibold text-on-surface">
             {from}–{to}
           </strong>{' '}
-          of <strong className="font-semibold text-on-surface">{total.toLocaleString()}</strong> {itemLabel}
+          trên <strong className="font-semibold text-on-surface">{total.toLocaleString()}</strong> {itemLabel}
         </span>
         {pageSizeOptions && onPageSizeChange && (
           <label className="flex items-center gap-2">
-            <span className="text-body-sm text-outline">Rows:</span>
+            <span className="text-body-sm text-outline">Số dòng:</span>
             <select
               value={pageSize}
               onChange={(e) => onPageSizeChange(Number(e.target.value))}
@@ -74,7 +74,7 @@ export function Pagination({
             >
               {pageSizeOptions.map((size) => (
                 <option key={size} value={size}>
-                  {size} per page
+                  {size} dòng
                 </option>
               ))}
             </select>

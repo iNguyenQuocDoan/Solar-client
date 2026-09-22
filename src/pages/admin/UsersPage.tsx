@@ -92,11 +92,11 @@ export function UsersPage() {
           phone: '—',
           avatarTone: 'neutral',
           status: 'pending',
-          created: 'Just now',
-          lastActivity: 'Invite sent',
-          lastDevice: 'Awaiting first sign-in',
+          created: 'Vừa xong',
+          lastActivity: 'Đã gửi lời mời',
+          lastDevice: 'Chờ đăng nhập lần đầu',
           apiTokens: 0,
-          identityLog: [{ event: 'Invitation sent', when: 'now' }],
+          identityLog: [{ event: 'Đã gửi lời mời', when: 'vừa xong' }],
           ...values,
         },
         ...prev,
@@ -160,7 +160,7 @@ export function UsersPage() {
         selects={[
           {
             key: 'role',
-            'aria-label': 'Filter by role',
+            'aria-label': 'Lọc theo vai trò',
             options: usersFilterOptions.roles,
             value: roleFilter,
             onChange: (e) => {
@@ -171,7 +171,7 @@ export function UsersPage() {
           },
           {
             key: 'status',
-            'aria-label': 'Filter by status',
+            'aria-label': 'Lọc theo trạng thái',
             options: usersFilterOptions.statuses,
             value: statusFilter,
             onChange: (e) => {
@@ -181,7 +181,7 @@ export function UsersPage() {
           },
           {
             key: 'region',
-            'aria-label': 'Filter by region',
+            'aria-label': 'Lọc theo khu vực',
             options: usersFilterOptions.regions,
             value: regionFilter,
             onChange: (e) => {
@@ -192,7 +192,7 @@ export function UsersPage() {
           },
         ]}
         scopes={{
-          label: 'Active Scopes:',
+          label: 'Phạm vi đang lọc:',
           items: scopes.map((scope) => ({
             key: scope,
             label: scope,
@@ -203,7 +203,7 @@ export function UsersPage() {
         trailing={
           <>
             <span className="text-body-sm text-on-surface-variant">
-              Selected: <strong className="text-on-surface">{selected.size}</strong>
+              Đã chọn: <strong className="text-on-surface">{selected.size}</strong>
             </span>
             {usersBulkActions.map((action) => (
               <button
@@ -240,7 +240,7 @@ export function UsersPage() {
             setPageSize(size)
             setPage(1)
           },
-          itemLabel: 'users',
+          itemLabel: 'người dùng',
         }}
       />
 

@@ -10,59 +10,59 @@ import type { TaskAccent } from '@/components/stitch-ui/TaskCard'
  */
 
 export const tasksHeader = {
-  title: 'Technician Work Orders',
-  quickAction: 'Quick Dispatch Action',
+  title: 'Phiếu công việc',
+  quickAction: 'Điều phối nhanh',
 }
 
 export type TaskView = 'list' | 'bento'
 
 export const taskViewOptions: ViewOption<TaskView>[] = [
-  { value: 'list', label: 'List Matrix', icon: 'table_rows' },
-  { value: 'bento', label: 'Bento Cards', icon: 'grid_view' },
+  { value: 'list', label: 'Dạng bảng', icon: 'table_rows' },
+  { value: 'bento', label: 'Dạng thẻ', icon: 'grid_view' },
 ]
 
 export const taskBuckets: TaskBucket[] = [
-  { key: 'today', label: 'Today', count: 4 },
-  { key: 'upcoming', label: 'Upcoming', count: 12 },
-  { key: 'completed', label: 'Completed', count: 38 },
-  { key: 'all', label: 'All Tasks' },
+  { key: 'today', label: 'Hôm nay', count: 4 },
+  { key: 'upcoming', label: 'Sắp tới', count: 12 },
+  { key: 'completed', label: 'Đã xong', count: 38 },
+  { key: 'all', label: 'Tất cả' },
 ]
 
 export const taskPriorities: TaskPriorityFilter[] = [
-  { key: 'all', label: 'All' },
-  { key: 'high', label: 'High (3)', tone: 'error' },
-  { key: 'normal', label: 'Normal' },
+  { key: 'all', label: 'Tất cả' },
+  { key: 'high', label: 'Ưu tiên cao (3)', tone: 'error' },
+  { key: 'normal', label: 'Thường' },
 ]
 
 export const taskTypes: TaskTypeFilter[] = [
-  { key: 'all', label: 'All Types (16)' },
-  { key: 'survey', label: 'Site Survey (5)', icon: 'square_foot', iconClassName: 'text-secondary' },
-  { key: 'installation', label: 'Installation (3)', icon: 'solar_power', iconClassName: 'text-primary' },
-  { key: 'warranty', label: 'Warranty (4)', icon: 'shield_with_heart', iconClassName: 'text-error' },
-  { key: 'maintenance', label: 'Maintenance (4)', icon: 'tune', iconClassName: 'text-tertiary-container' },
+  { key: 'all', label: 'Tất cả loại việc (16)' },
+  { key: 'survey', label: 'Khảo sát (5)', icon: 'square_foot', iconClassName: 'text-secondary' },
+  { key: 'installation', label: 'Lắp đặt (3)', icon: 'solar_power', iconClassName: 'text-primary' },
+  { key: 'warranty', label: 'Bảo hành (4)', icon: 'shield_with_heart', iconClassName: 'text-error' },
+  { key: 'maintenance', label: 'Bảo trì (4)', icon: 'tune', iconClassName: 'text-tertiary-container' },
 ]
 
 export const taskFilterCopy = {
-  priorityLabel: 'Priority:',
-  searchPlaceholder: 'Search customer, ID, SN, inverter...',
+  priorityLabel: 'Mức ưu tiên:',
+  searchPlaceholder: 'Tìm khách hàng, mã phiếu, số máy…',
   searchShortcut: 'Ctrl K',
 }
 
 export const taskSyncNotice = {
   icon: 'sync',
-  prefix: 'Displaying ',
-  strong: '4 active assignments',
-  suffix: ' scheduled for Marcus Vance today in Sector 4B / NorCal Central',
-  meta: 'GPS Auto-Routing Enabled',
+  prefix: 'Đang hiển thị ',
+  strong: '4 việc',
+  suffix: ' của Marcus Vance hôm nay tại khu vực 4B',
+  meta: 'Tự động định tuyến theo GPS',
 }
 
 export const taskTableHeaders = {
-  workOrder: 'Work Order',
-  customer: 'Customer & Site',
-  address: 'Address / Zone',
-  time: 'Time Window',
-  status: 'Status',
-  actions: 'Rapid Action',
+  workOrder: 'Phiếu việc',
+  customer: 'Khách hàng',
+  address: 'Địa chỉ / khu vực',
+  time: 'Khung giờ',
+  status: 'Trạng thái',
+  actions: 'Thao tác',
 }
 
 export type WorkOrder = {
@@ -94,19 +94,19 @@ export const workOrders: WorkOrder[] = [
     code: '#ORD-8821',
     typeKey: 'survey',
     highPriority: true,
-    work: { label: 'Site Survey & Pitch Audit', icon: 'square_foot', iconClassName: 'text-secondary' },
+    work: { label: 'Khảo sát mái và độ dốc', icon: 'square_foot', iconClassName: 'text-secondary' },
     reference: 'INV-77291 / 9.8kWp',
     customer: {
       name: 'Elena Rostova',
       phone: '+1 (415) 883-9021',
-      property: '2-Story Residential, Tile',
+      property: 'Nhà 2 tầng, mái ngói',
       propertyIcon: 'home',
     },
-    site: { street: '742 Evergreen Terrace', zone: 'San Rafael, Zone NorCal 4B', distance: '1.2 mi away' },
-    schedule: { time: 'Today, 08:30 AM', duration: 'Duration: 90 mins', note: 'Active slot', noteTone: 'primary' },
-    status: { label: 'In Progress', variant: 'success', pulse: true },
+    site: { street: '742 Evergreen Terrace', zone: 'San Rafael, khu vực 4B', distance: 'cách 1,9 km' },
+    schedule: { time: 'Hôm nay, 08:30', duration: 'Dự kiến 90 phút', note: 'Đang tới lượt', noteTone: 'primary' },
+    status: { label: 'Đang làm', variant: 'success', pulse: true },
     lifecycleStage: 3,
-    action: { label: 'Update Status', variant: 'primary' },
+    action: { label: 'Cập nhật trạng thái', variant: 'primary' },
     accent: 'primary',
     typeVariant: 'primary',
   },
@@ -115,19 +115,19 @@ export const workOrders: WorkOrder[] = [
     code: '#ORD-8824',
     typeKey: 'installation',
     highPriority: false,
-    work: { label: 'Inverter Swap & Commissioning', icon: 'solar_power', iconClassName: 'text-primary' },
+    work: { label: 'Thay inverter và nghiệm thu', icon: 'solar_power', iconClassName: 'text-primary' },
     reference: 'SN: SE-7600H-US',
     customer: {
       name: 'David Chen',
       phone: '+1 (510) 412-8809',
-      property: 'Single Family, Composite',
+      property: 'Nhà phố, mái tôn',
       propertyIcon: 'home',
     },
-    site: { street: '1204 Oak Ridge Way', zone: 'Novato, Zone NorCal 4B', distance: '5.4 mi away' },
-    schedule: { time: 'Today, 11:00 AM', duration: 'Duration: 180 mins', note: 'Next queue', noteTone: 'muted' },
-    status: { label: 'En Route', variant: 'warning' },
+    site: { street: '1204 Oak Ridge Way', zone: 'Novato, khu vực 4B', distance: 'cách 8,7 km' },
+    schedule: { time: 'Hôm nay, 11:00', duration: 'Dự kiến 180 phút', note: 'Kế tiếp', noteTone: 'muted' },
+    status: { label: 'Đang di chuyển', variant: 'warning' },
     lifecycleStage: 2,
-    action: { label: 'Update Status', variant: 'neutral' },
+    action: { label: 'Cập nhật trạng thái', variant: 'neutral' },
     accent: 'secondary',
     typeVariant: 'warning',
   },
@@ -136,19 +136,19 @@ export const workOrders: WorkOrder[] = [
     code: '#ORD-8827',
     typeKey: 'warranty',
     highPriority: true,
-    work: { label: 'Battery BMS Rapid Discharge Audit', icon: 'shield_with_heart', iconClassName: 'text-error' },
-    reference: 'Tesla Powerwall 2, Batt #44',
+    work: { label: 'Kiểm tra pin xả nhanh (BMS)', icon: 'shield_with_heart', iconClassName: 'text-error' },
+    reference: 'Tesla Powerwall 2, pin #44',
     customer: {
       name: 'Kavita Patel',
       phone: '+1 (415) 309-1120',
-      property: 'Townhouse, Flat Deck',
+      property: 'Nhà phố, mái bằng',
       propertyIcon: 'apartment',
     },
-    site: { street: '410 Vista Grande', zone: 'Mill Valley, Zone NorCal 4B', distance: '11.8 mi away' },
-    schedule: { time: 'Today, 02:30 PM', duration: 'Duration: 60 mins', note: 'Afternoon Window', noteTone: 'muted' },
-    status: { label: 'Scheduled', variant: 'neutral' },
+    site: { street: '410 Vista Grande', zone: 'Mill Valley, khu vực 4B', distance: 'cách 19 km' },
+    schedule: { time: 'Hôm nay, 14:30', duration: 'Dự kiến 60 phút', note: 'Khung chiều', noteTone: 'muted' },
+    status: { label: 'Đã xếp lịch', variant: 'neutral' },
     lifecycleStage: 1,
-    action: { label: 'Start Job', variant: 'neutral' },
+    action: { label: 'Bắt đầu', variant: 'neutral' },
     accent: 'error',
     typeVariant: 'error',
   },
@@ -157,19 +157,19 @@ export const workOrders: WorkOrder[] = [
     code: '#ORD-8819',
     typeKey: 'maintenance',
     highPriority: false,
-    work: { label: 'Array Rewire & Optimizers Check', icon: 'tune', iconClassName: 'text-tertiary-container' },
-    reference: 'SolEdge P401, Strings A+B',
+    work: { label: 'Đi lại dây và kiểm tra optimizer', icon: 'tune', iconClassName: 'text-tertiary-container' },
+    reference: 'SolarEdge P401, chuỗi A+B',
     customer: {
       name: 'Robert Morales',
       phone: '+1 (415) 771-4923',
-      property: 'Single Family, Standing Seam Metal',
+      property: 'Nhà phố, mái tôn seamlock',
       propertyIcon: 'home',
     },
-    site: { street: '89 Circle Drive', zone: 'Tiburon, Zone NorCal 4B', distance: '14.2 mi away' },
-    schedule: { time: 'Today, 04:45 PM', duration: 'Duration: 45 mins', note: 'Wrap-up inspection', noteTone: 'muted' },
-    status: { label: 'Awaiting Signoff', variant: 'pending' },
+    site: { street: '89 Circle Drive', zone: 'Tiburon, khu vực 4B', distance: 'cách 22,8 km' },
+    schedule: { time: 'Hôm nay, 16:45', duration: 'Dự kiến 45 phút', note: 'Kiểm tra cuối ngày', noteTone: 'muted' },
+    status: { label: 'Chờ nghiệm thu', variant: 'pending' },
     lifecycleStage: 4,
-    action: { label: 'Sign Off', variant: 'neutral' },
+    action: { label: 'Nghiệm thu', variant: 'neutral' },
     accent: 'success',
     typeVariant: 'neutral',
   },
@@ -201,74 +201,74 @@ export type DrawerPhoto = {
 }
 
 export const quickStatusDrawer = {
-  sync: { label: 'Field Sync Engine Active' },
-  closeLabel: 'Close quick status drawer',
+  sync: { label: 'Đang đồng bộ hiện trường' },
+  closeLabel: 'Đóng bảng cập nhật nhanh',
   /** drawerCustomer trong code.html: "<tên khách>, <địa chỉ>" */
   customerSeparator: ', ',
   lifecycle: {
-    title: 'Shift Job Lifecycle Stage',
+    title: 'Giai đoạn công việc',
     stages: [
-      { value: 1, label: '1. Scheduled', dotClassName: 'bg-outline' },
-      { value: 2, label: '2. En Route', dotClassName: 'bg-secondary' },
-      { value: 3, label: '3. In Progress', dotClassName: 'bg-primary-fixed' },
-      { value: 4, label: '4. Verification', dotClassName: 'bg-secondary-container' },
+      { value: 1, label: '1. Đã xếp lịch', dotClassName: 'bg-outline' },
+      { value: 2, label: '2. Đang di chuyển', dotClassName: 'bg-secondary' },
+      { value: 3, label: '3. Đang làm', dotClassName: 'bg-primary-fixed' },
+      { value: 4, label: '4. Nghiệm thu', dotClassName: 'bg-secondary-container' },
     ] as LifecycleStage[],
   },
   checklist: {
-    title: 'Mandatory Phase Checklist',
+    title: 'Việc bắt buộc kiểm tra',
     items: [
       {
         id: 'ppe',
-        label: 'PPE & Fall Protection Anchored',
-        description: 'OSHA Roof safety compliance confirmed',
+        label: 'Đã mắc dây an toàn và đồ bảo hộ',
+        description: 'Đúng quy định an toàn khi làm trên mái',
         defaultChecked: true,
       },
       {
         id: 'msp',
-        label: 'Main Service Panel (MSP) Busbar Inspected',
-        description: '200A main service & breaker clearance shot',
+        label: 'Đã kiểm tra thanh cái tủ điện chính',
+        description: 'Chụp ảnh aptomat tổng 200A và khoảng cách an toàn',
         defaultChecked: true,
       },
       {
         id: 'pitch',
-        label: 'Roof Pitch & Attic Rafter Dimensions Logged',
-        description: 'Laser measure readings stored',
+        label: 'Đã ghi độ dốc mái và kích thước xà gồ',
+        description: 'Lưu số đo bằng máy laser',
         defaultChecked: false,
       },
     ] as DrawerChecklistItem[],
   },
   observation: {
-    title: 'Technician Site Observation',
-    dictateLabel: 'Dictate Voice Memo',
+    title: 'Ghi chú tại hiện trường',
+    dictateLabel: 'Ghi âm ghi chú',
     dictateIcon: 'mic',
     placeholder:
-      'Enter on-site notes (e.g., south-facing rafter spacing is 24 inches on center, minor tree shading after 4 PM)...',
+      'Ghi chú tại chỗ (ví dụ: xà gồ hướng nam cách nhau 60cm, có bóng cây che sau 16 giờ)…',
   },
   photos: {
     /** "Job Site Photos (3 uploaded)" – 2 ảnh + 1 ô Add Slot như code.html */
-    titleTemplate: 'Job Site Photos ({count} uploaded)',
+    titleTemplate: 'Ảnh công trình ({count} ảnh)',
     uploadedCount: 3,
-    captureLabel: 'Take Photo',
+    captureLabel: 'Chụp ảnh',
     captureIcon: 'camera_alt',
-    addSlotLabel: 'Add Slot',
+    addSlotLabel: 'Thêm ô ảnh',
     addSlotIcon: 'add_circle',
     items: [
       {
         id: 'breaker',
         src: '/placeholders/photo-breaker.svg',
-        alt: 'Close up photograph of electrical breaker panel showing labels and clean wiring inside residential utility room.',
+        alt: 'Ảnh cận cảnh tủ điện với nhãn và dây đi gọn gàng.',
       },
       {
         id: 'roof',
         src: '/placeholders/photo-roof.svg',
-        alt: 'Rooftop perspective photo showing south facing tile layout with blue sky and natural sunlight.',
+        alt: 'Ảnh mái ngói hướng nam chụp dưới trời nắng.',
       },
     ] as DrawerPhoto[],
   },
   footer: {
-    commitLabel: 'Autosave & Sync to Dispatch',
+    commitLabel: 'Lưu và gửi về điều phối',
     commitIcon: 'cloud_done',
-    cancelLabel: 'Cancel',
+    cancelLabel: 'Huỷ',
   },
-  toast: 'Work order synced to dispatch.',
+  toast: 'Đã gửi phiếu việc về điều phối.',
 }
