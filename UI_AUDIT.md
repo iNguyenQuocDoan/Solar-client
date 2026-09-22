@@ -190,8 +190,47 @@ Phản hồi sau pass 2: "vẫn quá AI". Đo lại thì các tell nằm ở *n�
 
 Còn có thể tiếp: copy mock ("Tier-1 all-black monocrystalline", "Certified energy advisor") là dữ liệu, không sửa; ảnh picsum ngẫu nhiên.
 
+## Pass 4 — bộ Stitch (admin, kỹ thuật viên, auth) · 22/09/2026
+
+Sau khi gộp phần auth + landing của huufuoc, app có thêm các màn dựng trên bộ Stitch. Các màn này
+chưa từng qua 3 lượt audit trước, nên vi phạm gần hết quy tắc. Đo ở 1440px (bằng Playwright, phiên
+đăng nhập giả lập qua mock `/api/auth/refresh`):
+
+| Hạng mục | Trước | Sau |
+|---|---|---|
+| Cỡ chữ khác nhau trên /admin | 11 (9→36px) | 6 (12→32px), rồi còn 5 sau khi đồng bộ token |
+| Bán kính | 8 giá trị class (`rounded-md/lg/xl/2xl/3xl/full`…) | 2 (3px control, 6px khối) + tròn cho avatar |
+| Phần tử có bóng nhìn thấy (/admin, /tech) | 18 mỗi trang | 0 (bóng chỉ còn cho lớp nổi) |
+| Chuyển động trang trí | 12 `animate-pulse` + 3 `animate-ping` | 0 (giữ skeleton + spinner) |
+| Nhãn IN HOA giãn chữ | 53 chuỗi class ở 38 file | 0 |
+| Chip/pill trên /admin | 19 | 13, phần lớn là badge trạng thái thật |
+| Dấu "•" nối chuỗi meta | 157 trong mock + 15 trong component | 0 |
+| Mũi tên "→" sau nhãn link | 6 | 0 |
+
+Thay đổi theo nhóm (commit `78a1ffe`, `16c1707`, `c6ce38e`):
+
+- **Token**: thang chữ về 5 bậc 13/15/18/24/32; bán kính về `--radius-control`/`--radius-container`;
+  bóng dùng chung `--shadow-pop`; nền/chữ/đường kẻ và màu nhấn của bộ Stitch trỏ vào token portal kit;
+  `--font-jakarta` trỏ vào `--font-sans` nên cả app một họ chữ.
+- **Chrome**: bỏ nhãn IN HOA, chấm nhấp nháy, mũi tên sau link, dấu chấm giữa, ô icon trang trí ở
+  `MetricCard`/`QuickLaunchCard`/`AdvisoryCard`, vệt blob ở góc thẻ KPI, hai vệt blur ở `AuthLayout`.
+- **Nhãn trạng thái**: `StatusBadge` chỉ tô nền cho lỗi/cảnh báo/chờ duyệt; còn lại là chấm + chữ.
+- **Chữ**: tiêu đề `/admin` từ "System Administration & Governance Cockpit" thành "Tổng quan hệ thống";
+  bỏ 3 câu mô tả thừa; 4 mô tả thẻ tác vụ rút về một câu.
+
+## Ngôn ngữ giao diện
+
+Từ 22/09/2026 chữ trên giao diện dùng tiếng Việt. Đã dịch: menu sidebar, khối tài khoản, header,
+`/admin` (tổng quan, người dùng, sản phẩm, vai trò & quyền), `/tech` (tổng quan, phiếu việc),
+phân trang và các nhãn dùng chung. Giữ nguyên tên riêng, mã SKU/phiếu, tên hãng và thuật ngữ
+quen dùng (inverter, kWh, MPPT).
+
 ## Còn lại để ai đó tiếp tục
 
+- Dịch nốt dữ liệu của các màn kỹ thuật viên còn lại: `surveys`, `installations`, `maintenance`,
+  `warranty`, `taskDetail`, `surveyPhotos`, và `styleguide` (khoảng 1.900 chuỗi trong `src/lib/mock`),
+  cùng các chuỗi hard-code trong `src/pages/tech` và `src/components/tech`.
+- Hai thư mục component vẫn tồn tại song song (`components/ui` và `components/stitch-ui`). Token đã
+  chung nên nhìn như một hệ; gộp code là việc sau, không bắt buộc.
 - #36: ảnh mock picsum ngẫu nhiên (dữ liệu, ngoài phạm vi UI).
-- Project không có `lint`/`test` script — DoD chỉ kiểm được `build`.
-- Chưa push: local `main` đi trước `origin/main` 38 commit.
+- Project không có `test` script — DoD kiểm bằng `npm run build` + `npm run lint` (oxlint).

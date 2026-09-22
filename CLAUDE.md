@@ -5,11 +5,41 @@
 - Never add `Co-Authored-By` or any AI-attribution trailer to commits or PRs. Applies to every agent and contributor. Enforced by `.githooks/commit-msg`.
 - Conventional Commits: `type(scope): summary`.
 
-## Two UI kits in one app
+## Hai bộ component, MỘT hệ token
 
-- `src/components/ui` (kebab-case files, tokens `canvas/fg/accent…`, Schibsted Grotesk): customer `/`, sales & operations `/ops`, field `/field`, management `/manage`. Rules and audit in `UI_AUDIT.md`.
-- `src/components/stitch-ui` (PascalCase files, DESIGN.md tokens `surface/on-surface/primary…`, Plus Jakarta Sans, Material Symbols): admin `/admin`, technician `/tech`, `/styleguide`. Rules below.
-- Both share `src/styles/globals.css`; each kit's block is marked. The Stitch kit sets its body styles on its own roots (`AppShell`, `StyleguidePage`), not on `<body>`.
+Repo có hai thư mục component vì hai nhánh việc dựng song song, nhưng từ 22/09/2026 cả
+hai ăn chung một hệ token trong `src/styles/globals.css`:
+
+- `src/components/ui` (file kebab-case, token `canvas/fg/accent…`): portal khách hàng
+  `/customer`, kinh doanh `/ops`, kỹ thuật `/field`, quản lý `/manage`. Lịch sử audit ở `UI_AUDIT.md`.
+- `src/components/stitch-ui` (file PascalCase, token `surface/on-surface/primary…`,
+  Material Symbols): admin `/admin`, kỹ thuật viên `/tech`, `/styleguide`.
+- Token của bộ Stitch nay chỉ là bí danh trỏ vào token của portal kit (màu nền/chữ/đường
+  kẻ, bán kính, bóng, họ chữ, thang chữ). Sửa giá trị ở block portal kit là cả hai đổi theo;
+  ĐỪNG đặt lại hex hay px trong block Stitch.
+- Bộ Stitch đặt style body trên root riêng của nó (`AppShell`, `StyleguidePage`), không đặt trên `<body>`.
+
+## Quy tắc giao diện dùng chung (bắt buộc)
+
+Rút ra từ 4 lượt audit trong `UI_AUDIT.md`; áp cho CẢ HAI bộ component.
+
+1. **Bán kính: đúng 2 giá trị** – `--radius-control` 3px cho control (nút, ô nhập, chip)
+   và `--radius-container` 6px cho khối (thẻ, panel, dialog). `rounded-full` chỉ cho
+   hình tròn thật (avatar, chấm trạng thái). Trong bộ Stitch, `rounded-lg`… đã được ánh xạ
+   sẵn về hai giá trị này.
+2. **Bóng chỉ cho lớp nổi** – dialog, drawer, menu (`--shadow-pop`). Thẻ tĩnh phân tách
+   bằng nền và viền. `shadow-sm`/`shadow-md` trong bộ Stitch đã bị tắt.
+3. **Thang chữ 5 bậc**: 13 / 15 / 18 / 24 / 32 px. Không dùng `text-[Npx]` cho chữ; cỡ icon
+   giữ trong nhóm 16/20/24.
+4. **Một màu nhấn** (`--accent`, xanh lá) + màu ngữ nghĩa `ok/warn/danger/info`. Không
+   thêm màu nhấn mới, không tô màu cho nhãn chỉ để trang trí.
+5. **Nhãn trạng thái**: chỉ trạng thái cần chú ý (lỗi, cảnh báo, chờ duyệt) mới có nền màu;
+   còn lại là chấm màu + chữ (`StatusBadge`).
+6. **Không có chrome trang trí**: nhãn IN HOA giãn chữ, chip "badge" không mang thông tin,
+   ô icon trang trí cạnh tiêu đề, mũi tên "→" dán sau nhãn link, dấu "•" nối chuỗi meta,
+   chấm nhấp nháy `animate-pulse`. Chuyển động chỉ dùng cho trạng thái tải.
+7. **Khoảng cách** theo thang 4/8/12/16/24/32/48/64 (`space-*` của bộ Stitch đã theo thang này).
+8. **Chạm**: control cao tối thiểu 44px dưới `lg`.
 
 # Admin + Technician portal (Stitch kit)
 
@@ -30,15 +60,26 @@
 - `design/stitch/stitch_smart_solar_customer_portal/<screen>/screen.png` – ảnh kết quả mong đợi. LUÔN mở ảnh này để đối chiếu, không chỉ đọc HTML.
 - `design/stitch/stitch_smart_solar_customer_portal/solaris_home_design_system/DESIGN.md` – nguồn sự thật cho màu, typography, spacing, radius, shadow, spec component.
 
-## Quy tắc thiết kế
+## Quy tắc thiết kế của bộ Stitch (đã lệch khỏi DESIGN.md ở 4 điểm)
 
-1. Token màu lấy từ block YAML đầu `DESIGN.md` (trùng với `tailwind.config` trong mỗi `code.html`).
-   Ví dụ: `primary=#004328`, `primary-container=#0d5c3a`, `surface=#f8f9ff`, `surface-container-lowest=#ffffff`, `on-surface=#0d1c2e`, `on-surface-variant=#404942`, `secondary-container=#fe932c`, `error=#ba1a1a`.
-   Phần mô tả bằng chữ trong DESIGN.md (ví dụ "Primary #0D5C3A") chỉ để hiểu ý đồ – KHÔNG lấy hex từ đó.
-2. Dùng đúng tên token Tailwind như file gốc: `bg-surface`, `bg-surface-container-lowest`, `text-on-surface-variant`, `bg-primary-container text-on-primary`, `text-headline-md`, `text-label-sm`, `px-space-md`, `gap-space-sm`, `rounded-xl`… Không bịa màu hex mới, không dùng `gray-500`/`slate-*` của Tailwind mặc định.
-3. Typography scale: `display-lg`, `headline-xl`, `headline-lg`, `headline-md`, `body-xl/lg/md/sm`, `label-lg/md/sm`, `data-metric` – cấu hình trong `@theme` với đủ fontSize/lineHeight/letterSpacing/fontWeight.
-4. Shadow 3 cấp và border card `1px solid rgba(13,92,58,0.06)` theo mục "Elevation & Depth" trong DESIGN.md.
-5. Badge trạng thái: dạng pill `rounded-full py-1 px-3 label-sm` + chấm 6px, màu theo bảng "Status & Lifecycle Palette".
+DESIGN.md trong thư mục `design/stitch/…` vẫn là nguồn tham chiếu về bố cục và tên token,
+nhưng GIÁ TRỊ token nay lấy theo hệ chung ở trên. Những chỗ cố ý lệch:
+
+| Hạng mục | DESIGN.md | Trong code hiện tại |
+| --- | --- | --- |
+| Màu nền / chữ | `surface=#f8f9ff`, `on-surface=#0d1c2e` (ngả xanh) | trỏ vào `--canvas`, `--fg` của portal kit (trung tính) |
+| Màu nhấn | `primary=#004328`, `primary-container=#0d5c3a` | cả hai trỏ vào `--accent` |
+| Bán kính | `rounded-lg/xl/2xl` (8–16px) | ánh xạ về 3px / 6px |
+| Bóng | 3 cấp elevation | chỉ một bóng cho lớp nổi, thẻ tĩnh không bóng |
+| Badge | pill `rounded-full` tô nền theo trạng thái | chỉ trạng thái cần chú ý mới tô nền |
+
+1. Dùng đúng tên token Tailwind như file gốc: `bg-surface`, `bg-surface-container-lowest`,
+   `text-on-surface-variant`, `bg-primary-container text-on-primary`, `text-headline-md`,
+   `text-label-sm`, `px-space-md`, `gap-space-sm`, `rounded-xl`… Không bịa hex mới, không dùng
+   `gray-500`/`slate-*` mặc định của Tailwind.
+2. Tên bậc chữ giữ nguyên (`display-lg`, `headline-xl/lg/md`, `body-xl/lg/md/sm`,
+   `label-lg/md/sm`, `data-metric`) nhưng tất cả đã ánh xạ về thang 5 bậc 13/15/18/24/32.
+3. Viền thẻ dùng `border-outline-card`; không thêm `shadow-*` cho thẻ tĩnh.
 
 ## Kiến trúc thư mục
 
@@ -82,16 +123,26 @@ Nếu repo đã có sẵn cấu trúc khác (ví dụ `src/features/`), giữ c�
 
 Mọi màn đều dùng 1 shell: `<aside>` cố định bên trái `w-72` nền `surface-container-lowest`, `<header>` trên cùng, `<main>` nền `surface`. Làm 1 lần trong layout route (`AdminLayout` / `TechLayout` với `<Outlet/>`), KHÔNG copy sidebar vào từng page.
 
-Menu Admin (subtitle "SYSTEM ADMINISTRATION"): Admin Dashboard, Users, Roles & Permissions, Product Catalogue, Service Catalogue, Categories, AI Knowledge Base, Technical Configuration, Reports, System Settings.
+Menu Admin (subtitle "Quản trị hệ thống"): Tổng quan, Người dùng, Vai trò & quyền, Danh mục
+sản phẩm, Danh mục dịch vụ, Nhóm hàng, Kho tri thức AI, Cấu hình kỹ thuật, Báo cáo, Cài đặt hệ thống.
 
-Menu Technician (subtitle "Field Operations"): Dashboard, My Tasks (badge số), Site Surveys, Installations, Warranty & Maintenance, Schedule; cuối sidebar là khối user (tên, chức danh) + Alerts + Settings.
+Menu Kỹ thuật viên (subtitle "Kỹ thuật hiện trường"): Tổng quan, Việc của tôi (badge số),
+Khảo sát, Lắp đặt, Bảo hành & bảo trì, Lịch làm việc; cuối sidebar là khối user (tên, chức danh)
++ Cảnh báo + Tài khoản + Đổi mật khẩu + Đăng xuất.
 
 ## Màn công khai & xác thực
 
 Hai màn `landing_home` và `auth_portal` KHÔNG dùng `AppShell`/sidebar và giữ nguyên chữ tiếng Việt như thiết kế.
 
-- `PublicLayout` – theo `landing_home`: `<header>` sticky cao 80px nền `surface-container-lowest/90` + backdrop blur (logo, menu neo `#solutions`…, nút "Đăng nhập" và "Khảo sát mái nhà"), `<main>` nền `surface`, `<footer>` 5 cột + hàng copyright. Từ `md` trở xuống menu thu thành hamburger.
-- `AuthLayout` – theo `auth_portal`: lưới 12 cột, panel `primary-container` bên trái (`lg:col-span-5`: chip "Nền tảng Quản trị Năng lượng Mặt trời Tự động", tiêu đề "Chuyển dịch Năng lượng Xanh cho Ngôi nhà Việt", ảnh nhà, 2 ô số liệu 1,240 kWh / ~3.85 Tr ₫, danh sách chip vai trò), `<Outlet/>` trong card trắng bên phải (`lg:col-span-7`), footer nhỏ (AES-256, sao lưu, hotline). Dưới `lg` ẩn panel trái.
+- `PublicLayout` – theo `landing_home`: `<header>` sticky cao 80px nền `surface-container-lowest`
+  + viền dưới (logo, menu neo `#solutions`…, nút "Đăng nhập" và "Khảo sát mái nhà" trỏ vào
+  `/customer/assessment`), `<main>` nền `surface`, `<footer>` 5 cột + hàng copyright. Từ `md` trở
+  xuống menu thu thành hamburger.
+- `AuthLayout` – theo `auth_portal`: lưới 12 cột, panel `primary-container` bên trái
+  (`lg:col-span-5`: tiêu đề "Chuyển dịch Năng lượng Xanh cho Ngôi nhà Việt", ảnh nhà, 2 ô số liệu
+  1.240 kWh / ~3,85 Tr ₫), `<Outlet/>` trong card trắng bên phải (`lg:col-span-7`), footer chỉ còn
+  dòng bản quyền. Dưới `lg` ẩn panel trái. Các chip trang trí (chip "nền tảng", chip vai trò,
+  chip bảo mật) và hai vệt blur đã bỏ theo quy tắc giao diện chung.
 - BỎ thanh tab "Auth Hub" trong `auth_portal/code.html`: đó chỉ là tab demo của Stitch để xem 5 view trong 1 file. Header của `AuthLayout` chỉ giữ logo + link về trang chủ; mỗi view là một route riêng.
 - Khối "Phiên làm việc hiện tại" (IP, JWT, thời gian còn lại) trong view "Trạng thái phiên" chỉ để demo – KHÔNG dựng.
 
@@ -99,7 +150,7 @@ Hai màn `landing_home` và `auth_portal` KHÔNG dùng `AppShell`/sidebar và gi
 
 | Route             | Layout         | Trang                                                      |
 | ----------------- | -------------- | ---------------------------------------------------------- |
-| `/`               | `PublicLayout` | `LandingPage` (trang chủ công khai)                         |
+| `/`               | `PublicLayout` | `HomeLayoutPage` – khung bố cục tạm theo header. `LandingPage` (bản đầy đủ) vẫn còn trong `src/pages/public`, đổi route khi dùng lại |
 | `/login`          | `AuthLayout`   | `LoginPage`                                                 |
 | `/register`       | `AuthLayout`   | `RegisterPage`                                              |
 | `/forgot-password`| `AuthLayout`   | `ForgotPasswordPage`                                        |
@@ -109,9 +160,13 @@ Hai màn `landing_home` và `auth_portal` KHÔNG dùng `AppShell`/sidebar và gi
 | `/coming-soon`    | `PublicLayout` | Trang tạm cho Kinh doanh, Quản lý, Khách hàng               |
 | `/admin/*`        | `AdminLayout`  | 4 màn admin – bọc `<RequireRole role="admin">`              |
 | `/tech/*`         | `TechLayout`   | 10 màn technician – bọc `<RequireRole role="technician">`   |
+| `/customer/*`     | `CustomerLayout` | Portal khách hàng – bọc `<RequireRole role="customer">`  |
+| `/ops/*`          | `OpsLayout`      | Portal kinh doanh – bọc `<RequireRole role="sales">`     |
+| `/field/*`        | `FieldLayout`    | Portal kỹ thuật – bọc `<RequireRole role="technician">`  |
+| `/manage/*`       | `ManageLayout`   | Portal quản lý – bọc `<RequireRole role="manager">`      |
 | `/styleguide`     | –              | `StyleguidePage`                                            |
 
-`/` trả về trang chủ; KHÔNG còn redirect `/` → `/admin`.
+`/` trả về trang chủ công khai; KHÔNG còn redirect `/` → `/admin`.
 
 ## Auth API
 
@@ -148,8 +203,10 @@ Auth gọi backend .NET thật, KHÔNG còn mock. Nguồn sự thật là `docs/
 - **Khôi phục phiên**: mở app mà còn `refreshToken` thì gọi refresh trước;
   `status = 'loading'` và `RequireRole` hiện `AuthLoadingScreen` để không đá người dùng
   về `/login` quá sớm.
-- **Điều hướng**: sau đăng nhập `admin` → `/admin`, `technician` → `/tech`, còn lại →
-  `/coming-soon`. `<RequireRole role="…">`: chưa đăng nhập → `/login`, sai vai trò → `/403`.
+- **Điều hướng**: `homePathForRole` trong `src/lib/auth/roles.ts` đưa từng vai trò về portal
+  của nó – `admin` → `/admin`, `technician` → `/tech`, `sales` → `/ops`, `manager` → `/manage`,
+  `customer` → `/customer`. `<RequireRole role="…">`: chưa đăng nhập → `/login` (nhớ trang đích),
+  sai vai trò → `/403`.
 - **API**: 9 hàm trong `src/lib/api/auth.ts` (register, verify-email, resend-verification,
   login, refresh, logout, forgot-password, reset-password, change-password); mutation của
   react-query trong `src/features/auth/hooks.ts`; login/logout nằm trong `AuthProvider`
@@ -170,7 +227,10 @@ Auth gọi backend .NET thật, KHÔNG còn mock. Nguồn sự thật là `docs/
 ## Quy ước làm việc với thiết kế
 
 - Ảnh trong `code.html` (`lh3.googleusercontent.com/...`) là link tạm → thay bằng `/placeholders/*.svg` hoặc `<img>` với ảnh cục bộ trong `public/`.
-- Text tiếng Anh trong thiết kế giữ nguyên ở giai đoạn dựng UI; i18n làm sau.
+- **Chữ trên giao diện viết bằng tiếng Việt** (quyết định 22/09/2026). Bản thiết kế Stitch
+  là tiếng Anh, khi dựng thì dịch sang tiếng Việt; giữ nguyên tên riêng, mã SKU, mã phiếu,
+  tên hãng và thuật ngữ đã quen dùng (inverter, kWh, MPPT, SKU…). Câu chữ viết ngắn, chủ động,
+  không quảng cáo: tiêu đề là tên màn hình, mô tả chỉ thêm khi nói được điều gì mới.
 - Mỗi màn = 1 route + 1 file mock. Không hard-code dữ liệu trong JSX.
 - Khi dựng xong một màn: chạy dev, chụp màn hình, đặt cạnh `screen.png`, liệt kê khác biệt (spacing, màu, font size, icon) rồi sửa. Chấp nhận sai lệch ≤ 4px.
 - Không cài thêm thư viện UI khác (MUI, Ant, Chakra…). Ngoại lệ đã chốt: `sonner` chỉ dùng cho toast.
