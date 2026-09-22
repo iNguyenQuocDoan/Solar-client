@@ -17,7 +17,7 @@ export function NotFoundPage() {
       </p>
       {message && <pre className="mt-3 overflow-x-auto rounded-container bg-surface-2 px-3 py-2 font-mono text-meta text-fg-2">{message}</pre>}
       <div className="mt-6 flex flex-wrap gap-3">
-        <ButtonLink to={ROUTES.customer.home} variant="primary">
+        <ButtonLink to={ROUTES.HOME} variant="primary">
           Go to overview
         </ButtonLink>
         <Button onClick={() => window.location.reload()}>Reload</Button>

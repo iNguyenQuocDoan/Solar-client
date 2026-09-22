@@ -1,6 +1,11 @@
-import { Link, NavLink } from 'react-router'
+import { useState } from 'react'
+import { Link, NavLink, useNavigate } from 'react-router'
+import { ChangePasswordDialog } from '@/components/auth/ChangePasswordDialog'
 import { Icon } from '@/components/stitch-ui/Icon'
+import { ROUTES } from '@/constants/routes'
+import { useAuth } from '@/lib/auth/AuthProvider'
 import { cn } from '@/lib/cn'
+import { changePasswordContent } from '@/lib/mock/auth'
 import type { NavItem } from '@/lib/nav'
 
 export type SidebarVariant = 'admin' | 'technician'
@@ -64,6 +69,15 @@ export function Sidebar({
 }: SidebarProps) {
   const s = styles[variant]
   const isAdmin = variant === 'admin'
+  const { user: authUser, signOut } = useAuth()
+  const navigate = useNavigate()
+  const [changePasswordOpen, setChangePasswordOpen] = useState(false)
+
+  const handleSignOut = async () => {
+    onNavigate?.()
+    await signOut()
+    navigate(ROUTES.LOGIN, { replace: true })
+  }
 
   return (
     <aside
@@ -152,10 +166,26 @@ export function Sidebar({
           >
             <Icon name={user.icon} className="text-[20px]" />
             <div className="flex min-w-0 flex-col">
-              <span className="truncate text-label-md text-on-surface">{user.name}</span>
+              <span className="truncate text-label-md text-on-surface">{authUser?.name ?? user.name}</span>
               <span className="truncate text-[10px] text-outline">{user.title}</span>
             </div>
           </Link>
+          <button
+            type="button"
+            onClick={() => setChangePasswordOpen(true)}
+            className="mt-1 flex w-full items-center gap-space-sm rounded-lg p-space-xs text-on-surface-variant transition-all hover:bg-surface-container-high hover:text-on-surface"
+          >
+            <Icon name="lock_reset" className="text-[20px]" />
+            <span className="text-label-md">{changePasswordContent.menuLabel}</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => void handleSignOut()}
+            className="flex w-full items-center gap-space-sm rounded-lg p-space-xs text-on-surface-variant transition-all hover:bg-surface-container-high hover:text-on-surface"
+          >
+            <Icon name="logout" className="text-[20px]" />
+            <span className="text-label-md">Đăng xuất</span>
+          </button>
         </div>
       ) : (
         <div className="flex flex-col gap-space-xs bg-surface-container-low p-space-md">
@@ -164,7 +194,9 @@ export function Sidebar({
               <Icon name={user.icon} className="text-[20px] text-on-primary" />
             </div>
             <div className="flex min-w-0 flex-1 flex-col">
-              <span className="truncate text-label-md font-semibold text-on-surface">{user.name}</span>
+              <span className="truncate text-label-md font-semibold text-on-surface">
+                {authUser?.name ?? user.name}
+              </span>
               <span className="truncate text-label-sm text-on-surface-variant">{user.title}</span>
             </div>
           </div>
@@ -180,9 +212,27 @@ export function Sidebar({
                 {link.label}
               </Link>
             ))}
+            <button
+              type="button"
+              onClick={() => setChangePasswordOpen(true)}
+              className="flex items-center gap-space-xs text-label-sm text-on-surface-variant hover:text-on-surface"
+            >
+              <Icon name="lock_reset" className="text-[18px]" />
+              Đổi mật khẩu
+            </button>
+            <button
+              type="button"
+              onClick={() => void handleSignOut()}
+              className="flex items-center gap-space-xs text-label-sm text-on-surface-variant hover:text-on-surface"
+            >
+              <Icon name="logout" className="text-[18px]" />
+              Đăng xuất
+            </button>
           </div>
         </div>
       )}
+
+      <ChangePasswordDialog open={changePasswordOpen} onOpenChange={setChangePasswordOpen} />
     </aside>
   )
 }

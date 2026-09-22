@@ -162,6 +162,44 @@ Xong thì liệt kê những chỗ bạn làm khác ảnh và lý do. Lint + typ
 
 ---
 
+## GIAI ĐOẠN 4B – Màn công khai & xác thực
+
+Hai màn bổ sung `landing_home` + `auth_portal`: dùng chung design system nhưng KHÔNG dùng
+AppShell/sidebar, giữ nguyên chữ tiếng Việt như thiết kế. Chỉ lấy markup/style, bỏ logic JS
+gốc (chuyển tab, querySelector).
+
+| #   | `<screen>`     | `<route>`                                                              | `<mock>`     | Ghi chú                                      |
+| --- | -------------- | ---------------------------------------------------------------------- | ------------ | -------------------------------------------- |
+| 15  | `landing_home` | `/`                                                                    | `landing`    | `PublicLayout`; 11 khối trong `components/landing/` |
+| 16  | `auth_portal`  | `/login`, `/register`, `/forgot-password`, `/reset-password`, `/verify-email`, `/403` | `users-auth` | `AuthLayout`; bỏ thanh tab "Auth Hub"        |
+
+Đã chốt:
+
+- `PublicLayout` = header sticky + footer theo `landing_home`; `AuthLayout` = panel xanh trái +
+  card form phải + footer nhỏ, ẩn panel trái từ `lg` trở xuống.
+- Thanh tab "Auth Hub" chỉ là tab demo của Stitch để xem 5 view trong 1 file → bỏ; mỗi view là
+  một route riêng, header `AuthLayout` chỉ giữ logo + link về trang chủ.
+- Khối "Phiên làm việc hiện tại" (IP, JWT, thời gian còn lại) chỉ để demo → không dựng.
+- `/coming-soon` là trang tạm cho các vai trò chưa có màn (Kinh doanh, Quản lý, Khách hàng).
+
+Auth giả lập (xem mục "Auth giả lập" trong CLAUDE.md):
+
+```
+Tạo lib/auth/AuthProvider.tsx lưu user {name, email, role} vào localStorage,
+role = customer | technician | sales | manager | admin, tài khoản mẫu mỗi role
+trong lib/mock/users-auth.ts. Sau đăng nhập: admin → /admin, technician → /tech,
+còn lại → /coming-soon. <RequireRole>: chưa đăng nhập → /login, sai role → /403.
+Bọc AdminLayout bằng RequireRole role="admin", TechLayout bằng role="technician",
+thêm nút Đăng xuất vào khối user của Sidebar.
+Form dùng react-hook-form + zod; toast dùng sonner; phiên hết hạn sau 30 phút
+không thao tác hiện SessionExpiredModal, có expireSession() để test.
+```
+
+Kiểm tra sau khi xong: vào `/admin` khi chưa đăng nhập phải bị đẩy về `/login`; đăng nhập bằng
+tài khoản kỹ thuật viên rồi vào `/admin` phải ra `/403`; `/` hiển thị trang chủ.
+
+---
+
 ## GIAI ĐOẠN 5 – Đối chiếu & tinh chỉnh (sau mỗi màn)
 
 ```

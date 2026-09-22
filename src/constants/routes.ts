@@ -1,18 +1,21 @@
 export const ROUTES = {
-  /* Portals built on src/components/ui (customer, sales & operations, field, management). */
+  /*
+    Portals built on src/components/ui, one per signed-in role
+    (customer, sales -> ops, technician -> field, manager -> manage). / is the public landing page.
+  */
   customer: {
-    home: '/',
-    assessment: '/assessment',
-    estimate: '/assessment/estimate',
-    consultations: '/consultations',
-    consultation: '/consultations/:id',
-    quotations: '/quotations',
-    quotation: '/quotations/:id',
-    projects: '/projects',
-    project: '/projects/:id',
-    warranty: '/warranty',
-    warrantyRequest: '/warranty/:id',
-    assistant: '/assistant',
+    home: '/customer',
+    assessment: '/customer/assessment',
+    estimate: '/customer/assessment/estimate',
+    consultations: '/customer/consultations',
+    consultation: '/customer/consultations/:id',
+    quotations: '/customer/quotations',
+    quotation: '/customer/quotations/:id',
+    projects: '/customer/projects',
+    project: '/customer/projects/:id',
+    warranty: '/customer/warranty',
+    warrantyRequest: '/customer/warranty/:id',
+    assistant: '/customer/assistant',
   },
   ops: {
     home: '/ops',
@@ -48,9 +51,17 @@ export const ROUTES = {
     profile: '/manage/profile',
   },
 
-  /* Portals built on src/components/stitch-ui (admin, technician) and its styleguide. */
+  /* Public landing, auth screens, and the portals built on src/components/stitch-ui (admin, technician). */
   HOME: '/',
   STYLEGUIDE: '/styleguide',
+  /** Màn công khai & xác thực (landing_home, auth_portal) */
+  LOGIN: '/login',
+  REGISTER: '/register',
+  FORGOT_PASSWORD: '/forgot-password',
+  RESET_PASSWORD: '/reset-password',
+  VERIFY_EMAIL: '/verify-email',
+  FORBIDDEN: '/403',
+  COMING_SOON: '/coming-soon',
   ADMIN: {
     DASHBOARD: '/admin',
     USERS: '/admin/users',

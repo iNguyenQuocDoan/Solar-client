@@ -1,7 +1,9 @@
 import { useEffect, useState, type ReactNode } from 'react'
 import { NavLink, useLocation, useNavigate } from 'react-router'
-import { Select } from '@/components/ui/field'
-import { PORTALS, type NavItem, type Portal, type PortalKey } from '@/constants/nav'
+import { ROUTES } from '@/constants/routes'
+import { type NavItem, type Portal } from '@/constants/nav'
+import { useAuth } from '@/lib/auth/AuthProvider'
+import { roleLabels } from '@/lib/auth/roles'
 import { cx } from '@/lib/cx'
 import { useTheme, type Theme } from '@/lib/theme'
 
@@ -132,15 +134,7 @@ function Rail({
           )}
         </nav>
 
-        {/* The user block stays in view while a long rail scrolls above it. */}
-        <div className="sticky bottom-0 mt-6 border-t border-line bg-canvas pt-4 pb-6">
-          <p className="text-body font-medium">{portal.user.name}</p>
-          <p className="text-meta text-fg-2">{portal.user.role}</p>
-          <div className="mt-3 space-y-2">
-            <PortalSwitch current={portal.key} />
-            <ThemeButton />
-          </div>
-        </div>
+        <SessionBlock fallback={portal.user} />
       </aside>
     </>
   )
@@ -174,22 +168,41 @@ function RailLink({ item }: { item: NavItem }) {
   )
 }
 
-function PortalSwitch({ current }: { current: PortalKey }) {
+/*
+  Khối phiên đăng nhập, ghim ở đáy rail khi rail dài hơn màn hình.
+  Tài khoản thật lấy từ AuthProvider; portal đi theo vai trò nên không còn ô "đổi portal".
+  Khi chưa có phiên (mock/dev) hiển thị người dùng mẫu của portal.
+*/
+function SessionBlock({ fallback }: { fallback: Portal['user'] }) {
+  const { user, signOut } = useAuth()
   const navigate = useNavigate()
+  const name = user?.name ?? fallback.name
+  const role = user ? roleLabels[user.role] : fallback.role
+
+  async function handleSignOut() {
+    await signOut()
+    navigate(ROUTES.LOGIN, { replace: true })
+  }
+
   return (
-    <Select
-      size="sm"
-      aria-label="Switch portal"
-      value={current}
-      onChange={(e) => navigate(PORTALS[e.target.value as PortalKey].home)}
-      className="px-2 text-meta text-fg-2"
-    >
-      {Object.values(PORTALS).map((p) => (
-        <option key={p.key} value={p.key}>
-          {p.name}
-        </option>
-      ))}
-    </Select>
+    <div className="sticky bottom-0 mt-6 border-t border-line bg-canvas pt-4 pb-6">
+      <p className="truncate text-body font-medium" title={user?.email}>
+        {name}
+      </p>
+      <p className="text-meta text-fg-2">{role}</p>
+      <div className="mt-3 flex items-center justify-between gap-3">
+        <ThemeButton />
+        {user && (
+          <button
+            type="button"
+            onClick={handleSignOut}
+            className="press inline-flex h-11 items-center text-meta whitespace-nowrap text-fg-2 underline-offset-4 hover:text-fg hover:underline lg:h-8"
+          >
+            Sign out
+          </button>
+        )}
+      </div>
+    </div>
   )
 }
 

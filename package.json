@@ -9,7 +9,8 @@
     "preview": "vite preview",
     "typecheck": "tsc -b",
     "lint": "oxlint",
-    "prepare": "git config core.hooksPath .githooks || exit 0"
+    "prepare": "git config core.hooksPath .githooks || exit 0",
+    "gen:api": "npx -y openapi-typescript@7 docs/api/swagger.json -o src/lib/api/schema.d.ts"
   },
   "dependencies": {
     "@fontsource-variable/schibsted-grotesk": "^5.3.0",
@@ -19,10 +20,12 @@
     "@radix-ui/react-tabs": "^1.1.21",
     "@tanstack/react-query": "^5.103.1",
     "axios": "^1.20.0",
+    "jwt-decode": "^4.0.0",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
     "react-hook-form": "^7.88.0",
     "react-router": "^7.18.4",
+    "sonner": "^2.0.8",
     "zod": "^4.6.5",
     "zustand": "^5.0.15"
   },
@@ -33,6 +36,7 @@
     "@types/react-dom": "^19.3.0",
     "@vitejs/plugin-react": "^6.1.1",
     "oxlint": "^1.83.0",
+    "playwright": "^1.63.0",
     "tailwindcss": "^4.3.3",
     "typescript": "^7.0.2",
     "vite": "^8.3.0"
