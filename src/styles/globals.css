@@ -337,28 +337,36 @@
  * (trùng với tailwind.config trong mỗi code.html).
  */
 @theme {
-  /* Applied by the kit's own roots (AppShell, StyleguidePage) as font-jakarta; the portal kit keeps --font-sans. */
-  --font-jakarta: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+  /*
+    Đồng bộ: cả hai bộ dùng chung một họ chữ. Tên biến giữ nguyên (font-jakarta)
+    vì các root của bộ Stitch đang gọi theo tên này.
+  */
+  --font-jakarta: var(--font-sans);
 
-  /* ---- Colors ---- */
-  --color-surface: #f8f9ff;
-  --color-surface-dim: #ccdbf3;
-  --color-surface-bright: #f8f9ff;
-  --color-surface-container-lowest: #ffffff;
-  --color-surface-container-low: #eff4ff;
-  --color-surface-container: #e6eeff;
-  --color-surface-container-high: #dce9ff;
-  --color-surface-container-highest: #d5e3fc;
-  --color-on-surface: #0d1c2e;
-  --color-on-surface-variant: #404942;
-  --color-inverse-surface: #233144;
-  --color-inverse-on-surface: #eaf1ff;
-  --color-outline: #707971;
-  --color-outline-variant: #bfc9c0;
-  --color-surface-tint: #226b47;
-  --color-primary: #004328;
-  --color-on-primary: #ffffff;
-  --color-primary-container: #0d5c3a;
+  /*
+    ---- Colors ----
+    Nền, chữ và đường kẻ dùng chung token của portal kit nên hai bộ không còn
+    lệch tông (bộ Stitch vốn ngả xanh, portal kit ngả trung tính ấm).
+    Các màu ngữ nghĩa (primary/error/secondary…) bên dưới giữ vai trò cũ.
+  */
+  --color-surface: var(--canvas);
+  --color-surface-dim: var(--surface-3);
+  --color-surface-bright: var(--canvas);
+  --color-surface-container-lowest: var(--canvas);
+  --color-surface-container-low: var(--surface-2);
+  --color-surface-container: var(--surface-2);
+  --color-surface-container-high: var(--surface-3);
+  --color-surface-container-highest: var(--surface-3);
+  --color-on-surface: var(--fg);
+  --color-on-surface-variant: var(--fg-2);
+  --color-inverse-surface: var(--fg);
+  --color-inverse-on-surface: var(--canvas);
+  --color-outline: var(--fg-3);
+  --color-outline-variant: var(--line);
+  --color-surface-tint: var(--accent);
+  --color-primary: var(--accent);
+  --color-on-primary: var(--on-accent);
+  --color-primary-container: var(--accent);
   --color-on-primary-container: #8ad2a7;
   --color-inverse-primary: #8ed6aa;
   --color-secondary: #904d00;
@@ -369,9 +377,9 @@
   --color-on-tertiary: #ffffff;
   --color-tertiary-container: #005d28;
   --color-on-tertiary-container: #75d789;
-  --color-error: #ba1a1a;
-  --color-on-error: #ffffff;
-  --color-error-container: #ffdad6;
+  --color-error: var(--danger);
+  --color-on-error: var(--on-accent);
+  --color-error-container: var(--danger-soft);
   --color-on-error-container: #93000a;
   --color-primary-fixed: #a9f3c5;
   --color-primary-fixed-dim: #8ed6aa;
@@ -385,9 +393,9 @@
   --color-tertiary-fixed-dim: #79db8d;
   --color-on-tertiary-fixed: #00210a;
   --color-on-tertiary-fixed-variant: #005323;
-  --color-background: #f8f9ff;
-  --color-on-background: #0d1c2e;
-  --color-surface-variant: #d5e3fc;
+  --color-background: var(--canvas);
+  --color-on-background: var(--fg);
+  --color-surface-variant: var(--surface-3);
 
   /* ---- Spacing (p-space-md, gap-space-sm, px-space-lg…) ---- */
   --spacing-space-2xs: 0.25rem;
@@ -405,69 +413,70 @@
   --spacing-margin-desktop: 3rem;
 
   /* ---- Typography (text-headline-md, text-label-sm…) ---- */
+  /*
+    Thang chữ dùng chung với portal kit: 13 / 15 / 18 / 24 / 32.
+    Tên token của bộ Stitch giữ nguyên, chỉ ánh xạ về 5 bậc này.
+  */
   --text-display-lg: 32px;
-  --text-display-lg--line-height: 40px;
+  --text-display-lg--line-height: 36px;
   --text-display-lg--letter-spacing: -0.02em;
   --text-display-lg--font-weight: 700;
 
   --text-display-lg-mobile: 24px;
-  --text-display-lg-mobile--line-height: 32px;
-  --text-display-lg-mobile--letter-spacing: -0.02em;
+  --text-display-lg-mobile--line-height: 28px;
+  --text-display-lg-mobile--letter-spacing: -0.015em;
   --text-display-lg-mobile--font-weight: 700;
 
   --text-headline-xl: 32px;
-  --text-headline-xl--line-height: 40px;
-  --text-headline-xl--letter-spacing: -0.015em;
-  --text-headline-xl--font-weight: 700;
+  --text-headline-xl--line-height: 36px;
+  --text-headline-xl--letter-spacing: -0.02em;
+  --text-headline-xl--font-weight: 600;
 
   --text-headline-xl-mobile: 24px;
-  --text-headline-xl-mobile--line-height: 32px;
+  --text-headline-xl-mobile--line-height: 28px;
   --text-headline-xl-mobile--letter-spacing: -0.015em;
-  --text-headline-xl-mobile--font-weight: 700;
+  --text-headline-xl-mobile--font-weight: 600;
 
   --text-headline-lg: 24px;
-  --text-headline-lg--line-height: 32px;
-  --text-headline-lg--letter-spacing: -0.01em;
+  --text-headline-lg--line-height: 28px;
+  --text-headline-lg--letter-spacing: -0.015em;
   --text-headline-lg--font-weight: 600;
 
-  --text-headline-md: 20px;
-  --text-headline-md--line-height: 28px;
-  --text-headline-md--letter-spacing: -0.005em;
+  --text-headline-md: 18px;
+  --text-headline-md--line-height: 24px;
+  --text-headline-md--letter-spacing: -0.01em;
   --text-headline-md--font-weight: 600;
 
-  --text-body-xl: 16px;
-  --text-body-xl--line-height: 24px;
+  --text-body-xl: 15px;
+  --text-body-xl--line-height: 22px;
   --text-body-xl--font-weight: 400;
 
-  --text-body-lg: 16px;
-  --text-body-lg--line-height: 24px;
+  --text-body-lg: 15px;
+  --text-body-lg--line-height: 22px;
   --text-body-lg--font-weight: 400;
 
-  --text-body-md: 14px;
-  --text-body-md--line-height: 20px;
+  --text-body-md: 15px;
+  --text-body-md--line-height: 22px;
   --text-body-md--font-weight: 400;
 
-  --text-body-sm: 12px;
-  --text-body-sm--line-height: 16px;
+  --text-body-sm: 13px;
+  --text-body-sm--line-height: 20px;
   --text-body-sm--font-weight: 400;
 
-  --text-label-lg: 14px;
-  --text-label-lg--line-height: 20px;
-  --text-label-lg--letter-spacing: 0.01em;
-  --text-label-lg--font-weight: 600;
+  --text-label-lg: 15px;
+  --text-label-lg--line-height: 22px;
+  --text-label-lg--font-weight: 500;
 
-  --text-label-md: 12px;
-  --text-label-md--line-height: 16px;
-  --text-label-md--letter-spacing: 0.02em;
-  --text-label-md--font-weight: 600;
+  --text-label-md: 13px;
+  --text-label-md--line-height: 20px;
+  --text-label-md--font-weight: 500;
 
-  --text-label-sm: 12px;
-  --text-label-sm--line-height: 16px;
-  --text-label-sm--letter-spacing: 0.03em;
-  --text-label-sm--font-weight: 600;
+  --text-label-sm: 13px;
+  --text-label-sm--line-height: 20px;
+  --text-label-sm--font-weight: 500;
 
   --text-data-metric: 32px;
-  --text-data-metric--line-height: 40px;
+  --text-data-metric--line-height: 36px;
   --text-data-metric--letter-spacing: -0.02em;
   --text-data-metric--font-weight: 700;
 
@@ -496,7 +505,7 @@
     Bóng chỉ dành cho lớp nổi (dialog, drawer, menu). Thẻ tĩnh phân tách bằng
     nền và viền, nên level-1 và các shadow-sm/md của Tailwind đều tắt.
   */
-  --shadow-float: 0px 12px 28px -12px rgba(13, 92, 58, 0.22), 0px 2px 6px -2px rgba(15, 23, 42, 0.08);
+  --shadow-float: var(--shadow-pop);
   --shadow-level-1: 0 0 #0000;
   --shadow-level-2: var(--shadow-float);
   --shadow-level-3: var(--shadow-float);
@@ -509,17 +518,17 @@
   --shadow-2xl: var(--shadow-float);
 
   /*
-    Đúng hai bán kính: 8px cho control (nút, ô nhập, chip) và 12px cho khối
-    (thẻ, panel, dialog). rounded-full chỉ dùng cho hình tròn thật (avatar, chấm).
+    Đúng hai bán kính, lấy thẳng từ portal kit: 3px cho control (nút, ô nhập, chip)
+    và 6px cho khối (thẻ, panel, dialog). rounded-full chỉ dùng cho hình tròn thật.
   */
-  --radius-xs: 8px;
-  --radius-sm: 8px;
-  --radius-md: 8px;
-  --radius-lg: 8px;
-  --radius-xl: 12px;
-  --radius-2xl: 12px;
-  --radius-3xl: 12px;
-  --radius-4xl: 12px;
+  --radius-xs: var(--radius-control);
+  --radius-sm: var(--radius-control);
+  --radius-md: var(--radius-control);
+  --radius-lg: var(--radius-control);
+  --radius-xl: var(--radius-container);
+  --radius-2xl: var(--radius-container);
+  --radius-3xl: var(--radius-container);
+  --radius-4xl: var(--radius-container);
 }
 
 /* The kit's body styles (bg-surface text-body-md text-on-surface font-jakarta) are set on its roots, not on <body>, so both kits can share one document. */

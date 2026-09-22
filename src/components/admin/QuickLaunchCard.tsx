@@ -4,16 +4,17 @@ import { cn } from '@/lib/cn'
 /* "Governance Quick Launchpads" trong admin_dashboard: nav phụ dạng thẻ bấm được. */
 export type QuickLaunchTone = 'primary' | 'secondary' | 'primary-container' | 'tertiary'
 
-const toneClasses: Record<QuickLaunchTone, { title: string; cta: string }> = {
-  primary: { title: 'group-hover:text-primary', cta: 'text-primary' },
-  secondary: { title: 'group-hover:text-secondary', cta: 'text-secondary' },
-  'primary-container': { title: 'group-hover:text-primary', cta: 'text-primary' },
-  tertiary: { title: 'group-hover:text-tertiary-container', cta: 'text-tertiary-container' },
-}
+/*
+  Cả app chỉ còn một màu nhấn nên 4 tone không còn khác nhau về màu; giữ kiểu
+  prop để dữ liệu cũ không phải sửa.
+*/
+const ctaClasses = 'text-primary'
+const titleHoverClasses = 'group-hover:text-primary'
 
 export type QuickLaunchCardProps = {
   /** Giữ trong dữ liệu để dùng lại nếu cần; thẻ hiện không vẽ ô icon. */
   icon?: string
+  /** Giữ để tương thích dữ liệu; màu nhấn nay dùng chung. */
   tone?: QuickLaunchTone
   title: string
   description: string
@@ -23,14 +24,12 @@ export type QuickLaunchCardProps = {
 }
 
 export function QuickLaunchCard({
-  tone = 'primary',
   title,
   description,
   ctaLabel,
   href,
   className,
 }: QuickLaunchCardProps) {
-  const t = toneClasses[tone]
   return (
     <Link
       to={href}
@@ -40,10 +39,10 @@ export function QuickLaunchCard({
       )}
     >
       <div>
-        <h3 className={cn('text-body-lg font-semibold text-on-surface transition-colors', t.title)}>{title}</h3>
+        <h3 className={cn('text-body-lg font-semibold text-on-surface transition-colors', titleHoverClasses)}>{title}</h3>
         <p className="mt-1 text-body-sm text-on-surface-variant">{description}</p>
       </div>
-      <span className={cn('mt-space-lg text-label-md font-semibold', t.cta)}>{ctaLabel}</span>
+      <span className={cn('mt-space-lg text-label-md font-semibold', ctaClasses)}>{ctaLabel}</span>
     </Link>
   )
 }
