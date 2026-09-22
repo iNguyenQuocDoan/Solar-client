@@ -39,7 +39,8 @@ export const router = createBrowserRouter([
       {
         element: <PublicLayout />,
         children: [
-          { path: ROUTES.HOME, lazy: () => import('@/pages/public/LandingPage').then((m) => ({ Component: m.LandingPage })) },
+          // Trang chủ tạm: khung bố cục theo header. Đổi lại LandingPage khi có nội dung thật.
+          { path: ROUTES.HOME, lazy: () => import('@/pages/public/HomeLayoutPage').then((m) => ({ Component: m.HomeLayoutPage })) },
           { path: ROUTES.COMING_SOON, lazy: () => import('@/pages/ComingSoonPage').then((m) => ({ Component: m.ComingSoonPage })) },
         ],
       },
