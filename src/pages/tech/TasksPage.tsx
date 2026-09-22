@@ -156,7 +156,7 @@ export function TasksPage() {
           title={tasksHeader.title}
           actions={
             <>
-              <ViewToggle options={taskViewOptions} value={view} onChange={setView} label="Task view" />
+              <ViewToggle options={taskViewOptions} value={view} onChange={setView} label="Kiểu hiển thị" />
               <Button iconLeft="bolt" onClick={() => openDrawer(rows[0] ?? null)}>
                 {tasksHeader.quickAction}
               </Button>
@@ -190,7 +190,7 @@ export function TasksPage() {
             rowKey={(row) => row.id}
             onRowClick={(row) => navigate(techTaskPath(row.id))}
             actionsHeader={taskTableHeaders.actions}
-            emptyMessage="No work orders match the current filters"
+            emptyMessage="Không có phiếu việc nào khớp bộ lọc"
             actions={(row) => (
               <>
                 <Button
@@ -207,10 +207,10 @@ export function TasksPage() {
                 <IconButton
                   size="md"
                   icon="add_a_photo"
-                  label="Quick Upload Photos"
+                  label="Tải nhanh ảnh"
                   className="bg-surface-container"
                 />
-                <IconButton size="md" icon="directions" label="Navigation Directions" className="bg-surface-container" />
+                <IconButton size="md" icon="directions" label="Chỉ đường" className="bg-surface-container" />
               </>
             )}
           />
@@ -227,9 +227,9 @@ export function TasksPage() {
                 address={row.site.street}
                 phoneHref={`tel:${row.customer.phone.replace(/[^\d+]/g, '')}`}
                 specs={[
-                  { label: 'Work', value: row.work.label },
-                  { label: 'Window', value: row.schedule.duration },
-                  { label: 'Distance', value: row.site.distance },
+                  { label: 'Công việc', value: row.work.label },
+                  { label: 'Thời lượng', value: row.schedule.duration },
+                  { label: 'Khoảng cách', value: row.site.distance },
                 ]}
                 primaryAction={{ ...row.action, onClick: () => openDrawer(row) }}
                 onTitleClick={() => navigate(techTaskPath(row.id))}
