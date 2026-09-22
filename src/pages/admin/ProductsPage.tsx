@@ -101,8 +101,8 @@ export function ProductsPage() {
                 </StatusBadge>
               </div>
               <div className="flex items-center gap-space-xs text-on-surface-variant">
-                <IconButton icon="file_download" label="Export CSV" className="bg-transparent hover:bg-surface-container-high" />
-                <IconButton icon="view_column" label="Column layout" className="bg-transparent hover:bg-surface-container-high" />
+                <IconButton icon="file_download" label="Xuất CSV" className="bg-transparent hover:bg-surface-container-high" />
+                <IconButton icon="view_column" label="Bố cục cột" className="bg-transparent hover:bg-surface-container-high" />
               </div>
             </>
           }

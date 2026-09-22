@@ -49,7 +49,7 @@ function parseUsd(value: string, fallback: number) {
   return Number.isFinite(parsed) ? parsed : fallback
 }
 
-const statusLabels = { active: 'Active', draft: 'Draft', discontinued: 'Discontinued' } as const
+const statusLabels = { active: 'Đang bán', draft: 'Nháp', discontinued: 'Ngừng bán' } as const
 const statusVariants = { active: 'positive', draft: 'neutral', discontinued: 'error' } as const
 
 export type ProductDetailPanelProps = {
