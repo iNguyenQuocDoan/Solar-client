@@ -72,7 +72,7 @@ export function ResetPasswordPage() {
   return (
     <AuthCard>
       <div className="mb-2 flex items-center justify-between">
-        <span className="text-label-sm font-semibold uppercase tracking-wider text-on-surface-variant">
+        <span className="text-label-sm text-on-surface-variant">
           {resetContent.eyebrow}
         </span>
         <span

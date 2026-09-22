@@ -35,10 +35,10 @@ const styles = {
     aside: 'overflow-y-auto bg-surface-container-lowest',
     brandRow: 'bg-surface-container-low/40 px-space-md',
     brandTitle: 'tracking-tight',
-    brandSubtitle: 'text-[9px] font-semibold leading-tight',
+    brandSubtitle: 'text-label-sm font-semibold leading-tight',
     nav: 'gap-1 px-space-xs',
     item: 'gap-space-sm rounded-lg px-space-sm py-2',
-    itemActive: 'bg-primary-container font-semibold text-on-primary shadow-sm',
+    itemActive: 'bg-primary-container font-semibold text-on-primary',
     icon: 'text-[20px]',
   },
   technician: {
@@ -49,7 +49,7 @@ const styles = {
     nav: 'gap-space-2xs overflow-y-auto px-space-md py-space-xs',
     item: 'justify-between rounded-xl px-space-md py-space-sm text-label-lg',
     itemActive:
-      'bg-primary-container font-bold text-on-primary shadow-[0_2px_8px_-2px_rgba(13,92,58,0.2)]',
+      'bg-primary-container font-bold text-on-primary',
     icon: 'text-[22px]',
   },
 } as const
@@ -82,7 +82,7 @@ export function Sidebar({
   return (
     <aside
       className={cn(
-        'fixed left-0 top-0 z-50 flex h-full w-72 flex-col justify-between shadow-[0_1px_8px_rgba(0,0,0,0.04)]',
+        'fixed left-0 top-0 z-50 flex h-full w-72 flex-col justify-between border-r border-outline-variant/40',
         s.aside,
         className,
       )}
@@ -97,7 +97,7 @@ export function Sidebar({
             </span>
             <span
               className={cn(
-                'mt-1 truncate uppercase tracking-wider text-on-surface-variant',
+                'mt-1 truncate text-on-surface-variant',
                 s.brandSubtitle,
               )}
             >
@@ -109,14 +109,14 @@ export function Sidebar({
         {/* Nhãn nhóm (admin) hoặc chip sync (technician) */}
         {isAdmin ? (
           <div className="px-space-md py-space-xs">
-            <p className="px-space-xs py-space-xs text-[9px] font-bold uppercase tracking-widest text-outline">
+            <p className="px-space-xs py-space-xs text-label-sm font-bold text-outline">
               {eyebrow}
             </p>
           </div>
         ) : (
           <div className="px-space-md py-space-sm">
             <div className="flex items-center gap-space-xs rounded-lg bg-surface-container px-space-sm py-space-xs">
-              <span className="h-2 w-2 animate-pulse rounded-full bg-primary" />
+              <span className="h-2 w-2 rounded-full bg-primary" />
               <span className="text-label-sm font-semibold text-on-surface">{eyebrow}</span>
             </div>
           </div>
@@ -167,7 +167,7 @@ export function Sidebar({
             <Icon name={user.icon} className="text-[20px]" />
             <div className="flex min-w-0 flex-col">
               <span className="truncate text-label-md text-on-surface">{authUser?.name ?? user.name}</span>
-              <span className="truncate text-[10px] text-outline">{user.title}</span>
+              <span className="truncate text-label-sm text-outline">{user.title}</span>
             </div>
           </Link>
           <button
@@ -189,7 +189,7 @@ export function Sidebar({
         </div>
       ) : (
         <div className="flex flex-col gap-space-xs bg-surface-container-low p-space-md">
-          <div className="flex items-center gap-space-sm rounded-xl bg-surface-container-lowest p-space-sm shadow-[0_2px_8px_-2px_rgba(13,92,58,0.04)]">
+          <div className="flex items-center gap-space-sm rounded-xl bg-surface-container-lowest p-space-sm">
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary">
               <Icon name={user.icon} className="text-[20px] text-on-primary" />
             </div>
@@ -200,13 +200,13 @@ export function Sidebar({
               <span className="truncate text-label-sm text-on-surface-variant">{user.title}</span>
             </div>
           </div>
-          <div className="flex items-center justify-between px-space-xs pt-space-xs">
+          <div className="grid grid-cols-2 gap-x-space-sm gap-y-space-xs px-space-xs pt-space-xs">
             {footerLinks.map((link) => (
               <Link
                 key={link.href}
                 to={link.href}
                 onClick={onNavigate}
-                className="flex items-center gap-space-xs text-label-sm text-on-surface-variant hover:text-on-surface"
+                className="flex items-center gap-space-xs whitespace-nowrap text-label-sm text-on-surface-variant hover:text-on-surface"
               >
                 <Icon name={link.icon} className="text-[18px]" />
                 {link.label}
@@ -215,7 +215,7 @@ export function Sidebar({
             <button
               type="button"
               onClick={() => setChangePasswordOpen(true)}
-              className="flex items-center gap-space-xs text-label-sm text-on-surface-variant hover:text-on-surface"
+              className="flex items-center gap-space-xs whitespace-nowrap text-label-sm text-on-surface-variant hover:text-on-surface"
             >
               <Icon name="lock_reset" className="text-[18px]" />
               Đổi mật khẩu
@@ -223,7 +223,7 @@ export function Sidebar({
             <button
               type="button"
               onClick={() => void handleSignOut()}
-              className="flex items-center gap-space-xs text-label-sm text-on-surface-variant hover:text-on-surface"
+              className="flex items-center gap-space-xs whitespace-nowrap text-label-sm text-on-surface-variant hover:text-on-surface"
             >
               <Icon name="logout" className="text-[18px]" />
               Đăng xuất

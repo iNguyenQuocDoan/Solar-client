@@ -9,7 +9,7 @@ export type PageHeaderProps = {
   breadcrumb?: Crumb[]
   /** Góc phải hàng breadcrumb: trạng thái cluster, sync… */
   meta?: ReactNode
-  /** Chuỗi = nhãn nhỏ in hoa màu primary; node = hàng badge (user_management) */
+  /** Chuỗi = nhãn nhỏ phía trên tiêu đề; node = hàng badge (user_management) */
   eyebrow?: ReactNode
   title: string
   description?: string
@@ -50,7 +50,7 @@ export function PageHeader({
       >
         <div>
           {typeof eyebrow === 'string' ? (
-            <p className="mb-space-2xs text-label-sm font-bold uppercase tracking-widest text-primary">{eyebrow}</p>
+            <p className="mb-space-2xs text-label-sm text-on-surface-variant">{eyebrow}</p>
           ) : (
             eyebrow && <div className="mb-1 flex flex-wrap items-center gap-space-xs">{eyebrow}</div>
           )}

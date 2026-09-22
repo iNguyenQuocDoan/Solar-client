@@ -23,7 +23,7 @@ export function RouteErrorPage() {
       <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-surface-container text-primary">
         <Icon name={isNotFound ? 'search_off' : 'error'} className="text-[28px]" />
       </div>
-      <span className="text-label-sm font-bold uppercase tracking-widest text-outline">Error {status}</span>
+      <span className="text-label-sm font-bold text-outline">Error {status}</span>
       <h1 className="text-headline-lg text-on-surface">
         {isNotFound ? 'Record not found' : 'Something went wrong'}
       </h1>

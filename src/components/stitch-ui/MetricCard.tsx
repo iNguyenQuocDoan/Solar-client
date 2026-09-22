@@ -5,9 +5,12 @@ import { cn } from '@/lib/cn'
 
 /*
  * Ba bố cục KPI trong thiết kế:
- * - stacked: user_management (delta dưới giá trị, blob trang trí góc)
- * - inline:  admin_dashboard (delta cạnh giá trị, nhãn label-md, ô icon 32px, slot footer)
- * - compact: product_catalogue (thẻ ngang: chữ bên trái, ô icon 48px bên phải, giá trị headline-lg)
+ * - stacked: user_management (delta dưới giá trị)
+ * - inline:  admin_dashboard (delta cạnh giá trị, nhãn label-md, slot footer)
+ * - compact: product_catalogue (thẻ ngang: chữ bên trái, ô icon phân loại bên phải)
+ *
+ * Chỉ compact còn ô icon: ở đó icon phân biệt nhóm sản phẩm. Trên dashboard icon
+ * lặp lại cho mọi thẻ nên đã bỏ.
  */
 export type MetricTone = 'primary' | 'secondary' | 'tertiary' | 'error' | 'muted'
 export type MetricLayout = 'stacked' | 'inline' | 'compact'
@@ -18,14 +21,6 @@ const iconToneClasses: Record<MetricTone, string> = {
   tertiary: 'text-tertiary-container',
   error: 'text-error',
   muted: 'text-outline',
-}
-
-const blobToneClasses: Record<MetricTone, string> = {
-  primary: 'bg-primary/5',
-  secondary: 'bg-secondary-container/10',
-  tertiary: 'bg-tertiary/5',
-  error: 'bg-error/5',
-  muted: 'bg-outline/5',
 }
 
 const valueToneClasses: Record<'default' | MetricTone, string> = {
@@ -113,7 +108,7 @@ export function MetricCard({
         <div className="flex min-w-0 flex-col">
           <span
             className={cn(
-              'text-label-sm uppercase tracking-wider',
+              'text-label-sm',
               labelTone === 'default' ? 'text-outline' : labelToneClasses[labelTone],
             )}
           >
@@ -123,7 +118,7 @@ export function MetricCard({
           {delta ? (
             <span className="mt-0.5 flex items-center gap-1 text-body-sm text-on-surface-variant">
               {delta.live ? (
-                <span aria-hidden="true" className="h-2 w-2 animate-pulse rounded-full bg-tertiary-container" />
+                <span aria-hidden="true" className="h-2 w-2 rounded-full bg-tertiary-container" />
               ) : (
                 deltaIcon && <Icon name={deltaIcon} className={cn('text-[16px]', deltaToneClasses[deltaTone])} />
               )}
@@ -161,7 +156,7 @@ export function MetricCard({
       )}
     >
       {delta.live ? (
-        <span aria-hidden="true" className="h-2 w-2 animate-ping rounded-full bg-tertiary-container" />
+        <span aria-hidden="true" className="h-2 w-2 rounded-full bg-tertiary-container" />
       ) : (
         deltaIcon && <Icon name={deltaIcon} className={inline ? 'text-[14px]' : 'text-[16px]'} />
       )}
@@ -191,17 +186,8 @@ export function MetricCard({
   return (
     <Card interactive className={cn('relative flex flex-col justify-between overflow-hidden', className)}>
       <div>
-        <div className={cn('flex items-center justify-between', inline && 'mb-space-xs')}>
-          <span className={cn('uppercase tracking-wider', labelClasses)}>{label}</span>
-          <div
-            className={cn(
-              'flex items-center justify-center',
-              inline ? 'h-8 w-8 rounded-lg bg-surface-container' : 'h-10 w-10 rounded-xl bg-surface-container-low',
-              iconToneClasses[tone],
-            )}
-          >
-            <Icon name={icon} className={inline ? 'text-[18px]' : 'text-[22px]'} />
-          </div>
+        <div className={cn(inline && 'mb-space-xs')}>
+          <span className={labelClasses}>{label}</span>
         </div>
 
         {inline ? (
@@ -227,15 +213,6 @@ export function MetricCard({
 
       {children && <div className={cn(!inline && 'mt-space-md')}>{children}</div>}
 
-      {!inline && (
-        <div
-          aria-hidden="true"
-          className={cn(
-            'pointer-events-none absolute -bottom-6 -right-6 h-24 w-24 rounded-full',
-            blobToneClasses[tone],
-          )}
-        />
-      )}
     </Card>
   )
 }

@@ -405,13 +405,13 @@
   --spacing-margin-desktop: 3rem;
 
   /* ---- Typography (text-headline-md, text-label-sm…) ---- */
-  --text-display-lg: 48px;
-  --text-display-lg--line-height: 56px;
+  --text-display-lg: 32px;
+  --text-display-lg--line-height: 40px;
   --text-display-lg--letter-spacing: -0.02em;
   --text-display-lg--font-weight: 700;
 
-  --text-display-lg-mobile: 36px;
-  --text-display-lg-mobile--line-height: 44px;
+  --text-display-lg-mobile: 24px;
+  --text-display-lg-mobile--line-height: 32px;
   --text-display-lg-mobile--letter-spacing: -0.02em;
   --text-display-lg-mobile--font-weight: 700;
 
@@ -420,8 +420,8 @@
   --text-headline-xl--letter-spacing: -0.015em;
   --text-headline-xl--font-weight: 700;
 
-  --text-headline-xl-mobile: 26px;
-  --text-headline-xl-mobile--line-height: 34px;
+  --text-headline-xl-mobile: 24px;
+  --text-headline-xl-mobile--line-height: 32px;
   --text-headline-xl-mobile--letter-spacing: -0.015em;
   --text-headline-xl-mobile--font-weight: 700;
 
@@ -435,8 +435,8 @@
   --text-headline-md--letter-spacing: -0.005em;
   --text-headline-md--font-weight: 600;
 
-  --text-body-xl: 18px;
-  --text-body-xl--line-height: 28px;
+  --text-body-xl: 16px;
+  --text-body-xl--line-height: 24px;
   --text-body-xl--font-weight: 400;
 
   --text-body-lg: 16px;
@@ -461,12 +461,12 @@
   --text-label-md--letter-spacing: 0.02em;
   --text-label-md--font-weight: 600;
 
-  --text-label-sm: 11px;
-  --text-label-sm--line-height: 14px;
+  --text-label-sm: 12px;
+  --text-label-sm--line-height: 16px;
   --text-label-sm--letter-spacing: 0.03em;
   --text-label-sm--font-weight: 600;
 
-  --text-data-metric: 36px;
+  --text-data-metric: 32px;
   --text-data-metric--line-height: 40px;
   --text-data-metric--letter-spacing: -0.02em;
   --text-data-metric--font-weight: 700;
@@ -492,9 +492,34 @@
   --color-outline-card: rgba(13, 92, 58, 0.06);
 
   /* ---- Elevation (DESIGN.md "Elevation & Depth") ---- */
-  --shadow-level-1: 0px 2px 8px -2px rgba(13, 92, 58, 0.04), 0px 4px 16px -4px rgba(15, 23, 42, 0.05);
-  --shadow-level-2: 0px 8px 24px -4px rgba(13, 92, 58, 0.08), 0px 4px 12px -2px rgba(15, 23, 42, 0.04);
-  --shadow-level-3: 0px 20px 32px -8px rgba(13, 92, 58, 0.12), 0px 10px 16px -4px rgba(15, 23, 42, 0.06);
+  /*
+    Bóng chỉ dành cho lớp nổi (dialog, drawer, menu). Thẻ tĩnh phân tách bằng
+    nền và viền, nên level-1 và các shadow-sm/md của Tailwind đều tắt.
+  */
+  --shadow-float: 0px 12px 28px -12px rgba(13, 92, 58, 0.22), 0px 2px 6px -2px rgba(15, 23, 42, 0.08);
+  --shadow-level-1: 0 0 #0000;
+  --shadow-level-2: var(--shadow-float);
+  --shadow-level-3: var(--shadow-float);
+  --shadow-2xs: 0 0 #0000;
+  --shadow-xs: 0 0 #0000;
+  --shadow-sm: 0 0 #0000;
+  --shadow-md: 0 0 #0000;
+  --shadow-lg: var(--shadow-float);
+  --shadow-xl: var(--shadow-float);
+  --shadow-2xl: var(--shadow-float);
+
+  /*
+    Đúng hai bán kính: 8px cho control (nút, ô nhập, chip) và 12px cho khối
+    (thẻ, panel, dialog). rounded-full chỉ dùng cho hình tròn thật (avatar, chấm).
+  */
+  --radius-xs: 8px;
+  --radius-sm: 8px;
+  --radius-md: 8px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+  --radius-2xl: 12px;
+  --radius-3xl: 12px;
+  --radius-4xl: 12px;
 }
 
 /* The kit's body styles (bg-surface text-body-md text-on-surface font-jakarta) are set on its roots, not on <body>, so both kits can share one document. */

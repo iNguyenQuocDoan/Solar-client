@@ -96,11 +96,6 @@ export function RegisterPage() {
   return (
     <AuthCard>
       <div className="mb-space-md flex flex-col gap-1">
-        <div className="flex items-center gap-2">
-          <span className="rounded-full bg-tertiary-fixed px-2.5 py-0.5 text-label-sm font-semibold text-on-tertiary-fixed">
-            {registerContent.badge}
-          </span>
-        </div>
         <h1 className="text-headline-xl text-on-surface">{registerContent.title}</h1>
         <p className="text-body-md text-on-surface-variant">{registerContent.description}</p>
       </div>

@@ -9,7 +9,7 @@ import { cn } from '@/lib/cn'
 export type ActionDockProps = {
   /** Bỏ trống khi dùng `pulse` */
   icon?: string
-  /** Chấm trạng thái animate-ping thay cho ô icon */
+  /** Chấm trạng thái thay cho ô icon */
   pulse?: boolean
   title?: string
   description?: string
@@ -46,7 +46,7 @@ export function ActionDock({
           {pulse ? (
             <span
               aria-hidden="true"
-              className="ml-1 h-3 w-3 shrink-0 animate-ping rounded-full bg-status-in-progress-dot"
+              className="ml-1 h-3 w-3 shrink-0 rounded-full bg-status-in-progress-dot"
             />
           ) : (
             icon && (

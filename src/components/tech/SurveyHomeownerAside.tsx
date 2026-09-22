@@ -63,7 +63,7 @@ export function SurveyHomeownerAside({ data, onPhotoClick }: SurveyHomeownerAsid
                 aria-hidden="true"
                 className="absolute inset-0 bg-on-background/20 transition-colors group-hover:bg-on-background/10"
               />
-              <span className="absolute bottom-1 left-1.5 rounded bg-on-background/80 px-1.5 py-0.5 text-[10px] font-semibold tracking-wide text-surface">
+              <span className="absolute bottom-1 left-1.5 rounded bg-on-background/80 px-1.5 py-0.5 text-label-sm font-semibold tracking-wide text-surface">
                 {photo.tag}
               </span>
             </button>

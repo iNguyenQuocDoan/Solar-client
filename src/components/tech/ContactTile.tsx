@@ -77,7 +77,7 @@ export function ContactTile({
 
   return (
     <Card padding="lg" className={cn('flex flex-col gap-space-sm', className)}>
-      <span className="text-label-sm font-bold uppercase tracking-wider text-on-surface-variant">{eyebrow}</span>
+      <span className="text-label-sm font-bold text-on-surface-variant">{eyebrow}</span>
       {tile}
     </Card>
   )

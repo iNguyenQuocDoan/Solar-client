@@ -45,11 +45,6 @@ export function ForgotPasswordPage() {
 
   return (
     <AuthCard>
-      <div className="mb-2 flex items-center gap-2">
-        <span className="rounded-full bg-secondary-fixed px-2.5 py-0.5 text-label-sm font-semibold text-on-secondary-fixed">
-          {forgotContent.badge}
-        </span>
-      </div>
       <h1 className="text-headline-lg text-on-surface">{forgotContent.title}</h1>
       <p className="mb-space-md mt-1 text-body-md text-on-surface-variant">{forgotContent.description}</p>
 

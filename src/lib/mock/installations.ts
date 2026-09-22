@@ -154,7 +154,7 @@ export const installationTasks: InstallationTask[] = [
     ],
     progress: {
       title: 'Overall Installation Milestone',
-      note: '• Stage 3 of 4 (Mechanical Array Setup)',
+      note: 'Stage 3 of 4 (Mechanical Array Setup)',
       percent: 65,
       milestones: [
         { label: '1. Safety & Ingress', done: true },
@@ -312,13 +312,13 @@ export const installationTasks: InstallationTask[] = [
               src: '/placeholders/photo-roof.svg',
               alt: 'Clay barrel roof tiles before solar panel mounting',
               title: 'Roof Condition',
-              meta: '08:35 AM • Verified intact',
+              meta: '08:35 AM, Verified intact',
             },
             {
               src: '/placeholders/photo-breaker.svg',
               alt: 'Open 200A residential service breaker panel',
               title: 'Open Breaker Panel',
-              meta: '08:42 AM • Slot 18/20 clear',
+              meta: '08:42 AM, Slot 18/20 clear',
             },
           ],
         },
@@ -329,13 +329,13 @@ export const installationTasks: InstallationTask[] = [
               src: '/placeholders/photo-flashing.svg',
               alt: 'Racking rail clamped with waterproof flashing under roof tile',
               title: 'Flashing & Lag Seal',
-              meta: '11:20 AM • 45 ft-lbs',
+              meta: '11:20 AM, 45 ft-lbs',
             },
             {
               src: '/placeholders/photo-microinverter.svg',
               alt: 'Microinverter mounted beneath solar panel rail with grounding lug',
               title: 'Microinverter Rail Bus',
-              meta: '12:15 PM • Grounded',
+              meta: '12:15 PM, Grounded',
             },
           ],
         },
@@ -460,7 +460,7 @@ export const installationChecklists: Record<string, InstallationChecklist> = {
   'INS-7704': {
     session: {
       label: 'Active Field Session',
-      mode: '• Field App Mode: Auto-sync buffered (8 offline events synced)',
+      mode: 'Field App Mode: Auto-sync buffered (8 offline events synced)',
       database: 'Grid DB Linked',
       signal: 'Signal: 4G LTE (-82 dBm)',
     },
@@ -481,7 +481,7 @@ export const installationChecklists: Record<string, InstallationChecklist> = {
         { label: 'Total Modules', value: '24', unit: 'x 400W REC' },
         { label: 'DC System Capacity', value: '9.6', unit: 'kW DC', tone: 'primary' },
         { label: 'Microinverters', value: '24', unit: 'Enphase IQ8+' },
-        { label: 'Weather Ambient', value: '82°F', unit: 'Clear • 6mph S', tone: 'secondary' },
+        { label: 'Weather Ambient', value: '82°F', unit: 'Clear, 6mph S', tone: 'secondary' },
       ],
     },
     phases: [
@@ -585,27 +585,27 @@ export const installationChecklists: Record<string, InstallationChecklist> = {
       tone: 'audit',
       title: '3. Site Photo Verification & Audit Trail',
       description: 'AHJ and permit compliance imagery (GPS & timestamp watermarked)',
-      badgeLabel: '3 Uploaded • 1 Required',
+      badgeLabel: '3 Uploaded, 1 Required',
       items: [
         {
           src: '/placeholders/photo-roof.svg',
           alt: 'Roof slope with chalk layout lines before rail installation',
           title: 'Before Installation',
-          meta: '08:35 • Roof South-facing',
+          meta: '08:35, Roof South-facing',
           verified: true,
         },
         {
           src: '/placeholders/photo-flashing.svg',
           alt: 'Racking rails lag bolted with flashings to the roof deck',
           title: 'Rail & Flashing Check',
-          meta: '11:20 • 32 Penetrations',
+          meta: '11:20, 32 Penetrations',
           verified: true,
         },
         {
           src: '/placeholders/photo-microinverter.svg',
           alt: 'Module being mounted onto roof rails with microinverter bus',
           title: 'Active Module Mounting',
-          meta: '12:15 • Row 2 In Progress',
+          meta: '12:15, Row 2 In Progress',
           verified: true,
         },
       ],
@@ -672,7 +672,7 @@ export const installationChecklists: Record<string, InstallationChecklist> = {
     },
     signature: {
       title: 'Customer Handover & Signature',
-      subtitle: 'Job order #INS-7704 • David Chen',
+      subtitle: 'Job order #INS-7704, David Chen',
       rows: [
         { label: 'Panels Installed:', value: '24x REC Alpha 400W' },
         { label: 'Microinverters:', value: '24x Enphase IQ8+' },

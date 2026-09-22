@@ -46,7 +46,7 @@ export function FieldNoteComposer({ dictation, placeholder, submitLabel, classNa
             {waveform.map((bar, index) => (
               <span
                 key={index}
-                className={cn('w-1 rounded-full', bar.height, bar.tone, bar.pulse && 'animate-pulse')}
+                className={cn('w-1 rounded-full', bar.height, bar.tone)}
               />
             ))}
           </div>

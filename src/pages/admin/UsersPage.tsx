@@ -117,7 +117,7 @@ export function UsersPage() {
         }
         eyebrow={
           <>
-            <StatusBadge variant="solid" dot={false} size="sm" className="uppercase tracking-wider">
+            <StatusBadge variant="solid" dot={false} size="sm" className="">
               {usersPageHeader.badges.primary}
             </StatusBadge>
             <StatusBadge variant="neutral" dot={false} size="sm">

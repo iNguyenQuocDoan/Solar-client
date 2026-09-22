@@ -147,11 +147,11 @@ export const warrantyCases: WarrantyCase[] = [
   {
     id: 'WAR-3309',
     priority: { label: 'High Priority Fault', variant: 'error' },
-    caseLabel: 'CASE ID • #WAR-3309',
+    caseLabel: 'CASE ID, #WAR-3309',
     guarantee: '25-Yr System Guarantee',
     dispatchWindow: 'Dispatch Window: 01:30 PM – 03:00 PM',
     title: 'Microinverter Fault & DC String Drop',
-    subtitle: 'South Rooftop Array • Circuit Segment Bravo-2 • Grid Arc Interruption',
+    subtitle: 'South Rooftop Array, Circuit Segment Bravo-2, Grid Arc Interruption',
     productionDrop: '-35% Production',
     stats: [
       { label: 'Active Array', value: '7.2 kW', caption: '18 × SunPower 400W' },
@@ -238,7 +238,7 @@ export const warrantyCases: WarrantyCase[] = [
           'Excavated squirrel nest behind panel array 4B. Cleaned exposed grounding wire. Replaced 4m section of UV-resistant DC wire, re-crimped MC4 connectors with calibrated tool, and secured entire south rake with galvanized steel pest guard mesh.',
       },
       hardwareSwap: {
-        title: 'OEM Hardware Swap • Enphase IQ8+ Microinverter',
+        title: 'OEM Hardware Swap, Enphase IQ8+ Microinverter',
         badge: 'Barcodes Verified',
         removedLabel: 'Defective Removed Unit',
         removedSerial: 'EN-98214-X02',
@@ -284,10 +284,10 @@ export const warrantyCases: WarrantyCase[] = [
       phone: { label: '(408) 555-0199', href: 'tel:4085550199' },
       email: 'elena.rostova@icloud.com',
       mapSrc: '/placeholders/map-site.svg',
-      mapCaption: 'Roof Pitch: 22° • South Face',
+      mapCaption: 'Roof Pitch: 22°, South Face',
       accessLabel: 'Access Gate Pin & Instructions',
       accessNote:
-        'Gate Code: 4921 • Dog inside house, access via West side garden gate directly to ladder placement.',
+        'Gate Code: 4921, Dog inside house, access via West side garden gate directly to ladder placement.',
     },
     burnIn: {
       title: '15-Min Live Burn-In',
@@ -310,7 +310,7 @@ export const warrantyCases: WarrantyCase[] = [
       signatureLabel: 'Client Signature',
       clearLabel: 'Clear',
       signatureHint: 'Sign in this box',
-      signatureCaption: 'Elena Rostova • Sign & Verify',
+      signatureCaption: 'Elena Rostova, Sign & Verify',
       confirmations: [
         {
           id: 'wattage',

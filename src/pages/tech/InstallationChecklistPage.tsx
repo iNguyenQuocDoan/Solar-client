@@ -64,8 +64,8 @@ function InstallationChecklistView({
       {/* Banner phiên làm việc + trạng thái kết nối */}
       <div className="mb-space-md flex flex-col gap-space-xs rounded-xl bg-surface-container px-space-md py-space-xs shadow-sm lg:flex-row lg:items-center lg:justify-between">
         <div className="flex flex-wrap items-center gap-space-sm">
-          <span aria-hidden="true" className="h-2.5 w-2.5 animate-pulse rounded-full bg-primary-container" />
-          <span className="text-label-sm font-bold uppercase tracking-wide text-primary">
+          <span aria-hidden="true" className="h-2.5 w-2.5 rounded-full bg-primary-container" />
+          <span className="text-label-sm font-bold text-primary">
             {checklist.session.label}
           </span>
           <span className="text-body-sm text-on-surface-variant">{checklist.session.mode}</span>
@@ -150,7 +150,7 @@ function InstallationChecklistView({
         <div className="mt-space-lg grid grid-cols-2 gap-space-sm rounded-xl bg-surface-container-low p-space-sm pt-space-md md:grid-cols-4">
           {checklist.header.stats.map((stat) => (
             <div key={stat.label} className="flex flex-col px-space-xs">
-              <span className="text-label-sm font-semibold uppercase text-on-surface-variant">{stat.label}</span>
+              <span className="text-label-sm font-semibold text-on-surface-variant">{stat.label}</span>
               <span className={cn('text-headline-md font-bold', statToneClasses[stat.tone ?? 'default'])}>
                 {stat.value}{' '}
                 <span className="text-label-md font-normal text-on-surface-variant">{stat.unit}</span>

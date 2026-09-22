@@ -67,7 +67,6 @@ export function PermissionMatrix({
           >
             {allCollapsed ? labels.expand : labels.collapse}
           </button>
-          <span>•</span>
           <button
             type="button"
             disabled={disabled}
@@ -130,7 +129,7 @@ export function PermissionMatrix({
                             </span>
                             {item.destructive && <Icon name="crisis_alert" className="text-[14px] text-error" />}
                           </div>
-                          <span className="text-[11px] text-outline">{item.description}</span>
+                          <span className="text-label-sm text-outline">{item.description}</span>
                         </div>
                         <Checkbox
                           id={inputId}

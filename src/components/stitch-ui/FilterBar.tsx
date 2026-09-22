@@ -26,7 +26,7 @@ export function SearchInput({ size = 'lg', shortcutHint, className, ...rest }: S
         {...rest}
       />
       {shortcutHint && (
-        <span className="absolute right-3 top-1/2 -translate-y-1/2 rounded bg-surface-container px-1.5 py-0.5 text-label-sm uppercase text-outline">
+        <span className="absolute right-3 top-1/2 -translate-y-1/2 rounded bg-surface-container px-1.5 py-0.5 text-label-sm text-outline">
           {shortcutHint}
         </span>
       )}
@@ -171,7 +171,7 @@ export function FilterBar({ chips, search, selects, scopes, trailing, className 
         <div className="flex flex-col justify-between gap-space-xs rounded-xl bg-surface-container-low/40 px-space-sm py-2 sm:flex-row sm:items-center">
           <div className="flex flex-wrap items-center gap-space-xs">
             {scopes?.label && (
-              <span className="text-label-sm font-semibold uppercase tracking-wider text-outline">{scopes.label}</span>
+              <span className="text-label-sm font-semibold text-outline">{scopes.label}</span>
             )}
             {scopes?.items.map((scope) => (
               <span

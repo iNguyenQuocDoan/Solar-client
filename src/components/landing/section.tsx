@@ -30,7 +30,7 @@ export function SectionHeading({
         className,
       )}
     >
-      <span className="text-label-lg uppercase tracking-wider text-primary-container">{eyebrow}</span>
+      <span className="text-label-lg text-primary-container">{eyebrow}</span>
       <h2 className="text-headline-xl-mobile text-primary md:text-headline-xl">{title}</h2>
       {description && <p className="text-body-md text-on-surface-variant">{description}</p>}
     </div>

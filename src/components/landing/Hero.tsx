@@ -19,7 +19,7 @@ export function Hero({ onViewSolutions }: { onViewSolutions: () => void }) {
         <div className="grid grid-cols-1 items-center gap-space-xl lg:grid-cols-12">
           <div className="flex flex-col items-start gap-space-md lg:col-span-6">
             <div className="inline-flex items-center gap-space-xs rounded-full bg-surface-container-high px-space-sm py-1.5 text-label-sm text-primary shadow-sm">
-              <span className="h-2 w-2 animate-pulse rounded-full bg-secondary-container" />
+              <span className="h-2 w-2 rounded-full bg-secondary-container" />
               <span>{badge}</span>
             </div>
 
@@ -32,7 +32,6 @@ export function Hero({ onViewSolutions }: { onViewSolutions: () => void }) {
                 className="inline-flex w-full items-center justify-center gap-space-xs rounded-xl bg-primary-container px-space-xl py-3.5 text-label-lg text-on-primary shadow-md transition-all hover:bg-primary hover:shadow-lg sm:w-auto"
               >
                 <span>{primaryCta}</span>
-                <Icon name="arrow_forward" className="text-[18px]" />
               </Link>
               <button
                 type="button"
@@ -73,7 +72,7 @@ export function Hero({ onViewSolutions }: { onViewSolutions: () => void }) {
               <div className="absolute bottom-6 left-6 right-6 flex flex-col gap-space-xs rounded-2xl bg-surface-container-lowest/95 p-space-md shadow-xl backdrop-blur-md md:right-auto md:w-80">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-space-xs">
-                    <span className="h-2.5 w-2.5 animate-ping rounded-full bg-secondary-container" />
+                    <span className="h-2.5 w-2.5 rounded-full bg-secondary-container" />
                     <span className="text-label-md text-primary">{monitorOverlay.title}</span>
                   </div>
                   <span className="text-label-sm text-on-surface-variant">{monitorOverlay.realtimeLabel}</span>

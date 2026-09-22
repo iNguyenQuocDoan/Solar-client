@@ -14,7 +14,7 @@ export function AfterSales() {
         <div className="rounded-3xl bg-surface-container-high p-space-xl shadow-md lg:p-space-2xl">
           <div className="grid grid-cols-1 items-center gap-space-xl lg:grid-cols-12">
             <div className="flex flex-col gap-space-md lg:col-span-7">
-              <span className="text-label-lg uppercase tracking-wider text-primary">{eyebrow}</span>
+              <span className="text-label-lg text-primary">{eyebrow}</span>
               <h2 className="text-headline-xl-mobile text-primary md:text-headline-xl">{title}</h2>
               <p className="text-body-lg text-on-surface-variant">{description}</p>
 

@@ -67,7 +67,7 @@ export function StatRibbon({ stats, unitLabel, readyLabel, busyLabel, className 
 
       <div className="flex items-center justify-between gap-space-md pl-space-xs pt-space-xs xl:justify-end xl:pt-0">
         <div className="flex items-center gap-space-xs">
-          <span aria-hidden="true" className="h-2.5 w-2.5 animate-pulse rounded-full bg-primary-container" />
+          <span aria-hidden="true" className="h-2.5 w-2.5 rounded-full bg-primary-container" />
           <span className="text-label-md font-semibold text-on-surface">{unitLabel}</span>
         </div>
         <button

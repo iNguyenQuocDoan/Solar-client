@@ -11,7 +11,7 @@ export type EvidencePhotoItem = {
   src: string
   alt: string
   title: string
-  /** "08:35 AM • Verified intact" */
+  /** "08:35 AM, Verified intact" */
   meta: string
   /** Dấu tích ở góc phải caption (lưới ảnh của màn checklist) */
   verified?: boolean
@@ -62,7 +62,7 @@ export function EvidenceGroup({
   return (
     <div className={cn('flex flex-col gap-space-xs', className)}>
       {!hideTitle && (
-        <span className="text-label-sm font-bold uppercase tracking-wider text-on-surface-variant">{title}</span>
+        <span className="text-label-sm font-bold text-on-surface-variant">{title}</span>
       )}
       <div className={cn('grid gap-space-sm', columnClasses[columns], isSquare && 'gap-space-md')}>
         {photos.map((photo) => (

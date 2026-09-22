@@ -13,7 +13,7 @@ export type PanelCell = {
 
 const cellClasses: Record<PanelState, string> = {
   mounted: 'bg-primary-container text-on-primary font-bold shadow-sm',
-  active: 'animate-pulse bg-secondary-fixed text-on-secondary-fixed font-bold',
+  active: 'bg-secondary-fixed text-on-secondary-fixed font-bold',
   queued: 'bg-surface-container-highest text-on-surface-variant',
 }
 

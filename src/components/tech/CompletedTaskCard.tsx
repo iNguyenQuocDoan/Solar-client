@@ -7,7 +7,7 @@ export type CompletedTask = {
   id: string
   title: string
   address: string
-  /** "Today • 08:15 AM" */
+  /** "Today, 08:15 AM" */
   timestamp: string
   /** "18 Photos Uploaded" */
   evidence: string

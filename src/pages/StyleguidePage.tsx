@@ -74,7 +74,7 @@ function Section({
           <h2 className="text-headline-lg text-on-surface">{title}</h2>
           {description && <p className="text-body-sm text-on-surface-variant">{description}</p>}
         </div>
-        <span className="rounded-lg bg-surface-container px-2 py-0.5 font-mono text-[11px] text-on-surface-variant">
+        <span className="rounded-lg bg-surface-container px-2 py-0.5 font-mono text-label-sm text-on-surface-variant">
           {source}
         </span>
       </div>
@@ -104,10 +104,10 @@ const userColumns: DataTableColumn<StyleguideUser>[] = [
         <div className="flex min-w-0 flex-col">
           <span className="truncate text-body-lg font-bold text-on-surface">{user.name}</span>
           <div className="flex items-center gap-2 text-body-sm text-outline">
-            <span className="rounded bg-surface-container-low px-1.5 py-0.5 font-mono text-[11px] text-on-surface-variant">
+            <span className="rounded bg-surface-container-low px-1.5 py-0.5 font-mono text-label-sm text-on-surface-variant">
               {user.employeeId}
             </span>
-            <span>• {user.department}</span>
+            <span>{user.department}</span>
           </div>
         </div>
       </div>
@@ -153,7 +153,7 @@ const userColumns: DataTableColumn<StyleguideUser>[] = [
     render: (user) => (
       <div className="flex flex-col">
         <span className="text-label-sm font-semibold text-on-surface">{user.lastActivity}</span>
-        <span className="text-[11px] text-outline">{user.lastDevice}</span>
+        <span className="text-label-sm text-outline">{user.lastDevice}</span>
       </div>
     ),
   },
@@ -275,11 +275,10 @@ export function StyleguidePage() {
               breadcrumb={styleguidePageHeader.breadcrumb}
               meta={
                 <>
-                  <span aria-hidden="true" className="h-2 w-2 animate-pulse rounded-full bg-tertiary-container" />
+                  <span aria-hidden="true" className="h-2 w-2 rounded-full bg-tertiary-container" />
                   <span>{styleguidePageHeader.metaText}</span>
                 </>
               }
-              eyebrow={styleguidePageHeader.eyebrow}
               title={styleguidePageHeader.title}
               description={styleguidePageHeader.description}
               actions={
@@ -532,7 +531,7 @@ export function StyleguidePage() {
             <div className="flex flex-wrap items-center gap-space-md text-primary">
               {['grid_view', 'solar_power', 'manage_accounts', 'square_foot', 'build_circle', 'calendar_today', 'verified', 'pin_drop'].map(
                 (name) => (
-                  <span key={name} className="flex flex-col items-center gap-1 text-[11px] text-on-surface-variant">
+                  <span key={name} className="flex flex-col items-center gap-1 text-label-sm text-on-surface-variant">
                     <Icon name={name} className="text-[24px] text-primary" />
                     {name}
                   </span>

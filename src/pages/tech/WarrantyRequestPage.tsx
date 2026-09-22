@@ -273,7 +273,7 @@ function WarrantyRequestView({ warranty }: { warranty: WarrantyCase }) {
               <div className="flex flex-col gap-1 rounded-lg bg-surface-container-lowest p-space-sm">
                 <label
                   htmlFor="removed-serial"
-                  className="text-label-sm font-semibold uppercase tracking-wider text-error"
+                  className="text-label-sm font-semibold text-error"
                 >
                   {diagnostics.hardwareSwap.removedLabel}
                 </label>
@@ -295,7 +295,7 @@ function WarrantyRequestView({ warranty }: { warranty: WarrantyCase }) {
               <div className="flex flex-col gap-1 rounded-lg bg-surface-container-lowest p-space-sm">
                 <label
                   htmlFor="replacement-serial"
-                  className="text-label-sm font-semibold uppercase tracking-wider text-primary"
+                  className="text-label-sm font-semibold text-primary"
                 >
                   {diagnostics.hardwareSwap.replacementLabel}
                 </label>
@@ -339,7 +339,7 @@ function WarrantyRequestView({ warranty }: { warranty: WarrantyCase }) {
                 <div className="flex items-center justify-between gap-space-xs">
                   <span
                     className={cn(
-                      'text-label-sm font-bold uppercase tracking-wider',
+                      'text-label-sm font-bold',
                       photo.phaseTone === 'error' ? 'text-error' : 'text-primary',
                     )}
                   >
@@ -458,7 +458,7 @@ function WarrantyRequestView({ warranty }: { warranty: WarrantyCase }) {
               label={`${warranty.burnIn.value} ${warranty.burnIn.unit}`}
             >
               <div className="flex flex-col items-center justify-center text-center">
-                <span className="text-label-sm uppercase tracking-wider text-on-surface-variant">
+                <span className="text-label-sm text-on-surface-variant">
                   {warranty.burnIn.ringLabel}
                 </span>
                 <span className="text-data-metric text-on-surface">{warranty.burnIn.value}</span>

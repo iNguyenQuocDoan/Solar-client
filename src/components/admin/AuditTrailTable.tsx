@@ -40,7 +40,7 @@ const columns: DataTableColumn<AuditEntry>[] = [
       <div className="flex items-center gap-space-xs">
         <div
           className={cn(
-            'flex h-6 w-6 items-center justify-center rounded-full text-[10px] font-semibold',
+            'flex h-6 w-6 items-center justify-center rounded-full text-label-sm font-semibold',
             actorToneClasses[entry.actor.tone],
           )}
         >
@@ -72,17 +72,17 @@ const columns: DataTableColumn<AuditEntry>[] = [
             </>
           )}
         </p>
-        <span className="text-[10px] text-outline">Target: {entry.target}</span>
+        <span className="text-label-sm text-outline">Target: {entry.target}</span>
       </>
     ),
   },
   {
     key: 'origin',
     header: 'Network Origin',
-    className: 'whitespace-nowrap text-[11px] text-on-surface-variant',
+    className: 'whitespace-nowrap text-label-sm text-on-surface-variant',
     render: (entry) => (
       <>
-        <span>{entry.origin.ip}</span> <span className="text-outline">• {entry.origin.site}</span>
+        <span>{entry.origin.ip}</span> <span className="text-outline">{entry.origin.site}</span>
       </>
     ),
   },
@@ -92,7 +92,7 @@ const columns: DataTableColumn<AuditEntry>[] = [
     align: 'right',
     className: 'whitespace-nowrap',
     render: (entry) => (
-      <StatusBadge variant={entry.integrity.variant} size="sm" className="text-[11px] font-semibold">
+      <StatusBadge variant={entry.integrity.variant} size="sm" className="text-label-sm font-semibold">
         {entry.integrity.label}
       </StatusBadge>
     ),

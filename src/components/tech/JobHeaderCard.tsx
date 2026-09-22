@@ -19,7 +19,7 @@ export type JobHeaderAction = {
 
 export type JobProgress = {
   title: string
-  /** Chú thích xám sau tiêu đề, ví dụ "• Stage 3 of 4" */
+  /** Chú thích xám sau tiêu đề, ví dụ "Stage 3 of 4" */
   note?: string
   percent: number
   /** Các mốc dưới thanh; done = tô primary đậm */
@@ -61,7 +61,7 @@ export function JobHeaderCard({
       <div className="flex flex-col gap-space-md lg:flex-row lg:items-center lg:justify-between">
         <div className="flex min-w-0 flex-col">
           <div className="flex flex-wrap items-center gap-space-xs">
-            <span className="rounded-full bg-surface-container px-2.5 py-0.5 text-label-sm font-bold uppercase tracking-wide text-primary">
+            <span className="rounded-full bg-surface-container px-2.5 py-0.5 text-label-sm font-bold text-primary">
               {kindLabel}
             </span>
             <span

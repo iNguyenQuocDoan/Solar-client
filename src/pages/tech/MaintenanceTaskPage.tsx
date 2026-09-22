@@ -154,7 +154,7 @@ function MaintenanceTaskView({ task }: { task: Task }) {
             title={task.telemetry.title}
             trailing={
               <span className="flex items-center gap-1.5 text-label-sm font-bold text-primary">
-                <span aria-hidden="true" className="h-2 w-2 animate-ping rounded-full bg-primary" />
+                <span aria-hidden="true" className="h-2 w-2 rounded-full bg-primary" />
                 {task.telemetry.liveLabel}
               </span>
             }

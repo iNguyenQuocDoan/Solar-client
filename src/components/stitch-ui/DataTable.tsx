@@ -52,7 +52,7 @@ const alignClasses = { left: 'text-left', center: 'text-center', right: 'text-ri
 const sizeStyles = {
   md: {
     thead: 'bg-surface-container-low text-label-md text-on-surface-variant',
-    th: 'px-3 py-3.5 font-semibold uppercase tracking-wider',
+    th: 'px-3 py-3.5 font-semibold',
     thEdge: { first: 'pl-space-md', last: 'pr-space-md' },
     td: 'px-3',
     tdEdge: { first: 'pl-space-md', last: 'pr-space-md' },
@@ -60,7 +60,7 @@ const sizeStyles = {
     rowHover: 'hover:bg-surface-container-low/50',
   },
   sm: {
-    thead: 'bg-surface-container-low/60 text-[11px] uppercase tracking-wider text-outline',
+    thead: 'bg-surface-container-low/60 text-label-sm text-outline',
     th: 'px-space-sm py-space-xs font-semibold first:rounded-l-lg last:rounded-r-lg',
     thEdge: { first: '', last: '' },
     td: 'px-space-sm',
@@ -70,7 +70,7 @@ const sizeStyles = {
   },
   /** my_tasks_1: header label-sm in hoa, ô py-space-lg, nội dung căn trên, mép trái/phải space-lg */
   matrix: {
-    thead: 'bg-surface-container-low text-label-sm uppercase tracking-wider text-on-surface-variant',
+    thead: 'bg-surface-container-low text-label-sm text-on-surface-variant',
     th: 'px-space-md py-space-md font-semibold',
     thEdge: { first: 'pl-space-lg', last: 'pr-space-lg' },
     td: 'px-space-md align-top',
@@ -80,7 +80,7 @@ const sizeStyles = {
   },
   /** product_catalogue: header label-sm text-outline, hàng py-space-sm, hover rất nhạt */
   compact: {
-    thead: 'bg-surface-container-low/70 text-label-sm uppercase tracking-wider text-outline',
+    thead: 'bg-surface-container-low/70 text-label-sm text-outline',
     th: 'px-space-md py-3 font-semibold',
     thEdge: { first: '', last: '' },
     td: 'px-space-md',

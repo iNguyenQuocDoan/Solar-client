@@ -125,7 +125,7 @@ export function RolesPage() {
           bottomSpacing="none"
           eyebrow={
             <>
-              <span className="rounded bg-primary-container px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-on-primary">
+              <span className="rounded bg-primary-container px-2 py-0.5 text-label-sm font-bold text-on-primary">
                 {rolesPageHeader.badge}
               </span>
               <span className="font-mono text-label-sm tracking-wide text-outline">{rolesPageHeader.policyCode}</span>
@@ -168,9 +168,9 @@ export function RolesPage() {
             />
             <div className="flex items-center justify-between gap-space-sm rounded-xl bg-surface-container-low/60 p-3">
               <div className="flex flex-col">
-                <span className="text-[10px] uppercase tracking-wider text-outline">{systemRolesPanel.governed.label}</span>
+                <span className="text-label-sm text-outline">{systemRolesPanel.governed.label}</span>
                 <span className="mt-1 text-data-metric leading-none text-primary">{systemRolesPanel.governed.value}</span>
-                <span className="mt-0.5 flex items-center gap-1 text-[11px] text-tertiary-container">
+                <span className="mt-0.5 flex items-center gap-1 text-label-sm text-tertiary-container">
                   <Icon name="check_circle" className="text-[13px]" /> {systemRolesPanel.governed.note}
                 </span>
               </div>
@@ -194,9 +194,9 @@ export function RolesPage() {
           <div className="flex items-center gap-space-sm rounded-2xl bg-surface-container-low/70 p-space-md">
             <img src={governanceCallout.image} alt="" className="h-16 w-16 shrink-0 rounded-xl object-cover" />
             <div className="flex min-w-0 flex-col">
-              <span className="text-[10px] uppercase tracking-wider text-outline">{governanceCallout.eyebrow}</span>
+              <span className="text-label-sm text-outline">{governanceCallout.eyebrow}</span>
               <span className="truncate text-[14px] font-semibold text-on-surface">{governanceCallout.title}</span>
-              <span className="line-clamp-1 text-[11px] text-on-surface-variant">{governanceCallout.note}</span>
+              <span className="line-clamp-1 text-label-sm text-on-surface-variant">{governanceCallout.note}</span>
             </div>
           </div>
         </div>
@@ -259,7 +259,7 @@ export function RolesPage() {
               <div className="flex items-center gap-space-xs text-on-surface-variant">
                 <span
                   aria-hidden="true"
-                  className={cn('h-2.5 w-2.5 rounded-full', dirty ? 'animate-pulse bg-secondary' : 'bg-tertiary-container')}
+                  className={cn('h-2.5 w-2.5 rounded-full', dirty ? 'bg-secondary' : 'bg-tertiary-container')}
                 />
                 <span className="text-label-md text-on-surface">{statusMessage}</span>
               </div>
@@ -290,7 +290,6 @@ export function RolesPage() {
             </div>
             <button type="button" className="flex shrink-0 items-center gap-1 text-label-md font-semibold text-primary hover:underline">
               <span>{auditTrailFooter.linkLabel}</span>
-              <Icon name="arrow_forward" className="text-[16px]" />
             </button>
           </Card>
         </div>

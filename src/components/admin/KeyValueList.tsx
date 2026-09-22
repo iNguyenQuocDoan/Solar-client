@@ -34,7 +34,7 @@ export function KeyValueRow({
         {icon && <Icon name={icon} className={cn('text-[18px] text-primary', iconClassName)} />}
         <div>
           <span className="block text-label-md leading-tight text-on-surface">{label}</span>
-          {sublabel && <span className={cn('text-[11px] text-outline', sublabelClassName)}>{sublabel}</span>}
+          {sublabel && <span className={cn('text-label-sm text-outline', sublabelClassName)}>{sublabel}</span>}
         </div>
       </div>
       {trailing ??

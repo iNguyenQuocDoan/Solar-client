@@ -392,7 +392,7 @@ export type SurveyPhotoProgress = {
   required: number
   percent: number
   remaining: number
-  /** "Section A (2/3) • Section B (2/2) • …" */
+  /** "Section A (2/3), Section B (2/2), …" */
   breakdown: string
 }
 
@@ -422,7 +422,7 @@ export function getSurveyPhotoProgress(doc: SurveyPhotoDoc): SurveyPhotoProgress
     required,
     percent: required === 0 ? 100 : Math.round((captured / required) * 100),
     remaining: Math.max(0, required - captured),
-    breakdown: parts.join(' • '),
+    breakdown: parts.join(', '),
   }
 }
 

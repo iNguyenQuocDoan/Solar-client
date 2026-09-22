@@ -34,7 +34,7 @@ export function SectionHeading({
           className={cn(
             'shrink-0 text-label-sm font-semibold',
             metaTone === 'primary' ? 'text-primary' : 'text-on-surface-variant',
-            metaUppercase && 'uppercase tracking-wider',
+            metaUppercase && '',
           )}
         >
           {meta}

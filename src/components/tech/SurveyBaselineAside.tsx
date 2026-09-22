@@ -47,7 +47,7 @@ export function SurveyBaselineAside({
         </div>
 
         <div className={cn(innerCard, 'gap-space-xs')}>
-          <span className="text-label-sm uppercase tracking-wider text-on-surface-variant">
+          <span className="text-label-sm text-on-surface-variant">
             {data.blueprint.label}
           </span>
           <div className="flex items-baseline justify-between gap-space-xs">
@@ -122,7 +122,7 @@ export function SurveyBaselineAside({
       </div>
 
       <Card padding="lg" className="flex flex-col gap-space-sm">
-        <span className="text-label-sm font-bold uppercase tracking-wider text-primary">{safety.title}</span>
+        <span className="text-label-sm font-bold text-primary">{safety.title}</span>
         <div className="flex flex-col gap-2">
           {safety.items.map((item) => (
             <label
