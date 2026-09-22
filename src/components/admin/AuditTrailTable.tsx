@@ -2,7 +2,7 @@ import { DataTable, type DataTableColumn } from '@/components/stitch-ui/DataTabl
 import { StatusBadge, type StatusVariant } from '@/components/stitch-ui/StatusBadge'
 import { cn } from '@/lib/cn'
 
-/* "Enterprise Audit Trail" trong admin_dashboard: bảng gọn 5 cột. */
+/* "nhật ký thao tác" trong admin_dashboard: bảng gọn 5 cột. */
 export type AuditActorTone = 'primary' | 'primary-container' | 'secondary' | 'neutral'
 
 export type AuditEntry = {
@@ -28,13 +28,13 @@ const actorToneClasses: Record<AuditActorTone, string> = {
 const columns: DataTableColumn<AuditEntry>[] = [
   {
     key: 'timestamp',
-    header: 'Timestamp',
+    header: 'Thời điểm',
     className: 'whitespace-nowrap text-label-sm text-outline',
     render: (entry) => entry.timestamp,
   },
   {
     key: 'actor',
-    header: 'Admin Actor',
+    header: 'Người thực hiện',
     className: 'whitespace-nowrap',
     render: (entry) => (
       <div className="flex items-center gap-space-xs">
@@ -52,7 +52,7 @@ const columns: DataTableColumn<AuditEntry>[] = [
   },
   {
     key: 'action',
-    header: 'Action & Target Resource',
+    header: 'Thao tác và đối tượng',
     className: 'max-w-xs',
     render: (entry) => (
       <>
@@ -72,13 +72,13 @@ const columns: DataTableColumn<AuditEntry>[] = [
             </>
           )}
         </p>
-        <span className="text-label-sm text-outline">Target: {entry.target}</span>
+        <span className="text-label-sm text-outline">Đối tượng: {entry.target}</span>
       </>
     ),
   },
   {
     key: 'origin',
-    header: 'Network Origin',
+    header: 'Nguồn truy cập',
     className: 'whitespace-nowrap text-label-sm text-on-surface-variant',
     render: (entry) => (
       <>
@@ -88,7 +88,7 @@ const columns: DataTableColumn<AuditEntry>[] = [
   },
   {
     key: 'integrity',
-    header: 'Integrity',
+    header: 'Kết quả',
     align: 'right',
     className: 'whitespace-nowrap',
     render: (entry) => (

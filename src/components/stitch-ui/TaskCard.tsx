@@ -109,7 +109,7 @@ export function TaskCard({
           {phoneHref && (
             <a
               href={phoneHref}
-              title="Call client"
+              title="Gọi khách hàng"
               className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-surface-container-low text-primary transition-colors hover:bg-surface-container"
             >
               <Icon name="phone" className="text-[22px]" />

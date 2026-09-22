@@ -82,10 +82,10 @@ export function Pagination({
         )}
       </div>
 
-      <nav aria-label="Pagination" className="flex items-center gap-1">
+      <nav aria-label="Phân trang" className="flex items-center gap-1">
         <button
           type="button"
-          aria-label="Previous page"
+          aria-label="Trang trước"
           disabled={page <= 1}
           onClick={() => onPageChange(page - 1)}
           className={cn(
@@ -119,7 +119,7 @@ export function Pagination({
         )}
         <button
           type="button"
-          aria-label="Next page"
+          aria-label="Trang sau"
           disabled={page >= pageCount}
           onClick={() => onPageChange(page + 1)}
           className={cn(

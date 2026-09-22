@@ -180,7 +180,7 @@ export function AdminDashboardPage() {
               <CardTitle icon="history_edu">{auditTrail.title}</CardTitle>
               <div className="flex items-center gap-space-xs self-start sm:self-auto">
                 <span className="text-label-sm text-on-surface-variant">{auditTrail.streamLabel}</span>
-                <IconButton icon="filter_list" label="Filter log stream" />
+                <IconButton icon="filter_list" label="Lọc nhật ký" />
               </div>
             </div>
             <AuditTrailTable entries={auditTrail.entries} />

@@ -3,24 +3,24 @@
 export const adminSession = {
   user: {
     name: 'Eleanor Sterling',
-    title: 'Super Administrator',
-    status: 'Active, Super Admin',
+    title: 'Quản trị viên hệ thống',
+    status: 'Đang hoạt động, quản trị viên',
     icon: 'account_circle',
   },
-  environment: 'PROD - Cluster 01',
-  systemStatus: 'Normal Operation',
+  environment: 'PROD, cụm 01',
+  systemStatus: 'Hoạt động bình thường',
   unreadNotifications: 3,
-  searchPlaceholder: 'Search platform resources, configs, audits, or users...',
+  searchPlaceholder: 'Tìm người dùng, sản phẩm, cấu hình, nhật ký…',
 }
 
 export const technicianSession = {
   user: {
     name: 'Marcus Vance',
-    title: 'Lead Field Specialist #4402',
+    title: 'Kỹ thuật viên trưởng #4402',
     icon: 'engineering',
   },
-  syncStatus: 'Field Tech Hub, Active Sync',
-  location: 'NorCal Zone 4, Service Unit 12',
-  telemetry: 'Telemetry Online',
+  syncStatus: 'Đang đồng bộ với trung tâm điều phối',
+  location: 'Khu vực 4, tổ kỹ thuật 12',
+  telemetry: 'Dữ liệu giám sát trực tuyến',
   hasUnreadAlerts: true,
 }

@@ -53,14 +53,14 @@ export function PhotoCard({
         {(onZoom || onReplace) && (
           <div className="absolute bottom-2 right-2 flex items-center gap-1">
             {onZoom && (
-              <button type="button" aria-label="Zoom in" onClick={onZoom} className={cn(overlayButton, 'hover:text-primary')}>
+              <button type="button" aria-label="Phóng to" onClick={onZoom} className={cn(overlayButton, 'hover:text-primary')}>
                 <Icon name="zoom_in" className="text-[18px]" />
               </button>
             )}
             {onReplace && (
               <button
                 type="button"
-                aria-label="Replace photo"
+                aria-label="Thay ảnh"
                 onClick={onReplace}
                 className={cn(overlayButton, 'hover:text-secondary')}
               >

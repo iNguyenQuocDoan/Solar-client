@@ -107,7 +107,7 @@ export function ProductDetailPanel({ product, categories, onSave, onDuplicate, o
             </div>
             <button
               type="button"
-              title="Clone product parameters into new SKU"
+              title="Nhân bản thông số sang SKU mới"
               onClick={() => onDuplicate?.(product)}
               className="flex h-8 shrink-0 items-center gap-1 rounded-lg bg-surface-container-low px-3 text-label-sm text-on-surface-variant transition-colors hover:bg-surface-container"
             >

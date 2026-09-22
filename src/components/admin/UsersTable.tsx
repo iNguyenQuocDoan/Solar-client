@@ -16,7 +16,7 @@ function copyToClipboard(text: string) {
 const columns: DataTableColumn<UserRecord>[] = [
   {
     key: 'identity',
-    header: 'User / Identity',
+    header: 'Người dùng',
     render: (user) => {
       const locked = user.status === 'locked'
       return (
@@ -32,10 +32,10 @@ const columns: DataTableColumn<UserRecord>[] = [
             <div className="flex items-center gap-1.5">
               <span className="truncate text-body-lg font-bold text-on-surface">{user.name}</span>
               {user.ssoVerified && (
-                <Icon name="verified_user" title="Azure AD SSO Verified" className="text-[16px] text-tertiary-container" />
+                <Icon name="verified_user" title="Đã xác thực qua Azure AD SSO" className="text-[16px] text-tertiary-container" />
               )}
               {user.activeEditor && (
-                <span title="Current Active Editor" className="h-2 w-2 rounded-full bg-tertiary-container" />
+                <span title="Đang chỉnh sửa" className="h-2 w-2 rounded-full bg-tertiary-container" />
               )}
             </div>
             <div className={cn('flex items-center gap-2 text-body-sm', locked ? 'text-error' : 'text-outline')}>
@@ -56,14 +56,14 @@ const columns: DataTableColumn<UserRecord>[] = [
   },
   {
     key: 'contact',
-    header: 'Contact & Comms',
+    header: 'Liên hệ',
     render: (user) => (
       <div className="flex flex-col">
         <div className="group/mail flex items-center gap-1 font-medium text-on-surface">
           <span className="truncate">{user.email}</span>
           <button
             type="button"
-            title="Copy email"
+            title="Sao chép email"
             aria-label={`Copy ${user.email}`}
             onClick={() => copyToClipboard(user.email)}
             className="text-outline opacity-0 transition-opacity hover:text-primary focus-visible:opacity-100 group-hover/mail:opacity-100"
@@ -77,7 +77,7 @@ const columns: DataTableColumn<UserRecord>[] = [
   },
   {
     key: 'role',
-    header: 'Platform Role',
+    header: 'Vai trò',
     render: (user) => {
       const role = userRoleMap[user.role]
       return (
@@ -89,7 +89,7 @@ const columns: DataTableColumn<UserRecord>[] = [
   },
   {
     key: 'status',
-    header: 'Status',
+    header: 'Trạng thái',
     render: (user) => {
       const status = userStatuses[user.status]
       return (
@@ -101,13 +101,13 @@ const columns: DataTableColumn<UserRecord>[] = [
   },
   {
     key: 'created',
-    header: 'Created',
+    header: 'Ngày tạo',
     className: 'text-body-sm text-on-surface-variant',
     render: (user) => user.created,
   },
   {
     key: 'activity',
-    header: 'Last Activity',
+    header: 'Hoạt động gần nhất',
     render: (user) => (
       <div className="flex flex-col">
         <span
@@ -153,19 +153,19 @@ export function UsersTable({
       actions={(user) => (
         <>
           {user.status === 'locked' ? (
-            <IconButton icon="lock_reset" label="Unlock / Reset MFA" />
+            <IconButton icon="lock_reset" label="Mở khoá / đặt lại MFA" />
           ) : (
             <IconButton
               icon="tune"
-              label="Edit permissions"
+              label="Sửa quyền"
               onClick={() => onEdit(user)}
               className={cn(
                 user.id === activeUserId && 'bg-primary-container text-on-primary shadow-sm hover:bg-primary hover:text-on-primary',
               )}
             />
           )}
-          <IconButton icon="visibility" label="View detail profile" />
-          <IconButton icon="more_vert" label="More actions" className="hover:text-on-surface" />
+          <IconButton icon="visibility" label="Xem hồ sơ" />
+          <IconButton icon="more_vert" label="Thao tác khác" className="hover:text-on-surface" />
         </>
       )}
       pagination={pagination}

@@ -162,7 +162,7 @@ export function DataTable<T>({
                     size="sm"
                     checked={someSelected ? 'indeterminate' : allSelected}
                     onCheckedChange={toggleAll}
-                    aria-label="Select all rows"
+                    aria-label="Chọn tất cả dòng"
                   />
                 </th>
               )}
