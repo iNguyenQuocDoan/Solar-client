@@ -72,7 +72,7 @@ export function RoleCard({ role, selected, onSelect, onClone, onEdit, className 
             selected ? 'bg-surface-container text-primary' : 'bg-surface-container-low text-on-surface-variant',
           )}
         >
-          {role.users.toLocaleString()} users
+          {role.users.toLocaleString()} tài khoản
         </span>
       </div>
 
