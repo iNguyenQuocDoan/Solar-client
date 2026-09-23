@@ -306,7 +306,6 @@ function SurveyTaskView({ survey }: { survey: SurveyRecord }) {
               htmlFor="survey-recommendation"
               hint={audit.recommendation.hint}
               hintTone="tint"
-              footnote={audit.recommendation.footnote}
               className="pt-space-xs"
             >
               <textarea

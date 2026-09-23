@@ -189,7 +189,6 @@ const ord8821: TaskDetail = {
         body: {
           text: 'Technician arrived on site. Geofence verified within 50m of property perimeter (Lat: 37.7749, Lng: -122.4194).',
         },
-        subNote: 'Mobile terminal #4402 handshake established with Homeowner BLE beacon.',
       },
       {
         id: 'log-0812',
@@ -219,7 +218,7 @@ const ord8821: TaskDetail = {
         role: { label: 'Dispatch Supervisor', variant: 'warning' },
         timestamp: 'Oct 22, 02:15 PM',
         body: {
-          text: 'Work order instantiated and assigned to Marcus Vance based on North Zone priority routing and licensed electrical cert #E-9912.',
+          text: 'Assigned to Marcus Vance (electrical cert #E-9912).',
         },
       },
     ],

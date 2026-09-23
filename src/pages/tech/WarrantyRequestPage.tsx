@@ -499,7 +499,6 @@ function WarrantyRequestView({ warranty }: { warranty: WarrantyCase }) {
             <span className="text-label-sm text-on-surface-variant">{signOff.sectionLabel}</span>
           </div>
 
-          <p className="text-body-sm text-on-surface-variant">{signOff.description}</p>
 
           <Controller
             control={control}

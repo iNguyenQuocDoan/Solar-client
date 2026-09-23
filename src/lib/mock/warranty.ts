@@ -121,7 +121,6 @@ export type WarrantyCase = {
   signOff: {
     title: string
     sectionLabel: string
-    description: string
     signatureLabel: string
     clearLabel: string
     signatureHint: string
@@ -303,8 +302,6 @@ export const warrantyCases: WarrantyCase[] = [
     signOff: {
       title: 'Field Sign-Off & Closeout',
       sectionLabel: 'Section 4.3',
-      description:
-        'Customer or designated agent acknowledges completion of warranty service and verification of normal production values.',
       signatureLabel: 'Client Signature',
       clearLabel: 'Clear',
       signatureHint: 'Sign in this box',

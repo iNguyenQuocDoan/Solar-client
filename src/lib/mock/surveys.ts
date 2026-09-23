@@ -89,7 +89,7 @@ export type SurveyRecord = {
         answer: BreakerAnswer
       }
     }
-    recommendation: { label: string; hint: string; text: string; footnote: string }
+    recommendation: { label: string; hint: string; text: string }
   }
   dock: {
     icon: string
@@ -269,7 +269,6 @@ export const surveys: SurveyRecord[] = [
         label: 'Engineering Recommendation for Sales Desk',
         hint: 'System Design Input',
         text: 'Recommend 22x 400W Monocrystalline panels split across South (14 panels) and West (8 panels) faces. Strongly advocate microinverters (IQ8M) over central string inverter due to morning shadow cast from neighbor mature pine.',
-        footnote: 'Flagged automatically to Engineering Planner for single-line diagram generation.',
       },
     },
     dock: {
