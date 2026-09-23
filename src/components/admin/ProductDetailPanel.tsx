@@ -198,12 +198,9 @@ export function ProductDetailPanel({ product, categories, onSave, onDuplicate, o
               onCheckedChange={(value) => update({ includeInAi: value === true })}
               className="mt-0.5"
             />
-            <div className="flex flex-col">
-              <label htmlFor={fieldId('ai')} className="cursor-pointer text-label-md font-semibold text-on-surface">
-                {labels.aiTitle}
-              </label>
-              <p className="mt-0.5 text-body-sm text-on-surface-variant">{labels.aiHelp}</p>
-            </div>
+            <label htmlFor={fieldId('ai')} className="cursor-pointer text-label-md font-semibold text-on-surface">
+              {labels.aiTitle}
+            </label>
           </div>
         </TabsContent>
 

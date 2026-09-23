@@ -266,10 +266,7 @@ export const usersPageHeader = {
     { label: 'Quản trị nền tảng' },
     { label: 'Người dùng' },
   ] satisfies Crumb[],
-  syncStatus: 'Đã kết nối danh bạ (Azure AD / Okta SSO)',
-  badges: { primary: 'Quản lý định danh', version: 'v4.18 Enterprise' },
   title: 'Người dùng',
-  description: 'Phân vai trò, khu vực phụ trách và tài khoản khách hàng.',
   actions: { export: 'Xuất CSV', invite: 'Mời người dùng' },
 }
 
@@ -286,7 +283,6 @@ export const usersKpis: MetricCardProps[] = [
     value: '144',
     icon: 'badge',
     tone: 'secondary',
-    description: 'Kỹ thuật, vận hành, quản lý',
   },
   {
     label: 'Phiên đang mở',

@@ -101,38 +101,12 @@ export function RolesPage() {
   return (
     <div className="flex flex-col gap-space-lg">
       {/* Breadcrumb + chip trạng thái */}
-      <div className="flex flex-wrap items-center justify-between gap-space-sm">
-        <Breadcrumb items={rolesPageHeader.breadcrumb} activeTone="primary" />
-        <div className="flex items-center gap-space-xs text-label-sm text-on-surface-variant">
-          <StatusBadge variant="neutral" size="sm" pulse className="py-1 text-on-surface">
-            <span className="font-bold">{rolesPageHeader.engineChip}</span>
-          </StatusBadge>
-          <span className="inline-flex items-center gap-1 rounded-full bg-surface-container-low px-2.5 py-1 text-on-surface-variant">
-            <Icon name="shield" className="text-[14px]" />
-            <span>{rolesPageHeader.policyChip}</span>
-          </span>
-        </div>
-      </div>
+      <Breadcrumb items={rolesPageHeader.breadcrumb} activeTone="primary" />
 
-      {/* Header trong card có blob gradient */}
-      <Card className="relative overflow-hidden">
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full bg-linear-to-br from-primary-fixed-dim/20 via-tertiary-fixed/10 to-transparent"
-        />
+      <Card>
         <PageHeader
-          className="relative z-10"
           bottomSpacing="none"
-          eyebrow={
-            <>
-              <span className="rounded bg-primary-container px-2 py-0.5 text-label-sm font-bold text-on-primary">
-                {rolesPageHeader.badge}
-              </span>
-              <span className="font-mono text-label-sm tracking-wide text-outline">{rolesPageHeader.policyCode}</span>
-            </>
-          }
           title={rolesPageHeader.title}
-          description={rolesPageHeader.description}
           actions={
             <>
               <Button variant="ghost" size="md" iconLeft="ios_share" className="h-11 text-on-surface shadow-sm hover:bg-surface-container-high" onClick={() => setToast(rolesToasts.export)}>

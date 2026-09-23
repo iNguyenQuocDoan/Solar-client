@@ -377,7 +377,6 @@ function SurveyVerificationView({
             <SectionCard
               step={2}
               title={accessibility.title}
-              subtitle={accessibility.subtitle}
               trailing={
                 <span className="shrink-0 text-label-sm text-on-surface-variant">{accessibility.badge}</span>
               }
@@ -448,7 +447,6 @@ function SurveyVerificationView({
             <SectionCard
               step={3}
               title={proposal.title}
-              subtitle={proposal.subtitle}
               trailing={
                 <StatusBadge
                   variant="primary"

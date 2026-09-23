@@ -13,7 +13,6 @@ export const adminDashboardHeader = {
   clusterNode: 'Cụm máy chủ: US-Central-Primary (đang chạy)',
   engineVersion: 'Bộ tính toán v3.4.2',
   title: 'Tổng quan hệ thống',
-  description: 'Số liệu nền tảng, tham số tính toán mặc định và nhật ký thao tác.',
   actions: {
     healthCheck: 'Kiểm tra tình trạng hệ thống',
     exportLogs: 'Xuất nhật ký (CSV)',
@@ -44,7 +43,6 @@ export const adminKpis: AdminKpi[] = [
     icon: 'group',
     tone: 'primary',
     delta: { text: '+14 tuần này', direction: 'up' },
-    description: 'Tài khoản đang hoạt động ở 5 nhóm quyền',
     footer: {
       kind: 'chips',
       chips: [
@@ -63,7 +61,6 @@ export const adminKpis: AdminKpi[] = [
     icon: 'solar_power',
     tone: 'secondary',
     delta: { text: 'SKU đang bán', direction: 'flat' },
-    description: 'Tấm pin, inverter và gói dịch vụ',
     footer: {
       kind: 'progress',
       title: '214 sản phẩm phần cứng',
@@ -79,7 +76,6 @@ export const adminKpis: AdminKpi[] = [
     icon: 'neurology',
     tone: 'primary',
     delta: { text: 'tài liệu đã duyệt', direction: 'flat', tone: 'positive' },
-    description: 'Nguồn dữ liệu cho trợ lý tư vấn SolarGPT',
     footer: {
       kind: 'stat',
       icon: 'dataset',
@@ -96,7 +92,6 @@ export const adminKpis: AdminKpi[] = [
     valueTone: 'tertiary',
     icon: 'verified',
     tone: 'tertiary',
-    description: 'Bộ tính toán v3.4.2 đang chạy và đã đồng bộ',
     footer: { kind: 'status', label: '6 gói bảo hành đang chạy', note: 'Đồng bộ 12 phút trước' },
   },
 ]
@@ -218,7 +213,6 @@ export const launchpads = {
       icon: 'person_add',
       tone: 'primary',
       title: 'Thêm nhân sự',
-      description: 'Tạo tài khoản và gán vai trò.',
       ctaLabel: 'Mở trang người dùng',
       href: ROUTES.ADMIN.USERS,
     },
@@ -226,7 +220,6 @@ export const launchpads = {
       icon: 'tune',
       tone: 'secondary',
       title: 'Cấu hình tham số sản lượng',
-      description: 'Đổi hệ số tổn hao và góc nghiêng dùng cho mọi báo giá.',
       ctaLabel: 'Mở cấu hình kỹ thuật',
       href: ROUTES.ADMIN.TECH_CONFIG,
     },
@@ -234,7 +227,6 @@ export const launchpads = {
       icon: 'auto_stories',
       tone: 'primary-container',
       title: 'Bổ sung tài liệu cho trợ lý AI',
-      description: 'Thêm tài liệu để trợ lý trả lời khách.',
       ctaLabel: 'Mở kho tri thức',
       href: ROUTES.ADMIN.KNOWLEDGE_BASE,
     },
@@ -242,7 +234,6 @@ export const launchpads = {
       icon: 'policy',
       tone: 'tertiary',
       title: 'Rà soát quyền theo vai trò',
-      description: 'Xem mỗi vai trò được đọc và duyệt những gì.',
       ctaLabel: 'Mở bảng phân quyền',
       href: ROUTES.ADMIN.ROLES,
     },

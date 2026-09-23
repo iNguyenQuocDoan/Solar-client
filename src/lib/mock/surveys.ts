@@ -32,7 +32,6 @@ export type SurveyRecord = {
   /** Ba trạng thái của dòng autosave trên header card */
   autosave: { initial: string; saving: string; saved: string }
   title: string
-  subtitle: string
   contacts: SurveyContact[]
   location: { address: string; meta: string }
   homeowner: {
@@ -122,7 +121,6 @@ export const surveys: SurveyRecord[] = [
       saved: 'All changes saved just now',
     },
     title: 'Residential Solar 8.4kW System',
-    subtitle: 'On-Site Structural & Electrical Validation',
     contacts: [
       { icon: 'person', label: 'Customer', value: 'Marcus Vance' },
       { icon: 'phone_iphone', label: 'Direct Contact', value: '(555) 349-8201' },
@@ -351,7 +349,6 @@ export type SurveyVerification = {
   }
   accessibility: {
     title: string
-    subtitle: string
     badge: string
     shading: { label: string; hint: string; value: string }
     panel: { label: string; value: string }
@@ -360,7 +357,6 @@ export type SurveyVerification = {
   }
   proposal: {
     title: string
-    subtitle: string
     badge: string
     capacity: { label: string; value: string; caption: string }
     inverter: { label: string; value: string; caption: string }
@@ -486,7 +482,6 @@ const surveyVerifications: Record<string, SurveyVerification> = {
     },
     accessibility: {
       title: 'Accessibility & Obstacles',
-      subtitle: 'Site constraints, shading & interconnection paths',
       badge: 'Utility Code Compliant',
       shading: {
         label: 'Shading Analysis & SunEye Horizon',
@@ -508,7 +503,6 @@ const surveyVerifications: Record<string, SurveyVerification> = {
     },
     proposal: {
       title: 'Technician Installation Proposal',
-      subtitle: 'Engineering recommendation pushed directly to Sales CAD team',
       badge: 'Sales Fast-Track',
       capacity: {
         label: 'Recommended System Capacity',

@@ -149,7 +149,6 @@ export function AdminDashboardPage() {
           </>
         }
         title={header.title}
-        description={header.description}
         actions={
           <>
             <Button variant="tonal" iconLeft="health_and_safety">

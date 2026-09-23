@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router'
-import { Dialog, DialogDescription, DialogTitle } from '@/components/stitch-ui/Dialog'
+import { Dialog, DialogTitle } from '@/components/stitch-ui/Dialog'
 import * as DialogPrimitive from '@radix-ui/react-dialog'
 import { Icon } from '@/components/stitch-ui/Icon'
 import { ROUTES } from '@/constants/routes'
@@ -29,16 +29,13 @@ export function SessionExpiredModal() {
     <Dialog open={sessionExpired} onOpenChange={(open) => !open && dismissSessionExpired()}>
       <DialogPrimitive.Portal>
         <DialogPrimitive.Overlay className="fixed inset-0 z-60 bg-inverse-surface/60 backdrop-blur-sm data-[state=open]:animate-[dialog-fade-in_150ms_ease-out]" />
-        <DialogPrimitive.Content className="fixed left-1/2 top-1/2 z-70 flex w-[calc(100vw-2rem)] max-w-md -translate-x-1/2 -translate-y-1/2 flex-col items-center rounded-xl bg-surface-container-lowest p-space-xl text-center shadow-xl focus:outline-none data-[state=open]:animate-[dialog-pop-in_180ms_ease-out]">
+        <DialogPrimitive.Content aria-describedby={undefined} className="fixed left-1/2 top-1/2 z-70 flex w-[calc(100vw-2rem)] max-w-md -translate-x-1/2 -translate-y-1/2 flex-col items-center rounded-xl bg-surface-container-lowest p-space-xl text-center shadow-xl focus:outline-none data-[state=open]:animate-[dialog-pop-in_180ms_ease-out]">
           <div className="mb-space-md flex h-16 w-16 items-center justify-center rounded-full bg-error-container text-error">
             <Icon name="timer_off" className="text-[36px]" />
           </div>
-          <DialogTitle className="mb-1 text-headline-xl text-on-surface">
+          <DialogTitle className="mb-space-lg text-headline-xl text-on-surface">
             {sessionExpiredContent.title}
           </DialogTitle>
-          <DialogDescription className="mb-space-lg text-body-md text-on-surface-variant">
-            {sessionExpiredContent.description}
-          </DialogDescription>
 
           <div className="flex w-full flex-col gap-space-xs">
             <button

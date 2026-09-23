@@ -10,12 +10,7 @@ export const rolesPageHeader = {
     { label: 'An toàn thông tin' },
     { label: 'Vai trò & quyền' },
   ] satisfies Crumb[],
-  engineChip: 'Bộ phân quyền v2.4',
-  policyChip: 'Đang áp chính sách zero-trust',
-  badge: 'An toàn nền tảng',
-  policyCode: 'SEC-POLICY-2025.04',
   title: 'Vai trò và quyền',
-  description: 'Khai báo vai trò, chọn quyền cho từng nhóm chức năng và rà soát phạm vi truy cập.',
   actions: { export: 'Xuất bảng quyền', audit: 'Rà soát sai lệch', create: 'Tạo vai trò' },
 }
 

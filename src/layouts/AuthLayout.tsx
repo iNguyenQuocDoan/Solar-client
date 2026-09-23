@@ -13,7 +13,7 @@ import { authPanel } from '@/lib/mock/auth'
  * đã bỏ – chúng lặp lại trên mọi màn auth mà không thêm thông tin.
  */
 export function AuthLayout() {
-  const { title, description, image, metrics, footer } = authPanel
+  const { title, image, metrics, footer } = authPanel
 
   return (
     <main className="flex min-h-screen w-full flex-col justify-center bg-surface">
@@ -38,10 +38,7 @@ export function AuthLayout() {
         <div className="grid w-full min-h-[640px] grid-cols-1 items-stretch gap-space-xl lg:grid-cols-12">
           {/* Panel trái – ẩn từ lg trở xuống */}
           <div className="hidden flex-col justify-between overflow-hidden rounded-xl bg-primary-container p-space-2xl text-on-primary lg:col-span-5 lg:flex">
-            <div className="flex flex-col gap-space-md">
-              <h2 className="text-headline-xl leading-tight text-on-primary">{title}</h2>
-              <p className="text-body-md text-on-primary/80">{description}</p>
-            </div>
+            <h2 className="text-headline-xl leading-tight text-on-primary">{title}</h2>
 
             <div className="my-space-lg flex flex-col gap-space-sm">
               <div className="h-44 w-full overflow-hidden rounded-lg">

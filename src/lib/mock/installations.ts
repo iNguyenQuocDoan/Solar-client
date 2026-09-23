@@ -384,7 +384,7 @@ export type ChecklistPhase = {
   icon: string
   tone: ChecklistPhaseTone
   title: string
-  description: string
+  description?: string
   /** Icon trong badge tiến độ của phase */
   badgeIcon: string
   /** Hậu tố badge: "Verified" hoặc "Complete" */
@@ -413,7 +413,7 @@ export type InstallationChecklist = {
     icon: string
     tone: ChecklistPhaseTone
     title: string
-    description: string
+    description?: string
     badgeLabel: string
     items: EvidencePhotoItem[]
     dropzones: EvidenceDropzoneItem[]
@@ -490,7 +490,6 @@ export const installationChecklists: Record<string, InstallationChecklist> = {
         icon: 'health_and_safety',
         tone: 'safety',
         title: '1. Pre-Installation Safety & Site Check',
-        description: 'OSHA fall protection compliance and hazardous energy isolation protocols',
         badgeIcon: 'verified',
         badgeSuffix: 'Verified',
         tasks: [
@@ -526,7 +525,6 @@ export const installationChecklists: Record<string, InstallationChecklist> = {
         icon: 'solar_power',
         tone: 'execution',
         title: '2. Mounting & Electrical Execution Checklist',
-        description: 'Physical array structural fastening, electrical homerun runs, and bonding',
         badgeIcon: 'pending_actions',
         badgeSuffix: 'Complete',
         tasks: [
@@ -584,7 +582,6 @@ export const installationChecklists: Record<string, InstallationChecklist> = {
       icon: 'photo_camera',
       tone: 'audit',
       title: '3. Site Photo Verification & Audit Trail',
-      description: 'AHJ and permit compliance imagery (GPS & timestamp watermarked)',
       badgeLabel: '3 Uploaded, 1 Required',
       items: [
         {

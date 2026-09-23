@@ -11,7 +11,6 @@ export const productsPageHeader = {
     { label: 'Sản phẩm' },
   ] satisfies Crumb[],
   title: 'Danh mục sản phẩm',
-  description: 'Tấm pin, inverter, pin lưu trữ và vật tư lắp đặt đang bán.',
   actions: { batch: 'Cập nhật giá hàng loạt', add: 'Thêm sản phẩm' },
 }
 
@@ -19,7 +18,6 @@ export const productsKpis: MetricCardProps[] = [
   {
     label: 'Tổng sản phẩm',
     value: '214',
-    description: 'SKU trong danh mục',
     icon: 'inventory_2',
     tone: 'primary',
   },
@@ -375,7 +373,6 @@ export const productDetailLabels = {
   salesPrice: 'Giá báo khách mặc định',
   warranty: 'Bảo hành của hãng',
   aiTitle: 'Dùng trong công cụ ước tính giá bằng AI',
-  aiHelp: 'Cho phép công cụ tự động đề xuất SKU này khi tính phương án theo độ dốc và hướng mái.',
   archive: 'Ngừng kinh doanh SKU',
   cancel: 'Huỷ',
   save: 'Lưu thay đổi',

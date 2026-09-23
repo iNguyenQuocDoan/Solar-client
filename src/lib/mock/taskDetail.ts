@@ -27,7 +27,6 @@ export type TaskDetail = {
   }
   lifecycle: {
     title: string
-    description: string
     badge: string
     steps: Omit<TimelineStepProps, 'index'>[]
   }
@@ -109,7 +108,6 @@ const ord8821: TaskDetail = {
   },
   lifecycle: {
     title: 'Lifecycle Progression',
-    description: 'Deterministic status progression with end-to-end telemetry verifications',
     badge: 'All 5 Milestones Certified',
     steps: [
       { title: 'Assigned', description: 'Sarah Jenkins (Dispatch)', timestamp: 'Oct 22, 02:15 PM', state: 'done' },
@@ -276,7 +274,6 @@ const ord8824: TaskDetail = {
   },
   lifecycle: {
     title: 'Lifecycle Progression',
-    description: 'Deterministic status progression with end-to-end telemetry verifications',
     badge: '2 of 5 Milestones Certified',
     steps: [
       { title: 'Assigned', description: 'Sarah Jenkins (Dispatch)', timestamp: 'Oct 22, 09:10 AM', state: 'done' },
@@ -365,7 +362,6 @@ const ord8827: TaskDetail = {
   },
   lifecycle: {
     title: 'Lifecycle Progression',
-    description: 'Deterministic status progression with end-to-end telemetry verifications',
     badge: '2 of 5 Milestones Certified',
     steps: [
       { title: 'Assigned', description: 'Sarah Jenkins (Dispatch)', timestamp: 'Oct 22, 04:40 PM', state: 'done' },
@@ -447,7 +443,6 @@ const ord8819: TaskDetail = {
   },
   lifecycle: {
     title: 'Lifecycle Progression',
-    description: 'Deterministic status progression with end-to-end telemetry verifications',
     badge: '4 of 5 Milestones Certified',
     steps: [
       { title: 'Assigned', description: 'Sarah Jenkins (Dispatch)', timestamp: 'Oct 21, 11:20 AM', state: 'done' },
@@ -547,7 +542,6 @@ const ord8830: TaskDetail = {
   },
   lifecycle: {
     title: 'Lifecycle Progression',
-    description: 'Deterministic status progression with end-to-end telemetry verifications',
     badge: '2 of 5 Milestones Certified',
     steps: [
       { title: 'Assigned', description: 'Auto-routed from alert', timestamp: 'Oct 23, 06:40 AM', state: 'done' },
@@ -623,7 +617,6 @@ const ord8833: TaskDetail = {
   },
   lifecycle: {
     title: 'Lifecycle Progression',
-    description: 'Deterministic status progression with end-to-end telemetry verifications',
     badge: '2 of 5 Milestones Certified',
     steps: [
       { title: 'Assigned', description: 'Sarah Jenkins (Dispatch)', timestamp: 'Oct 22, 05:05 PM', state: 'done' },
