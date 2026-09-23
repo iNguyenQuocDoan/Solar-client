@@ -45,8 +45,7 @@ export function ForgotPasswordPage() {
 
   return (
     <AuthCard>
-      <h1 className="text-headline-lg text-on-surface">{forgotContent.title}</h1>
-      <p className="mb-space-md mt-1 text-body-md text-on-surface-variant">{forgotContent.description}</p>
+      <h1 className="mb-space-md text-headline-lg text-on-surface">{forgotContent.title}</h1>
 
       <form className="flex flex-col gap-space-md" onSubmit={onSubmit} noValidate>
         <div className="flex flex-col gap-1.5">

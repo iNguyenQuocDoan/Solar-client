@@ -9,7 +9,6 @@ import { PasswordRules } from '@/components/auth/PasswordRules'
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from '@/components/stitch-ui/Dialog'
@@ -103,10 +102,9 @@ export function ChangePasswordDialog({ open, onOpenChange }: ChangePasswordDialo
 
   return (
     <Dialog open={open} onOpenChange={close}>
-      <DialogContent size="md">
+      <DialogContent size="md" aria-describedby={undefined}>
         <DialogHeader>
           <DialogTitle>{changePasswordContent.title}</DialogTitle>
-          <DialogDescription>{changePasswordContent.description}</DialogDescription>
         </DialogHeader>
 
         {formError && (

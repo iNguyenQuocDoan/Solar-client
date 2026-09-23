@@ -86,7 +86,6 @@ function SurveyTaskView({ survey }: { survey: SurveyRecord }) {
         statusLabel={survey.statusLabel}
         autosaveLabel={autosave}
         title={survey.title}
-        subtitle={survey.subtitle}
         contacts={survey.contacts}
         location={survey.location}
       />

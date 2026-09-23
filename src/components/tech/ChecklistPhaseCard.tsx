@@ -10,7 +10,7 @@ export type ChecklistPhaseTone = 'safety' | 'execution' | 'audit'
 export type ChecklistTaskItem = {
   id: string
   title: string
-  description: string
+  description?: string
   /** Chữ bên phải khi đã tick ("Verified 13:05", "Complete") */
   doneText: string
   /** Chữ bên phải khi chưa tick ("Pending", "Queue next") */
@@ -41,7 +41,7 @@ export type ChecklistPhaseCardProps = {
   icon: string
   tone: ChecklistPhaseTone
   title: string
-  description: string
+  description?: string
   /** Nội dung badge góc phải; mặc định suy ra từ số bước đã tick */
   badgeLabel: string
   badgeIcon?: string

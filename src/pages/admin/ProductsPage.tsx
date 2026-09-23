@@ -59,7 +59,6 @@ export function ProductsPage() {
           bottomSpacing="none"
           breadcrumb={productsPageHeader.breadcrumb}
           title={productsPageHeader.title}
-          description={productsPageHeader.description}
           actions={
             <>
               <Button variant="tonal" size="md" iconLeft="currency_exchange">

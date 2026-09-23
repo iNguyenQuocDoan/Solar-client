@@ -5,41 +5,25 @@
 
 /** Panel xanh bên trái của AuthLayout */
 export const authPanel = {
-  badge: 'Nền tảng Quản trị Năng lượng Mặt trời Tự động',
   title: 'Chuyển dịch Năng lượng Xanh cho Ngôi nhà Việt',
-  description:
-    'Theo dõi tiến trình hồ sơ thiết kế, tiến độ thi công áp mái, công suất phát điện trực quan và bảo hành linh kiện chính hãng tại một nơi duy nhất.',
   image: {
     src: '/placeholders/villa-solar.svg',
     alt: 'Biệt thự có mái lắp tấm pin mặt trời dưới nắng sớm, sân vườn xanh mát',
   },
-  systemBadge: 'Hệ thống 8.4 kWp, Đang hòa lưới',
   metrics: [
     { label: 'Hiệu suất tháng', value: '1,240 kWh', tone: 'text-tertiary-fixed' },
     { label: 'Tiết kiệm điện', value: '~3.85 Tr ₫', tone: 'text-secondary-fixed' },
   ],
-  roleLegendTitle: 'Phân quyền tự động theo vai trò',
-  roles: ['Khách hàng', 'Kỹ thuật viên', 'Kinh doanh', 'Quản lý', 'Quản trị viên'],
   footer: {
-    badges: [
-      { icon: 'verified_user', text: 'Mã hóa dữ liệu chuẩn AES-256' },
-      { icon: 'cloud_done', text: 'Tự động sao lưu tiến độ' },
-    ],
     copyright: '© 2025 Smart Solar Energy Hub. All rights reserved. Hotline kỹ thuật: 1900 6868.',
   },
 } as const
 
 /** /login */
 export const loginContent = {
-  badge: 'Cổng đăng nhập',
-  tls: 'Đã kiểm tra bảo mật TLS 1.3',
   title: 'Chào mừng trở lại với Smart Solar',
-  descriptionBefore: 'Hệ thống tự động chuyển hướng đúng quyền hạn (',
-  descriptionRoles: 'Khách hàng, Kỹ thuật viên, Kinh doanh, Quản lý, Quản trị viên',
-  descriptionAfter: ') sau khi đăng nhập.',
   emailLabel: 'Địa chỉ Email',
   emailPlaceholder: 'ten.ban@gmail.com',
-  emailHelp: 'Sử dụng email cá nhân hoặc email doanh nghiệp được cấp.',
   emailValid: 'Email hợp lệ',
   passwordLabel: 'Mật khẩu',
   passwordPlaceholder: '••••••••',
@@ -60,10 +44,7 @@ export const loginContent = {
 
 /** /register */
 export const registerContent = {
-  badge: 'Tạo hồ sơ mới',
   title: 'Đăng ký tài khoản Khách hàng',
-  description:
-    'Dành cho chủ hộ gia đình quản lý hồ sơ khảo sát, tiến độ thi công và bảo hành điện mặt trời.',
   nameLabel: 'Họ và tên',
   namePlaceholder: 'Nguyễn Văn A',
   emailLabel: 'Địa chỉ Email',
@@ -88,9 +69,7 @@ export const registerContent = {
 
 /** /forgot-password */
 export const forgotContent = {
-  badge: 'Khôi phục quyền truy cập',
   title: 'Quên mật khẩu?',
-  description: 'Nhập địa chỉ email đăng ký để nhận liên kết khôi phục mật khẩu bảo mật.',
   emailLabel: 'Địa chỉ Email đã đăng ký',
   emailPlaceholder: 'ten.ban@gmail.com',
   notice:
@@ -103,7 +82,6 @@ export const forgotContent = {
 
 /** /reset-password */
 export const resetContent = {
-  eyebrow: 'Bước tiếp theo: Cập nhật mật khẩu',
   tokenValid: 'Mã token hợp lệ',
   tokenInvalid: 'Thiếu mã token',
   title: 'Đặt lại mật khẩu mới',
@@ -127,9 +105,7 @@ export const verifyContent = {
   unknownEmail: 'email bạn đã đăng ký',
   missingEmail: 'Không xác định được email để gửi lại. Vui lòng đăng nhập hoặc đăng ký lại.',
   verifyingTitle: 'Đang xác minh email…',
-  verifyingHint: 'Vui lòng chờ trong giây lát.',
   successTitle: 'Email đã được xác minh',
-  successHint: 'Tài khoản của bạn đã sẵn sàng. Đăng nhập để bắt đầu sử dụng Smart Solar.',
   goToLogin: 'Đăng nhập ngay',
   failedTitle: 'Liên kết xác minh không hợp lệ',
   failedMessage: 'Liên kết đã hết hạn hoặc không còn đúng. Hãy gửi lại email xác minh.',
@@ -148,8 +124,7 @@ export const verifyContent = {
 export const forbiddenContent = {
   title: 'Truy cập không được phép (403 Forbidden)',
   descriptionBefore: 'Tài khoản của bạn (',
-  descriptionAfter:
-    ') không có quyền truy cập vào bảng phân bổ vật tư kỹ thuật hoặc phê duyệt hợp đồng thương mại.',
+  descriptionAfter: ') không có quyền mở trang này.',
   guestLabel: 'Khách',
   switchAccount: 'Đổi tài khoản khác',
   hotline: 'Liên hệ Hotline hỗ trợ: 1900 6868',
@@ -159,7 +134,6 @@ export const forbiddenContent = {
 /** Dialog "Đổi mật khẩu" mở từ khối user ở Sidebar */
 export const changePasswordContent = {
   title: 'Đổi mật khẩu',
-  description: 'Nhập mật khẩu hiện tại và mật khẩu mới theo quy chuẩn an toàn bên dưới.',
   currentLabel: 'Mật khẩu hiện tại',
   newLabel: 'Mật khẩu mới',
   confirmLabel: 'Xác nhận mật khẩu mới',
@@ -175,8 +149,6 @@ export const changePasswordContent = {
 /** Modal hết hạn phiên */
 export const sessionExpiredContent = {
   title: 'Phiên đăng nhập đã hết hạn',
-  description:
-    'Vì lý do an toàn cho hồ sơ khảo sát điện mặt trời và dữ liệu thiết bị của bạn, phiên làm việc đã kết thúc. Vui lòng đăng nhập lại để tiếp tục sử dụng Smart Solar.',
   primary: 'Đăng nhập lại',
   secondary: 'Đóng và xem trang chủ',
 } as const

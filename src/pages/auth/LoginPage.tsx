@@ -66,14 +66,7 @@ export function LoginPage() {
 
   return (
     <AuthCard>
-      <div className="mb-space-lg flex flex-col gap-1">
-        <h1 className="text-headline-xl text-on-surface">{loginContent.title}</h1>
-        <p className="text-body-md text-on-surface-variant">
-          {loginContent.descriptionBefore}
-          <span className="text-on-surface">{loginContent.descriptionRoles}</span>
-          {loginContent.descriptionAfter}
-        </p>
-      </div>
+      <h1 className="mb-space-lg text-headline-xl text-on-surface">{loginContent.title}</h1>
 
       {formError && (
         <div
@@ -127,11 +120,7 @@ export function LoginPage() {
             trailing={emailIsValid ? <Icon name="check_circle" className="text-[20px] text-primary" /> : undefined}
             {...register('email')}
           />
-          {errors.email ? (
-            <span className="text-body-sm text-error">{errors.email.message}</span>
-          ) : (
-            <span className="text-body-sm text-on-surface-variant">{loginContent.emailHelp}</span>
-          )}
+          {errors.email && <span className="text-body-sm text-error">{errors.email.message}</span>}
         </div>
 
         <div className="flex flex-col gap-1.5">

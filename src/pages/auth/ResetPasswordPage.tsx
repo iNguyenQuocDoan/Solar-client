@@ -71,10 +71,7 @@ export function ResetPasswordPage() {
 
   return (
     <AuthCard>
-      <div className="mb-2 flex items-center justify-between">
-        <span className="text-label-sm text-on-surface-variant">
-          {resetContent.eyebrow}
-        </span>
+      <div className="mb-2 flex items-center justify-end">
         <span
           className={cn(
             'rounded-full px-2 py-0.5 text-label-sm',

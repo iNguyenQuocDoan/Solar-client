@@ -95,10 +95,7 @@ export function RegisterPage() {
 
   return (
     <AuthCard>
-      <div className="mb-space-md flex flex-col gap-1">
-        <h1 className="text-headline-xl text-on-surface">{registerContent.title}</h1>
-        <p className="text-body-md text-on-surface-variant">{registerContent.description}</p>
-      </div>
+      <h1 className="mb-space-md text-headline-xl text-on-surface">{registerContent.title}</h1>
 
       {formError && (
         <div

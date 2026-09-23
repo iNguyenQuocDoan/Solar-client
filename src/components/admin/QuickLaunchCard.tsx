@@ -17,7 +17,7 @@ export type QuickLaunchCardProps = {
   /** Giữ để tương thích dữ liệu; màu nhấn nay dùng chung. */
   tone?: QuickLaunchTone
   title: string
-  description: string
+  description?: string
   ctaLabel: string
   href: string
   className?: string
@@ -40,7 +40,7 @@ export function QuickLaunchCard({
     >
       <div>
         <h3 className={cn('text-body-lg font-semibold text-on-surface transition-colors', titleHoverClasses)}>{title}</h3>
-        <p className="mt-1 text-body-sm text-on-surface-variant">{description}</p>
+        {description && <p className="mt-1 text-body-sm text-on-surface-variant">{description}</p>}
       </div>
       <span className={cn('mt-space-lg text-label-md font-semibold', ctaClasses)}>{ctaLabel}</span>
     </Link>

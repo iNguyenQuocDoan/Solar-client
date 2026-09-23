@@ -87,7 +87,6 @@ export function VerifyEmailPage() {
       <AuthCard className="items-center text-center">
         <Icon name="progress_activity" className="mb-space-md animate-spin text-[42px] text-primary" />
         <h1 className="text-headline-xl text-on-surface">{verifyContent.verifyingTitle}</h1>
-        <p className="mt-1 text-body-md text-on-surface-variant">{verifyContent.verifyingHint}</p>
       </AuthCard>
     )
   }
@@ -98,8 +97,7 @@ export function VerifyEmailPage() {
         <div className="mb-space-md flex h-20 w-20 items-center justify-center rounded-full bg-tertiary-fixed text-on-tertiary-fixed">
           <Icon name="task_alt" className="text-[42px]" />
         </div>
-        <h1 className="mb-1 text-headline-xl text-on-surface">{verifyContent.successTitle}</h1>
-        <p className="mb-space-lg max-w-md text-body-lg text-on-surface-variant">{verifyContent.successHint}</p>
+        <h1 className="mb-space-lg text-headline-xl text-on-surface">{verifyContent.successTitle}</h1>
         <Link
           to={ROUTES.LOGIN}
           className="flex h-12 w-full max-w-sm items-center justify-center gap-2 rounded-xl bg-primary text-label-lg text-on-primary shadow-sm transition-all hover:bg-primary-container"

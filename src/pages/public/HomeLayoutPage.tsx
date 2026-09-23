@@ -20,8 +20,6 @@ type Box = { label: string; span?: 1 | 2 | 3 | 4; tall?: boolean };
 type SectionSpec = {
   /** Số cột của lưới ở màn rộng */
   cols: 2 | 3 | 4;
-  /** Ghi chú ngắn dưới tiêu đề: khối này sẽ chứa gì */
-  note: string;
   boxes: Box[];
 };
 
@@ -29,7 +27,6 @@ type SectionSpec = {
 const sections: Record<string, SectionSpec> = {
   "#solutions": {
     cols: 3,
-    note: "Các nhóm giải pháp: hộ gia đình, thương mại & công nghiệp, lưu trữ pin.",
     boxes: [
       { label: "Giải pháp 1" },
       { label: "Giải pháp 2" },
@@ -38,7 +35,6 @@ const sections: Record<string, SectionSpec> = {
   },
   "#products": {
     cols: 4,
-    note: "Tấm pin, inverter, pin lưu trữ, phụ kiện – mỗi ô một sản phẩm nổi bật.",
     boxes: [
       { label: "Sản phẩm 1" },
       { label: "Sản phẩm 2" },
@@ -48,7 +44,6 @@ const sections: Record<string, SectionSpec> = {
   },
   "#process": {
     cols: 4,
-    note: "Các bước từ khảo sát sơ bộ đến nghiệm thu, đọc theo hàng ngang.",
     boxes: [
       { label: "Bước 1" },
       { label: "Bước 2" },
@@ -58,7 +53,6 @@ const sections: Record<string, SectionSpec> = {
   },
   "#after-sales": {
     cols: 2,
-    note: "Chính sách bảo hành và lịch bảo trì định kỳ.",
     boxes: [
       { label: "Bảo hành", tall: true },
       { label: "Bảo trì", tall: true },
@@ -66,7 +60,6 @@ const sections: Record<string, SectionSpec> = {
   },
   "#about": {
     cols: 3,
-    note: "Giới thiệu công ty, số liệu và chứng chỉ.",
     boxes: [
       { label: "Giới thiệu", span: 3, tall: true },
       { label: "Số liệu 1" },
@@ -178,14 +171,9 @@ export function HomeLayoutPage() {
           spacing="2xl"
         >
           <div className={cn(LANDING_CONTAINER, "flex flex-col gap-space-lg")}>
-            <div className="flex flex-col gap-space-2xs">
-              <h2 className="text-headline-xl-mobile text-primary md:text-headline-xl">
-                {label}
-              </h2>
-              <p className="text-body-md text-on-surface-variant">
-                {spec.note}
-              </p>
-            </div>
+            <h2 className="text-headline-xl-mobile text-primary md:text-headline-xl">
+              {label}
+            </h2>
             <div
               className={cn(
                 "grid grid-cols-1 gap-space-md",

@@ -63,7 +63,6 @@ function TaskDetailView({ detail }: { detail: TaskDetail }) {
         <div className="flex items-center justify-between gap-space-sm pb-space-md">
           <div>
             <h3 className="text-headline-md text-on-surface">{lifecycle.title}</h3>
-            <p className="text-body-sm text-on-surface-variant">{lifecycle.description}</p>
           </div>
           <span className="hidden items-center gap-2 rounded-lg bg-surface-container-low px-3 py-1.5 text-label-md text-primary sm:flex">
             <Icon name="verified" className="text-[18px]" />
