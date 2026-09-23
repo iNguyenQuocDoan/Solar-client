@@ -185,7 +185,7 @@ export function AdminDashboardPage() {
             <AuditTrailTable entries={auditTrail.entries} />
             <div className="mt-space-md flex flex-col justify-between gap-space-xs pt-space-xs text-body-sm text-outline sm:flex-row sm:items-center">
               <span>
-                Showing {auditTrail.entries.length} of {auditTrail.total.toLocaleString()} audit entries{' '}
+                Hiển thị {auditTrail.entries.length} trên {auditTrail.total.toLocaleString()}{' '}
                 {auditTrail.periodLabel}
               </span>
               <Link
@@ -238,7 +238,7 @@ export function AdminDashboardPage() {
           <Card>
             <CardHeader className="mb-space-sm">
               <CardTitle icon="pie_chart">{userDistribution.title}</CardTitle>
-              <span className="text-label-sm text-outline">{userDistribution.total.toLocaleString()} Total</span>
+              <span className="text-label-sm text-outline">Tổng {userDistribution.total.toLocaleString()}</span>
             </CardHeader>
             <DistributionBar segments={userDistribution.segments} />
             <div className="mt-space-md pt-space-xs text-center">

@@ -42,7 +42,6 @@ export function AssistantPage() {
     <>
       <PageHeader
         title="Solar assistant"
-        description="Answers from your Oakwood Residence system specs and project contract. Available 24/7."
         actions={<Button onClick={() => setMessages([])}>New conversation</Button>}
       />
     <div className="grid gap-x-12 gap-y-12 lg:grid-cols-[260px_minmax(0,1fr)]">
@@ -57,7 +56,6 @@ export function AssistantPage() {
                 { k: 'Contract', v: <span className="text-fg-2">{assistant.profile.contract}</span> },
               ]}
             />
-            <p className="mt-3 text-meta text-fg-3">Specs update automatically on each contract revision.</p>
           </PanelBody>
         </Panel>
 

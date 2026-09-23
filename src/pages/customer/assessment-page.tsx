@@ -93,7 +93,6 @@ export function AssessmentPage() {
     <>
       <PageHeader
         title="Preliminary self-assessment"
-        description="Tell us about the roof so an engineer can size the system before the on-site survey."
         meta={<span>Step {step + 1} of 4</span>}
       />
 

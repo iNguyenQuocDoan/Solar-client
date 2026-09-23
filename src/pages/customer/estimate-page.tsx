@@ -19,7 +19,6 @@ export function EstimatePage() {
           <PageHeader
             back={{ to: ROUTES.customer.assessment, label: 'Preliminary assessment' }}
             title={`Preliminary estimate for ${property.name}`}
-            description="Based on satellite irradiance, the roof profile you submitted and seasonal utility inputs."
             meta={<Badge tone="ok">Viability score {data.viabilityScore} / 100</Badge>}
             actions={
               <>
