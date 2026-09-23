@@ -52,7 +52,7 @@ export function ManageDashboardPage() {
           <Panel className="mb-12" aria-labelledby="decisions">
             <PanelHeader
               title={<span id="decisions">Decisions required</span>}
-              description={`${data.exceptions.length} blockers need executive sign-off. Auto-refreshed 2 minutes ago.`}
+              description={`${data.exceptions.length} blockers need executive sign-off.`}
             />
             <div className="grid gap-x-12 gap-y-8 md:grid-cols-2">
               {data.exceptions.map((ex) => (

@@ -37,10 +37,10 @@ export function AuthLayout() {
 
         <div className="grid w-full min-h-[640px] grid-cols-1 items-stretch gap-space-xl lg:grid-cols-12">
           {/* Panel trái – ẩn từ lg trở xuống */}
-          <div className="hidden flex-col justify-between overflow-hidden rounded-xl bg-primary-container p-space-2xl text-on-primary lg:col-span-5 lg:flex">
+          <div className="hidden flex-col justify-center gap-space-lg overflow-hidden rounded-xl bg-primary-container p-space-2xl text-on-primary lg:col-span-5 lg:flex">
             <h2 className="text-headline-xl leading-tight text-on-primary">{title}</h2>
 
-            <div className="my-space-lg flex flex-col gap-space-sm">
+            <div className="flex flex-col gap-space-sm">
               <div className="h-44 w-full overflow-hidden rounded-lg">
                 <img src={image.src} alt={image.alt} className="h-full w-full object-cover" />
               </div>

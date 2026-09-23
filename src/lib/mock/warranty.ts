@@ -89,7 +89,6 @@ export type WarrantyCase = {
   }
   audit: {
     title: string
-    description: string
     addLabel: string
     photos: WarrantyAuditPhoto[]
     attachment: { title: string; description: string; actionLabel: string }
@@ -248,7 +247,6 @@ export const warrantyCases: WarrantyCase[] = [
     },
     audit: {
       title: 'Photographic Audit Verification',
-      description: 'Mandatory warranty compliance deliverables for OEM claim approval',
       addLabel: 'Add Angle',
       photos: [
         {

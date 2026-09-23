@@ -28,7 +28,7 @@ export function OverviewPage() {
               </>
             }
             title={`${data.milestone.title} in ${data.milestone.daysAway} days`}
-            description={`${data.milestone.when}, confirmed with ${data.milestone.with}. Phase 3 of 5 in your solar journey.`}
+            description={`${data.milestone.when}, confirmed with ${data.milestone.with}.`}
             actions={
               <ButtonLink to={withId(ROUTES.customer.consultation, 'CR-9042')}>
                 View timeline

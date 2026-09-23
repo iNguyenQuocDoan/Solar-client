@@ -193,7 +193,7 @@ export function FilterBar({ chips, search, selects, scopes, trailing, className 
             ))}
             {scopes?.onReset && (
               <button type="button" onClick={scopes.onReset} className="ml-1 text-label-sm text-primary hover:underline">
-                Reset filters
+                Xoá bộ lọc
               </button>
             )}
           </div>

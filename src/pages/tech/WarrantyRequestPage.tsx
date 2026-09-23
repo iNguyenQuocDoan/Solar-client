@@ -320,10 +320,7 @@ function WarrantyRequestView({ warranty }: { warranty: WarrantyCase }) {
         {/* Ảnh trước / sau */}
         <Card padding="lg" className="flex flex-col gap-space-md">
           <div className="flex flex-wrap items-start justify-between gap-space-sm">
-            <div>
-              <h2 className="text-headline-md text-on-surface">{warranty.audit.title}</h2>
-              <p className="mt-0.5 text-body-sm text-on-surface-variant">{warranty.audit.description}</p>
-            </div>
+            <h2 className="text-headline-md text-on-surface">{warranty.audit.title}</h2>
             <button
               type="button"
               className="flex items-center gap-1 rounded-lg bg-surface-container px-3 py-1.5 text-label-sm font-semibold text-primary transition-colors hover:bg-surface-container-high"

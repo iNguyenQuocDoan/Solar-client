@@ -100,7 +100,7 @@ export function DataTable<T>({
   selectedKeys,
   onSelectionChange,
   actions,
-  actionsHeader = 'Actions',
+  actionsHeader = 'Thao tác',
   toolbar,
   footer,
   pagination,
