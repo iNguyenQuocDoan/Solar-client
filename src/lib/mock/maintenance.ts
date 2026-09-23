@@ -78,7 +78,6 @@ export type MaintenanceTask = {
     ratingBadge: string
     summary: string
     cards: { label: string; value: string; caption: string; tone?: 'default' | 'primary' }[]
-    footnote: string
   }
   toasts: {
     draftSaving: string
@@ -299,7 +298,6 @@ export const maintenanceTasks: MaintenanceTask[] = [
         { label: 'Lần bảo trì kế tiếp', value: 'Tháng 10/2025', caption: 'Chu kỳ 12 tháng' },
         { label: 'Kỹ thuật viên ký', value: 'Marcus Vance', caption: 'Mã #4402, có chứng chỉ', tone: 'primary' },
       ],
-      footnote: 'Trang theo dõi của khách sẽ tự cập nhật ngay khi kỹ thuật viên ký.',
     },
     toasts: {
       draftSaving: 'Đang lưu nháp…',

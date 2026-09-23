@@ -232,10 +232,6 @@ function MaintenanceTaskView({ task }: { task: Task }) {
               ))}
             </div>
 
-            <div className="flex items-center gap-2 pt-space-xs text-body-sm text-on-surface-variant">
-              <Icon name="verified_user" className="text-[18px] text-primary" />
-              <span>{task.signOff.footnote}</span>
-            </div>
           </SectionCard>
         </div>
       </div>

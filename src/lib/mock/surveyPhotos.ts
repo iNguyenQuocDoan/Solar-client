@@ -141,7 +141,7 @@ const surveyPhotoDocs: Record<string, SurveyPhotoDoc> = {
     tip: {
       icon: 'lightbulb',
       title: 'Auditor Guideline Tip',
-      text: 'Ensure electrical rating plaques are free from flash glare so local permitting jurisdiction (AHJ) algorithms auto-pass busbar clearance verification.',
+      text: 'Ensure electrical rating plaques are free from flash glare.',
     },
     sections: [
       {
