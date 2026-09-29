@@ -1,25 +1,27 @@
 import type {
-  AuthTokensResponse,
   ChangePasswordRequest,
   ForgotPasswordRequest,
-  ForgotPasswordResponse,
   LoginRequest,
   LogoutRequest,
-  LogoutResponse,
-  PasswordChangedResponse,
   RefreshTokenRequest,
   RegisterRequest,
-  RegisterResponse,
   ResendVerificationRequest,
-  ResendVerificationResponse,
   ResetPasswordRequest,
   VerifyEmailRequest,
+} from '@/types/req/authReq'
+import type {
+  AuthTokensResponse,
+  ForgotPasswordResponse,
+  LogoutResponse,
+  PasswordChangedResponse,
+  RegisterResponse,
+  ResendVerificationResponse,
   VerifyEmailResponse,
-} from '@/features/auth/types/auth'
+} from '@/types/res/authRes'
 import { apiPost } from '@/services/api/client'
 
 /*
- * 9 endpoint Auth; kiểu request/response ở features/auth/types/auth.ts.
+ * 9 endpoint Auth; kiểu request ở types/req/authReq.ts, response ở types/res/authRes.ts.
  * Mọi endpoint đều là POST, body JSON, trả về wrapper *ApiResponse; apiPost đã
  * mở wrapper nên các hàm dưới đây trả thẳng phần `data`.
  */

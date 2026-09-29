@@ -3,16 +3,18 @@ import * as authService from '@/features/auth/services/authService'
 import type {
   ChangePasswordRequest,
   ForgotPasswordRequest,
-  ForgotPasswordResponse,
-  PasswordChangedResponse,
   RegisterRequest,
-  RegisterResponse,
   ResendVerificationRequest,
-  ResendVerificationResponse,
   ResetPasswordRequest,
   VerifyEmailRequest,
+} from '@/types/req/authReq'
+import type {
+  ForgotPasswordResponse,
+  PasswordChangedResponse,
+  RegisterResponse,
+  ResendVerificationResponse,
   VerifyEmailResponse,
-} from '@/features/auth/types/auth'
+} from '@/types/res/authRes'
 import type { ApiError } from '@/services/api/errors'
 
 /*
