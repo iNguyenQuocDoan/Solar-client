@@ -20,5 +20,9 @@ export function ctaClass(size: 'lg' | 'md' = 'lg', display = 'inline-flex') {
   )
 }
 
+/** Nút chính đặt trên dải xanh (.band-accent): đảo màu để vẫn là khối đặc nổi nhất. */
+export const CTA_ON_ACCENT =
+  'press inline-flex h-12 items-center justify-center rounded-control bg-on-accent px-6 text-accent ld-action whitespace-nowrap hover:bg-accent-soft'
+
 /** Link chữ trong nội dung: gạch chân để nhận ra là link khi không nhìn được màu. */
 export const TEXT_LINK = 'text-accent underline decoration-1 underline-offset-4 hover:decoration-2'

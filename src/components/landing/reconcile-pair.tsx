@@ -81,7 +81,7 @@ function valueClass(kind: 'number' | 'text' | 'photo', size: 'l' | 'm', side: 'd
 }
 
 function SideValue({ side }: { side: Side }) {
-  if ('photo' in side) return <PhotoSlot need={side.photo} />
+  if ('photo' in side) return <PhotoSlot need={side.photo} className="aspect-4/3" />
   if ('pending' in side) return <>{side.pending}</>
   // Ký hiệu độ đi liền số ở cỡ đầy đủ; đơn vị chữ (m², tấm) nhỏ lại để số dẫn mắt.
   if (side.unit === '°') return <>{side.value}°</>

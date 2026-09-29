@@ -1,7 +1,9 @@
 /* =====================================================================
    Trang công khai (PublicLayout: "/", "/coming-soon").
-   Chỉ thêm tên mới (font-vn, max-w-landing, max-w-copy, ld-*, .pair*); không đổi token của portal.
-   Màu dùng lại token portal (canvas, fg, fg-2, fg-3, line, line-2, accent) nên dark mode tự theo.
+   Chỉ thêm tên mới (font-vn, max-w-landing, max-w-copy, ld-*, .pair*, .band*, .strip*); không đổi
+   token của portal. Màu dùng lại token portal (canvas, fg, fg-2, fg-3, line, line-2, accent) nên dark
+   mode tự theo. CSS ở đây đọc thẳng `var(--accent)` chứ không `var(--color-accent)`: biến `--color-*`
+   đã được tính ở :root nên không đổi theo vùng `.scheme-dark`.
    ===================================================================== */
 
 @theme {
@@ -116,7 +118,128 @@
   }
 }
 
+/*
+  Cỡ lớn của bản "Điện nhà làm". Chỉ dùng cho những chữ không có dấu chồng hai tầng hoặc đã đo
+  va chạm: tiêu đề màn đầu ("Điện" / "nhà làm."), câu chủ đề, hai con số của luật.
+*/
+@utility ld-display {
+  font-size: 64px;
+  line-height: 68px;
+  font-weight: 600;
+  letter-spacing: -0.035em;
+  @media (width >= 64rem) {
+    font-size: 120px;
+    line-height: 124px;
+    letter-spacing: -0.04em;
+  }
+}
+/* Câu lớn nhẹ (weight 300) để tương phản với tiêu đề đậm; 1,45 vì câu dài có dấu chồng. */
+@utility ld-statement {
+  font-size: 26px;
+  line-height: 38px;
+  font-weight: 300;
+  letter-spacing: -0.01em;
+  @media (width >= 64rem) {
+    font-size: 40px;
+    line-height: 58px;
+    letter-spacing: -0.015em;
+  }
+}
+/* Câu chính trong dải màu (nguyên tắc, lời mời cuối trang). */
+@utility ld-band-title {
+  font-size: 32px;
+  line-height: 44px;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  @media (width >= 64rem) {
+    font-size: 56px;
+    line-height: 74px;
+    letter-spacing: -0.025em;
+  }
+}
+/* Số của luật: chỉ chữ số và đơn vị, không có chữ tiếng Việt. */
+@utility ld-figure {
+  font-size: 96px;
+  line-height: 96px;
+  font-weight: 300;
+  letter-spacing: -0.045em;
+  @media (width >= 64rem) {
+    font-size: 184px;
+    line-height: 176px;
+  }
+}
+
 @layer components {
+  /*
+    Dải tràn viền. `ink` luôn tối (lớp .scheme-dark đặt lại token), ở dark mode sáng hơn nền trang
+    một bậc để vẫn tách khỏi phần còn lại. `accent` là dải xanh của lời mời cuối trang.
+  */
+  .band-ink {
+    background: var(--canvas);
+    color: var(--fg);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme='light']) .band-ink {
+      background: var(--surface-2);
+    }
+  }
+  :root[data-theme='dark'] .band-ink {
+    background: var(--surface-2);
+  }
+  .band-ink :focus-visible {
+    outline-color: var(--accent);
+  }
+  .band-accent {
+    background: var(--accent);
+    color: var(--on-accent);
+  }
+  .band-accent :focus-visible {
+    outline-color: var(--on-accent);
+  }
+
+  /*
+    Dải cuộn ngang (thiết bị trên mobile): vuốt bằng ngón tay, mỗi mục ~80% bề rộng để thấy mép
+    mục sau. Từ lg thành lưới 12 cột, không cuộn; vị trí từng mục đặt bằng class lg:col-*.
+  */
+  .strip {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 80%;
+    gap: 16px;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: 16px;
+    padding-inline: 16px;
+    padding-bottom: 8px;
+    margin-inline: -16px;
+    scrollbar-width: none;
+  }
+  .strip > * {
+    scroll-snap-align: start;
+  }
+  @media (width >= 48rem) {
+    .strip {
+      grid-auto-columns: 45%;
+      padding-inline: 32px;
+      margin-inline: -32px;
+      scroll-padding-inline: 32px;
+    }
+  }
+  @media (width >= 64rem) {
+    .strip {
+      grid-auto-flow: row;
+      grid-auto-columns: auto;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      column-gap: 24px;
+      row-gap: 48px;
+      overflow: visible;
+      scroll-snap-type: none;
+      padding: 0;
+      margin: 0;
+    }
+  }
+
   /*
     Cặp đối chiếu (signature): hai lần đọc của cùng một đại lượng, nối bằng đường ghi kích
     thước theo quy ước bản vẽ (TCVN 5705:1993): hai đường gióng, đường kích thước có vạch xiên
@@ -160,7 +283,7 @@
     font-size: 0.4em;
     font-weight: 400;
     letter-spacing: 0;
-    color: var(--color-fg-3);
+    color: var(--fg-3);
   }
   .pair-dim {
     grid-area: dim;
@@ -176,7 +299,7 @@
     top: 4px;
     bottom: 0;
     width: 1px;
-    background: var(--color-line-2);
+    background: var(--line-2);
   }
   .pair-dim::before {
     left: 0;
@@ -189,7 +312,7 @@
     position: absolute;
     inset-inline: 0;
     bottom: 8px;
-    border-top: 1.5px solid var(--color-accent);
+    border-top: 1.5px solid var(--accent);
   }
   .pair-line::before,
   .pair-line::after {
@@ -198,7 +321,7 @@
     top: -8px;
     width: 1.5px;
     height: 15px;
-    background: var(--color-accent);
+    background: var(--accent);
     rotate: 45deg;
   }
   .pair-line::before {
@@ -212,12 +335,12 @@
     inset-inline: 12px;
     bottom: 12px;
     text-align: center;
-    color: var(--color-accent);
+    color: var(--accent);
     font-weight: 600;
   }
   /* Chưa đo: đường nét đứt, không vạch xiên. */
   .pair-dim[data-pending] .pair-line {
-    border-top: 1.5px dashed var(--color-line-2);
+    border-top: 1.5px dashed var(--line-2);
   }
   .pair-dim[data-pending] .pair-line::before,
   .pair-dim[data-pending] .pair-line::after {

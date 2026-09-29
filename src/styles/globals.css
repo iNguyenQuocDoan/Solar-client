@@ -83,7 +83,9 @@
   }
 }
 
-:root[data-theme='dark'] {
+/* `.scheme-dark`: một vùng luôn dùng bảng màu tối dù trang đang sáng (dải tối của trang chủ). */
+:root[data-theme='dark'],
+.scheme-dark {
   color-scheme: dark;
 
   --canvas: oklch(17% 0.006 130);

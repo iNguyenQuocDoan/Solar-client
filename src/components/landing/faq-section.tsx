@@ -1,36 +1,44 @@
+import { cx } from '@/lib/cx'
 import { faq } from '@/lib/mock/landing'
-import { TEXT_LINK } from './classes'
+import { PAGE_GRID, TEXT_LINK } from './classes'
 import { Rich } from './rich'
-import { Section, SectionTitle } from './section'
+import { Section } from './section'
 
-/* Mỗi câu trả lời có nguồn thì kèm một dòng nguồn (tên văn bản, ngày, tên miền); không icon. */
+/*
+  Hai cột kiểu tạp chí: tiêu đề dính bên trái (desktop), câu hỏi mở/đóng bên phải. Mỗi câu trả lời
+  có nguồn thì kèm một dòng nguồn (tên văn bản, ngày, tên miền); không icon.
+*/
 export function FaqSection() {
   return (
     <Section id={faq.id} space="far" titleId="faq-title">
-      <SectionTitle id="faq-title">{faq.title}</SectionTitle>
-      <div className="mt-6 max-w-3xl divide-y divide-line border-y border-line lg:mt-8">
-        {faq.items.map((item) => (
-          <details key={item.q} className="faq-item group">
-            <summary className="flex cursor-pointer list-none items-start justify-between gap-4 py-5 ld-sub text-fg">
-              <span>{item.q}</span>
-              <Chevron />
-            </summary>
-            <div className="pb-6">
-              <p className="max-w-copy ld-body text-fg-2">
-                <Rich value={item.a} />
-              </p>
-              {'source' in item && item.source && (
-                <p className="mt-3 max-w-copy ld-meta text-fg-3">
-                  {faq.sourcePrefix}{' '}
-                  <a href={item.source.href} target="_blank" rel="noreferrer" className={TEXT_LINK}>
-                    {item.source.label}
-                  </a>{' '}
-                  ({item.source.host})
+      <div className={cx(PAGE_GRID, 'gap-y-6')}>
+        <h2 id="faq-title" className="col-span-4 self-start ld-h2 text-fg lg:sticky lg:top-24">
+          {faq.title}
+        </h2>
+        <div className="col-span-4 divide-y divide-line border-y border-line lg:col-span-8 lg:col-start-5">
+          {faq.items.map((item) => (
+            <details key={item.q} className="faq-item group">
+              <summary className="flex cursor-pointer list-none items-start justify-between gap-4 py-5 ld-sub text-fg">
+                <span>{item.q}</span>
+                <Chevron />
+              </summary>
+              <div className="pb-6">
+                <p className="max-w-copy ld-body text-fg-2">
+                  <Rich value={item.a} />
                 </p>
-              )}
-            </div>
-          </details>
-        ))}
+                {item.source && (
+                  <p className="mt-3 max-w-copy ld-meta text-fg-3">
+                    {faq.sourcePrefix}{' '}
+                    <a href={item.source.href} target="_blank" rel="noreferrer" className={TEXT_LINK}>
+                      {item.source.label}
+                    </a>{' '}
+                    ({item.source.host})
+                  </p>
+                )}
+              </div>
+            </details>
+          ))}
+        </div>
       </div>
     </Section>
   )
@@ -44,7 +52,14 @@ function Chevron() {
       viewBox="0 0 20 20"
       className="mt-1 size-5 shrink-0 text-fg-2 transition-transform duration-200 ease-ld group-open:rotate-180"
     >
-      <path d="M5 7.5 10 12.5 15 7.5" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      <path
+        d="M5 7.5 10 12.5 15 7.5"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
     </svg>
   )
 }

@@ -6,17 +6,17 @@ import { Rich } from '@/components/landing/rich'
 import { LANDING_CONTAINER, TEXT_LINK, ctaClass } from '@/components/landing/classes'
 import { ROUTES } from '@/constants/routes'
 import { cx } from '@/lib/cx'
-import { faq, footer, header, offer } from '@/lib/mock/landing'
+import { equipment, faq, footer, header } from '@/lib/mock/landing'
 
 /*
  * Shell của các trang công khai ("/", "/coming-soon"). Không dùng AppShell/sidebar.
  * Font Be Vietnam Pro (300 số khai, 400 chữ, 600 tiêu đề và số đo) chỉ đặt ở đây vì
  * Schibsted Grotesk của portal thiếu dấu tiếng Việt.
  * Header không có menu theo giai đoạn (khảo sát, báo giá, thi công…): điều hướng đặt tên theo
- * giai đoạn đọc thành quy trình. Chỉ link tới phần mô tả món hàng và phần câu hỏi.
+ * giai đoạn đọc thành quy trình. Chỉ link tới phần thiết bị và phần câu hỏi.
  */
 const faqLink = { pathname: ROUTES.HOME, hash: `#${faq.id}` }
-const offerLink = { pathname: ROUTES.HOME, hash: `#${offer.id}` }
+const equipmentLink = { pathname: ROUTES.HOME, hash: `#${equipment.id}` }
 
 export function PublicLayout() {
   // Câu "dữ liệu minh hoạ" chỉ đúng với trang có số liệu mẫu.
@@ -37,8 +37,8 @@ export function PublicLayout() {
             <span className="ld-action text-fg">{footer.brand}</span>
           </Link>
           <nav aria-label="Liên kết chính" className="flex items-center gap-6">
-            <Link to={offerLink} className="hidden ld-body text-fg-2 hover:text-fg lg:inline">
-              {header.offer}
+            <Link to={equipmentLink} className="hidden ld-body text-fg-2 hover:text-fg lg:inline">
+              {header.equipment}
             </Link>
             <Link to={faqLink} className="hidden ld-body text-fg-2 hover:text-fg lg:inline">
               {header.faq}
@@ -57,7 +57,8 @@ export function PublicLayout() {
         <Outlet />
       </main>
 
-      <footer className="mt-24 border-t border-line lg:mt-32">
+      {/* Trang chủ kết bằng dải xanh tràn viền nên footer đi sát; trang khác chừa khoảng như cũ. */}
+      <footer className={cx('border-t border-line', !onHome && 'mt-24 lg:mt-32')}>
         <div
           className={cx(
             'flex flex-col gap-3 py-8 ld-meta text-fg-2 lg:flex-row lg:flex-wrap lg:items-baseline lg:justify-between lg:gap-x-8',
