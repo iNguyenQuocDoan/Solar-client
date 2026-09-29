@@ -1,20 +1,11 @@
 import { useEffect } from 'react'
 import { useLocation } from 'react-router'
-import {
-  BuildSection,
-  FaqSection,
-  HeroSection,
-  QuoteSection,
-  StartSection,
-  SurveySection,
-  WarrantySection,
-} from '@/components/landing'
+import { FaqSection, FitSection, HeroSection, OfferSection, ProofSection, StartSection } from '@/components/landing'
 import { pageTitle } from '@/lib/mock/landing'
 
 /*
-  Trang chủ công khai "/". Thứ tự section theo chuỗi câu hỏi của chủ nhà:
-  là gì → mái tôi được bao nhiêu → tiền đi vào đâu → họ làm gì trên
-  mái → hỏng thì ai lo → thủ tục → cần chuẩn bị gì.
+  Trang chủ công khai "/" – lời giới thiệu sản phẩm, không phải quy trình:
+  sản phẩm và lợi ích → trọn gói gồm gì → nhà nào hợp → những thứ Smart Solar cho xem → câu hỏi → đăng ký.
 */
 export function LandingPage() {
   const { hash } = useLocation()
@@ -29,10 +20,9 @@ export function LandingPage() {
     <>
       <title>{pageTitle}</title>
       <HeroSection />
-      <SurveySection />
-      <QuoteSection />
-      <BuildSection />
-      <WarrantySection />
+      <OfferSection />
+      <FitSection />
+      <ProofSection />
       <FaqSection />
       <StartSection />
     </>
