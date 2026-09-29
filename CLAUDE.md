@@ -48,7 +48,7 @@ Rút ra từ 4 lượt audit trong `UI_AUDIT.md`; áp cho CẢ HAI bộ componen
 - Vite + React + TypeScript, react-router (giữ nguyên như package.json hiện tại – KHÔNG chuyển sang Next.js)
 - Tailwind CSS v4 qua `@tailwindcss/vite` (`@theme` trong `src/styles/globals.css`)
 - shadcn/ui cho primitives (dialog, dropdown, tabs, checkbox…) – restyle theo token bên dưới
-- Font: Plus Jakarta Sans qua `@fontsource-variable/plus-jakarta-sans` (hoặc link Google Fonts trong `index.html`)
+- Font: portal dùng Schibsted Grotesk (`globals.css`, thiếu dấu tiếng Việt U+1EA0–1EF1 – xem `docs/design/landing-brief.md`); trang công khai dùng Be Vietnam Pro (`@fontsource/be-vietnam-pro`, nạp trong `PublicLayout`). Plus Jakarta Sans đã bỏ.
 - Icon: Material Symbols Outlined – link Google Fonts trong `index.html`; giữ đúng tên icon như trong file thiết kế (`grid_view`, `solar_power`, `manage_accounts`…)
 - State/data: mock data trong `src/lib/mock/*.ts` cho phần UI; riêng auth đã gọi API thật (xem "Auth API")
 
@@ -84,7 +84,7 @@ nhưng GIÁ TRỊ token nay lấy theo hệ chung ở trên. Những chỗ cố 
 ## Kiến trúc thư mục
 
 ```
-index.html                     # link font Plus Jakarta Sans + Material Symbols
+index.html                     # lang="vi", meta/OG tiếng Việt, link Material Symbols
 src/
   main.tsx                     # RouterProvider
   styles/globals.css           # @import "tailwindcss" + @theme tokens
@@ -92,7 +92,7 @@ src/
   layouts/
     AdminLayout.tsx            # <AppShell nav={adminNav}><Outlet/></AppShell>
     TechLayout.tsx             # <AppShell nav={technicianNav}><Outlet/></AppShell>
-    PublicLayout.tsx           # header menu + footer (landing_home) – KHÔNG có sidebar
+    PublicLayout.tsx           # header + footer trang công khai, font Be Vietnam Pro – KHÔNG có sidebar
     AuthLayout.tsx             # 2 cột (auth_portal): panel xanh trái + <Outlet/> phải + footer nhỏ
   pages/
     admin/                     # 4 màn admin (AdminDashboardPage, UsersPage, RolesPage, ProductsPage)
@@ -107,7 +107,7 @@ src/
     layout/TopHeader.tsx
     ui/                        # shadcn + component dùng chung (StatusBadge, MetricCard, DataTable, TaskCard, TimelineStep, ChecklistItem, PhotoGrid…)
     admin/  tech/              # component riêng theo nhóm màn
-    landing/                   # khối của trang chủ (Hero, PackageCards, Faq…)
+    landing/                   # section trang chủ + ReconcilePair (cặp đối chiếu), AccountFrame, PhotoSlot
     auth/                      # PasswordRules, ForbiddenCard, SessionExpiredModal, ChangePasswordDialog
   lib/mock/                    # dữ liệu giả cho từng màn (UI), KHÔNG còn mock auth
   lib/api/                     # schema.d.ts (sinh tự động), client.ts, auth.ts, errors.ts, tokens.ts, me.ts
@@ -132,12 +132,15 @@ Khảo sát, Lắp đặt, Bảo hành & bảo trì, Lịch làm việc; cuối 
 
 ## Màn công khai & xác thực
 
-Hai màn `landing_home` và `auth_portal` KHÔNG dùng `AppShell`/sidebar và giữ nguyên chữ tiếng Việt như thiết kế.
+Trang chủ và các màn xác thực KHÔNG dùng `AppShell`/sidebar.
 
-- `PublicLayout` – theo `landing_home`: `<header>` sticky cao 80px nền `surface-container-lowest`
-  + viền dưới (logo, menu neo `#solutions`…, nút "Đăng nhập" và "Khảo sát mái nhà" trỏ vào
-  `/customer/assessment`), `<main>` nền `surface`, `<footer>` 5 cột + hàng copyright. Từ `md` trở
-  xuống menu thu thành hamburger.
+- `PublicLayout` + trang chủ `/`: thiết kế theo `docs/design/landing-brief.md` (hướng H1 "hai con số
+  của cùng một mái nhà"). Header dính 56/64px: tên, "Câu hỏi thường gặp", "Đăng nhập", nút
+  "Tạo tài khoản" → `/register`; KHÔNG có menu đặt tên theo giai đoạn. Footer một hàng.
+  Token riêng (`font-vn`, `max-w-landing`, `ld-*`, `.pair*`) ở `src/styles/landing.css`; màu dùng lại
+  token portal. Nội dung ở `src/lib/mock/landing.ts`: chỉ dữ liệu minh hoạ của một căn nhà mẫu,
+  chỗ thiếu dữ kiện thật để dạng `{ need }` và hiện `[CẦN: …]`. KHÔNG thêm số liệu công ty, đối tác,
+  testimonial khi chưa có nguồn.
 - `AuthLayout` – theo `auth_portal`: lưới 12 cột, panel `primary-container` bên trái
   (`lg:col-span-5`: tiêu đề "Chuyển dịch Năng lượng Xanh cho Ngôi nhà Việt", ảnh nhà, 2 ô số liệu
   1.240 kWh / ~3,85 Tr ₫), `<Outlet/>` trong card trắng bên phải (`lg:col-span-7`), footer chỉ còn
@@ -150,7 +153,7 @@ Hai màn `landing_home` và `auth_portal` KHÔNG dùng `AppShell`/sidebar và gi
 
 | Route             | Layout         | Trang                                                      |
 | ----------------- | -------------- | ---------------------------------------------------------- |
-| `/`               | `PublicLayout` | `HomeLayoutPage` – khung bố cục tạm theo header. `LandingPage` (bản đầy đủ) vẫn còn trong `src/pages/public`, đổi route khi dùng lại |
+| `/`               | `PublicLayout` | `LandingPage` – brief và direction ở `docs/design/landing-brief.md` |
 | `/login`          | `AuthLayout`   | `LoginPage`                                                 |
 | `/register`       | `AuthLayout`   | `RegisterPage`                                              |
 | `/forgot-password`| `AuthLayout`   | `ForgotPasswordPage`                                        |

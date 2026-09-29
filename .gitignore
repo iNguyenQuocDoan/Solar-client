@@ -43,4 +43,4 @@ coverage
 tmp
 
 # Ban export tu Google Stitch (chi dung de doi chieu khi dung UI)
-design
+/design
