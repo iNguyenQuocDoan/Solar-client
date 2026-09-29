@@ -1,8 +1,53 @@
 # Landing "/" – Design brief
 
-Trạng thái: **bản 2 đã dựng (29/09/2026)** – xem mục "Bản 2" ngay dưới; phần H1 phía sau là lịch sử. Báo cáo: `landing-report.md`.
+Trạng thái: **bản 3 "Điện nhà làm" đã dựng (29/09/2026, nhánh `landing-dien-nha-lam`)** – xem mục "Bản 3" ngay dưới; bản 2 và H1 phía sau là lịch sử. Báo cáo H1: `landing-report.md`.
 Ngày: 28/09/2026. Nguồn khảo sát Pha 0: bốn báo cáo trong scratchpad của phiên (kiểm kê nội dung,
 product moment, trang cùng ngành, ảnh chụp portal). Mọi đường dẫn tính từ `Solar-Client/`.
+
+---
+
+# Bản 3 – Điện nhà làm (29/09/2026)
+
+**Vì sao làm lại.** Người dùng dán brief editorial (ảnh là thành phần chính, landing là trải nghiệm khám
+phá thương hiệu, quy trình chỉ trong một section ngắn). Một đề xuất trung gian (đo lại → dải ảnh thi công
+→ tài khoản → chuẩn bị) bị bác: "chả khác nào là 1 cái quy trình cả" – bỏ số, mũi tên hay đổi layout
+chưa đủ khi nội dung mỗi section vẫn là một khâu dịch vụ.
+
+**Ý tưởng.** "Điện nhà làm", đọc như "cơm nhà nấu": điện do chính mái nhà mình làm ra, nhà mình dùng
+(khớp khái niệm "tự sản xuất, tự tiêu thụ" của NĐ 58/2025). Section chia theo chủ đề; phép thử: đảo thứ
+tự các section, trang vẫn đọc được.
+
+| Section | Nói về | Hình thức | Nền |
+|---|---|---|---|
+| Màn đầu | Thương hiệu, cho ai | "Điện" / "nhà làm." 120px (mobile 64) + một câu + một nút; bản vẽ mặt cắt nhà ống (`HouseDrawing`, SVG) | Sáng |
+| `#ban-ngay` | Giá trị cốt lõi | Ảnh tràn viền 21:9 `[CẦN ẢNH]`, khối câu lớn weight 300 lấn lên mép dưới ảnh 160px | Sáng |
+| `#luat` | Vì sao cân nhắc lúc này | Hai số 184px lệch nhau, không thẻ: 50% (NĐ 243/2026), 100 kW (NĐ 58/2025), mỗi số một dòng nguồn | Sáng |
+| `#thiet-bi` | Sản phẩm | Ảnh lệch cỡ: tấm pin 4:5 bảy cột, inverter và chân đế 4:3 bốn cột; mobile là dải vuốt ngang | Sáng |
+| `#tai-khoan` | Sản phẩm số | Ba ý (bảo hành trước) + hai màn tài khoản chồng nhau có chủ ý, chỉ đè lên phần trống | Sáng |
+| `#nguyen-tac` | Tính cách thương hiệu | "Không báo giá theo số ước lượng." + cặp đối chiếu duy nhất của trang | Tối (`.scheme-dark`) |
+| `#cau-hoi` | Gỡ lo ngại | Hai cột, tiêu đề dính; "cần chuẩn bị gì" là một câu hỏi ở đây | Sáng |
+| `#dang-ky` | Hành động | "Mái nhà bạn lắp được bao nhiêu tấm?" + nút đảo màu | Xanh accent |
+
+**Bỏ so với bản 2:** bậc thang giá điện (`tariff-ladder.tsx` xoá; `src/lib/electricity-tariff.ts` còn
+giữ, không nơi nào dùng), section trọn gói / nhà nào hợp / những thứ cho xem / danh sách chuẩn bị.
+Không dùng `public/images/Hero.png` (flycam nhà kho kiểu Mỹ, không phải nhà ở Việt Nam).
+
+**Ảnh cần chụp (4).** Đặt file vào `public/images/landing/`, đúng tên, đuôi `.jpg`, `.png` hoặc `.webp`
+(thử theo thứ tự đó); có file là ảnh hiện, chưa có thì khung hiện `[CẦN ẢNH: …]`. Ảnh luôn cắt đầy khung,
+giữ tâm. Chỉ dùng ảnh công trình thật, có đồng ý của chủ nhà; không ảnh stock.
+
+| Tên file | Chỗ trên trang | Khung (desktop / tablet / mobile) | Kích thước file nên có | Nội dung |
+|---|---|---|---|---|
+| `ban-ngay` | Section "Ban ngày", tràn viền | 21:9 / 16:9 / 4:3 | ngang, ≥ 2560 × 1100, ≤ 800 KB | Sân thượng nhà phố lúc trưa, dàn pin trên mái tôn, thấy bồn nước và mái các nhà xung quanh. Chủ thể ở nửa giữa ảnh (mobile chỉ còn phần giữa); tránh chi tiết quan trọng ở góc dưới trái vì khối chữ đè lên 160px đáy |
+| `tam-pin` | "Thiết bị", ô lớn | 4:5 ở mọi cỡ | dọc, ≥ 1200 × 1500, ≤ 500 KB | Dàn tấm pin trên mái tôn một nhà ở, chụp chéo từ mép mái, thấy khung và khe giữa các tấm |
+| `inverter` | "Thiết bị", ô phải trên | 4:3 / 4:5 / 4:5 | ngang 4:3, ≥ 1600 × 1200, ≤ 500 KB | Inverter treo trên tường tum thang hoặc hiên sân thượng, thấy màn hình và ống luồn dây; chủ thể ở giữa (khung 4:5 cắt hai bên) |
+| `chan-de` | "Thiết bị", ô phải dưới | 4:3 / 4:5 / 4:5 | ngang 4:3, ≥ 1600 × 1200, ≤ 500 KB | Chân đế bắt vào mái tôn, chụp cận, thấy keo hoặc gioăng quanh bu lông; chủ thể ở giữa |
+
+Màn đầu không cần ảnh (bản vẽ `HouseDrawing`). Chưa nối: ảnh chia sẻ mạng xã hội `og:image` 1200 × 630.
+
+**Kiểm:** typecheck, lint (không cảnh báo mới), build; chụp 390 / 768 / 1440 sáng và 1440 tối
+(`D:/Solar-capstone/ui-audit-shots/landing/v3/`): không cuộn ngang, 0 lỗi console, nút chính trong màn
+đầu ở 390 × 664 (đáy nút y = 389).
 
 ---
 
