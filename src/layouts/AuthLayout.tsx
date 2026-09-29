@@ -1,70 +1,73 @@
-import { Link, Outlet } from 'react-router'
+import '@fontsource/be-vietnam-pro/300.css'
+import '@fontsource/be-vietnam-pro/400.css'
+import '@fontsource/be-vietnam-pro/600.css'
+import { Link, Outlet, useLocation } from 'react-router'
 import { Icon } from '@/components/stitch-ui/Icon'
 import { ROUTES } from '@/constants/routes'
-import { authPanel } from '@/lib/mock/auth'
+import { authImages, authLayoutContent } from '@/lib/mock/auth'
 
 /*
- * Shell 2 cột của auth_portal: panel primary-container bên trái + card form bên phải + footer nhỏ.
- * KHÔNG dựng thanh tab "Auth Hub" của bản Stitch – header chỉ có logo + link về trang chủ,
- * mỗi view trong code.html là một route riêng.
+ * Shell các màn xác thực (/login, /register, /forgot-password, /reset-password, /verify-email, /403).
  *
- * Panel trái chỉ giữ thứ nói được điều gì đó: tiêu đề, mô tả, ảnh hệ thống và hai số đo.
- * Các chip trang trí (badge "nền tảng", chip role, chip bảo mật ở footer) và hai vệt blur
- * đã bỏ – chúng lặp lại trên mọi màn auth mà không thêm thông tin.
+ * Desktop: cao đúng một màn hình – ảnh 5/12 bên trái, form 7/12 bên phải (logo + về trang chủ ở trên,
+ * form ở giữa, bản quyền ở dưới). Màn thấp hơn 720px (variant `short`) thu khoảng đệm; nếu vẫn không
+ * đủ thì chỉ cột form cuộn bên trong, trang không cuộn.
+ * Mobile: dải ảnh thấp ở trên, form bên dưới, cuộn bình thường.
+ *
+ * Ảnh do người dùng cung cấp đã in sẵn chữ ở góc trên trái, nên cắt giữ phần trên (object-top).
+ * /register dùng ảnh đăng ký, các màn còn lại dùng ảnh đăng nhập. Font Be Vietnam Pro vì
+ * Schibsted Grotesk của portal thiếu dấu tiếng Việt.
  */
 export function AuthLayout() {
-  const { title, image, metrics, footer } = authPanel
+  const { pathname } = useLocation()
+  const image = pathname === ROUTES.REGISTER ? authImages.register : authImages.login
 
   return (
-    <main className="flex min-h-screen w-full flex-col justify-center bg-surface">
-      <div className="mx-auto flex w-full max-w-7xl flex-col gap-space-2xl px-space-md py-space-xl md:px-margin-desktop">
-        {/* Header: logo + link về trang chủ */}
-        <div className="flex w-full flex-col items-center justify-between gap-space-md rounded-xl bg-surface-container-low p-space-xs md:flex-row">
-          <Link to={ROUTES.HOME} className="flex items-center gap-space-sm pl-space-xs">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-on-primary">
-              <Icon name="solar_power" className="text-[20px]" />
-            </div>
-            <span className="text-headline-md tracking-tight text-primary">Smart Solar</span>
+    <main className="min-h-svh w-full bg-surface font-vn lg:grid lg:h-svh lg:grid-cols-12">
+      <div className="relative h-36 overflow-hidden bg-surface-container sm:h-48 lg:col-span-5 lg:h-full">
+        {/* key đổi theo ảnh để khi chuyển giữa đăng nhập và đăng ký, ảnh mới thu nhẹ về cỡ thật. */}
+        <img
+          key={image.src}
+          src={image.src}
+          srcSet={image.srcSet}
+          sizes="(width >= 64rem) 42vw, 100vw"
+          alt={image.alt}
+          fetchPriority="high"
+          className="h-full w-full object-cover object-top ld-settle"
+        />
+      </div>
+
+      <div className="flex min-h-0 flex-col lg:col-span-7 lg:overflow-y-auto">
+        <header className="flex items-center justify-between gap-4 px-4 py-4 md:px-8 lg:px-12 lg:py-6 short:lg:py-3">
+          <Link to={ROUTES.HOME} className="rounded-control dark:bg-fg dark:px-2 dark:py-1">
+            <img
+              src="/images/logo-64h.webp"
+              srcSet="/images/logo-64h.webp 262w, /images/logo-96h.webp 394w"
+              sizes="148px"
+              alt={authLayoutContent.brand}
+              width={148}
+              height={36}
+              className="h-8 w-auto lg:h-9"
+            />
           </Link>
           <Link
             to={ROUTES.HOME}
-            className="inline-flex items-center gap-1.5 rounded-lg px-4 py-2 text-label-lg text-on-surface-variant transition-colors hover:bg-surface-container hover:text-on-surface"
+            className="inline-flex min-h-11 items-center gap-1.5 rounded-lg px-2 text-label-lg text-on-surface-variant transition-colors hover:text-on-surface lg:min-h-9"
           >
             <Icon name="arrow_back" className="text-[18px]" />
-            Về trang chủ
+            {authLayoutContent.home}
           </Link>
-        </div>
+        </header>
 
-        <div className="grid w-full min-h-[640px] grid-cols-1 items-stretch gap-space-xl lg:grid-cols-12">
-          {/* Panel trái – ẩn từ lg trở xuống */}
-          <div className="hidden flex-col justify-center gap-space-lg overflow-hidden rounded-xl bg-primary-container p-space-2xl text-on-primary lg:col-span-5 lg:flex">
-            <h2 className="text-headline-xl leading-tight text-on-primary">{title}</h2>
-
-            <div className="flex flex-col gap-space-sm">
-              <div className="h-44 w-full overflow-hidden rounded-lg">
-                <img src={image.src} alt={image.alt} className="h-full w-full object-cover" />
-              </div>
-              <div className="grid grid-cols-2 gap-space-xs text-on-primary">
-                {metrics.map((metric) => (
-                  <div key={metric.label} className="rounded-lg bg-on-primary/5 p-space-xs">
-                    <div className="text-label-sm text-on-primary/70">{metric.label}</div>
-                    <div className="text-headline-md font-bold text-on-primary">{metric.value}</div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* Cột phải – từng route render trong đây */}
-          <div className="flex flex-col justify-center lg:col-span-7">
+        <div className="flex flex-1 items-center justify-center px-4 py-4 md:px-8 lg:px-12 short:lg:py-1">
+          <div className="w-full max-w-xl ld-rise">
             <Outlet />
           </div>
         </div>
 
-        {/* Footer nhỏ */}
-        <div className="flex w-full flex-wrap items-center justify-between gap-space-sm border-t border-surface-container-highest pt-space-md text-body-sm text-on-surface-variant">
-          <div>{footer.copyright}</div>
-        </div>
+        <footer className="px-4 pt-2 pb-4 text-body-sm text-on-surface-variant md:px-8 lg:px-12 lg:pb-6 short:lg:pb-3">
+          {authLayoutContent.copyright}
+        </footer>
       </div>
     </main>
   )

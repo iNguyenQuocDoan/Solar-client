@@ -17,6 +17,9 @@
   --ease-ld: cubic-bezier(0.2, 0, 0, 1);
 }
 
+/* Màn hình thấp (laptop 1366 × 657 sau thanh trình duyệt): màn xác thực thu khoảng đệm để vừa một màn. */
+@custom-variant short (@media (height < 45rem));
+
 /* Header dính cao 64px: cuộn tới anchor hay focus bằng bàn phím không bị header che (WCAG 2.4.11). */
 :root:has(.public-shell) {
   scroll-padding-top: 80px;
