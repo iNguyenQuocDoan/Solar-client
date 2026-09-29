@@ -1,5 +1,5 @@
-import type { Step } from '@/components/ui/stepper'
-import { img } from '@/services/mock'
+import type { Step } from '@/components/common/ui/stepper'
+import { img } from '@/utils/img'
 
 export const property = {
   name: 'Oakwood Residence',

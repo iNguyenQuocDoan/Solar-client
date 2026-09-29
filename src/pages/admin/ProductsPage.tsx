@@ -1,8 +1,8 @@
 import { useMemo, useState } from 'react'
-import { ProductDetailPanel } from '@/components/admin/ProductDetailPanel'
-import { ProductFilterBar, type ProductFilterValue } from '@/components/admin/ProductFilterBar'
-import { ProductsTable } from '@/components/admin/ProductsTable'
-import { Button, IconButton, MetricCard, PageHeader, StatusBadge } from '@/components/stitch-ui'
+import { ProductDetailPanel } from '@/features/products/components/ProductDetailPanel'
+import { ProductFilterBar, type ProductFilterValue } from '@/features/products/components/ProductFilterBar'
+import { ProductsTable } from '@/features/products/components/ProductsTable'
+import { Button, IconButton, MetricCard, PageHeader, StatusBadge } from '@/components/common/stitch-ui'
 import {
   inventoryPanel,
   productCategoryOptions,
@@ -13,7 +13,7 @@ import {
   productsKpis,
   productsPageHeader,
   type ProductRecord,
-} from '@/lib/mock/products'
+} from '@/data/products'
 
 /* Dựng từ product_catalogue/code.html + screen.png. Lọc client-side trên mock. */
 

@@ -3,14 +3,12 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { Controller, useForm, useWatch } from 'react-hook-form'
 import { Link, useParams } from 'react-router'
 import { z } from 'zod'
-import {
-  ActionDock,
-  FieldSection,
-  RadioCardGroup,
-  SectionCard,
-  SurveyBaselineAside,
-  TaskHeaderCard,
-} from '@/components/tech'
+import { ActionDock } from '@/components/common/tech/ActionDock'
+import { FieldSection } from '@/features/surveys/components/FieldSection'
+import { RadioCardGroup } from '@/components/common/tech/RadioCardGroup'
+import { SectionCard } from '@/components/common/tech/SectionCard'
+import { SurveyBaselineAside } from '@/features/surveys/components/SurveyBaselineAside'
+import { TaskHeaderCard } from '@/features/surveys/components/TaskHeaderCard'
 import {
   Breadcrumb,
   Button,
@@ -26,16 +24,16 @@ import {
   StatusBadge,
   Toast,
   buttonVariants,
-} from '@/components/stitch-ui'
-import { ROUTES, surveyPhotosPath } from '@/constants/routes'
-import { cn } from '@/lib/cn'
-import { notFound } from '@/lib/notFound'
+} from '@/components/common/stitch-ui'
+import { ROUTES, surveyPhotosPath } from '@/routes/paths'
+import { cn } from '@/utils/cn'
+import { notFound } from '@/routes/notFound'
 import {
   getSurveyById,
   getSurveyVerificationById,
   type SurveyRecord,
   type SurveyVerification,
-} from '@/lib/mock/surveys'
+} from '@/data/surveys'
 
 /* Dựng từ site_survey_verification/code.html + screen.png. */
 

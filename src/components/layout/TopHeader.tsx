@@ -1,6 +1,6 @@
 import { Link } from 'react-router'
-import { Icon } from '@/components/stitch-ui/Icon'
-import { cn } from '@/lib/cn'
+import { Icon } from '@/components/common/stitch-ui/Icon'
+import { cn } from '@/utils/cn'
 
 /*
  * Class lấy từ <header> của admin_dashboard/code.html và my_tasks_1/code.html.

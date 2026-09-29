@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
-import { PermissionMatrix } from '@/components/admin/PermissionMatrix'
-import { RoleCard } from '@/components/admin/RoleCard'
+import { PermissionMatrix } from '@/features/roles/components/PermissionMatrix'
+import { RoleCard } from '@/features/roles/components/RoleCard'
 import {
   Breadcrumb,
   Button,
@@ -12,8 +12,8 @@ import {
   SearchInput,
   StatusBadge,
   Toast,
-} from '@/components/stitch-ui'
-import { cn } from '@/lib/cn'
+} from '@/components/common/stitch-ui'
+import { cn } from '@/utils/cn'
 import {
   auditTrailFooter,
   governanceCallout,
@@ -26,7 +26,7 @@ import {
   rolesToasts,
   systemRolesPanel,
   type RoleId,
-} from '@/lib/mock/roles'
+} from '@/data/roles'
 
 /* Dựng từ roles_permissions/code.html + screen.png. */
 

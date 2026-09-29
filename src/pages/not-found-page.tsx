@@ -1,6 +1,6 @@
 import { isRouteErrorResponse, useRouteError } from 'react-router'
-import { Button, ButtonLink } from '@/components/ui/button'
-import { ROUTES } from '@/constants/routes'
+import { Button, ButtonLink } from '@/components/common/ui/button'
+import { ROUTES } from '@/routes/paths'
 
 /* Root error boundary: 404s and unexpected render errors land here. */
 export function NotFoundPage() {

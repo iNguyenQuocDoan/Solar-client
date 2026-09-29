@@ -1,10 +1,10 @@
 import { useNavigate } from 'react-router'
-import { CompletedTaskCard } from '@/components/tech/CompletedTaskCard'
-import { ScheduleList } from '@/components/tech/ScheduleList'
-import { SectionHeading } from '@/components/tech/SectionHeading'
-import { StatRibbon } from '@/components/tech/StatRibbon'
-import { TaskCard } from '@/components/stitch-ui'
-import { techTaskPath } from '@/constants/routes'
+import { CompletedTaskCard } from '@/features/dashboard/components/CompletedTaskCard'
+import { ScheduleList } from '@/features/dashboard/components/ScheduleList'
+import { SectionHeading } from '@/features/dashboard/components/SectionHeading'
+import { StatRibbon } from '@/features/dashboard/components/StatRibbon'
+import { TaskCard } from '@/components/common/stitch-ui'
+import { techTaskPath } from '@/routes/paths'
 import {
   completedHeading,
   dailyStats,
@@ -14,7 +14,7 @@ import {
   todayHeading,
   upcomingHeading,
   upcomingSchedule,
-} from '@/lib/mock/techDashboard'
+} from '@/data/techDashboard'
 
 /* Dựng từ technician_dashboard_1/code.html + screen.png. */
 export function TechDashboardPage() {

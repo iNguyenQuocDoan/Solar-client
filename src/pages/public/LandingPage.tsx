@@ -9,8 +9,8 @@ import {
   TrackingSection,
   TrustSection,
   VoicesSection,
-} from '@/components/landing'
-import { pageTitle } from '@/lib/mock/landing'
+} from '@/features/landing/components'
+import { pageTitle } from '@/data/landing'
 
 /*
   Trang chủ công khai "/" – website bán hàng của công ty thi công điện mặt trời áp mái cho doanh nghiệp

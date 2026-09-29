@@ -1,17 +1,17 @@
 import { useState } from 'react'
 import { useParams } from 'react-router'
-import { EvidenceGroup } from '@/components/tech/EvidenceGallery'
-import { ExecutionStepList } from '@/components/tech/ExecutionStepList'
-import { JobHeaderCard } from '@/components/tech/JobHeaderCard'
-import { SectionCard } from '@/components/tech/SectionCard'
-import { StatTile } from '@/components/tech/StatTile'
-import { YieldImpactChart } from '@/components/tech/YieldImpactChart'
-import { Icon, ProgressBar, Toast } from '@/components/stitch-ui'
-import { cn } from '@/lib/cn'
-import { getMaintenanceTask, protocolVerifiedLabel, type MaintenanceStep } from '@/lib/mock/maintenance'
-import { notFound } from '@/lib/notFound'
+import { EvidenceGroup } from '@/components/common/tech/EvidenceGallery'
+import { ExecutionStepList } from '@/components/common/tech/ExecutionStepList'
+import { JobHeaderCard } from '@/components/common/tech/JobHeaderCard'
+import { SectionCard } from '@/components/common/tech/SectionCard'
+import { StatTile } from '@/components/common/tech/StatTile'
+import { YieldImpactChart } from '@/features/warranty/components/YieldImpactChart'
+import { Icon, ProgressBar, Toast } from '@/components/common/stitch-ui'
+import { cn } from '@/utils/cn'
+import { getMaintenanceTask, protocolVerifiedLabel, type MaintenanceStep } from '@/data/maintenance'
+import { notFound } from '@/routes/notFound'
 
-/* Dựng từ maintenance_task/code.html + screen.png. Dữ liệu lấy từ lib/mock/maintenance.ts. */
+/* Dựng từ maintenance_task/code.html + screen.png. Dữ liệu lấy từ data/maintenance.ts. */
 
 const sensorToneClasses = { default: 'text-on-surface', secondary: 'text-secondary-container' } as const
 const signOffToneClasses = { default: 'text-on-surface', primary: 'text-primary' } as const

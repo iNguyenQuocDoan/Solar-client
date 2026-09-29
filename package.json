@@ -10,7 +10,7 @@
     "typecheck": "tsc -b",
     "lint": "oxlint",
     "prepare": "git config core.hooksPath .githooks || exit 0",
-    "gen:api": "npx -y openapi-typescript@7 docs/api/swagger.json -o src/lib/api/schema.d.ts"
+    "gen:api": "npx -y openapi-typescript@7 docs/api/swagger.json -o src/types/api-schema.d.ts"
   },
   "dependencies": {
     "@fontsource-variable/schibsted-grotesk": "^5.3.0",
