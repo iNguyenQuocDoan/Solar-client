@@ -1,8 +1,49 @@
 # Landing "/" – Design brief
 
-Trạng thái: **đã duyệt ngày 29/09/2026 và đã dựng.** Báo cáo dựng và kiểm tra: `landing-report.md`.
+Trạng thái: **bản 2 đã dựng (29/09/2026)** – xem mục "Bản 2" ngay dưới; phần H1 phía sau là lịch sử. Báo cáo: `landing-report.md`.
 Ngày: 28/09/2026. Nguồn khảo sát Pha 0: bốn báo cáo trong scratchpad của phiên (kiểm kê nội dung,
 product moment, trang cùng ngành, ảnh chụp portal). Mọi đường dẫn tính từ `Solar-Client/`.
+
+---
+
+# Bản 2 – lời giới thiệu sản phẩm (29/09/2026)
+
+**Vì sao làm lại.** Người dùng xem bản H1 và nhận xét trang "giống một cái quy trình, không phải landing
+page bán hàng giới thiệu sản phẩm". Đúng: section 2–5 chạy theo vòng đời dự án (khảo sát → báo giá → thi
+công → bảo hành); tiêu đề mô tả cách vận hành; signature "bạn khai → đo lại" là một quy trình thu nhỏ lặp 7
+lần; màn đầu bán một bước khảo sát chứ không bán sản phẩm. Bản H1 chỉ gỡ ký hiệu trình tự (số, đường nối)
+mà giữ xương sống quy trình.
+
+**Xương sống mới** (người dùng duyệt):
+
+| # | Câu người mua hỏi | Section | Hình thức |
+|---|---|---|---|
+| 1 | Đây là gì, tôi được gì? | Màn đầu: "Điện mặt trời áp mái cho nhà ở, bớt đúng phần điện đắt nhất trên hoá đơn" | H1 + đoạn dẫn + nút + bậc thang giá điện tương tác |
+| 2 | Tôi mua được những gì? | Trọn gói gồm thiết bị, thi công, thủ tục và bảo hành | Ảnh `[CẦN]` + bảng thông số 8 mục song song |
+| 3 | Có hợp với nhà tôi không? | Nhà dùng trên 200 kWh mỗi tháng đang trả từ 2.998 đ cho mỗi kWh vượt mức | 3 đoạn: tiền điện, giờ dùng điện, mái nhà |
+| 4 | Sao chọn Smart Solar? | Những thứ Smart Solar cho bạn xem, thay vì chỉ nói qua điện thoại | 4 điểm song song xếp theo mức quan trọng (tiền → hỏng hóc → thi công → số đo), mỗi điểm một khối màn thật |
+| 5 | Thủ tục, bán điện dư, hoàn vốn? | Câu hỏi thường gặp (5 câu, có nguồn) | `<details>` |
+| 6 | Bắt đầu thế nào? | Để khảo sát sơ bộ, bạn cần địa chỉ, kích thước mái và một ảnh mái | Danh sách 4 thứ + nút; chỗ duy nhất nói trình tự |
+
+**Signature mới: bậc thang giá điện** (`src/components/landing/tariff-ladder.tsx`). Nguồn: thứ chủ nhà nào
+cũng cầm trên tay – hoá đơn tiền điện 6 bậc. 6 cột cao theo đơn giá; trong cột, xám là điện mua từ lưới,
+xanh là điện tấm pin thay; hai thanh kéo là số của người xem (mặc định 450 kWh dùng, 200 kWh thay). Câu kết
+quả bằng HTML: "Tiền điện mỗi tháng từ 1.247.500 đ còn 589.600 đ, bớt 657.900 đ. Mỗi kWh tấm pin thay đáng
+3.290 đ, cao hơn giá trung bình 2.772 đ của cả hoá đơn." Chỉ là phép tính trên biểu giá – không % tiết
+kiệm, không sản lượng cam kết.
+
+**Dữ kiện có nguồn mới:** biểu giá bán lẻ điện sinh hoạt 6 bậc 1.984 / 2.050 / 2.380 / 2.998 / 3.350 /
+3.460 đ/kWh (chưa VAT), Quyết định 1279/QĐ-BCT ngày 09/05/2025, áp dụng từ 10/05/2025. Đến 29/09/2026 mục
+"Giá điện" của EVN chỉ có văn bản về cơ chế điều chỉnh (NĐ 278/2026, VBHN 68/2026), chưa có biểu giá mới.
+Số liệu nằm ở `src/lib/electricity-tariff.ts`.
+
+**Giữ từ bản H1:** token, font Be Vietnam Pro, khung tài khoản, cặp đối chiếu (chỉ còn là bằng chứng của
+một điểm trong section 4), FAQ, header không có menu theo giai đoạn.
+
+**Kiểm màu biểu đồ** (skill dataviz, `validate_palette.js`): xám `--line-2` / xanh `--accent` tách nhau ΔE
+CVD 17,7 (light) và 22,1 (dark), mắt thường 21,5 / 25,5, contrast ≥ 3:1. Hai cảnh báo "chroma thấp" và "độ
+sáng accent" là cố ý (xám là nền; accent là màu thương hiệu) → có nhãn trực tiếp và chú thích 3 mục để màu
+không phải kênh duy nhất.
 
 ---
 

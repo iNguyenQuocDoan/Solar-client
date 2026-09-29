@@ -107,7 +107,7 @@ src/
     layout/TopHeader.tsx
     ui/                        # shadcn + component dùng chung (StatusBadge, MetricCard, DataTable, TaskCard, TimelineStep, ChecklistItem, PhotoGrid…)
     admin/  tech/              # component riêng theo nhóm màn
-    landing/                   # section trang chủ + ReconcilePair (cặp đối chiếu), AccountFrame, PhotoSlot
+    landing/                   # section trang chủ + TariffLadder (bậc thang giá điện), ReconcilePair, AccountFrame, PhotoSlot
     auth/                      # PasswordRules, ForbiddenCard, SessionExpiredModal, ChangePasswordDialog
   lib/mock/                    # dữ liệu giả cho từng màn (UI), KHÔNG còn mock auth
   lib/api/                     # schema.d.ts (sinh tự động), client.ts, auth.ts, errors.ts, tokens.ts, me.ts
@@ -134,9 +134,11 @@ Khảo sát, Lắp đặt, Bảo hành & bảo trì, Lịch làm việc; cuối 
 
 Trang chủ và các màn xác thực KHÔNG dùng `AppShell`/sidebar.
 
-- `PublicLayout` + trang chủ `/`: thiết kế theo `docs/design/landing-brief.md` (hướng H1 "hai con số
-  của cùng một mái nhà"). Header dính 56/64px: tên, "Câu hỏi thường gặp", "Đăng nhập", nút
-  "Tạo tài khoản" → `/register`; KHÔNG có menu đặt tên theo giai đoạn. Footer một hàng.
+- `PublicLayout` + trang chủ `/`: thiết kế theo `docs/design/landing-brief.md` (mục "Bản 2": lời giới
+  thiệu sản phẩm, signature là bậc thang giá điện EVN tương tác). Trang KHÔNG được xếp theo vòng đời
+  dự án (khảo sát → báo giá → thi công → bảo hành). Header dính 56/64px: tên, "Trọn gói", "Câu hỏi
+  thường gặp", "Đăng nhập", nút "Đăng ký khảo sát" → `/register`. Footer một hàng. Biểu giá điện ở
+  `src/lib/electricity-tariff.ts` (có nguồn) – đổi giá chỉ sửa file này.
   Token riêng (`font-vn`, `max-w-landing`, `ld-*`, `.pair*`) ở `src/styles/landing.css`; màu dùng lại
   token portal. Nội dung ở `src/lib/mock/landing.ts`: chỉ dữ liệu minh hoạ của một căn nhà mẫu,
   chỗ thiếu dữ kiện thật để dạng `{ need }` và hiện `[CẦN: …]`. KHÔNG thêm số liệu công ty, đối tác,

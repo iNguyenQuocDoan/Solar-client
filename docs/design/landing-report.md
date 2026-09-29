@@ -1,5 +1,36 @@
 # Landing "/" – báo cáo dựng và kiểm tra (Pha 6)
 
+## Bản 2 (29/09/2026, sau phản hồi "giống quy trình")
+
+Xương sống, signature và nguồn: `landing-brief.md`, mục "Bản 2". Các mục 1–10 bên dưới là của bản H1;
+những gì còn đúng cho bản 2 được ghi lại ở đây.
+
+**File:** thêm `src/lib/electricity-tariff.ts`, `components/landing/{tariff-ladder,offer-section,fit-section,proof-section}.tsx`;
+viết lại `hero-section`, `start-section`, `mock/landing.ts`; xoá `survey/quote/build/warranty-section.tsx`;
+`lib/format.ts` thêm `fmt.vnNum`, `fmt.vnd` (khoảng trắng không ngắt trước "đ"); header thêm link "Trọn gói",
+nút đổi thành "Đăng ký khảo sát".
+
+**Đã xác minh bằng render** (ảnh trong scratchpad của phiên, bản cuối chép vào `ui-audit-shots/landing/v2/`):
+- 360, 390, 768, 1024, 1440, 1920 và dark 1440: không vỡ; 1440 và 390 nút chính trong màn đầu.
+- Đọc riêng tiêu đề section: lời giới thiệu sản phẩm, không có tên giai đoạn; khối trình tự duy nhất ở cuối.
+- Blur: tiêu đề → cột xanh của biểu đồ → nút. Grayscale: xám và xanh vẫn tách được bằng độ sáng.
+- Bàn phím: 27 điểm dừng (gồm 2 thanh kéo, 6 cột biểu đồ có nhãn đầy đủ cho trình đọc màn hình), đều có
+  outline, không bị header che; heading H1 → H2 → H3 đúng thứ tự; FAQ mở bằng Enter. Vùng bấm < 24px chỉ
+  còn hai link "Đăng nhập" nằm trong câu (ngoại lệ inline của WCAG 2.5.8).
+- Typecheck, lint (không cảnh báo mới), build đạt; chunk `LandingPage` 17,5 KB (5,1 KB gzip).
+
+**Chưa kiểm cho bản 2:** Lighthouse và trace hiệu năng (bản H1: a11y 100, LCP lab 2.421 ms), so pixel các
+trang dùng chung (bản 2 không sửa token hay `PublicLayout` ngoài header), Safari, trình đọc màn hình thật.
+
+**Placeholder mới/giữ:** tấm pin, inverter (hãng, model, công suất); quy cách khung, chân đế, dây, tủ; Mẫu 01
+có làm hộ không; thời hạn bảo hành thiết bị và thi công; điều khoản chi phí bảo hành; loại mái nhận lắp và
+diện tích tối thiểu; cách tính hoàn vốn trong báo giá; đơn giá tham khảo; pháp nhân và liên hệ; ảnh hệ thống
+đã lắp; ảnh OG; logo thật.
+
+---
+
+## Bản H1 (lịch sử)
+
 Ngày 29/09/2026. Brief, direction và quyết định đã chốt: `landing-brief.md`.
 Ảnh bằng chứng (ngoài repo): `D:\Solar-capstone\ui-audit-shots\landing\` (`before/`, `after/`, `lighthouse-mobile.html`).
 
