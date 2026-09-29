@@ -1,4 +1,4 @@
-import type { components } from '@/types/api-schema'
+import type { ApiErrorBody } from '@/types/res/apiRes'
 
 /*
  * Lỗi API.
@@ -13,8 +13,6 @@ import type { components } from '@/types/api-schema'
  *   2. `message` của server (hiện đang là tiếng Anh) cho mã lạ;
  *   3. câu tiếng Việt theo HTTP status khi không có message.
  */
-
-export type RawApiError = components['schemas']['ApiError']
 
 /** Lỗi theo từng field, đã chuẩn hoá về { tenField: "thông báo đầu tiên" }. */
 export type FieldErrors = Record<string, string>
@@ -149,13 +147,13 @@ export function parseFieldErrors(details: unknown): FieldErrors {
 
 /** Dựng ApiError từ payload lỗi của server (đã có wrapper hoặc chỉ có ApiError). */
 export function toApiError(status: number, body: unknown): ApiError {
-  let raw: RawApiError | null = null
+  let raw: ApiErrorBody | null = null
   let traceId: string | null = null
 
   if (isRecord(body)) {
     traceId = firstString(body.traceId)
-    if (isRecord(body.error)) raw = body.error as RawApiError
-    else if ('code' in body || 'message' in body) raw = body as RawApiError
+    if (isRecord(body.error)) raw = body.error as ApiErrorBody
+    else if ('code' in body || 'message' in body) raw = body as ApiErrorBody
   }
 
   const code = firstString(raw?.code)

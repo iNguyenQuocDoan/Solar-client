@@ -1,7 +1,9 @@
 import axios, { AxiosError, AxiosHeaders, type AxiosRequestConfig, type InternalAxiosRequestConfig } from 'axios'
 import { ApiError, messageForStatus, toApiError } from '@/services/api/errors'
 import { clearTokens, getAccessToken, getRefreshToken, saveTokens } from '@/services/api/tokens'
-import type { components } from '@/types/api-schema'
+import type { RefreshTokenRequest } from '@/types/req/authReq'
+import type { ApiResponse } from '@/types/res/apiRes'
+import type { AuthTokensResponse } from '@/types/res/authRes'
 
 /*
  * Axios instance dùng chung.
@@ -55,7 +57,6 @@ apiClient.interceptors.request.use((config) => {
 
 /* ---------------------------------------------------------------- refresh */
 
-type AuthTokensResponse = components['schemas']['AuthTokensResponse']
 
 /** Promise của lần refresh đang chạy; các 401 khác chờ vào đây thay vì gọi thêm. */
 let refreshInFlight: Promise<string> | null = null
@@ -70,11 +71,11 @@ async function requestNewAccessToken(): Promise<string> {
 
   const response = await axios.post<unknown>(
     `${baseURL}/auth/refresh`,
-    { refreshToken } satisfies components['schemas']['RefreshTokenRequest'],
+    { refreshToken } satisfies RefreshTokenRequest,
     { headers: { 'Content-Type': 'application/json' } },
   )
 
-  const body = response.data as { isSuccess?: boolean; data?: AuthTokensResponse } | null
+  const body = response.data as ApiResponse<AuthTokensResponse> | null
   const tokens = body?.data
   if (!tokens?.accessToken || !tokens.refreshToken) {
     throw new ApiError({ status: 401, message: 'Phiên đăng nhập không còn hiệu lực.' })
@@ -107,7 +108,7 @@ type RetriableConfig = InternalAxiosRequestConfig & { _retried?: boolean }
 apiClient.interceptors.response.use(
   // Mở wrapper: trả thẳng `data` bên trong *ApiResponse.
   (response) => {
-    const body = response.data as { isSuccess?: boolean; data?: unknown; error?: unknown } | null
+    const body = response.data as ApiResponse<unknown> | null
 
     if (body && typeof body === 'object' && 'isSuccess' in body) {
       if (body.isSuccess === false) throw toApiError(response.status, body)
