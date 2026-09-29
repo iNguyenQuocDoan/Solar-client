@@ -1,33 +1,35 @@
 import { Link } from 'react-router'
 import { ROUTES } from '@/constants/routes'
-import { hero } from '@/lib/mock/landing'
-import { LANDING_CONTAINER, TEXT_LINK, ctaClass } from './classes'
-import { TariffLadder } from './tariff-ladder'
+import { cx } from '@/lib/cx'
+import { hero, projects } from '@/lib/mock/landing'
+import { TEXT_LINK, ctaClass } from './classes'
+import { LandingPhoto } from './photo'
 
 /*
-  Màn đầu: sản phẩm và lợi ích chính (bớt phần điện giá cao nhất), rồi hành động chính, rồi
-  bậc thang giá điện để người xem tự thấy lợi ích đó với số của nhà mình.
+  Bạn là ai, bạn làm gì. Ảnh công trình tràn hết bề ngang; trên desktop khối chữ nền trang cắt vào
+  góc dưới trái của ảnh (chữ không đè lên ảnh nên không cần lớp phủ tối). Mobile: ảnh 4:3, chữ bên dưới.
 */
 export function HeroSection() {
   return (
-    <section aria-labelledby="hero-title" className="pt-10 lg:pt-16">
-      <div className={LANDING_CONTAINER}>
-        <h1 id="hero-title" className="ld-h1 max-w-3xl text-fg">
-          {hero.title}
-        </h1>
-        <p className="mt-4 max-w-2xl ld-lede text-fg-2 lg:mt-5">{hero.lede}</p>
-        <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-6 lg:mt-8">
-          <Link to={ROUTES.REGISTER} className={ctaClass()}>
-            {hero.cta}
-          </Link>
-          <p className="ld-meta text-fg-2">
-            {hero.hasAccount}{' '}
-            <Link to={ROUTES.LOGIN} className={TEXT_LINK}>
-              {hero.login}
+    <section aria-labelledby="hero-title" className="relative">
+      <div className="ld-hero-frame overflow-hidden bg-surface-3">
+        <LandingPhoto shot={hero.photo} sizes="100vw" priority />
+      </div>
+      <div className="ld-hero-card bg-canvas">
+        <div className="max-w-3xl">
+          <h1 id="hero-title" className="ld-display text-fg">
+            {hero.title}
+          </h1>
+          <p className="mt-4 max-w-xl ld-lede text-fg-2 lg:mt-5">{hero.lede}</p>
+          <div className="mt-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-8 lg:mt-8">
+            <Link to={ROUTES.REGISTER} className={ctaClass()}>
+              {hero.cta}
             </Link>
-          </p>
+            <a href={`#${projects.id}`} className={cx(TEXT_LINK, 'ld-action')}>
+              {hero.secondary}
+            </a>
+          </div>
         </div>
-        <TariffLadder className="mt-12 lg:mt-16" />
       </div>
     </section>
   )

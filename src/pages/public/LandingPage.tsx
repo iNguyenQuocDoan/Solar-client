@@ -1,11 +1,22 @@
 import { useEffect } from 'react'
 import { useLocation } from 'react-router'
-import { FaqSection, FitSection, HeroSection, OfferSection, ProofSection, StartSection } from '@/components/landing'
+import {
+  BenefitsSection,
+  CtaSection,
+  HeroSection,
+  ProjectsSection,
+  StatementSection,
+  TrackingSection,
+  TrustSection,
+  VoicesSection,
+} from '@/components/landing'
 import { pageTitle } from '@/lib/mock/landing'
 
 /*
-  Trang chủ công khai "/" – lời giới thiệu sản phẩm, không phải quy trình (docs/design/landing-brief.md):
-  sản phẩm và lợi ích → trọn gói gồm gì → nhà nào hợp → những thứ Smart Solar cho xem → câu hỏi → đăng ký.
+  Trang chủ công khai "/" – website bán hàng của công ty thi công điện mặt trời áp mái cho doanh nghiệp
+  (docs/design/landing-brief.md, mục "Bản 4"). Mỗi section trả lời một câu hỏi bán hàng và có bố cục
+  riêng, ảnh lớn xen section chữ: bạn là ai → công trình → khách hàng nói gì (khi có dữ liệu) → vì sao
+  tin → doanh nghiệp nhận được gì → theo dõi công trình → bắt đầu.
 */
 export function LandingPage() {
   const { hash } = useLocation()
@@ -20,11 +31,13 @@ export function LandingPage() {
     <>
       <title>{pageTitle}</title>
       <HeroSection />
-      <OfferSection />
-      <FitSection />
-      <ProofSection />
-      <FaqSection />
-      <StartSection />
+      <StatementSection />
+      <ProjectsSection />
+      <VoicesSection />
+      <TrustSection />
+      <BenefitsSection />
+      <TrackingSection />
+      <CtaSection />
     </>
   )
 }
