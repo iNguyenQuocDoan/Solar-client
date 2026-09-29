@@ -134,7 +134,9 @@ apiClient.interceptors.response.use(
 
     const { status, data } = axiosError.response
 
-    const canRetry = status === 401 && config && !config._retried && !isPublicPath(config.url)
+    // Không có refreshToken = khách chưa đăng nhập: trả 401 cho màn hình tự xử lý, không bật "hết phiên".
+    const canRetry =
+      status === 401 && config && !config._retried && !isPublicPath(config.url) && getRefreshToken() !== null
     if (canRetry) {
       config._retried = true
       try {

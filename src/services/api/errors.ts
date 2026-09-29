@@ -60,6 +60,8 @@ const ERROR_MESSAGES: Record<string, string> = {
   AUTH_REFRESH_TOKEN_INVALID: 'Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.',
   AUTH_UNAUTHORIZED: 'Bạn cần đăng nhập để thực hiện thao tác này.',
   AUTH_TOO_MANY_REQUESTS: 'Bạn thao tác quá nhanh. Vui lòng chờ ít phút rồi thử lại.',
+  // /api/products và /api/admin/products (quan sát ngày 29/09/2026)
+  CATALOG_PRODUCT_NOT_FOUND: 'Không tìm thấy sản phẩm. Có thể sản phẩm đã bị xoá.',
 }
 
 /** Bản dịch theo mã lỗi; chưa có trong bảng thì trả null. */

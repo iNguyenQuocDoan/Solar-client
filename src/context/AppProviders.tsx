@@ -2,8 +2,19 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import type { ReactNode } from 'react'
 import { Toaster } from 'sonner'
 import { AuthProvider } from '@/context/AuthProvider'
+import { isApiError } from '@/services/api/errors'
 
-const queryClient = new QueryClient()
+/* Lỗi 4xx (chưa đăng nhập, không có quyền, không tìm thấy…) thử lại cũng không khỏi: báo ngay. */
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: (failureCount, error) => {
+        if (isApiError(error) && error.status >= 400 && error.status < 500) return false
+        return failureCount < 2
+      },
+    },
+  },
+})
 
 /*
  * Toast dùng sonner, restyle theo Toast cũ trong roles_permissions:

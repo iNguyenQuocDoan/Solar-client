@@ -135,15 +135,15 @@ Quy tắc đặt file (tái cấu trúc 29/09/2026):
 - DTO nằm ở `src/types/`: request trong `types/req/<nghiệp vụ>Req.ts`, response trong
   `types/res/<nghiệp vụ>Res.ts`. Các file này sinh từ swagger (không tự đoán field, không sửa tay);
   service và hook import kiểu từ đây.
-- Nghiệp vụ chưa có endpoint (mọi thứ trừ auth) đọc dữ liệu từ `data/*.ts`. Khi backend có
+- Nghiệp vụ chưa có endpoint (mọi thứ trừ auth và sản phẩm) đọc dữ liệu từ `data/*.ts`. Khi backend có
   endpoint: thêm `types/req|res/<nghiệp vụ>*.ts`, rồi `services/` + `hooks/` vào feature đó rồi bỏ file trong `data/`.
 
 ## Layout chung
 
 Mọi màn đều dùng 1 shell: `<aside>` cố định bên trái `w-72` nền `surface-container-lowest`, `<header>` trên cùng, `<main>` nền `surface`. Làm 1 lần trong layout route (`AdminLayout` / `TechLayout` với `<Outlet/>`), KHÔNG copy sidebar vào từng page.
 
-Menu Admin (subtitle "Quản trị hệ thống"): Tổng quan, Người dùng, Vai trò & quyền, Danh mục
-sản phẩm, Danh mục dịch vụ, Nhóm hàng, Kho tri thức AI, Cấu hình kỹ thuật, Báo cáo, Cài đặt hệ thống.
+Menu Admin (subtitle "Quản trị hệ thống"): Tổng quan, Người dùng, Vai trò & quyền, Sản phẩm,
+Danh mục dịch vụ, Nhóm hàng, Kho tri thức AI, Cấu hình kỹ thuật, Báo cáo, Cài đặt hệ thống.
 
 Menu Kỹ thuật viên (subtitle "Kỹ thuật hiện trường"): Tổng quan, Việc của tôi (badge số),
 Khảo sát, Lắp đặt, Bảo hành & bảo trì, Lịch làm việc; cuối sidebar là khối user (tên, chức danh)
@@ -156,7 +156,7 @@ Trang chủ và các màn xác thực KHÔNG dùng `AppShell`/sidebar.
 - `PublicLayout` + trang chủ `/`: website bán hàng của công ty thi công điện mặt trời áp mái cho
   **doanh nghiệp** (nhà xưởng, kho, toà nhà) – `docs/design/landing-brief.md`, mục "Bản 4". Ảnh lớn,
   chữ lớn, mỗi section một bố cục; KHÔNG đặt bảng dữ liệu, màn tài khoản, biểu giá hay quy trình theo
-  giai đoạn lên trang (giao diện hệ thống chỉ một thẻ ở section theo dõi). Header dính: "Công trình",
+  giai đoạn lên trang (giao diện hệ thống chỉ một thẻ ở section theo dõi). Header dính: "Sản phẩm" (→ `/products`), "Công trình",
   "Năng lực thi công", "Đăng nhập", nút "Nhận khảo sát" → `/register`. Nội dung ở
   `src/data/landing.ts`; ảnh thật đặt `src` cho từng `Shot`; lời khách và con số chỉ thêm khi có
   nguồn. Token riêng (`font-vn`, `max-w-landing`, `ld-*`) ở `src/styles/landing.css`.
@@ -184,6 +184,7 @@ Trang chủ và các màn xác thực KHÔNG dùng `AppShell`/sidebar.
 | `/verify-email`   | `AuthLayout`   | `VerifyEmailPage`                                           |
 | `/403`            | `AuthLayout`   | `ForbiddenPage`                                             |
 | `/coming-soon`    | `PublicLayout` | Trang tạm cho Kinh doanh, Quản lý, Khách hàng               |
+| `/products`, `/products/:id` | `PublicLayout` | Danh mục sản phẩm công khai – GET /api/products(/{id}) |
 | `/admin/*`        | `AdminLayout`  | 4 màn admin – bọc `<RequireRole role="admin">`              |
 | `/tech/*`         | `TechLayout`   | 10 màn technician – bọc `<RequireRole role="technician">`   |
 | `/customer/*`     | `CustomerLayout` | Portal khách hàng – bọc `<RequireRole role="customer">`  |
