@@ -1,8 +1,45 @@
 # Landing "/" – Design brief
 
-Trạng thái: **bản 2 đã dựng (29/09/2026)** – xem mục "Bản 2" ngay dưới; phần H1 phía sau là lịch sử. Báo cáo: `landing-report.md`.
+Trạng thái: **bản 4 – website bán hàng cho doanh nghiệp (29/09/2026)**, xem mục ngay dưới. Các bản 2, H1 phía sau là lịch sử.
 Ngày: 28/09/2026. Nguồn khảo sát Pha 0: bốn báo cáo trong scratchpad của phiên (kiểm kê nội dung,
 product moment, trang cùng ngành, ảnh chụp portal). Mọi đường dẫn tính từ `Solar-Client/`.
+
+---
+
+# Bản 4 – website bán hàng cho doanh nghiệp (29/09/2026)
+
+**Người dùng chỉnh ba lần trong ngày:**
+1. Bản H1 và bản 2 "giống quy trình / dashboard": đặt màn tài khoản, bảng báo giá, phiếu bảo hành, nhật
+   ký thi công lên trang. Người mua không cần xem giao diện quản trị.
+2. Brief marketing: website của một **công ty thi công** – ảnh công trình lớn, chữ lớn, bố cục editorial,
+   mỗi section trả lời một câu hỏi (bạn là ai, làm gì, vì sao tin, công trình trông thế nào, tôi nhận
+   được gì, theo dõi ra sao, bắt đầu thế nào), giao diện hệ thống tối đa 1–2 section.
+3. **Đối tượng là doanh nghiệp** (nhà xưởng, kho bãi, toà nhà), không phải chủ nhà – giả định G3 bên
+   dưới là sai và chưa từng được xác nhận. Và **không cần giá, biểu giá hay quy định**, chỉ bán hàng.
+
+**Trang hiện tại** (`src/pages/public/LandingPage.tsx`, nội dung ở `src/lib/mock/landing.ts`):
+
+| Section | Câu hỏi | Bố cục |
+|---|---|---|
+| Hero | Bạn là ai, làm gì | Ảnh mái nhà xưởng tràn màn; khối chữ nền trang cắt vào góc dưới trái, chữ 64px |
+| Tuyên bố | Vì sao nên lắp | Chỉ chữ 44px, lệch vào cột 3 |
+| Công trình | Công trình trông thế nào | 1 ảnh lớn + 2 ảnh nhỏ, cặp ảnh trước/sau |
+| (Khách hàng nói gì) | Tin được không | Chỉ hiện khi có lời khách hoặc con số thật (`testimonials`, `stats` đang rỗng) |
+| Năng lực thi công | Vì sao tin | Split: ảnh kỹ thuật viên 6 cột + 3 điểm |
+| Doanh nghiệp nhận được gì | Tôi nhận được gì | Chỉ chữ: 3 lợi ích lớn, trọn gói bên dưới |
+| Theo dõi công trình | Theo dõi ra sao | Split: 3 dòng + **một** thẻ giao diện (visual hệ thống duy nhất) |
+| CTA | Bắt đầu thế nào | Dải xanh thương hiệu tràn màn, nút đảo màu |
+
+**Đã bỏ:** biểu đồ giá điện và `electricity-tariff.ts`, FAQ pháp lý, cặp số đối chiếu, khung màn tài khoản.
+
+**Ảnh cần người dùng cung cấp** (đang là khung "Ảnh cần bổ sung"): công trình nhà xưởng (flycam),
+mái kho, mái toà nhà, cặp trước/sau cùng góc, kỹ thuật viên thi công trên mái, ảnh thi công trong ngày.
+**Ảnh hero** dùng `public/images/Hero.png` (người dùng thả vào; bản WebP 960/1672 sinh từ đó). Ảnh là nhà
+kho kiểu Mỹ, trông như ảnh dựng hoặc ảnh stock – trang KHÔNG chú thích nó là công trình của Smart Solar;
+cần thay bằng ảnh công trình thật trước khi công bố.
+
+**Còn thiếu để bán hàng mạnh hơn** (không bịa): lời khách hàng doanh nghiệp, số công trình / tổng công suất
+đã lắp có nguồn, logo khách hàng được phép dùng, chứng chỉ thật.
 
 ---
 

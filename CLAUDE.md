@@ -107,7 +107,7 @@ src/
     layout/TopHeader.tsx
     ui/                        # shadcn + component dùng chung (StatusBadge, MetricCard, DataTable, TaskCard, TimelineStep, ChecklistItem, PhotoGrid…)
     admin/  tech/              # component riêng theo nhóm màn
-    landing/                   # section trang chủ + TariffLadder (bậc thang giá điện), ReconcilePair, AccountFrame, PhotoSlot
+    landing/                   # section trang chủ (hero, công trình, năng lực, lợi ích, theo dõi, CTA) + LandingPhoto
     auth/                      # PasswordRules, ForbiddenCard, SessionExpiredModal, ChangePasswordDialog
   lib/mock/                    # dữ liệu giả cho từng màn (UI), KHÔNG còn mock auth
   lib/api/                     # schema.d.ts (sinh tự động), client.ts, auth.ts, errors.ts, tokens.ts, me.ts
@@ -134,15 +134,13 @@ Khảo sát, Lắp đặt, Bảo hành & bảo trì, Lịch làm việc; cuối 
 
 Trang chủ và các màn xác thực KHÔNG dùng `AppShell`/sidebar.
 
-- `PublicLayout` + trang chủ `/`: thiết kế theo `docs/design/landing-brief.md` (mục "Bản 2": lời giới
-  thiệu sản phẩm, signature là bậc thang giá điện EVN tương tác). Trang KHÔNG được xếp theo vòng đời
-  dự án (khảo sát → báo giá → thi công → bảo hành). Header dính 56/64px: tên, "Trọn gói", "Câu hỏi
-  thường gặp", "Đăng nhập", nút "Đăng ký khảo sát" → `/register`. Footer một hàng. Biểu giá điện ở
-  `src/lib/electricity-tariff.ts` (có nguồn) – đổi giá chỉ sửa file này.
-  Token riêng (`font-vn`, `max-w-landing`, `ld-*`, `.pair*`) ở `src/styles/landing.css`; màu dùng lại
-  token portal. Nội dung ở `src/lib/mock/landing.ts`: chỉ dữ liệu minh hoạ của một căn nhà mẫu,
-  chỗ thiếu dữ kiện thật để dạng `{ need }` và hiện `[CẦN: …]`. KHÔNG thêm số liệu công ty, đối tác,
-  testimonial khi chưa có nguồn.
+- `PublicLayout` + trang chủ `/`: website bán hàng của công ty thi công điện mặt trời áp mái cho
+  **doanh nghiệp** (nhà xưởng, kho, toà nhà) – `docs/design/landing-brief.md`, mục "Bản 4". Ảnh lớn,
+  chữ lớn, mỗi section một bố cục; KHÔNG đặt bảng dữ liệu, màn tài khoản, biểu giá hay quy trình theo
+  giai đoạn lên trang (giao diện hệ thống chỉ một thẻ ở section theo dõi). Header dính: "Công trình",
+  "Năng lực thi công", "Đăng nhập", nút "Nhận khảo sát" → `/register`. Nội dung ở
+  `src/lib/mock/landing.ts`; ảnh thật đặt `src` cho từng `Shot`; lời khách và con số chỉ thêm khi có
+  nguồn. Token riêng (`font-vn`, `max-w-landing`, `ld-*`) ở `src/styles/landing.css`.
 - `AuthLayout` – theo `auth_portal`: lưới 12 cột, panel `primary-container` bên trái
   (`lg:col-span-5`: tiêu đề "Chuyển dịch Năng lượng Xanh cho Ngôi nhà Việt", ảnh nhà, 2 ô số liệu
   1.240 kWh / ~3,85 Tr ₫), `<Outlet/>` trong card trắng bên phải (`lg:col-span-7`), footer chỉ còn
