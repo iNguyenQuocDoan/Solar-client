@@ -31,9 +31,18 @@ export function PublicLayout() {
 
       <header className="sticky top-0 z-40 border-b border-line bg-canvas">
         <div className={cx('flex h-14 items-center justify-between gap-4 lg:h-16', LANDING_CONTAINER)}>
-          <Link to={ROUTES.HOME} className="flex items-center gap-2 rounded-control">
-            <img src="/placeholders/logo.svg" alt="" width={28} height={28} className="size-7" />
-            <span className="ld-action text-fg">{footer.brand}</span>
+          {/* Logo người dùng cung cấp (public/images/Logo-navbar.png), bản WebP đã cắt viền trong suốt. Chữ "Smart" màu
+              navy chìm trên nền tối nên ở dark mode logo đặt trên một nền sáng. */}
+          <Link to={ROUTES.HOME} className="flex items-center rounded-control dark:bg-fg dark:px-2 dark:py-1">
+            <img
+              src="/images/logo-64h.webp"
+              srcSet="/images/logo-64h.webp 262w, /images/logo-96h.webp 394w"
+              sizes="148px"
+              alt={footer.brand}
+              width={148}
+              height={36}
+              className="h-8 w-auto lg:h-9"
+            />
           </Link>
           <nav aria-label="Liên kết chính" className="flex items-center gap-6">
             <Link to={projectsLink} className="hidden ld-body text-fg-2 hover:text-fg lg:inline">
