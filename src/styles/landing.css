@@ -119,32 +119,79 @@
 }
 
 /*
-  Khung ảnh hero: ảnh là thứ đầu tiên người xem thấy, vẫn chừa chỗ cho khối chữ và nút trong màn
-  đầu (1440 × 900: header 64 + khung 756). Mobile giữ tỷ lệ 4:3, chữ đặt dưới ảnh.
+  Hero: ảnh phủ kín khung, chữ trắng đặt thẳng lên ảnh. Lớp phủ tối chỉ ở góc dưới trái – nơi có chữ –
+  để chữ đạt tương phản mà phần còn lại của ảnh vẫn sáng. Lớp phủ luôn tối, không đổi theo dark mode.
 */
 @utility ld-hero-frame {
-  aspect-ratio: 4 / 3;
+  height: min(86svh, 720px);
   @media (width >= 64rem) {
-    aspect-ratio: auto;
-    height: min(84vh, 800px);
+    height: min(88vh, 880px);
   }
+}
+@utility ld-hero-scrim {
+  background:
+    linear-gradient(to top, oklch(14% 0.02 150 / 0.9) 0%, oklch(14% 0.02 150 / 0.72) 34%, oklch(14% 0.02 150 / 0.3) 58%, transparent 78%),
+    linear-gradient(to right, oklch(14% 0.02 150 / 0.6) 0%, oklch(14% 0.02 150 / 0.25) 45%, transparent 65%);
 }
 
 /*
-  Khối chữ hero. Mobile: nằm dưới ảnh, lề như container. Desktop: cắt vào góc dưới trái của ảnh, nền
-  trang chạy từ mép trái màn hình để chữ không chạm ảnh, còn chữ vẫn thẳng lề container 75rem
-  (% ở đây tính theo bề ngang section, nên không lệch vì thanh cuộn như 100vw).
+  Chuyển động – nhẹ, chỉ transform và opacity (không đẩy layout), không thư viện.
+    ld-settle  ảnh hero thu từ 108% về 100% khi tải trang
+    ld-rise    chữ và nút hero trượt lên 16px và hiện dần, lệch nhau bằng ld-delay-*
+    ld-reveal  khối nội dung trượt lên khi cuộn tới (component Reveal gắn data-shown)
+  prefers-reduced-motion: rule chung trong globals.css đưa animation/transition về 0,01ms,
+  còn ld-reveal được hiện ngay (xem @media cuối file).
 */
-@utility ld-hero-card {
-  padding: 2rem 1rem 0;
-  @media (width >= 48rem) {
-    padding-inline: 2rem;
+@keyframes ld-settle {
+  from {
+    transform: scale(1.08);
   }
-  @media (width >= 64rem) {
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    width: calc(max(2rem, (100% - 75rem) / 2) + 54rem);
-    padding: 3rem 3rem 0 max(2rem, calc((100% - 75rem) / 2));
+  to {
+    transform: scale(1);
+  }
+}
+@keyframes ld-rise {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@utility ld-settle {
+  animation: ld-settle 1600ms var(--ease-ld) both;
+}
+@utility ld-rise {
+  animation: ld-rise 600ms var(--ease-ld) both;
+}
+@utility ld-delay-1 {
+  animation-delay: 90ms;
+}
+@utility ld-delay-2 {
+  animation-delay: 180ms;
+}
+@utility ld-delay-3 {
+  animation-delay: 270ms;
+}
+
+@layer components {
+  .ld-reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition:
+      opacity 700ms var(--ease-ld),
+      transform 700ms var(--ease-ld);
+  }
+  .ld-reveal[data-shown] {
+    opacity: 1;
+    transform: none;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ld-reveal {
+      opacity: 1;
+      transform: none;
+    }
   }
 }

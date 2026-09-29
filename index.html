@@ -2,7 +2,25 @@
 <html lang="vi">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <!--
+      Ảnh hero là LCP của trang chủ nhưng chỉ lộ ra sau khi JS và chunk LandingPage tải xong.
+      Tải trước ngay khi đọc HTML, và chỉ ở "/" để các portal không tải ảnh thừa.
+    -->
+    <script>
+      if (location.pathname === '/') {
+        var l = document.createElement('link')
+        l.rel = 'preload'
+        l.as = 'image'
+        l.href = '/images/hero-960.webp'
+        l.setAttribute('imagesrcset', '/images/hero-960.webp 960w, /images/hero-1672.webp 1672w')
+        l.setAttribute('imagesizes', '100vw')
+        l.setAttribute('fetchpriority', 'high')
+        document.head.appendChild(l)
+      }
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="color-scheme" content="light dark" />
     <meta name="description" content="Lắp điện mặt trời áp mái cho nhà ở. Số đo mái bạn khai được kỹ thuật viên đo lại; báo giá, nhật ký thi công và phiếu bảo hành nằm trong tài khoản của bạn." />
