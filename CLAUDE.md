@@ -90,7 +90,9 @@ src/
   App.tsx                      # <AppProviders><RouterProvider router={router}/></AppProviders>
   styles/globals.css           # @import "tailwindcss" + @theme tokens; landing.css cho trang chủ
   routes/
-    router.tsx                 # createBrowserRouter: mọi layout route + children (lazy)
+    router.tsx                 # createBrowserRouter: RootLayout + publicRoutes + protectedRoutes + 404
+    publicRoutes.tsx           # route không cần đăng nhập: /, /coming-soon, màn xác thực, /403, /styleguide
+    protectedRoutes.tsx        # 6 portal, mỗi portal bọc <RequireRole role="…"> (children lazy)
     paths.ts                   # ROUTES, withId, techTaskPath, surveyPath…
     RequireRole.tsx            # route bảo vệ theo vai trò + AuthLoadingScreen
     notFound.ts                # ném Response 404 cho errorElement
@@ -105,7 +107,7 @@ src/
     common/tech/               # khối dùng ở nhiều nghiệp vụ kỹ thuật viên: SectionCard, ActionDock, JobHeaderCard, MeasurementCard…
   features/
     auth/                      # components/ (AuthCard, PasswordRules, ForbiddenCard, SessionExpiredModal, ChangePasswordDialog…),
-                               # hooks/useAuthMutations.ts, services/authService.ts + me.ts, types/auth.ts (DTO)
+                               # hooks/useAuthMutations.ts, services/authService.ts + me.ts
     landing/components/        # section trang chủ, classes.ts, photo, reveal
     surveys/ installations/ tasks/ warranty/   # components/ riêng của từng nghiệp vụ kỹ thuật viên
     dashboard/                 # components/ chỉ dùng ở màn tổng quan admin và kỹ thuật viên
@@ -114,7 +116,9 @@ src/
   data/                        # dữ liệu tĩnh cho UI: mock từng màn (surveys.ts, tasks.ts, session.ts…, customer.ts, manage.ts…)
                                # và nội dung chữ (auth.ts, landing.ts)
   services/api/                # client.ts (axios, mở wrapper, refresh), errors.ts (ApiError), tokens.ts
-  types/api-schema.d.ts        # sinh bằng `npm run gen:api`, KHÔNG sửa tay
+  types/                       # sinh bằng `npm run gen:api` (scripts/gen-api-types.mjs), KHÔNG sửa tay
+    req/                       # request DTO theo tag swagger: authReq.ts, …
+    res/                       # response DTO: apiRes.ts (ApiResponse<T>, ApiErrorBody), authRes.ts, …
   config/                      # nav.ts (menu admin/tech), portals.ts (rail 4 portal), roles.ts, demoAccounts.ts
   hooks/                       # useMockQuery, useTheme
   utils/                       # cn, cx, format, img, jwt
@@ -125,12 +129,14 @@ Quy tắc đặt file (tái cấu trúc 29/09/2026):
 
 - `pages/` chỉ ghép UI và gọi hook. Component dùng ở MỘT nghiệp vụ nằm trong
   `features/<nghiệp vụ>/components/`; dùng ở nhiều nghiệp vụ thì vào `components/common/`.
-- Mỗi feature chỉ có các thư mục con `components/ hooks/ services/ types/` thật sự cần.
-  API của nghiệp vụ ở `features/<nghiệp vụ>/services/`, DTO ở `features/<nghiệp vụ>/types/`
-  (alias từ `types/api-schema.d.ts`, không tự đoán field); `services/api/` chỉ giữ HTTP client
-  dùng chung. Một trách nhiệm chỉ ở một nơi.
+- Mỗi feature chỉ có các thư mục con `components/ hooks/ services/` thật sự cần.
+  API của nghiệp vụ ở `features/<nghiệp vụ>/services/`; `services/api/` chỉ giữ HTTP client dùng chung.
+  Một trách nhiệm chỉ ở một nơi.
+- DTO nằm ở `src/types/`: request trong `types/req/<nghiệp vụ>Req.ts`, response trong
+  `types/res/<nghiệp vụ>Res.ts`. Các file này sinh từ swagger (không tự đoán field, không sửa tay);
+  service và hook import kiểu từ đây.
 - Nghiệp vụ chưa có endpoint (mọi thứ trừ auth) đọc dữ liệu từ `data/*.ts`. Khi backend có
-  endpoint: thêm `services/` + `hooks/` + `types/` vào feature đó rồi bỏ file trong `data/`.
+  endpoint: thêm `types/req|res/<nghiệp vụ>*.ts`, rồi `services/` + `hooks/` vào feature đó rồi bỏ file trong `data/`.
 
 ## Layout chung
 
@@ -196,9 +202,10 @@ Auth gọi backend .NET thật, KHÔNG còn mock. Nguồn sự thật là `docs/
 - **Base URL**: `VITE_API_BASE_URL` trong `.env.development` = `/api`. Dev đi qua
   `server.proxy` trong `vite.config.ts` (`/api` → `API_PROXY_TARGET`, mặc định
   `http://localhost:8080`) để tránh CORS. Xem `.env.example` để biết đủ biến.
-- **Sinh type**: `npm run gen:api` chạy `openapi-typescript` (qua `npx`, vì gói này
-  yêu cầu peer `typescript@^5` còn repo dùng `typescript@7`) và ghi ra
-  `src/types/api-schema.d.ts`. KHÔNG sửa file đó bằng tay; đổi swagger thì chạy lại lệnh.
+- **Sinh type**: `npm run gen:api` chạy `scripts/gen-api-types.mjs`, đọc `docs/api/swagger.json` và
+  ghi request body vào `src/types/req/<tag>Req.ts`, response vào `src/types/res/<tag>Res.ts`
+  (bỏ wrapper *ApiResponse, chỉ giữ schema của `data`), `ApiErrorBody` + `ApiResponse<T>` vào
+  `src/types/res/apiRes.ts`. KHÔNG sửa các file đó bằng tay; đổi swagger thì chạy lại lệnh.
 - **Token**: `AuthTokensResponse` trả token trong body (không phải cookie httpOnly) nên
   KHÔNG dùng `withCredentials`. `accessToken` giữ trong bộ nhớ; `refreshToken` vào
   `localStorage` khi tick "Ghi nhớ đăng nhập", ngược lại `sessionStorage`
@@ -227,7 +234,7 @@ Auth gọi backend .NET thật, KHÔNG còn mock. Nguồn sự thật là `docs/
   của nó – `admin` → `/admin`, `technician` → `/tech`, `sales` → `/ops`, `manager` → `/manage`,
   `customer` → `/customer`. `<RequireRole role="…">`: chưa đăng nhập → `/login` (nhớ trang đích),
   sai vai trò → `/403`.
-- **API**: 9 hàm trong `src/features/auth/services/authService.ts` (DTO ở `src/features/auth/types/auth.ts`) (register, verify-email, resend-verification,
+- **API**: 9 hàm trong `src/features/auth/services/authService.ts` (DTO ở `src/types/req/authReq.ts` và `src/types/res/authRes.ts`) (register, verify-email, resend-verification,
   login, refresh, logout, forgot-password, reset-password, change-password); mutation của
   react-query trong `src/features/auth/hooks/useAuthMutations.ts`; login/logout nằm trong `AuthProvider`
   vì còn phải lưu token.
@@ -261,6 +268,6 @@ Auth gọi backend .NET thật, KHÔNG còn mock. Nguồn sự thật là `docs/
 - `npm run dev` – Vite dev server
 - `npm run build` – `tsc -b && vite build`; phải pass trước khi coi một màn là xong
 - `npm run typecheck` – `tsc -b` (nhanh hơn build, dùng khi lặp)
-- `npm run gen:api` – sinh lại `src/types/api-schema.d.ts` từ `docs/api/swagger.json`
+- `npm run gen:api` – sinh lại `src/types/req` và `src/types/res` từ `docs/api/swagger.json`
 - `npm run lint` – oxlint (KHÔNG dùng ESLint: repo dùng `typescript@7`, gói này không còn API JS nên typescript-eslint không chạy được)
   (Nếu package.json dùng tên script khác, dùng theo package.json.)
