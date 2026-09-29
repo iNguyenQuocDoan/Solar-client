@@ -3,6 +3,7 @@ import { ROUTES } from '@/constants/routes'
 import { cx } from '@/lib/cx'
 import { cta } from '@/lib/mock/landing'
 import { LANDING_CONTAINER, PAGE_GRID } from './classes'
+import { Reveal } from './reveal'
 
 /*
   Bắt đầu thế nào: dải màu thương hiệu tràn màn, một câu hỏi, một nút. Nút đảo màu (nền chữ,
@@ -12,13 +13,13 @@ export function CtaSection() {
   return (
     <section id={cta.id} aria-labelledby="cta-title" className="mt-24 bg-accent py-16 text-on-accent lg:mt-40 lg:py-24">
       <div className={cx(LANDING_CONTAINER, PAGE_GRID, 'gap-y-8')}>
-        <div className="col-span-4 lg:col-span-7">
+        <Reveal className="col-span-4 lg:col-span-7">
           <h2 id="cta-title" className="ld-h1">
             {cta.title}
           </h2>
           <p className="mt-4 max-w-xl ld-lede opacity-90">{cta.lede}</p>
-        </div>
-        <div className="col-span-4 flex flex-col gap-3 sm:items-start lg:col-span-4 lg:col-start-9 lg:self-end">
+        </Reveal>
+        <Reveal delay={150} className="col-span-4 flex flex-col gap-3 sm:items-start lg:col-span-4 lg:col-start-9 lg:self-end">
           <Link
             to={ROUTES.REGISTER}
             className="press inline-flex h-12 items-center justify-center rounded-control bg-on-accent px-6 ld-action whitespace-nowrap text-accent hover:bg-canvas"
@@ -31,7 +32,7 @@ export function CtaSection() {
               {cta.login}
             </Link>
           </p>
-        </div>
+        </Reveal>
       </div>
     </section>
   )

@@ -141,6 +141,10 @@ Trang chủ và các màn xác thực KHÔNG dùng `AppShell`/sidebar.
   "Năng lực thi công", "Đăng nhập", nút "Nhận khảo sát" → `/register`. Nội dung ở
   `src/lib/mock/landing.ts`; ảnh thật đặt `src` cho từng `Shot`; lời khách và con số chỉ thêm khi có
   nguồn. Token riêng (`font-vn`, `max-w-landing`, `ld-*`) ở `src/styles/landing.css`.
+  Chuyển động chỉ transform/opacity, không thư viện: hero `ld-settle` (ảnh) + `ld-rise` (chữ, nút),
+  khối nội dung bọc `<Reveal>` (IntersectionObserver, hiện một lần khi cuộn tới), ảnh công trình phóng
+  nhẹ khi hover. `prefers-reduced-motion` tắt hết và hiện nội dung ngay. Favicon sinh từ
+  `public/images/Logo.png` (`public/favicon-32/48.png`, `apple-touch-icon.png`).
 - `AuthLayout` – theo `auth_portal`: lưới 12 cột, panel `primary-container` bên trái
   (`lg:col-span-5`: tiêu đề "Chuyển dịch Năng lượng Xanh cho Ngôi nhà Việt", ảnh nhà, 2 ô số liệu
   1.240 kWh / ~3,85 Tr ₫), `<Outlet/>` trong card trắng bên phải (`lg:col-span-7`), footer chỉ còn

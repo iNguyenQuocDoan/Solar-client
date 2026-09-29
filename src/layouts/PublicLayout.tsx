@@ -73,7 +73,14 @@ export function PublicLayout() {
             LANDING_CONTAINER,
           )}
         >
-          <p className="font-semibold text-fg">{footer.brand}</p>
+          <img
+            src="/images/logo-64h.webp"
+            alt={footer.brand}
+            width={115}
+            height={28}
+            loading="lazy"
+            className="h-7 w-auto self-start dark:rounded-control dark:bg-fg dark:px-2 dark:py-1"
+          />
           <nav aria-label="Liên kết cuối trang" className="flex gap-6">
             <Link to={projectsLink} className={cx(TEXT_LINK, 'inline-block py-1')}>
               {header.projects}
