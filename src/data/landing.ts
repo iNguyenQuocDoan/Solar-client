@@ -58,15 +58,60 @@ export const statement = {
 export const projects = {
   id: 'cong-trinh',
   title: 'Công trình trên mái nhà xưởng, kho bãi và toà nhà',
-  featured: { label: 'Nhà xưởng sản xuất', shot: { alt: 'Dàn pin trên mái nhà xưởng', need: 'công trình nhà xưởng, chụp flycam cả mái' } satisfies Shot },
+  // Ảnh tải từ báo và trang bán hàng, không phải công trình của Smart Solar; thay bằng ảnh công trình thật khi có.
+  featured: {
+    label: 'Nhà xưởng sản xuất',
+    shot: {
+      src: '/images/project-factory-934.webp',
+      srcSet: '/images/project-factory-640.webp 640w, /images/project-factory-934.webp 934w',
+      width: 934,
+      height: 531,
+      alt: 'Công nhân kiểm tra tấm pin mặt trời trên dây chuyền trong nhà xưởng',
+      need: 'công trình nhà xưởng, chụp flycam cả mái',
+    } satisfies Shot,
+  },
   others: [
-    { label: 'Kho logistics', shot: { alt: 'Dàn pin trên mái kho', need: 'mái kho đã lắp, góc chéo thấy cả dàn' } satisfies Shot },
-    { label: 'Toà nhà văn phòng', shot: { alt: 'Dàn pin trên mái toà nhà', need: 'mái toà nhà đã lắp, chụp từ trên cao' } satisfies Shot },
+    {
+      label: 'Kho logistics',
+      shot: {
+        src: '/images/project-warehouse-1280.webp',
+        srcSet: '/images/project-warehouse-640.webp 640w, /images/project-warehouse-1280.webp 1280w',
+        width: 1280,
+        height: 960,
+        alt: 'Các pallet tấm pin mặt trời xếp trong nhà kho',
+        need: 'mái kho đã lắp, góc chéo thấy cả dàn',
+      } satisfies Shot,
+    },
+    {
+      label: 'Toà nhà văn phòng',
+      shot: {
+        src: '/images/project-office-1200.webp',
+        srcSet: '/images/project-office-640.webp 640w, /images/project-office-1200.webp 1200w',
+        width: 1200,
+        height: 1337,
+        alt: 'Toà văn phòng cao tầng mặt kính nhìn từ dưới lên',
+        need: 'mái toà nhà đã lắp, chụp từ trên cao',
+      } satisfies Shot,
+    },
   ],
   beforeAfter: {
     caption: 'Cùng một mái nhà xưởng, trước và sau khi lắp',
-    before: { alt: 'Mái nhà xưởng trước khi lắp', need: 'mái nhà xưởng trước khi lắp' } satisfies Shot,
-    after: { alt: 'Cùng góc mái sau khi lắp', need: 'cùng góc chụp, sau khi lắp xong' } satisfies Shot,
+    before: {
+      src: '/images/roof-before-1672.webp',
+      srcSet: '/images/roof-before-960.webp 960w, /images/roof-before-1672.webp 1672w',
+      width: 1672,
+      height: 941,
+      alt: 'Mái tôn nhà xưởng còn trống, nhìn từ trên cao',
+      need: 'mái nhà xưởng trước khi lắp',
+    } satisfies Shot,
+    after: {
+      src: '/images/roof-after-1672.webp',
+      srcSet: '/images/roof-after-960.webp 960w, /images/roof-after-1672.webp 1672w',
+      width: 1672,
+      height: 941,
+      alt: 'Cùng mái nhà xưởng đã phủ các dãy tấm pin mặt trời',
+      need: 'cùng góc chụp, sau khi lắp xong',
+    } satisfies Shot,
   },
 }
 
@@ -74,7 +119,16 @@ export const projects = {
 export const trust = {
   id: 'nang-luc',
   title: 'Đội kỹ thuật của Smart Solar tự khảo sát và tự lắp đặt',
-  photo: { alt: 'Kỹ thuật viên Smart Solar đang lắp tấm pin trên mái nhà xưởng', need: 'kỹ thuật viên đang thi công trên mái nhà xưởng, có đồ bảo hộ' } satisfies Shot,
+  // Ảnh tải từ trang của đơn vị khác, không phải đội của Smart Solar; thay bằng ảnh đội mình khi có.
+  photo: {
+    // Cắt sẵn phần bên trái ảnh gốc về 4:5 cho khớp khung, giữ đủ nhóm kỹ thuật viên.
+    src: '/images/trust-crew-1200.webp',
+    srcSet: '/images/trust-crew-640.webp 640w, /images/trust-crew-1200.webp 1200w',
+    width: 1200,
+    height: 1500,
+    alt: 'Kỹ thuật viên mặc áo phản quang, đội mũ bảo hộ đang lắp tấm pin trên mái tôn nhà xưởng',
+    need: 'kỹ thuật viên đang thi công trên mái nhà xưởng, có đồ bảo hộ',
+  } satisfies Shot,
   points: [
     { title: 'Khảo sát tận mái', text: 'Kỹ thuật viên lên mái đo diện tích, hướng, kết cấu và vật cản trước khi lên phương án cho công trình.' },
     { title: 'Thi công an toàn, gọn gàng', text: 'Đội lắp đặt làm việc có đồ bảo hộ, theo lịch thống nhất trước với doanh nghiệp.' },
@@ -114,7 +168,13 @@ export const tracking = {
     stage: 'Đang lắp đặt',
     progress: { done: 14, total: 21, text: 'Đã xong 14 trên 21 hàng tấm' },
     update: { when: 'Hôm nay, 15:10', text: 'Xong khung và ray khu mái phía đông; bắt đầu lắp tấm khu phía tây.' },
-    photo: { alt: 'Ảnh cập nhật từ công trình', need: 'ảnh thi công trong ngày' } satisfies Shot,
+    photo: {
+      src: '/images/tracking-update-640.webp',
+      width: 640,
+      height: 426,
+      alt: 'Hai kỹ thuật viên đội mũ bảo hộ đang lắp và đấu dây tấm pin trên mái',
+      need: 'ảnh thi công trong ngày',
+    } satisfies Shot,
     next: 'Đo kiểm và bàn giao dự kiến 17/07/2026',
   },
 }
