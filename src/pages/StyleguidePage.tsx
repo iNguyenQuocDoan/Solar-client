@@ -95,7 +95,7 @@ function initials(name: string) {
 const userColumns: DataTableColumn<StyleguideUser>[] = [
   {
     key: 'identity',
-    header: 'User / Identity',
+    header: 'Người dùng',
     render: (user) => (
       <div className="flex items-center gap-space-sm">
         <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary text-label-md font-bold text-on-primary">
@@ -115,7 +115,7 @@ const userColumns: DataTableColumn<StyleguideUser>[] = [
   },
   {
     key: 'contact',
-    header: 'Contact & Comms',
+    header: 'Liên hệ',
     render: (user) => (
       <div className="flex flex-col">
         <span className="font-medium text-on-surface">{user.email}</span>
@@ -125,7 +125,7 @@ const userColumns: DataTableColumn<StyleguideUser>[] = [
   },
   {
     key: 'role',
-    header: 'Platform Role',
+    header: 'Vai trò',
     render: (user) => (
       <StatusBadge variant={user.roleVariant} size="sm" dot={false} className="font-semibold">
         {user.role}
@@ -134,7 +134,7 @@ const userColumns: DataTableColumn<StyleguideUser>[] = [
   },
   {
     key: 'status',
-    header: 'Status',
+    header: 'Trạng thái',
     render: (user) => (
       <StatusBadge variant={user.statusVariant} size="sm" className="font-semibold">
         {user.status}
@@ -143,13 +143,13 @@ const userColumns: DataTableColumn<StyleguideUser>[] = [
   },
   {
     key: 'created',
-    header: 'Created',
+    header: 'Ngày tạo',
     className: 'text-body-sm text-on-surface-variant',
     render: (user) => user.created,
   },
   {
     key: 'activity',
-    header: 'Last Activity',
+    header: 'Hoạt động gần nhất',
     render: (user) => (
       <div className="flex flex-col">
         <span className="text-label-sm font-semibold text-on-surface">{user.lastActivity}</span>
@@ -159,7 +159,7 @@ const userColumns: DataTableColumn<StyleguideUser>[] = [
   },
 ]
 
-const defaultScopes = ['Enterprise Only', 'MFA Enforced']
+const defaultScopes = ['Chỉ doanh nghiệp', 'Bắt buộc MFA']
 
 export function StyleguidePage() {
   const [selected, setSelected] = useState<Set<string>>(() => new Set(['EMP-1001', 'EMP-3319']))
@@ -184,7 +184,7 @@ export function StyleguidePage() {
           <Link to={ROUTES.HOME} className="text-headline-md text-primary">
             Smart Solar UI
           </Link>
-          <nav aria-label="Sections" className="flex flex-wrap gap-space-2xs">
+          <nav aria-label="Các mục" className="flex flex-wrap gap-space-2xs">
             {sections.map((section) => (
               <a
                 key={section.id}
@@ -225,9 +225,9 @@ export function StyleguidePage() {
               <Button size="lg" iconLeft="add_circle" iconRight="expand_more">
                 Large (48px)
               </Button>
-              <IconButton icon="tune" label="Edit permissions" />
-              <IconButton icon="visibility" label="View profile" />
-              <IconButton icon="notifications" label="Notifications" size="md" />
+              <IconButton icon="tune" label="Sửa quyền" />
+              <IconButton icon="visibility" label="Xem hồ sơ" />
+              <IconButton icon="notifications" label="Thông báo" size="md" />
             </div>
           </Card>
         </Section>
@@ -243,19 +243,19 @@ export function StyleguidePage() {
             </div>
             <div className="flex flex-wrap items-center gap-space-xs">
               <StatusBadge variant="success" size="sm">
-                Active
+                Đang hoạt động
               </StatusBadge>
               <StatusBadge variant="error" size="sm" dot={false}>
-                High Priority
+                Ưu tiên cao
               </StatusBadge>
               <StatusBadge variant="primary" size="sm" dot={false} icon="shield_person">
-                Super Admin
+                Quản trị cấp cao
               </StatusBadge>
               <StatusBadge variant="neutral" size="sm" dot={false}>
-                6 Showing
+                Đang hiện 6
               </StatusBadge>
               <StatusBadge variant="complete" size="sm" icon="verified">
-                3 of 3 Verified
+                Đã xác minh 3/3
               </StatusBadge>
             </div>
           </Card>
@@ -284,13 +284,13 @@ export function StyleguidePage() {
               actions={
                 <>
                   <Button variant="tonal" iconLeft="health_and_safety">
-                    Run System Health Check
+                    Kiểm tra tình trạng hệ thống
                   </Button>
                   <Button variant="tonal" iconLeft="download" className="text-on-surface-variant">
-                    Export Audit Logs (CSV)
+                    Xuất nhật ký kiểm tra (CSV)
                   </Button>
                   <Button iconLeft="add_circle" iconRight="expand_more">
-                    Quick Create
+                    Tạo nhanh
                   </Button>
                 </>
               }
@@ -315,26 +315,26 @@ export function StyleguidePage() {
                   ))}
                 </div>
                 <div className="flex items-center gap-space-xs">
-                  <span className="text-label-sm text-on-surface-variant">Priority:</span>
-                  <FilterChip label="All" active />
-                  <FilterChip label="High (3)" active tone="error" />
-                  <FilterChip label="Normal" />
+                  <span className="text-label-sm text-on-surface-variant">Ưu tiên:</span>
+                  <FilterChip label="Tất cả" active />
+                  <FilterChip label="Cao (3)" active tone="error" />
+                  <FilterChip label="Bình thường" />
                 </div>
               </>
             }
             search={{
-              placeholder: 'Search by full name, email, employee ID, phone...',
+              placeholder: 'Tìm theo họ tên, email, mã nhân viên, số điện thoại...',
               value: search,
               onChange: (e) => setSearch(e.target.value),
               shortcutHint: 'Ctrl K',
             }}
             selects={[
-              { key: 'role', options: styleguideRoleOptions, 'aria-label': 'Role' },
-              { key: 'status', options: styleguideStatusOptions, 'aria-label': 'Status' },
-              { key: 'region', options: styleguideRegionOptions, 'aria-label': 'Region' },
+              { key: 'role', options: styleguideRoleOptions, 'aria-label': 'Vai trò' },
+              { key: 'status', options: styleguideStatusOptions, 'aria-label': 'Trạng thái' },
+              { key: 'region', options: styleguideRegionOptions, 'aria-label': 'Khu vực' },
             ]}
             scopes={{
-              label: 'Active scopes:',
+              label: 'Đang lọc:',
               items: scopes.map((scope) => ({
                 key: scope,
                 label: scope,
@@ -345,10 +345,10 @@ export function StyleguidePage() {
             trailing={
               <>
                 <span className="text-body-sm text-on-surface-variant">
-                  Selected: <strong className="text-on-surface">{selected.size}</strong>
+                  Đã chọn: <strong className="text-on-surface">{selected.size}</strong>
                 </span>
                 <Button size="sm" variant="ghost" iconLeft="block" className="text-on-surface-variant">
-                  Deactivate Selected
+                  Vô hiệu hoá mục đã chọn
                 </Button>
               </>
             }
@@ -378,22 +378,22 @@ export function StyleguidePage() {
             toolbar={
               <>
                 <div className="flex items-center gap-space-xs">
-                  <span className="text-headline-md text-on-surface">Platform Directory</span>
+                  <span className="text-headline-md text-on-surface">Danh bạ người dùng</span>
                   <StatusBadge variant="neutral" size="sm" dot={false}>
-                    {styleguideUsers.length} Showing
+                    Đang hiện {styleguideUsers.length}
                   </StatusBadge>
                 </div>
                 <div className="flex items-center gap-1">
-                  <IconButton icon="file_download" label="Export CSV" />
-                  <IconButton icon="view_column" label="Column layout" />
+                  <IconButton icon="file_download" label="Xuất CSV" />
+                  <IconButton icon="view_column" label="Bố cục cột" />
                 </div>
               </>
             }
             actions={() => (
               <>
-                <IconButton icon="tune" label="Edit permissions" />
-                <IconButton icon="visibility" label="View profile" />
-                <IconButton icon="more_vert" label="More actions" />
+                <IconButton icon="tune" label="Sửa quyền" />
+                <IconButton icon="visibility" label="Xem hồ sơ" />
+                <IconButton icon="more_vert" label="Thao tác khác" />
               </>
             )}
             pagination={{
@@ -423,9 +423,9 @@ export function StyleguidePage() {
           <Card>
             <div className="flex items-center justify-between pb-space-md">
               <div>
-                <h3 className="text-headline-md text-on-surface">Lifecycle Progression</h3>
+                <h3 className="text-headline-md text-on-surface">Tiến trình phiếu</h3>
                 <p className="text-body-sm text-on-surface-variant">
-                  Deterministic status progression with end-to-end telemetry verifications
+                  Trạng thái đi theo thứ tự cố định, mỗi bước đều được xác minh bằng dữ liệu hệ thống
                 </p>
               </div>
               <StatusBadge variant="primary" dot={false} icon="verified" className="hidden sm:inline-flex">
@@ -444,9 +444,9 @@ export function StyleguidePage() {
                   <Icon name="health_and_safety" className="text-[22px]" />
                 </div>
                 <div>
-                  <h3 className="text-headline-md font-bold text-on-surface">Mounting & Electrical Execution</h3>
+                  <h3 className="text-headline-md font-bold text-on-surface">Lắp đặt & đấu điện</h3>
                   <p className="text-body-sm text-on-surface-variant">
-                    Physical array structural fastening, electrical homerun runs, and bonding
+                    Cố định dàn pin, đi tuyến dây điện chính và nối đẳng thế
                   </p>
                 </div>
               </div>
@@ -486,10 +486,10 @@ export function StyleguidePage() {
               />
             ))}
             <PhotoDropzone
-              title="Add Roof Photo"
+              title="Thêm ảnh mái"
               requirement="1 mandatory angle needed"
               required
-              hint="West rake edge or attic truss"
+              hint="Mép hồi mái phía Tây hoặc vì kèo trên trần"
             />
           </PhotoGrid>
         </Section>
@@ -499,15 +499,15 @@ export function StyleguidePage() {
             <div className="flex flex-wrap items-center gap-space-lg">
               <label className="flex items-center gap-space-xs text-label-md text-on-surface">
                 <Checkbox checked={demoChecked} onCheckedChange={(value) => setDemoChecked(value === true)} />
-                Checked (toggle)
+                Đã chọn (bấm để đổi)
               </label>
               <label className="flex items-center gap-space-xs text-label-md text-on-surface">
                 <Checkbox checked={false} />
-                Unchecked
+                Chưa chọn
               </label>
               <label className="flex items-center gap-space-xs text-label-md text-on-surface-variant">
                 <Checkbox checked disabled />
-                Disabled
+                Vô hiệu
               </label>
               <label className="flex items-center gap-space-xs text-label-md text-on-surface">
                 <Checkbox size="sm" checked />
@@ -517,15 +517,15 @@ export function StyleguidePage() {
             <div className="grid grid-cols-1 gap-space-md md:grid-cols-3">
               <div className="flex flex-col gap-space-xs">
                 <span className="text-label-sm text-on-surface-variant">Primary 65%</span>
-                <ProgressBar value={65} label="Install progress" />
+                <ProgressBar value={65} label="Tiến độ lắp đặt" />
               </div>
               <div className="flex flex-col gap-space-xs">
                 <span className="text-label-sm text-on-surface-variant">Secondary 40% (sm)</span>
-                <ProgressBar value={40} tone="secondary" size="sm" label="Yield" />
+                <ProgressBar value={40} tone="secondary" size="sm" label="Sản lượng" />
               </div>
               <div className="flex flex-col gap-space-xs">
                 <span className="text-label-sm text-on-surface-variant">Error 12%</span>
-                <ProgressBar value={12} tone="error" label="Insulation" />
+                <ProgressBar value={12} tone="error" label="Cách điện" />
               </div>
             </div>
             <div className="flex flex-wrap items-center gap-space-md text-primary">

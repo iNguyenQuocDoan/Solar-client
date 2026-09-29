@@ -44,31 +44,31 @@ const feetField = (label: string) =>
   z
     .string()
     .trim()
-    .regex(/^\d{1,3}(\.\d{1,2})?$/, `${label} must be a number, e.g. 40.5`)
-    .refine((value) => Number(value) >= 1 && Number(value) <= 300, `${label} must be between 1 and 300 ft`)
+    .regex(/^\d{1,3}(\.\d{1,2})?$/, `${label} phải là số, ví dụ 40.5`)
+    .refine((value) => Number(value) >= 1 && Number(value) <= 300, `${label} phải từ 1 đến 300 ft`)
 
 const verificationSchema = z.object({
-  usableLength: feetField('Usable length'),
-  usableWidth: feetField('Usable width'),
+  usableLength: feetField('Chiều dài sử dụng được'),
+  usableWidth: feetField('Chiều rộng sử dụng được'),
   measuredTilt: z
     .string()
     .trim()
-    .regex(/^\d{1,2}(\.\d)?°?$/, 'Enter degrees, e.g. 28°')
-    .refine((value) => Number(value.replace('°', '')) <= 60, 'Tilt cannot exceed 60°'),
+    .regex(/^\d{1,2}(\.\d)?°?$/, 'Nhập số độ, ví dụ 28°')
+    .refine((value) => Number(value.replace('°', '')) <= 60, 'Góc nghiêng không được vượt quá 60°'),
   measuredAzimuth: z
     .string()
     .trim()
-    .regex(/^\d{1,3}°\s?[NSEW]{1,3}$/i, 'Enter degrees + compass point, e.g. 159° SSE')
-    .refine((value) => Number(value.split('°')[0]) <= 360, 'Azimuth cannot exceed 360°'),
-  rafterCondition: z.enum(['excellent', 'good', 'reinforce'], { message: 'Select the rafter condition' }),
-  shadingAnalysis: z.string().trim().min(15, 'Describe the shading survey in at least 15 characters'),
-  panelRating: z.string().trim().min(5, 'Record the service panel rating'),
-  conduitDistance: z.string().trim().min(3, 'Record the estimated conduit run'),
-  roofAccess: z.string().trim().min(10, 'Describe the ladder set-up and staging area'),
-  systemCapacity: z.string().trim().min(5, 'Record the recommended system capacity'),
-  inverterArchitecture: z.string().trim().min(3, 'Record the suggested inverter architecture'),
-  engineeringNotes: z.string().trim().min(15, 'Add at least 15 characters of engineering notes'),
-  riskLevel: z.enum(['low', 'moderate', 'high'], { message: 'Select a technical risk level' }),
+    .regex(/^\d{1,3}°\s?[NSEW]{1,3}$/i, 'Nhập số độ kèm hướng la bàn, ví dụ 159° SSE')
+    .refine((value) => Number(value.split('°')[0]) <= 360, 'Góc phương vị không được vượt quá 360°'),
+  rafterCondition: z.enum(['excellent', 'good', 'reinforce'], { message: 'Chọn tình trạng xà gồ' }),
+  shadingAnalysis: z.string().trim().min(15, 'Mô tả kết quả khảo sát bóng che, tối thiểu 15 ký tự'),
+  panelRating: z.string().trim().min(5, 'Ghi định mức tủ điện'),
+  conduitDistance: z.string().trim().min(3, 'Ghi chiều dài ống luồn dây dự kiến'),
+  roofAccess: z.string().trim().min(10, 'Mô tả vị trí đặt thang và khu tập kết vật tư'),
+  systemCapacity: z.string().trim().min(5, 'Ghi công suất hệ thống đề xuất'),
+  inverterArchitecture: z.string().trim().min(3, 'Ghi cấu hình inverter đề xuất'),
+  engineeringNotes: z.string().trim().min(15, 'Ghi chú kỹ thuật tối thiểu 15 ký tự'),
+  riskLevel: z.enum(['low', 'moderate', 'high'], { message: 'Chọn mức rủi ro kỹ thuật' }),
 })
 
 type VerificationValues = z.infer<typeof verificationSchema>
@@ -545,7 +545,7 @@ function SurveyVerificationView({
                 })}
               >
                 <Icon name="add_a_photo" className="text-[20px] text-primary" />
-                {`${verification.dock.uploadLabel} (${verification.dock.uploadCount} added)`}
+                {`${verification.dock.uploadLabel} (đã thêm ${verification.dock.uploadCount})`}
               </Link>
               <span className="hidden text-body-sm text-on-surface-variant sm:inline-block">
                 {verification.dock.photoHint}
@@ -587,7 +587,7 @@ function SurveyVerificationView({
             </div>
             <div className="flex justify-between gap-space-sm">
               <span className="text-on-surface-variant">{verification.signOff.areaLabel}</span>
-              <span className="font-semibold">{`${netAreaLabel} sq ft`}</span>
+              <span className="font-semibold">{`${netAreaLabel} ft²`}</span>
             </div>
             <div className="flex justify-between gap-space-sm">
               <span className="text-on-surface-variant">{verification.signOff.capacityLabel}</span>

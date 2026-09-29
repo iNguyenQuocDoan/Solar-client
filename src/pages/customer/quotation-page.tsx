@@ -33,28 +33,28 @@ export function QuotationPage() {
       {(data) => (
         <>
           <PageHeader
-            back={{ to: ROUTES.customer.home, label: 'Overview' }}
+            back={{ to: ROUTES.customer.home, label: 'Tổng quan' }}
             meta={
               <>
                 <span className="text-fg-2">{data.id}</span>
-                <Badge tone={signing === 'done' ? 'ok' : 'warn'}>{signing === 'done' ? 'Accepted' : data.status}</Badge>
+                <Badge tone={signing === 'done' ? 'ok' : 'warn'}>{signing === 'done' ? 'Đã chấp nhận' : data.status}</Badge>
                 <span>
-                  Valid {data.validDays} more days, expires {data.expires}
+                  Còn hiệu lực {data.validDays} ngày, hết hạn {data.expires}
                 </span>
               </>
             }
             title={data.title}
-            description={`Issued ${data.issued}. Prepared by ${data.preparedBy}, senior project advisor.`}
-            actions={<Button>Download PDF</Button>}
+            description={`Phát hành ${data.issued}. Người lập: ${data.preparedBy}, tư vấn viên dự án cấp cao.`}
+            actions={<Button>Tải PDF</Button>}
           />
 
           <Panel className="mb-12">
             <PanelBody className="grid gap-6 md:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] md:items-center">
-              <Photo src={data.site.photo} alt={`Roof at ${data.site.address}`} ratio="aspect-[3/2]" caption={data.site.address} meta={data.site.detail} />
+              <Photo src={data.site.photo} alt={`Mái nhà tại ${data.site.address}`} ratio="aspect-[3/2]" caption={data.site.address} meta={data.site.detail} />
               <StatRow className="md:grid-cols-3">
-                <Stat label="Array capacity" value={data.capacityKw} unit="kW DC" note="Tier-1 all-black monocrystalline" />
-                <Stat label="Year 1 output" value={fmt.num(data.year1Kwh)} unit="kWh" note="Modeled with PVWatts" />
-                <Stat label="Home energy offset" value={`${data.offsetPct}%`} note="Net metering" />
+                <Stat label="Công suất dàn pin" value={data.capacityKw} unit="kW DC" note="Tấm đơn tinh thể Tier-1 đen toàn phần" />
+                <Stat label="Sản lượng năm đầu" value={fmt.num(data.year1Kwh)} unit="kWh" note="Mô phỏng bằng PVWatts" />
+                <Stat label="Tỷ lệ bù điện năng" value={`${data.offsetPct}%`} note="Bù trừ điện năng" />
               </StatRow>
             </PanelBody>
           </Panel>
@@ -62,13 +62,13 @@ export function QuotationPage() {
           <div className="grid gap-x-12 gap-y-12 lg:grid-cols-5">
             <div className="space-y-8 lg:col-span-3">
               <Panel>
-                <PanelHeader title="Itemized hardware and work" />
+                <PanelHeader title="Chi tiết thiết bị và nhân công" />
                 <Table className="text-body">
                   <thead>
                     <tr>
-                      <Th>Item</Th>
-                      <Th>Quantity</Th>
-                      <Th className="text-right">Amount</Th>
+                      <Th>Hạng mục</Th>
+                      <Th>Số lượng</Th>
+                      <Th className="text-right">Thành tiền</Th>
                     </tr>
                   </thead>
                   <tbody>
@@ -85,13 +85,13 @@ export function QuotationPage() {
                   </tbody>
                 </Table>
                 <PanelFooter className="justify-between">
-                  <span className="text-body text-fg-2">Gross system total</span>
+                  <span className="text-body text-fg-2">Tổng giá hệ thống</span>
                   <span className="tnum font-semibold">{fmt.usdCents(data.gross)}</span>
                 </PanelFooter>
               </Panel>
 
               <Panel>
-                <PanelHeader title="Warranties included" />
+                <PanelHeader title="Bảo hành đi kèm" />
                 <PanelBody>
                   <dl className="grid gap-4 sm:grid-cols-3">
                     {data.warranties.map((w) => (
@@ -108,11 +108,11 @@ export function QuotationPage() {
 
             <div className="space-y-8 lg:col-span-2">
               <Panel id="accept" raised>
-                <PanelHeader title="Investment summary" />
+                <PanelHeader title="Tóm tắt chi phí" />
                 <PanelBody>
                   <dl className="space-y-3 text-body">
                     <div className="flex justify-between gap-4">
-                      <dt className="text-fg-2">Gross system total</dt>
+                      <dt className="text-fg-2">Tổng giá hệ thống</dt>
                       <dd className="tnum font-medium">{fmt.usdCents(data.gross)}</dd>
                     </div>
                     {data.incentives.map((inc) => (
@@ -127,26 +127,26 @@ export function QuotationPage() {
                   </dl>
                   <div className="mt-4 flex items-end justify-between gap-4 border-t border-line pt-4">
                     <div>
-                      <p className="text-body font-medium">Net homeowner investment</p>
-                      <p className="text-meta text-fg-3">All incentives included</p>
+                      <p className="text-body font-medium">Chi phí thực chủ nhà trả</p>
+                      <p className="text-meta text-fg-3">Đã trừ mọi ưu đãi</p>
                     </div>
                     <p className="tnum text-figure font-semibold">{fmt.usdCents(data.net)}</p>
                   </div>
 
                   <div className="mt-6 rounded-container bg-surface-2 p-4">
                     <div className="flex items-center justify-between">
-                      <p className="text-body font-medium">Estimated monthly cash flow</p>
-                      <Badge tone="ok">Save {fmt.usd(data.cashflow.savings)}/mo</Badge>
+                      <p className="text-body font-medium">Dòng tiền hằng tháng ước tính</p>
+                      <Badge tone="ok">Tiết kiệm {fmt.usd(data.cashflow.savings)}/tháng</Badge>
                     </div>
                     <div className="mt-3 grid grid-cols-2 gap-4">
                       <div>
-                        <p className="text-meta text-fg-3">Current electric bill</p>
+                        <p className="text-meta text-fg-3">Hoá đơn điện hiện tại</p>
                         <p className="tnum text-title font-semibold text-fg-3 line-through">{fmt.usd(data.cashflow.currentBill)}</p>
                       </div>
                       <div>
-                        <p className="text-meta text-fg-3">Solar loan payment</p>
+                        <p className="text-meta text-fg-3">Tiền trả góp điện mặt trời</p>
                         <p className="tnum text-title font-semibold">
-                          {fmt.usd(data.cashflow.loanPayment)} <span className="text-meta font-normal text-fg-3">/ mo</span>
+                          {fmt.usd(data.cashflow.loanPayment)} <span className="text-meta font-normal text-fg-3">/ tháng</span>
                         </p>
                       </div>
                     </div>
@@ -154,18 +154,18 @@ export function QuotationPage() {
                   </div>
 
                   {signing === 'done' ? (
-                    <Notice tone="ok" title="Quotation accepted" className="mt-6">
-                      {data.id} was digitally countersigned. {advisor.name} has been notified to proceed with the municipal permit filing.
+                    <Notice tone="ok" title="Đã chấp nhận báo giá" className="mt-6">
+                      {data.id} đã được ký điện tử. {advisor.name} đã nhận thông báo để làm hồ sơ xin giấy phép với thành phố.
                     </Notice>
                   ) : (
                     <div className="mt-6 space-y-3">
                       <Checkbox
                         checked={agreed}
                         onChange={(e) => setAgreed(e.target.checked)}
-                        label="I have reviewed the scope of work and technical specifications, and agree to lock in this price for 30 calendar days."
+                        label="Tôi đã xem phạm vi công việc và thông số kỹ thuật, đồng ý giữ mức giá này trong 30 ngày."
                       />
                       <Button variant="primary" className="w-full" disabled={!agreed || signing === 'busy'} onClick={sign}>
-                        {signing === 'busy' ? 'Processing signature' : 'Accept and sign quotation'}
+                        {signing === 'busy' ? 'Đang xử lý chữ ký' : 'Chấp nhận và ký báo giá'}
                       </Button>
                     </div>
                   )}
@@ -175,11 +175,11 @@ export function QuotationPage() {
                     <Avatar name={advisor.name} size="sm" />
                     <div className="">
                       <p className="text-body font-medium">{advisor.name}</p>
-                      <p className="text-meta text-fg-3">Dedicated solar advisor</p>
+                      <p className="text-meta text-fg-3">Tư vấn viên phụ trách</p>
                     </div>
                   </div>
                   <Button size="sm" variant="ghost" onClick={() => dialogRef.current?.showModal()}>
-                    Ask {advisor.name.split(' ')[0]}
+                    Hỏi {advisor.name.split(' ')[0]}
                   </Button>
                 </PanelFooter>
               </Panel>
@@ -202,26 +202,26 @@ export function QuotationPage() {
                 }
               }}
             >
-              <DialogTitle>Consult with {advisor.name}</DialogTitle>
+              <DialogTitle>Trao đổi với {advisor.name}</DialogTitle>
               <p className="mt-1 text-body text-fg-2">
-                Questions about equipment, adding a battery or structural mounting? {advisor.name.split(' ')[0]} replies through the portal or by phone.
+                Có câu hỏi về thiết bị, thêm pin lưu trữ hay cách lắp trên mái? {advisor.name.split(' ')[0]} sẽ trả lời qua cổng khách hàng hoặc điện thoại.
               </p>
               {sent ? (
                 <Notice tone="ok" className="mt-4">
-                  Your note was routed to {advisor.name}. Expected response within 2 hours.
+                  Đã chuyển ghi chú tới {advisor.name}. Dự kiến phản hồi trong 2 giờ.
                 </Notice>
               ) : (
-                <Field label="Your question or note" htmlFor="question" className="mt-4">
+                <Field label="Câu hỏi hoặc ghi chú của bạn" htmlFor="question" className="mt-4">
                   <Textarea id="question" value={question} onChange={(e) => setQuestion(e.target.value)} />
                 </Field>
               )}
               <DialogFooter>
                 <Button type="button" variant="ghost" onClick={() => dialogRef.current?.close()}>
-                  {sent ? 'Close' : 'Cancel'}
+                  {sent ? 'Đóng' : 'Hủy'}
                 </Button>
                 {!sent && (
                   <Button type="submit" variant="primary" disabled={!question.trim()}>
-                    Send inquiry
+                    Gửi câu hỏi
                   </Button>
                 )}
               </DialogFooter>

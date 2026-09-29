@@ -71,7 +71,7 @@ function buildColumns(selectedId: string | null): DataTableColumn<ProductRecord>
           size="sm"
           className="font-semibold"
         >
-          {product.status === 'active' ? 'Active' : product.status === 'draft' ? 'Draft' : 'Discontinued'}
+          {product.status === 'active' ? 'Đang bán' : product.status === 'draft' ? 'Nháp' : 'Ngừng kinh doanh'}
         </StatusBadge>
       ),
     },
@@ -113,7 +113,7 @@ export function ProductsTable({ products, selectedId, onSelect, toolbar, paginat
       onRowClick={onSelect}
       toolbar={toolbar}
       pagination={pagination}
-      emptyMessage="No products match the current filters"
+      emptyMessage="Không có sản phẩm nào khớp bộ lọc"
       className={className}
     />
   )

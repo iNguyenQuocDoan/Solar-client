@@ -15,11 +15,11 @@ export function OpsLayout({ children }: { children?: ReactNode }) {
       tools={
         <>
           <label className="block">
-            <span className="sr-only">Jump to customer, lead or quotation</span>
-            <Input size="sm" type="search" placeholder="Jump to customer, lead, quotation" className="text-meta" />
+            <span className="sr-only">Tìm khách hàng, khách tiềm năng hoặc báo giá</span>
+            <Input size="sm" type="search" placeholder="Tìm khách hàng, khách tiềm năng, báo giá" className="text-meta" />
           </label>
           <Button variant="primary" size="sm">
-            New inquiry
+            Yêu cầu mới
           </Button>
         </>
       }

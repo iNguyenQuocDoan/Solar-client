@@ -51,8 +51,8 @@ export function ManageAlertsPage() {
         return (
           <>
             <PageHeader
-              title="Alerts and management attention"
-              description={`${data.summary.active} active impediments across ${data.summary.districts} districts. Resolving them unblocks about ${fmt.usd(data.summary.exposure)} in milestone billing and releases ${data.summary.crews} halted field crews.`}
+              title="Cảnh báo cần quản lý xử lý"
+              description={`${data.summary.active} vướng mắc đang mở ở ${data.summary.districts} khu vực. Xử lý xong sẽ giải phóng khoảng ${fmt.usd(data.summary.exposure)} tiền thanh toán theo mốc và ${data.summary.crews} đội hiện trường đang phải dừng.`}
               actions={
                 <>
                   <Button
@@ -63,14 +63,14 @@ export function ManageAlertsPage() {
                           new Set([...s, ...nonCritical.map((i) => i.ref)]),
                       );
                       setToast(
-                        `Acknowledged ${nonCritical.length} non-critical item${nonCritical.length === 1 ? "" : "s"}.`,
+                        `Đã ghi nhận ${nonCritical.length} mục không nghiêm trọng.`,
                       );
                     }}
                   >
-                    Acknowledge non-critical
+                    Ghi nhận mục không nghiêm trọng
                   </Button>
                   <Button variant="primary">
-                    Broadcast field alert
+                    Phát cảnh báo tới hiện trường
                   </Button>
                 </>
               }
@@ -100,13 +100,13 @@ export function ManageAlertsPage() {
                   chips={[...data.chips]}
                   value={filter}
                   onChange={setFilter}
-                  label="Filter alerts"
+                  label="Lọc cảnh báo"
                 />
 
                 {sections.length === 0 && (
                   <EmptyState
-                    title="Nothing left in this stream"
-                    description="All items under this filter have been acknowledged or resolved."
+                    title="Không còn mục nào"
+                    description="Mọi mục theo bộ lọc này đã được ghi nhận hoặc xử lý."
                   />
                 )}
 
@@ -154,9 +154,9 @@ export function ManageAlertsPage() {
                                     i === 0
                                       ? resolve(
                                           item.ref,
-                                          `${a} logged for ${item.ref}.`,
+                                          `Đã ghi nhận "${a}" cho ${item.ref}.`,
                                         )
-                                      : setToast(`${a} opened for ${item.ref}.`)
+                                      : setToast(`Đã mở "${a}" cho ${item.ref}.`)
                                   }
                                 >
                                   {a}
@@ -172,7 +172,7 @@ export function ManageAlertsPage() {
 
               <div className="space-y-8 lg:border-l lg:border-line lg:pl-8">
                 <Panel>
-                  <PanelHeader title="Live fleet positioning" />
+                  <PanelHeader title="Vị trí xe hiện tại" />
                   <PanelBody>
                     <ul className="divide-y divide-line">
                       {data.fleet.map((v) => (
@@ -192,7 +192,7 @@ export function ManageAlertsPage() {
                 </Panel>
 
                 <Panel>
-                  <PanelHeader title="Duty leads" />
+                  <PanelHeader title="Người trực" />
                   <PanelBody>
                     <ul className="divide-y divide-line">
                       {data.leads.map((l) => (
@@ -206,7 +206,7 @@ export function ManageAlertsPage() {
                             <p className="text-meta text-fg-3">{l.role}</p>
                           </div>
                           <Button size="sm" variant="ghost">
-                            Call
+                            Gọi
                           </Button>
                         </li>
                       ))}
@@ -216,7 +216,7 @@ export function ManageAlertsPage() {
 
                 <Panel>
                   <PanelHeader
-                    title="Executive SLA compliance"
+                    title="Tỷ lệ đạt SLA"
                     action={
                       <span className="tnum text-title font-semibold">
                         {data.sla.current}%
@@ -226,10 +226,10 @@ export function ManageAlertsPage() {
                   <PanelBody>
                     <Progress
                       value={data.sla.current}
-                      label="SLA compliance this month"
+                      label="Tỷ lệ đạt SLA tháng này"
                     />
                     <p className="tnum mt-2 text-meta text-fg-2">
-                      Target {data.sla.target}%
+                      Mục tiêu {data.sla.target}%
                     </p>
                     <p className="mt-3 text-body text-fg-2">
                       {data.sla.note}
@@ -239,10 +239,10 @@ export function ManageAlertsPage() {
 
                 <Panel>
                   <PanelHeader
-                    title="Resolved today"
+                    title="Đã xử lý hôm nay"
                     action={
                       <Badge tone="ok">
-                        {data.resolvedTotal + resolved.size} total
+                        Tổng {data.resolvedTotal + resolved.size}
                       </Badge>
                     }
                   />

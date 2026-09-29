@@ -15,7 +15,7 @@ export function WarrantyPage() {
   const query = useMockQuery(['customer', 'warranty'], warranty)
   const [form, setForm] = useState({ system: warranty.systems[0], type: warranty.serviceTypes[0], issue: '', phone: warranty.contact.phone, email: warranty.contact.email })
   const [submitted, setSubmitted] = useState(false)
-  const issueError = submitted === false && form.issue.length > 0 && form.issue.trim().length < 10 ? 'Describe the issue in a few more words.' : undefined
+  const issueError = submitted === false && form.issue.length > 0 && form.issue.trim().length < 10 ? 'Mô tả sự cố chi tiết hơn một chút.' : undefined
 
   return (
     <QueryBoundary query={query}>
@@ -30,18 +30,18 @@ export function WarrantyPage() {
             }
             title={data.plan}
             description={data.summary}
-            actions={<Button>Policy contract</Button>}
+            actions={<Button>Hợp đồng bảo hành</Button>}
           />
 
           <Panel className="mb-12">
             <PanelBody className="grid gap-6 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
               <StatRow className="md:grid-cols-3">
-                <Stat label="Warranty expiration" value={<span className="text-title">{data.expires}</span>} note={data.remaining} />
-                <Stat label="Array efficiency" value={`${data.telemetry.efficiencyPct}%`} note="Optimal threshold" tone="ok" />
-                <Stat label="Installation site" value={<span className="text-title">{data.site.split(',')[0]}</span>} note={data.site.split(', ')[1]} />
+                <Stat label="Hết hạn bảo hành" value={<span className="text-title">{data.expires}</span>} note={data.remaining} />
+                <Stat label="Hiệu suất dàn pin" value={`${data.telemetry.efficiencyPct}%`} note="Ở mức tối ưu" tone="ok" />
+                <Stat label="Công trình" value={<span className="text-title">{data.site.split(',')[0]}</span>} note={data.site.split(', ')[1]} />
               </StatRow>
               <div className="lg:border-l lg:border-line lg:pl-6">
-                <p className="text-body font-medium">Coverage terms</p>
+                <p className="text-body font-medium">Phạm vi bảo hành</p>
                 <KeyValueList className="mt-2" items={data.coverage} />
                 <p className="mt-3 text-meta text-fg-3">
                   {data.telemetry.status}. {data.telemetry.detail}
@@ -53,7 +53,7 @@ export function WarrantyPage() {
           <div className="grid gap-x-12 gap-y-12 lg:grid-cols-5">
             <div className="space-y-8 lg:col-span-3">
               <Panel>
-                <PanelHeader title="Active service requests" />
+                <PanelHeader title="Yêu cầu dịch vụ đang mở" />
                 <PanelBody>
                   <ul className="divide-y divide-line">
                     {data.activeRequests.map((r) => (
@@ -65,13 +65,13 @@ export function WarrantyPage() {
                         <p className="mt-1 font-medium">{r.title}</p>
                         <p className="text-body text-fg-2">{r.body}</p>
                         <p className="mt-1 text-meta text-fg-3">
-                          Technician {r.technician}. Arrival window {r.window}.
+                          Kỹ thuật viên: {r.technician}. Khung giờ tới: {r.window}.
                         </p>
                         <div className="mt-3 flex gap-2">
                           <ButtonLink to={withId(ROUTES.customer.warrantyRequest, r.id)} size="sm">
-                            View case details
+                            Xem chi tiết hồ sơ
                           </ButtonLink>
-                          <Button size="sm">Reschedule</Button>
+                          <Button size="sm">Đổi lịch</Button>
                         </div>
                       </li>
                     ))}
@@ -81,10 +81,10 @@ export function WarrantyPage() {
 
               <Panel>
                 <PanelHeader
-                  title="Maintenance history"
+                  title="Lịch sử bảo trì"
                   action={
                     <Button size="sm" variant="ghost">
-                      Export log
+                      Xuất nhật ký
                     </Button>
                   }
                 />
@@ -94,7 +94,7 @@ export function WarrantyPage() {
                       <li key={h.title} className="py-3 first:pt-0 last:pb-0">
                         <div className="flex flex-wrap items-center justify-between gap-2">
                           <p className="font-medium">{h.title}</p>
-                          <Badge tone={h.result === 'Passed' ? 'ok' : 'neutral'}>{h.result}</Badge>
+                          <Badge tone={h.result === 'Đạt' ? 'ok' : 'neutral'}>{h.result}</Badge>
                         </div>
                         <p className="mt-1 text-body text-fg-2">{h.body}</p>
                         <p className="mt-1 text-meta text-fg-3">
@@ -109,11 +109,11 @@ export function WarrantyPage() {
 
             <div className="space-y-8 lg:col-span-2">
               <Panel raised>
-                <PanelHeader title="Request support" />
+                <PanelHeader title="Yêu cầu hỗ trợ" />
                 {submitted ? (
                   <PanelBody>
-                    <Notice tone="ok" title="Request received">
-                      A case manager will be assigned within 2 business hours and will confirm the visit window by SMS.
+                    <Notice tone="ok" title="Đã nhận yêu cầu">
+                      Người phụ trách hồ sơ sẽ được giao trong 2 giờ làm việc và xác nhận khung giờ tới nhà qua SMS.
                     </Notice>
                   </PanelBody>
                 ) : (
@@ -125,7 +125,7 @@ export function WarrantyPage() {
                     }}
                   >
                     <PanelBody className="space-y-4">
-                      <Field label="Property system" htmlFor="system">
+                      <Field label="Hệ thống" htmlFor="system">
                         <Select id="system" value={form.system} onChange={(e) => setForm({ ...form, system: e.target.value })}>
                           {data.systems.map((s) => (
                             <option key={s}>{s}</option>
@@ -133,53 +133,53 @@ export function WarrantyPage() {
                         </Select>
                       </Field>
                       <fieldset>
-                        <legend className="mb-2 text-body font-medium">Requested service type</legend>
+                        <legend className="mb-2 text-body font-medium">Loại dịch vụ cần hỗ trợ</legend>
                         <div className="grid grid-cols-2 gap-2">
                           {data.serviceTypes.map((t) => (
                             <Radio key={t} name="type" label={t} checked={form.type === t} onChange={() => setForm({ ...form, type: t })} />
                           ))}
                         </div>
                       </fieldset>
-                      <Field label="Issue or observation" htmlFor="issue" error={issueError}>
+                      <Field label="Sự cố hoặc điều bạn nhận thấy" htmlFor="issue" error={issueError}>
                         <Textarea
                           id="issue"
                           value={form.issue}
                           onChange={(e) => setForm({ ...form, issue: e.target.value })}
-                          placeholder="Inverter alert on the mobile app, loose bracket clamp, unexpected shading"
+                          placeholder="Ứng dụng báo lỗi inverter, kẹp bát bị lỏng, bóng che bất thường"
                           aria-invalid={Boolean(issueError)}
                         />
                       </Field>
                       <div>
-                        <p className="mb-2 text-body font-medium">Evidence or photos (optional)</p>
+                        <p className="mb-2 text-body font-medium">Ảnh hoặc bằng chứng (tuỳ chọn)</p>
                         <button
                           type="button"
                           className="press flex w-full flex-col items-center gap-1 rounded-container border border-dashed border-line-2 px-4 py-6 text-body text-fg-2 hover:bg-surface-2"
                         >
-                          <span>Click to upload or drag and drop</span>
-                          <span className="text-meta text-fg-3">PNG, JPG or PDF up to 15 MB</span>
+                          <span>Bấm để tải lên hoặc kéo thả</span>
+                          <span className="text-meta text-fg-3">PNG, JPG hoặc PDF, tối đa 15 MB</span>
                         </button>
                       </div>
                       <div className="grid gap-4 sm:grid-cols-2">
-                        <Field label="Contact phone" htmlFor="phone">
+                        <Field label="Số điện thoại liên hệ" htmlFor="phone">
                           <Input id="phone" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
                         </Field>
-                        <Field label="Email address" htmlFor="email">
+                        <Field label="Email" htmlFor="email">
                           <Input id="email" type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
                         </Field>
                       </div>
-                      <p className="text-meta text-fg-3">Diagnostic visits, hardware replacements and ladder fees are covered with a $0 deductible.</p>
+                      <p className="text-meta text-fg-3">Chi phí tới kiểm tra, thay thiết bị và phí thang đều được bảo hành, không mất phí.</p>
                     </PanelBody>
                     <PanelFooter>
                       <Button type="submit" variant="primary">
-                        Submit service request
+                        Gửi yêu cầu dịch vụ
                       </Button>
                     </PanelFooter>
                   </form>
                 )}
               </Panel>
 
-              <Notice tone="warn" title="Emergency system shutdown?">
-                For rapid roof access support or an inverter fault, call 24/7 dispatch at{' '}
+              <Notice tone="warn" title="Cần tắt hệ thống khẩn cấp?">
+                Khi cần hỗ trợ gấp trên mái hoặc inverter báo lỗi, gọi điều phối 24/7 theo số{' '}
                 <a href="tel:18005557652" className="font-medium text-fg hover:underline">
                   {data.emergencyPhone}
                 </a>

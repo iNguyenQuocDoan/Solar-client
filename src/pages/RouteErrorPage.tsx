@@ -23,18 +23,18 @@ export function RouteErrorPage() {
       <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-surface-container text-primary">
         <Icon name={isNotFound ? 'search_off' : 'error'} className="text-[28px]" />
       </div>
-      <span className="text-label-sm font-bold text-outline">Error {status}</span>
+      <span className="text-label-sm font-bold text-outline">Lỗi {status}</span>
       <h1 className="text-headline-lg text-on-surface">
-        {isNotFound ? 'Record not found' : 'Something went wrong'}
+        {isNotFound ? 'Không tìm thấy hồ sơ' : 'Đã xảy ra lỗi'}
       </h1>
       <p className="text-body-md text-on-surface-variant">
         {isNotFound
-          ? 'This work order is not in your assigned queue, or the reference has been retired.'
-          : 'The field console could not render this view. Try again from your task list.'}
+          ? 'Phiếu công việc này không nằm trong danh sách được giao cho bạn, hoặc mã phiếu đã bị hủy.'
+          : 'Không hiển thị được màn hình này. Hãy mở lại từ danh sách công việc.'}
       </p>
       <Link to={ROUTES.TECH.TASKS} className="mt-space-xs">
         <Button size="md" iconLeft="arrow_back">
-          Back to My Tasks
+          Về Việc của tôi
         </Button>
       </Link>
     </Card>

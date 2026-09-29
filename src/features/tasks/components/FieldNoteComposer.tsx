@@ -66,16 +66,16 @@ export function FieldNoteComposer({ dictation, placeholder, submitLabel, classNa
           <div className="flex items-center gap-space-xs text-on-surface-variant">
             <button
               type="button"
-              title="Attach image"
-              aria-label="Attach image"
+              title="Đính kèm ảnh"
+              aria-label="Đính kèm ảnh"
               className="rounded-lg p-1.5 transition-all hover:bg-surface-container"
             >
               <Icon name="add_photo_alternate" className="text-[20px]" />
             </button>
             <button
               type="button"
-              title="Add tag"
-              aria-label="Add tag"
+              title="Thêm thẻ"
+              aria-label="Thêm thẻ"
               className="rounded-lg p-1.5 transition-all hover:bg-surface-container"
             >
               <Icon name="sell" className="text-[20px]" />

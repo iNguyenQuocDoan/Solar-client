@@ -93,7 +93,7 @@ export function PhotoCard({
             value={note}
             readOnly={!onNoteChange}
             onChange={(e) => onNoteChange?.(e.target.value)}
-            aria-label={`Note for ${title}`}
+            aria-label={`Ghi chú cho ${title}`}
             className="h-8 w-full rounded-lg bg-surface-container-low px-2 text-body-sm text-on-surface focus:bg-surface-container-lowest focus:outline-none"
           />
         )}
@@ -122,7 +122,7 @@ export function PhotoDropzone({
   requirement,
   required = false,
   hint,
-  actionLabel = 'Select File',
+  actionLabel = 'Chọn tệp',
   actionIcon,
   onSelect,
   className,

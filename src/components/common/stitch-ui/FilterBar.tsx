@@ -182,7 +182,7 @@ export function FilterBar({ chips, search, selects, scopes, trailing, className 
                 {scope.onRemove && (
                   <button
                     type="button"
-                    aria-label={`Remove ${scope.label}`}
+                    aria-label={`Bỏ ${scope.label}`}
                     onClick={scope.onRemove}
                     className="flex items-center hover:text-error"
                   >

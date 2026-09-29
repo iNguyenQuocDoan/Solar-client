@@ -60,7 +60,7 @@ export const userRoles: UserRoleMeta[] = [
     shortLabel: 'Kinh doanh',
     icon: 'monetization_on',
     badgeVariant: 'review',
-    clearance: 'Level 2',
+    clearance: 'Cấp 2',
     description: 'Lập dự báo tiết kiệm điện, dựng gói hệ thống và tạo báo giá cho khách.',
   },
   {
@@ -78,7 +78,7 @@ export const userRoles: UserRoleMeta[] = [
     shortLabel: 'Kỹ thuật viên',
     icon: 'engineering',
     badgeVariant: 'neutral',
-    clearance: 'Level 2',
+    clearance: 'Cấp 2',
     description: 'Tải ảnh thi công, ghi số liệu inverter và hoàn thành các mục kiểm tra.',
   },
 ]

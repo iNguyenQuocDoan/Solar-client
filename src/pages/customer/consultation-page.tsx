@@ -22,19 +22,19 @@ export function ConsultationPage() {
       {(data) => (
         <>
           <PageHeader
-            back={{ to: ROUTES.customer.home, label: 'Overview' }}
+            back={{ to: ROUTES.customer.home, label: 'Tổng quan' }}
             meta={
               <>
                 <Badge>{data.type}</Badge>
-                <span>Submitted {data.submitted}</span>
+                <span>Gửi lúc {data.submitted}</span>
               </>
             }
-            title={`Request ${data.id}`}
-            actions={<Button>Download summary</Button>}
+            title={`Yêu cầu ${data.id}`}
+            actions={<Button>Tải bản tóm tắt</Button>}
           />
 
           <Panel className="mb-12">
-            <PanelHeader title={data.status} description={`Estimated step completion: ${data.estimatedCompletion}`} />
+            <PanelHeader title={data.status} description={`Dự kiến xong bước này: ${data.estimatedCompletion}`} />
             <PanelBody>
               <Stepper steps={data.steps} />
             </PanelBody>
@@ -43,7 +43,7 @@ export function ConsultationPage() {
           <div className="grid gap-x-12 gap-y-12 lg:grid-cols-3">
             <div className="space-y-8 lg:col-span-2">
               <Panel>
-                <PanelHeader title="Assigned solar expert" />
+                <PanelHeader title="Chuyên viên phụ trách" />
                 <PanelBody className="space-y-4">
                   <div className="flex items-start gap-3">
                     <Avatar name={advisor.name} size="lg" />
@@ -62,22 +62,22 @@ export function ConsultationPage() {
                       </div>
                     </div>
                   </div>
-                  <Notice tone="ok" title="Inspection confirmed">
-                    {advisor.name.split(' ')[0]} has scheduled your in-person roof inspection for {data.inspection.when}.{' '}
+                  <Notice tone="ok" title="Đã xác nhận lịch kiểm tra">
+                    {advisor.name.split(' ')[0]} đã hẹn kiểm tra mái tại nhà vào {data.inspection.when}.{' '}
                     {data.inspection.scope}
                   </Notice>
                 </PanelBody>
                 <PanelFooter>
-                  <Button>Reschedule visit</Button>
+                  <Button>Đổi lịch hẹn</Button>
                 </PanelFooter>
               </Panel>
 
               <Panel>
                 <PanelHeader
-                  title="Submitted property data"
+                  title="Thông tin nhà đã gửi"
                   action={
                     <Button size="sm" variant="ghost">
-                      Edit property specs
+                      Sửa thông tin nhà
                     </Button>
                   }
                 />
@@ -88,10 +88,10 @@ export function ConsultationPage() {
 
               <Panel>
                 <PanelHeader
-                  title="Submitted photos"
+                  title="Ảnh đã gửi"
                   action={
                     <Button size="sm" variant="ghost">
-                      Upload more
+                      Tải thêm ảnh
                     </Button>
                   }
                 />
@@ -109,10 +109,10 @@ export function ConsultationPage() {
 
             <div className="space-y-8 lg:border-l lg:border-line lg:pl-8">
               <Panel>
-                <PanelHeader title="What happens on Oct 24?" />
+                <PanelHeader title="Ngày 24/10 sẽ làm gì?" />
                 <PanelBody className="space-y-4 text-body">
                   <p className="text-fg-2">
-                    The survey takes {data.inspection.duration}. {data.inspection.access}
+                    Buổi khảo sát mất {data.inspection.duration}. {data.inspection.access}
                   </p>
                   <ul className="space-y-2">
                     {data.inspection.checklist.map((c) => (
@@ -125,20 +125,20 @@ export function ConsultationPage() {
                 </PanelBody>
                 <PanelFooter>
                   <Button size="sm">
-                    Add to calendar
+                    Thêm vào lịch
                   </Button>
                 </PanelFooter>
               </Panel>
 
               <Panel>
-                <PanelHeader title="Activity" description={`${data.activity.length} updates`} />
+                <PanelHeader title="Hoạt động" description={`${data.activity.length} cập nhật`} />
                 <PanelBody>
                   <ActivityList items={data.activity} />
                 </PanelBody>
               </Panel>
 
               <Panel>
-                <PanelHeader title="Notes for the inspector" />
+                <PanelHeader title="Ghi chú cho người khảo sát" />
                 <PanelBody className="space-y-4">
                   <blockquote className="border-l-2 border-line-2 pl-3 text-body text-fg-2">
                     <p>{data.homeownerNote}</p>
@@ -147,7 +147,7 @@ export function ConsultationPage() {
                   {notes.map((n, i) => (
                     <blockquote key={i} className="border-l-2 border-accent pl-3 text-body text-fg-2">
                       <p>{n}</p>
-                      <footer className="mt-1 text-meta text-fg-3">Eleanor V., just now</footer>
+                      <footer className="mt-1 text-meta text-fg-3">Eleanor V., vừa xong</footer>
                     </blockquote>
                   ))}
                   <form
@@ -159,17 +159,17 @@ export function ConsultationPage() {
                     }}
                     className="space-y-2"
                   >
-                    <Field label={`Add a note for ${advisor.name.split(' ')[0]}`} htmlFor="note">
+                    <Field label={`Thêm ghi chú cho ${advisor.name.split(' ')[0]}`} htmlFor="note">
                       <Textarea
                         id="note"
                         value={note}
                         onChange={(e) => setNote(e.target.value)}
-                        placeholder="Gate code, parking, pets"
+                        placeholder="Mã cổng, chỗ đỗ xe, thú cưng"
                         rows={3}
                       />
                     </Field>
                     <Button type="submit" size="sm" variant="primary" disabled={!note.trim()}>
-                      Send note
+                      Gửi ghi chú
                     </Button>
                   </form>
                 </PanelBody>
@@ -178,9 +178,9 @@ export function ConsultationPage() {
           </div>
 
           <p className="mt-6 border-t border-line pt-4 text-body text-fg-2">
-            Need help with this booking? {data.support}{' '}
+            Cần hỗ trợ về lịch hẹn này? {data.support}{' '}
             <a href="tel:18005557652" className="text-accent-fg hover:underline">
-              Call desk support
+              Gọi bộ phận hỗ trợ
             </a>
           </p>
         </>

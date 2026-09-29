@@ -16,9 +16,9 @@ export function FieldSurveyPage() {
   const query = useMockQuery(['field', 'survey', surveyJob.id], surveyJob)
   const [length, setLength] = useState('12.2')
   const [width, setWidth] = useState('7.4')
-  const [profile, setProfile] = useState('Gable')
+  const [profile, setProfile] = useState('Mái hai mái')
   const [tilt, setTilt] = useState(28)
-  const [access, setAccess] = useState('Moderate')
+  const [access, setAccess] = useState('Trung bình')
   const [obstacles, setObstacles] = useState<Set<string>>(new Set(surveyJob.obstacles.map((o) => o.label)))
   const [done, setDone] = useState(false)
 
@@ -40,11 +40,11 @@ export function FieldSurveyPage() {
       {(data) => (
         <>
           <PageHeader
-            back={{ to: ROUTES.field.tasks, label: 'My Tasks' }}
+            back={{ to: ROUTES.field.tasks, label: 'Việc của tôi' }}
             meta={
               <>
                 <span className="text-fg-2">{data.id}</span>
-                <Badge tone={done ? 'ok' : 'accent'}>{done ? 'Sent to sales' : data.status}</Badge>
+                <Badge tone={done ? 'ok' : 'accent'}>{done ? 'Đã gửi kinh doanh' : data.status}</Badge>
                 <span>{data.autosave}</span>
               </>
             }
@@ -52,8 +52,8 @@ export function FieldSurveyPage() {
             description={data.address}
             actions={
               <>
-                <Button>Call customer</Button>
-                <Button>Open in maps</Button>
+                <Button>Gọi khách hàng</Button>
+                <Button>Mở bản đồ</Button>
               </>
             }
           />
@@ -63,8 +63,8 @@ export function FieldSurveyPage() {
               <KeyValueList
                 columns={2}
                 items={[
-                  { k: 'Scheduled window', v: data.window },
-                  { k: 'Target system', v: data.target },
+                  { k: 'Khung giờ hẹn', v: data.window },
+                  { k: 'Hệ thống mục tiêu', v: data.target },
                 ]}
               />
             </PanelBody>
@@ -73,11 +73,11 @@ export function FieldSurveyPage() {
           <div className="grid gap-x-12 gap-y-12 lg:grid-cols-5">
             <div className="space-y-8 lg:col-span-3">
               <Panel>
-                <PanelHeader title="Customer preliminary assessment" />
+                <PanelHeader title="Đánh giá sơ bộ của khách" />
                 <PanelBody className="space-y-4">
                   <KeyValueList columns={2} items={data.baseline} />
                   <div>
-                    <p className="mb-2 text-body font-medium">Homeowner reference photos</p>
+                    <p className="mb-2 text-body font-medium">Ảnh tham khảo chủ nhà gửi</p>
                     <ul className="grid grid-cols-2 gap-4">
                       {data.referencePhotos.map((p) => (
                         <li key={p.caption}>
@@ -90,38 +90,38 @@ export function FieldSurveyPage() {
               </Panel>
 
               <Panel>
-                <PanelHeader title="On-site verification and measurements" />
+                <PanelHeader title="Xác minh & đo đạc tại chỗ" />
                 <PanelBody className="space-y-6">
                   <fieldset>
-                    <legend className="mb-2 text-body font-medium">Surface geometry</legend>
+                    <legend className="mb-2 text-body font-medium">Kích thước mặt mái</legend>
                     <div className="grid gap-4 sm:grid-cols-3">
-                      <Field label="Measured length" htmlFor="len">
+                      <Field label="Chiều dài đo được" htmlFor="len">
                         <div className="flex items-center gap-2">
                           <Input id="len" inputMode="decimal" value={length} onChange={(e) => setLength(e.target.value)} />
                           <span className="text-body text-fg-2">m</span>
                         </div>
                       </Field>
-                      <Field label="Measured width" htmlFor="wid">
+                      <Field label="Chiều rộng đo được" htmlFor="wid">
                         <div className="flex items-center gap-2">
                           <Input id="wid" inputMode="decimal" value={width} onChange={(e) => setWidth(e.target.value)} />
                           <span className="text-body text-fg-2">m</span>
                         </div>
                       </Field>
                       <div className="rounded-container bg-surface-2 px-3 py-2">
-                        <p className="text-meta text-fg-2">Verified area</p>
+                        <p className="text-meta text-fg-2">Diện tích đã xác minh</p>
                         <p className="tnum text-figure font-semibold">
                           {Number.isFinite(area) ? area.toFixed(2) : '0.00'} <span className="text-meta font-normal text-fg-2">m²</span>
                         </p>
                         <p className="tnum text-meta text-fg-3">
                           {delta >= 0 ? '+' : ''}
-                          {Number.isFinite(delta) ? delta.toFixed(1) : '0.0'}% vs claimed
+                          {Number.isFinite(delta) ? delta.toFixed(1) : '0.0'}% so với khách khai
                         </p>
                       </div>
                     </div>
                   </fieldset>
 
                   <fieldset>
-                    <legend className="mb-2 text-body font-medium">Roof architectural profile</legend>
+                    <legend className="mb-2 text-body font-medium">Dạng mái</legend>
                     <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
                       {data.profiles.map((p) => (
                         <label
@@ -141,10 +141,10 @@ export function FieldSurveyPage() {
                   <div>
                     <div className="mb-2 flex items-baseline justify-between">
                       <label htmlFor="tilt" className="text-body font-medium">
-                        Verified inclinometer tilt
+                        Độ nghiêng đo bằng thước đo nghiêng
                       </label>
                       <span className="tnum text-body">
-                        <span className="text-title font-semibold">{tilt}°</span> <span className="text-fg-3">baseline 25°</span>
+                        <span className="text-title font-semibold">{tilt}°</span> <span className="text-fg-3">khách khai 25°</span>
                       </span>
                     </div>
                     <input
@@ -157,14 +157,14 @@ export function FieldSurveyPage() {
                       className="w-full accent-accent"
                     />
                     <div className="tnum flex justify-between text-meta text-fg-3">
-                      <span>10° low slope</span>
-                      <span>28° optimal</span>
-                      <span>50° steep mansard</span>
+                      <span>10° dốc thấp</span>
+                      <span>28° tối ưu</span>
+                      <span>50° mái dốc đứng</span>
                     </div>
                   </div>
 
                   <fieldset>
-                    <legend className="mb-2 text-body font-medium">Technician accessibility grade</legend>
+                    <legend className="mb-2 text-body font-medium">Mức độ tiếp cận</legend>
                     <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
                       {data.access.map((a) => (
                         <label
@@ -183,7 +183,7 @@ export function FieldSurveyPage() {
                   </fieldset>
 
                   <fieldset>
-                    <legend className="mb-2 text-body font-medium">Identified shading and obstacles</legend>
+                    <legend className="mb-2 text-body font-medium">Bóng che và vật cản đã xác định</legend>
                     <ul className="divide-y divide-line border-t border-b border-line">
                       {data.obstacles.map((o) => (
                         <li key={o.label} className="flex items-center justify-between gap-3 py-3">
@@ -196,13 +196,13 @@ export function FieldSurveyPage() {
 
                   <div>
                     <div className="mb-2 flex items-center justify-between">
-                      <p className="text-body font-medium">Service panel compatibility</p>
+                      <p className="text-body font-medium">Khả năng đấu nối tủ điện</p>
                       <Badge tone="ok">{data.panelNote}</Badge>
                     </div>
                     <KeyValueList columns={2} items={data.panel} />
                   </div>
 
-                  <Notice tone="ok" title="Field survey recommendation">
+                  <Notice tone="ok" title="Khuyến nghị sau khảo sát">
                     {data.recommendation}
                   </Notice>
                 </PanelBody>
@@ -212,11 +212,11 @@ export function FieldSurveyPage() {
             <div className="space-y-8 lg:col-span-2">
               <Panel>
                 <PanelHeader
-                  title="Survey photos"
-                  description={`${data.photos.length} of ${data.photos.length} critical zones captured`}
+                  title="Ảnh khảo sát"
+                  description={`Đã chụp ${data.photos.length}/${data.photos.length} vị trí bắt buộc`}
                   action={
                     <Button size="sm">
-                      Capture
+                      Chụp ảnh
                     </Button>
                   }
                 />
@@ -225,8 +225,8 @@ export function FieldSurveyPage() {
                     type="button"
                     className="press flex w-full flex-col items-center gap-1 rounded-container border border-dashed border-line-2 px-4 py-6 text-body text-fg-2 hover:bg-surface-2"
                   >
-                    <span>Capture or drop a new photo</span>
-                    <span className="text-meta text-fg-3">High-res JPEG or RAW with embedded GPS coordinates</span>
+                    <span>Chụp hoặc kéo thả ảnh mới</span>
+                    <span className="text-meta text-fg-3">JPEG độ phân giải cao hoặc RAW có kèm toạ độ GPS</span>
                   </button>
                   <ol className="grid gap-4 sm:grid-cols-2">
                     {data.photos.map((p, i) => (
@@ -247,16 +247,16 @@ export function FieldSurveyPage() {
           </div>
 
           <ActionBar>
-              <Button>Save draft</Button>
+              <Button>Lưu nháp</Button>
               <Button variant="danger">
-                Report blocker
+                Báo trở ngại
               </Button>
               <div className="flex w-full flex-wrap items-center gap-3 sm:ml-auto sm:w-auto">
                 <span className="tnum text-body text-fg-2">
-                  {done ? 'Survey sent to sales' : `Mandatory fields validated ${data.mandatory.done}/${data.mandatory.total}`}
+                  {done ? 'Đã gửi khảo sát cho kinh doanh' : `Đã kiểm tra ${data.mandatory.done}/${data.mandatory.total} trường bắt buộc`}
                 </span>
                 <Button variant="primary" className="w-full sm:w-auto" disabled={done} onClick={() => setDone(true)}>
-                  Complete survey and send to sales
+                  Hoàn thành khảo sát và gửi kinh doanh
                 </Button>
               </div>
           </ActionBar>

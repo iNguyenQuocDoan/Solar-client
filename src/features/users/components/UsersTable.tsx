@@ -64,7 +64,7 @@ const columns: DataTableColumn<UserRecord>[] = [
           <button
             type="button"
             title="Sao chép email"
-            aria-label={`Copy ${user.email}`}
+            aria-label={`Sao chép ${user.email}`}
             onClick={() => copyToClipboard(user.email)}
             className="text-outline opacity-0 transition-opacity hover:text-primary focus-visible:opacity-100 group-hover/mail:opacity-100"
           >
@@ -149,7 +149,7 @@ export function UsersTable({
       selectable
       selectedKeys={selectedKeys}
       onSelectionChange={onSelectionChange}
-      emptyMessage="No users match the current filters"
+      emptyMessage="Không có người dùng nào khớp bộ lọc"
       actions={(user) => (
         <>
           {user.status === 'locked' ? (

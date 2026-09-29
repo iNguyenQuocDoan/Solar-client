@@ -17,6 +17,7 @@ import { QueryBoundary } from '@/components/common/ui/query-boundary'
 import { useMockQuery } from '@/hooks/useMockQuery'
 
 const PRIORITY_TONE: Record<WorkOrder['priority'], Tone> = { Urgent: 'danger', High: 'warn', Normal: 'neutral' }
+const PRIORITY_LABEL: Record<WorkOrder['priority'], string> = { Urgent: 'Khẩn cấp', High: 'Ưu tiên cao', Normal: 'Bình thường' }
 const DETAIL_ROUTE: Partial<Record<JobKind, string>> = {
   survey: withId(ROUTES.field.survey, 'SS-PRJ-2024-089'),
   installation: withId(ROUTES.field.installation, 'SS-PRJ-2024-042'),
@@ -55,16 +56,16 @@ export function FieldTasksPage() {
       {(data) => (
         <>
           <PageHeader
-            meta={<span>Dispatcher Zone 4, shift active {fieldContext.shiftWindow}</span>}
-            title="Field tasks and work orders"
-            description={`${data.activeToday} active for today. ${data.sync}.`}
+            meta={<span>Điều phối vùng 4, ca làm {fieldContext.shiftWindow}</span>}
+            title="Việc hiện trường và phiếu công việc"
+            description={`Hôm nay có ${data.activeToday} việc. ${data.sync}.`}
           />
 
           <StatRow className="mb-12">
-            <Stat label="Today's jobs" value={data.stats.jobs.done} unit={`/ ${data.stats.jobs.planned} planned`} />
-            <Stat label="Travel distance" value={data.stats.miles} unit="mi" note={`Next leg ${data.stats.nextLeg}`} />
-            <Stat label="Critical and high" value={data.stats.critical} unit="need sign-off" note={data.stats.criticalNote} tone="danger" />
-            <Stat label="Parts in van" value={`${data.stats.parts}%`} note={data.stats.partsNote} />
+            <Stat label="Việc hôm nay" value={data.stats.jobs.done} unit={`/ ${data.stats.jobs.planned} theo kế hoạch`} />
+            <Stat label="Quãng đường" value={data.stats.miles} unit="mi" note={`Chặng tiếp theo ${data.stats.nextLeg}`} />
+            <Stat label="Khẩn cấp và ưu tiên cao" value={data.stats.critical} unit="cần ký xác nhận" note={data.stats.criticalNote} tone="danger" />
+            <Stat label="Vật tư trên xe" value={`${data.stats.parts}%`} note={data.stats.partsNote} />
           </StatRow>
 
           <Panel>
@@ -73,37 +74,37 @@ export function FieldTasksPage() {
               tabs={
                 <div className="grid gap-4 lg:grid-cols-2">
                   <div>
-                    <p className="mb-1 text-meta text-fg-3">Timeline</p>
-                    <FilterChips chips={[...data.timelines]} value={timeline} onChange={setTimeline} label="Timeline" />
+                    <p className="mb-1 text-meta text-fg-3">Thời gian</p>
+                    <FilterChips chips={[...data.timelines]} value={timeline} onChange={setTimeline} label="Thời gian" />
                   </div>
                   <div>
-                    <p className="mb-1 text-meta text-fg-3">Type</p>
-                    <FilterChips chips={[...data.types]} value={type} onChange={setType} label="Job type" />
+                    <p className="mb-1 text-meta text-fg-3">Loại việc</p>
+                    <FilterChips chips={[...data.types]} value={type} onChange={setType} label="Loại việc" />
                   </div>
                 </div>
               }
             >
                 <Input
                   type="search"
-                  aria-label="Search work orders"
+                  aria-label="Tìm phiếu công việc"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  placeholder="Customer name, street address or work order"
+                  placeholder="Tên khách, địa chỉ hoặc mã phiếu"
                   className="w-full md:max-w-sm"
                 />
-                <Select aria-label="Priority" className="w-auto" value={priority} onChange={(e) => setPriority(e.target.value)}>
-                  <option value="all">Priority: all levels</option>
-                  <option value="Urgent">Urgent / critical</option>
-                  <option value="High">High priority</option>
-                  <option value="Normal">Normal priority</option>
+                <Select aria-label="Mức ưu tiên" className="w-auto" value={priority} onChange={(e) => setPriority(e.target.value)}>
+                  <option value="all">Ưu tiên: tất cả</option>
+                  <option value="Urgent">Khẩn cấp</option>
+                  <option value="High">Ưu tiên cao</option>
+                  <option value="Normal">Bình thường</option>
                 </Select>
-                <Select aria-label="Bulk action" className="w-auto" disabled={selected.size === 0} defaultValue="">
+                <Select aria-label="Thao tác hàng loạt" className="w-auto" disabled={selected.size === 0} defaultValue="">
                   <option value="" disabled>
-                    Bulk action ({selected.size} selected)
+                    Thao tác hàng loạt (đã chọn {selected.size})
                   </option>
-                  <option>Mark en route</option>
-                  <option>Reschedule batch</option>
-                  <option>Export offline packets</option>
+                  <option>Đánh dấu đang di chuyển</option>
+                  <option>Đổi lịch hàng loạt</option>
+                  <option>Xuất gói dữ liệu ngoại tuyến</option>
                 </Select>
             </FilterBar>
           </Panel>
@@ -111,8 +112,8 @@ export function FieldTasksPage() {
           {rows.length === 0 ? (
             <EmptyState
               className="mt-6"
-              title="No work orders match"
-              description={timeline === 'today' ? 'Your route for today is clear under these filters.' : 'Nothing scheduled under these filters.'}
+              title="Không có phiếu nào khớp"
+              description={timeline === 'today' ? 'Với bộ lọc này, tuyến hôm nay không còn việc.' : 'Không có lịch nào khớp bộ lọc.'}
               action={
                 <Button
                   size="sm"
@@ -123,7 +124,7 @@ export function FieldTasksPage() {
                     setSearch('')
                   }}
                 >
-                  Clear filters
+                  Xoá bộ lọc
                 </Button>
               }
             />
@@ -140,7 +141,7 @@ export function FieldTasksPage() {
                         />
                         <div className="mt-2 flex flex-wrap gap-1">
                           <Badge tone="accent">{JOB_LABEL[o.kind]}</Badge>
-                          <Badge tone={PRIORITY_TONE[o.priority]}>{o.priority}</Badge>
+                          <Badge tone={PRIORITY_TONE[o.priority]}>{PRIORITY_LABEL[o.priority]}</Badge>
                         </div>
                         <p className="tnum mt-2 text-body">{o.window}</p>
                         <p className="text-meta text-fg-2">{o.status}</p>
@@ -162,7 +163,7 @@ export function FieldTasksPage() {
                             <p className="tnum text-fg-2">{o.progress}</p>
                           </div>
                           <p className="text-meta text-fg-3">{o.scopeNote}</p>
-                          {o.pct !== undefined && <Progress value={o.pct} label={`${o.id} progress`} className="mt-2" />}
+                          {o.pct !== undefined && <Progress value={o.pct} label={`Tiến độ ${o.id}`} className="mt-2" />}
                         </div>
                       </div>
 
@@ -170,11 +171,11 @@ export function FieldTasksPage() {
                         <Button size="sm">{o.action}</Button>
                         {DETAIL_ROUTE[o.kind] ? (
                           <ButtonLink to={DETAIL_ROUTE[o.kind]!} size="sm" variant="ghost">
-                            Work order
+                            Phiếu công việc
                           </ButtonLink>
                         ) : (
                           <Button size="sm" variant="ghost">
-                            Work order
+                            Phiếu công việc
                           </Button>
                         )}
                       </div>
@@ -189,10 +190,10 @@ export function FieldTasksPage() {
               <span>{data.footer.safety}</span>
               <span className="flex flex-wrap gap-x-4">
                 <span>
-                  Emergency dispatch <a href="tel:18005557652" className="tnum font-medium text-fg hover:underline">{data.footer.dispatch}</a>
+                  Điều phối khẩn cấp <a href="tel:18005557652" className="tnum font-medium text-fg hover:underline">{data.footer.dispatch}</a>
                 </span>
                 <PlaceholderLink className="tap text-accent-fg hover:underline">
-                  Equipment returns
+                  Trả thiết bị
                 </PlaceholderLink>
               </span>
             </PanelFooter>

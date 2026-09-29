@@ -152,10 +152,10 @@ function SurveyPhotosView({
             const isOptional = section.requiredCount === 0
             const fulfilled = !isOptional && shots >= section.requiredCount
             const countLabel = isOptional
-              ? `${shots} Recorded`
+              ? `Đã ghi ${shots} ảnh`
               : fulfilled
-                ? `${shots} of ${section.requiredCount} Captured, 100%`
-                : `${shots} of ${section.requiredCount} Captured`
+                ? `Đã chụp ${shots}/${section.requiredCount}, 100%`
+                : `Đã chụp ${shots}/${section.requiredCount}`
 
             return (
               <section key={section.id} className="flex flex-col gap-space-md">

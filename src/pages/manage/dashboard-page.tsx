@@ -20,9 +20,9 @@ export function ManageDashboardPage() {
       {(data) => (
         <>
           <PageHeader
-            meta={<Badge tone="ok">Q4 run rate {data.runRate}</Badge>}
-            title="Executive dashboard"
-            actions={<Button>Batch actions</Button>}
+            meta={<Badge tone="ok">Tiến độ quý 4: {data.runRate}</Badge>}
+            title="Tổng quan điều hành"
+            actions={<Button>Thao tác hàng loạt</Button>}
           />
 
           <StatRow className="mb-12 md:grid-cols-3 xl:grid-cols-6">
@@ -33,9 +33,9 @@ export function ManageDashboardPage() {
 
           <Panel className="mb-12">
             <PanelHeader
-              title="Lifecycle velocity and pipeline balance"
-              description={`${data.pipeline.live} projects live. Median pipeline cycle time ${data.pipeline.medianCycle}.`}
-              action={<Badge tone="warn">Bottleneck: {data.pipeline.bottleneck}</Badge>}
+              title="Tốc độ và phân bổ dự án theo giai đoạn"
+              description={`${data.pipeline.live} dự án đang chạy. Thời gian xử lý trung vị ${data.pipeline.medianCycle}.`}
+              action={<Badge tone="warn">Điểm nghẽn: {data.pipeline.bottleneck}</Badge>}
             />
             <PanelBody>
               <ol className="grid grid-cols-2 gap-y-6 sm:grid-cols-3 lg:grid-cols-6">
@@ -52,8 +52,8 @@ export function ManageDashboardPage() {
 
           <Panel className="mb-12" aria-labelledby="decisions">
             <PanelHeader
-              title={<span id="decisions">Decisions required</span>}
-              description={`${data.exceptions.length} blockers need executive sign-off.`}
+              title={<span id="decisions">Cần quyết định</span>}
+              description={`${data.exceptions.length} vướng mắc cần cấp điều hành ký duyệt.`}
             />
             <div className="grid gap-x-12 gap-y-8 md:grid-cols-2">
               {data.exceptions.map((ex) => (
@@ -93,34 +93,34 @@ export function ManageDashboardPage() {
 
           <div className="mb-12 grid gap-x-12 gap-y-12 lg:grid-cols-3 lg:items-start">
             <Panel className="lg:col-span-2">
-              <PanelHeader title={`Week ${data.sprint.week} installation sprint`} description={data.sprint.summary} />
+              <PanelHeader title={`Đợt lắp đặt tuần ${data.sprint.week}`} description={data.sprint.summary} />
               <Table stack>
                 <thead>
                   <tr>
-                    <Th>Project</Th>
-                    <Th>System</Th>
-                    <Th className="hidden md:table-cell">Crew</Th>
-                    <Th>Milestone</Th>
+                    <Th>Dự án</Th>
+                    <Th>Hệ thống</Th>
+                    <Th className="hidden md:table-cell">Đội thi công</Th>
+                    <Th>Mốc tiến độ</Th>
                   </tr>
                 </thead>
                 <tbody>
                   {data.sprint.rows.map((r) => (
                     <Tr key={r.id}>
-                      <Td label="Project">
+                      <Td label="Dự án">
                         <p className="font-medium">{r.project}</p>
                         <p className="text-meta text-fg-3">
                           {r.location}, <span className="text-fg-2">{r.id}</span>
                         </p>
                       </Td>
-                      <Td label="System">
+                      <Td label="Hệ thống">
                         <p>{r.size}</p>
                         <p className="text-meta text-fg-3">{r.hardware}</p>
                       </Td>
-                      <Td label="Crew" className="hidden md:table-cell">
+                      <Td label="Đội thi công" className="hidden md:table-cell">
                         <p>{r.crew}</p>
-                        {r.lead && <p className="text-meta text-fg-3">Lead {r.lead}</p>}
+                        {r.lead && <p className="text-meta text-fg-3">Trưởng nhóm {r.lead}</p>}
                       </Td>
-                      <Td label="Milestone">
+                      <Td label="Mốc tiến độ">
                         <Badge tone={r.tone}>{r.status}</Badge>
                       </Td>
                     </Tr>
@@ -137,7 +137,7 @@ export function ManageDashboardPage() {
             </Panel>
 
             <Panel>
-              <PanelHeader title="Field verification" />
+              <PanelHeader title="Xác minh hiện trường" />
               <PanelBody className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
                 {data.photos.map((p) => (
                   <Photo key={p.caption} src={p.src} alt={p.caption} ratio="aspect-[16/9]" caption={p.caption} meta={p.meta} />
@@ -145,7 +145,7 @@ export function ManageDashboardPage() {
               </PanelBody>
               <PanelFooter>
                 <PlaceholderLink className="text-body text-accent-fg hover:underline">
-                  Open safety and QA gallery ({data.photoTotal} photos)
+                  Mở thư viện ảnh an toàn & chất lượng ({data.photoTotal} ảnh)
                 </PlaceholderLink>
               </PanelFooter>
             </Panel>
@@ -153,24 +153,24 @@ export function ManageDashboardPage() {
 
           <div className="grid gap-x-12 gap-y-12 lg:grid-cols-3 lg:items-start">
             <Panel className="lg:col-span-2">
-              <PanelHeader title="Audit and milestone feed" />
+              <PanelHeader title="Nhật ký kiểm tra & mốc tiến độ" />
               <PanelBody>
                 <ActivityList items={data.audit} />
               </PanelBody>
             </Panel>
 
             <Panel>
-              <PanelHeader title="Q4 revenue pace" action={<span className="tnum text-title font-semibold">{data.revenue.pct}%</span>} />
+              <PanelHeader title="Tiến độ doanh thu quý 4" action={<span className="tnum text-title font-semibold">{data.revenue.pct}%</span>} />
               <PanelBody className="space-y-6">
                 <div>
-                  <Progress value={data.revenue.pct} label="Q4 revenue achieved" />
+                  <Progress value={data.revenue.pct} label="Doanh thu quý 4 đã đạt" />
                   <dl className="tnum mt-2 flex justify-between text-meta text-fg-2">
                     <div>
-                      <dt className="inline">Recognized </dt>
+                      <dt className="inline">Đã ghi nhận </dt>
                       <dd className="inline font-medium text-fg">{data.revenue.recognized}</dd>
                     </div>
                     <div>
-                      <dt className="inline">Remaining </dt>
+                      <dt className="inline">Còn lại </dt>
                       <dd className="inline font-medium text-fg">{data.revenue.remaining}</dd>
                     </div>
                   </dl>
@@ -184,14 +184,14 @@ export function ManageDashboardPage() {
                           {fmt.usd(m.value)} ({m.pct}%)
                         </span>
                       </div>
-                      <Progress value={m.pct} label={`${m.label} share`} />
+                      <Progress value={m.pct} label={`Tỷ trọng ${m.label}`} />
                     </li>
                   ))}
                 </ul>
               </PanelBody>
               <PanelFooter>
                 <ButtonLink to={ROUTES.manage.revenue} size="sm" variant="ghost">
-                  Full revenue analytics
+                  Xem phân tích doanh thu
                 </ButtonLink>
               </PanelFooter>
             </Panel>

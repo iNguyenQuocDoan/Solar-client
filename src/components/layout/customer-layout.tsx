@@ -15,17 +15,17 @@ export function CustomerLayout({ children }: { children?: ReactNode }) {
       context={
         <>
           <p className="font-medium text-fg">{property.name}</p>
-          <p className="tnum">Generating {property.liveOutputKw} kW now</p>
+          <p className="tnum">Đang phát {property.liveOutputKw} kW</p>
         </>
       }
       tools={
         <>
           <ButtonLink to={ROUTES.customer.assessment} variant="primary" size="sm">
-            New assessment
+            Đánh giá mới
           </ButtonLink>
           <p className="text-body text-fg-2">
             <PlaceholderLink className="tap underline-offset-4 hover:text-fg hover:underline">
-              3 unread notifications
+              3 thông báo chưa đọc
             </PlaceholderLink>
           </p>
         </>

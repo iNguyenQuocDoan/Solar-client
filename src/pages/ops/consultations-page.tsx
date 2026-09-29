@@ -68,24 +68,24 @@ export function OpsConsultationsPage() {
       {(data) => (
         <>
           <PageHeader
-            title="Consultation requests"
+            title="Yêu cầu tư vấn"
             actions={
               <>
-                <Button>Export CSV</Button>
+                <Button>Xuất CSV</Button>
                 <Button
                   disabled={selected.size === 0}
                 >
-                  Bulk reassign{selected.size > 0 ? ` (${selected.size})` : ""}
+                  Giao lại hàng loạt{selected.size > 0 ? ` (${selected.size})` : ""}
                 </Button>
               </>
             }
           />
 
           <StatRow className="mb-12 md:grid-cols-3 lg:max-w-2xl">
-            <Stat label="Active intake" value={data.stats.activeIntake} />
-            <Stat label="Average triage SLA" value={data.stats.avgTriageSla} />
+            <Stat label="Đang tiếp nhận" value={data.stats.activeIntake} />
+            <Stat label="Thời gian phân loại TB" value={data.stats.avgTriageSla} />
             <Stat
-              label="Survey backlog"
+              label="Khảo sát tồn đọng"
               value={data.stats.surveyBacklog}
               tone="warn"
             />
@@ -98,34 +98,34 @@ export function OpsConsultationsPage() {
                   chips={requestStages}
                   value={stage}
                   onChange={setStage}
-                  label="Filter by stage"
+                  label="Lọc theo giai đoạn"
                 />
               }
             >
                 <Input
                   type="search"
-                  aria-label="Search requests"
+                  aria-label="Tìm yêu cầu"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  placeholder="Customer, request ID or address"
+                  placeholder="Khách hàng, mã yêu cầu hoặc địa chỉ"
                   className="w-full md:max-w-xs"
                 />
-                <Select aria-label="Assessment status" className="w-auto">
+                <Select aria-label="Trạng thái đánh giá" className="w-auto">
                   {data.filters.assessment.map((o) => (
                     <option key={o}>{o}</option>
                   ))}
                 </Select>
-                <Select aria-label="Current stage" className="w-auto">
+                <Select aria-label="Giai đoạn hiện tại" className="w-auto">
                   {data.filters.stage.map((o) => (
                     <option key={o}>{o}</option>
                   ))}
                 </Select>
-                <Select aria-label="Assigned consultant" className="w-auto">
+                <Select aria-label="Tư vấn viên phụ trách" className="w-auto">
                   {data.filters.consultant.map((o) => (
                     <option key={o}>{o}</option>
                   ))}
                 </Select>
-                <Select aria-label="Intake window" className="w-auto">
+                <Select aria-label="Khoảng thời gian tiếp nhận" className="w-auto">
                   {data.filters.window.map((o) => (
                     <option key={o}>{o}</option>
                   ))}
@@ -135,8 +135,8 @@ export function OpsConsultationsPage() {
             {rows.length === 0 ? (
               <PanelBody>
                 <EmptyState
-                  title="No requests match these filters"
-                  description="Try another stage or clear the search."
+                  title="Không có yêu cầu nào khớp bộ lọc"
+                  description="Thử giai đoạn khác hoặc xoá từ khoá tìm kiếm."
                   action={
                     <Button
                       size="sm"
@@ -145,7 +145,7 @@ export function OpsConsultationsPage() {
                         setSearch("");
                       }}
                     >
-                      Clear filters
+                      Xoá bộ lọc
                     </Button>
                   }
                 />
@@ -157,20 +157,20 @@ export function OpsConsultationsPage() {
                     <Th className="w-10">
                       <input
                         type="checkbox"
-                        aria-label="Select all visible"
+                        aria-label="Chọn tất cả dòng đang hiện"
                         checked={allSelected}
                         onChange={toggleAll}
                         className="size-4 accent-accent"
                       />
                     </Th>
-                    <Th>Request</Th>
-                    <Th>Homeowner</Th>
-                    <Th className="hidden 2xl:table-cell">Property</Th>
-                    <Th className="hidden lg:table-cell">Intake and SLA</Th>
-                    <Th>Stage and highlights</Th>
-                    <Th className="hidden md:table-cell">Assigned</Th>
+                    <Th>Yêu cầu</Th>
+                    <Th>Chủ nhà</Th>
+                    <Th className="hidden 2xl:table-cell">Công trình</Th>
+                    <Th className="hidden lg:table-cell">Tiếp nhận & SLA</Th>
+                    <Th>Giai đoạn & điểm chú ý</Th>
+                    <Th className="hidden md:table-cell">Người phụ trách</Th>
                     <Th>
-                      <span className="sr-only">Action</span>
+                      <span className="sr-only">Thao tác</span>
                     </Th>
                   </tr>
                 </thead>
@@ -185,25 +185,25 @@ export function OpsConsultationsPage() {
                       <Td>
                         <input
                           type="checkbox"
-                          aria-label={`Select ${r.id}`}
+                          aria-label={`Chọn ${r.id}`}
                           checked={selected.has(r.id)}
                           onChange={() => toggle(r.id)}
                           className="size-4 accent-accent"
                         />
                       </Td>
-                      <Td label="Request">
+                      <Td label="Yêu cầu">
                         <p className="font-medium whitespace-nowrap">{r.id}</p>
                         <p className="text-meta text-fg-3 wide:whitespace-nowrap">{r.type}</p>
                       </Td>
-                      <Td label="Homeowner">
+                      <Td label="Chủ nhà">
                         <p className="font-medium wide:whitespace-nowrap">{r.homeowner}</p>
                         <p className="text-meta text-fg-3">{r.contact}</p>
                       </Td>
-                      <Td label="Property" className="hidden 2xl:table-cell">
+                      <Td label="Công trình" className="hidden 2xl:table-cell">
                         <p className="whitespace-nowrap">{r.address}</p>
                         <p className="text-meta text-fg-3">{r.city}</p>
                       </Td>
-                      <Td label="Intake and SLA" className="hidden lg:table-cell">
+                      <Td label="Tiếp nhận & SLA" className="hidden lg:table-cell">
                         <p className="tnum">
                           <span className="whitespace-nowrap">{r.intake}</span> <span className="whitespace-nowrap text-fg-3">{r.age}</span>
                         </p>
@@ -216,17 +216,17 @@ export function OpsConsultationsPage() {
                           {r.sla}
                         </p>
                       </Td>
-                      <Td label="Stage and highlights">
+                      <Td label="Giai đoạn & điểm chú ý">
                         <Badge tone={r.stageTone}>{r.stageLabel}</Badge>
                         <p className="text-meta text-fg-3">
                           {r.highlights.map((h) => h.label).join(', ')}
                         </p>
                       </Td>
-                      <Td label="Assigned" className="hidden md:table-cell">
+                      <Td label="Người phụ trách" className="hidden md:table-cell">
                         {r.assignee ? (
                           <span className="whitespace-nowrap">{r.assignee}</span>
                         ) : (
-                          <span className="text-fg-3">Unassigned</span>
+                          <span className="text-fg-3">Chưa giao</span>
                         )}
                       </Td>
                       <Td className="text-right">
@@ -240,15 +240,15 @@ export function OpsConsultationsPage() {
 
             <PanelFooter className="justify-between text-body text-fg-2">
               <span className="tnum">
-                Showing 1 to {rows.length} of {data.total} consultation requests
+                Hiển thị 1–{rows.length} trên {data.total} yêu cầu tư vấn
               </span>
               <div className="flex flex-wrap items-center gap-3">
                 <label className="flex items-center gap-2 whitespace-nowrap">
-                  Rows per page
+                  Số dòng mỗi trang
                   <Select
                     size="sm"
                     className="w-auto"
-                    aria-label="Rows per page"
+                    aria-label="Số dòng mỗi trang"
                     defaultValue="10"
                   >
                     <option>10</option>
@@ -262,11 +262,11 @@ export function OpsConsultationsPage() {
           </Panel>
 
           <Panel className="mt-12">
-            <PanelHeader title="Austin metro snapshot" />
+            <PanelHeader title="Tổng quan khu vực Austin" />
             <PanelBody className="grid gap-6 lg:grid-cols-3 lg:divide-x lg:divide-line">
               <div className="lg:pr-6">
                 <p className="text-body font-medium">
-                  Lead density by cluster
+                  Mật độ khách tiềm năng theo cụm
                 </p>
                 <ul className="mt-3 space-y-3">
                   {data.region.clusters.map((c) => (
@@ -274,12 +274,12 @@ export function OpsConsultationsPage() {
                       <div className="mb-1 flex justify-between text-body">
                         <span>{c.area}</span>
                         <span className="tnum text-fg-2">
-                          {c.pct}% ({c.leads} leads)
+                          {c.pct}% ({c.leads} khách)
                         </span>
                       </div>
                       <Progress
                         value={c.pct}
-                        label={`${c.area} share of leads`}
+                        label={`Tỷ lệ khách tiềm năng của ${c.area}`}
                       />
                     </li>
                   ))}
@@ -289,12 +289,12 @@ export function OpsConsultationsPage() {
                 </p>
               </div>
               <div className="lg:px-6">
-                <p className="text-body font-medium">Triage response</p>
+                <p className="text-body font-medium">Tốc độ phản hồi</p>
                 <p className="tnum mt-2 text-figure font-semibold">
                   {data.region.triage.avg}
                 </p>
                 <p className="text-meta text-fg-3">
-                  Average first contact to scheduling
+                  Trung bình từ lần liên hệ đầu đến khi hẹn lịch
                 </p>
                 <Badge tone="ok" className="mt-2">
                   {data.region.triage.health}
@@ -304,22 +304,22 @@ export function OpsConsultationsPage() {
                 </p>
               </div>
               <div className="lg:pl-6">
-                <p className="text-body font-medium">Field survey fleet</p>
+                <p className="text-body font-medium">Xe khảo sát hiện trường</p>
                 <p className="tnum mt-2 text-figure font-semibold">
                   {data.region.fleet.vans}{" "}
                   <span className="text-body font-normal text-fg-2">
-                    vans active
+                    xe đang hoạt động
                   </span>
                 </p>
                 <p className="mt-1 text-body text-fg-2">
-                  Next certified roof technician slot:{" "}
+                  Lịch trống gần nhất của kỹ thuật viên mái:{" "}
                   <span className="font-medium text-fg">
                     {data.region.fleet.nextSlot}
                   </span>{" "}
                   ({data.region.fleet.crew}).
                 </p>
                 <Button size="sm" className="mt-3">
-                  Dispatch and route optimizer
+                  Điều phối & tối ưu lộ trình
                 </Button>
               </div>
             </PanelBody>

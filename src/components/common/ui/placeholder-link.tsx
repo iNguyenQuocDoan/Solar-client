@@ -9,7 +9,7 @@ import { cx } from '@/utils/cx'
 */
 export function PlaceholderLink({ className, children, ...rest }: HTMLAttributes<HTMLSpanElement>) {
   return (
-    <span role="link" aria-disabled="true" tabIndex={0} title="Not available in this build" className={cx('cursor-pointer', className)} {...rest}>
+    <span role="link" aria-disabled="true" tabIndex={0} title="Chưa có trong bản này" className={cx('cursor-pointer', className)} {...rest}>
       {children}
     </span>
   )

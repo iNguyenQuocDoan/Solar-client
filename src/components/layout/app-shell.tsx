@@ -46,7 +46,7 @@ export function AppShell({
         href="#main"
         className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:bg-canvas focus:px-3 focus:py-2 focus:text-meta"
       >
-        Skip to content
+        Bỏ qua, tới nội dung chính
       </a>
 
       <header className="sticky top-0 z-20 flex h-12 items-center justify-between border-b border-line bg-canvas px-4 lg:hidden">
@@ -56,7 +56,7 @@ export function AppShell({
           className="press -mr-3 inline-flex h-11 items-center px-3 text-body text-fg-2 underline-offset-4 hover:text-fg hover:underline"
           onClick={() => setOpen(true)}
         >
-          Menu
+          Mở menu
         </button>
       </header>
 
@@ -92,7 +92,7 @@ function Rail({
           'fixed inset-y-0 left-0 z-40 flex w-60 flex-col overflow-y-auto overscroll-contain [scrollbar-width:thin] border-r border-line bg-canvas px-6 pt-6 transition-transform duration-200 lg:translate-x-0',
           open ? 'translate-x-0' : '-translate-x-full',
         )}
-        aria-label="Primary"
+        aria-label="Điều hướng chính"
       >
         <div className="flex items-start justify-between">
           <div>
@@ -104,7 +104,7 @@ function Rail({
             className="press -mt-3 -mr-3 inline-flex h-11 items-center px-3 text-meta text-fg-2 hover:text-fg lg:hidden"
             onClick={onClose}
           >
-            Close
+            Đóng
           </button>
         </div>
         {context && <div className="mt-4 text-meta text-fg-2">{context}</div>}
@@ -156,7 +156,7 @@ function RailLink({ item }: { item: NavItem }) {
   )
   if (isPlaceholder) {
     return (
-      <button type="button" className={cx(className(false), 'w-[calc(100%+1.5rem)] text-left')} aria-disabled title="Not available in this build">
+      <button type="button" className={cx(className(false), 'w-[calc(100%+1.5rem)] text-left')} aria-disabled title="Chưa có trong bản này">
         {inner}
       </button>
     )
@@ -198,7 +198,7 @@ function SessionBlock({ fallback }: { fallback: Portal['user'] }) {
             onClick={handleSignOut}
             className="press inline-flex h-11 items-center text-meta whitespace-nowrap text-fg-2 underline-offset-4 hover:text-fg hover:underline lg:h-8"
           >
-            Sign out
+            Đăng xuất
           </button>
         )}
       </div>
@@ -207,7 +207,7 @@ function SessionBlock({ fallback }: { fallback: Portal['user'] }) {
 }
 
 const NEXT: Record<Theme, Theme> = { system: 'light', light: 'dark', dark: 'system' }
-const LABEL: Record<Theme, string> = { system: 'Auto', light: 'Light', dark: 'Dark' }
+const LABEL: Record<Theme, string> = { system: 'Tự động', light: 'Sáng', dark: 'Tối' }
 
 function ThemeButton() {
   const [theme, setTheme] = useTheme()
@@ -216,9 +216,9 @@ function ThemeButton() {
       type="button"
       onClick={() => setTheme(NEXT[theme])}
       className="press inline-flex h-11 shrink-0 items-center text-meta whitespace-nowrap text-fg-2 underline-offset-4 hover:text-fg hover:underline lg:h-8"
-      aria-label={`Theme: ${LABEL[theme]}. Switch theme`}
+      aria-label={`Giao diện: ${LABEL[theme]}. Đổi giao diện`}
     >
-      Theme: {LABEL[theme]}
+      Giao diện: {LABEL[theme]}
     </button>
   )
 }

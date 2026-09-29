@@ -27,7 +27,7 @@ function TaskDetailView({ detail }: { detail: TaskDetail }) {
         <div className="flex items-center gap-space-sm">
           <Link
             to={ROUTES.TECH.TASKS}
-            aria-label="Back to work orders"
+            aria-label="Quay lại danh sách phiếu công việc"
             className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-surface-container-lowest text-primary shadow-sm transition-all hover:bg-surface-container-high"
           >
             <Icon name="arrow_back" className="text-[20px]" />

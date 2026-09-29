@@ -60,7 +60,7 @@ export function TimelineStep({ index, title, description, timestamp, state, stag
           <Icon name={icon ?? s.icon} className="text-[16px]" />
         </div>
         <span className={cn('text-label-sm font-bold', s.stage)}>
-          {stageLabel ?? `Stage ${String(index).padStart(2, '0')}`}
+          {stageLabel ?? `Giai đoạn ${String(index).padStart(2, '0')}`}
         </span>
       </div>
       <span className={cn('text-label-lg font-bold', s.title)}>{title}</span>

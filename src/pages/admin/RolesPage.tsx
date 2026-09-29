@@ -160,7 +160,7 @@ export function RolesPage() {
             ))}
             {visibleRoles.length === 0 && (
               <p className="rounded-2xl bg-surface-container-low/60 p-space-md text-center text-body-sm text-on-surface-variant">
-                No roles match this filter
+                Không có vai trò nào khớp bộ lọc
               </p>
             )}
           </div>

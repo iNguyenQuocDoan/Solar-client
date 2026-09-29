@@ -24,11 +24,11 @@ export function AssistantPage() {
   function send(text: string) {
     const t = text.trim()
     if (!t) return
-    setMessages((m) => [...m, { id: Date.now(), role: 'user', time: 'Just now', text: t }])
+    setMessages((m) => [...m, { id: Date.now(), role: 'user', time: 'Vừa xong', text: t }])
     setDraft('')
     setTyping(true)
     setTimeout(() => {
-      setMessages((m) => [...m, { id: Date.now() + 1, role: 'assistant', time: 'Just now', text: assistant.cannedReply }])
+      setMessages((m) => [...m, { id: Date.now() + 1, role: 'assistant', time: 'Vừa xong', text: assistant.cannedReply }])
       setTyping(false)
     }, 850)
   }
@@ -41,26 +41,26 @@ export function AssistantPage() {
   return (
     <>
       <PageHeader
-        title="Solar assistant"
-        actions={<Button onClick={() => setMessages([])}>New conversation</Button>}
+        title="Trợ lý điện mặt trời"
+        actions={<Button onClick={() => setMessages([])}>Cuộc trò chuyện mới</Button>}
       />
     <div className="grid gap-x-12 gap-y-12 lg:grid-cols-[260px_minmax(0,1fr)]">
       <aside className="order-2 space-y-8 lg:order-1">
 
         <Panel>
-          <PanelHeader title="System profile" action={<Badge tone="ok">{assistant.profile.status}</Badge>} />
+          <PanelHeader title="Thông tin hệ thống" action={<Badge tone="ok">{assistant.profile.status}</Badge>} />
           <PanelBody>
             <KeyValueList
               items={[
-                { k: 'System', v: assistant.profile.system },
-                { k: 'Contract', v: <span className="text-fg-2">{assistant.profile.contract}</span> },
+                { k: 'Hệ thống', v: assistant.profile.system },
+                { k: 'Hợp đồng', v: <span className="text-fg-2">{assistant.profile.contract}</span> },
               ]}
             />
           </PanelBody>
         </Panel>
 
         <Panel>
-          <PanelHeader title="Knows about" />
+          <PanelHeader title="Trợ lý am hiểu về" />
           <PanelBody>
             <p className="text-body text-fg-2">{assistant.domains.join(', ')}.</p>
           </PanelBody>
@@ -68,10 +68,10 @@ export function AssistantPage() {
 
         <Panel>
           <PanelHeader
-            title="Recent conversations"
+            title="Trò chuyện gần đây"
             action={
               <Button size="sm" variant="ghost">
-                View all
+                Xem tất cả
               </Button>
             }
           />
@@ -94,7 +94,7 @@ export function AssistantPage() {
       <Panel className="order-1 flex min-h-[70dvh] flex-col border-t-0! pt-0! lg:order-2">
         <div ref={streamRef} className="flex-1 space-y-6 overflow-y-auto border-t border-line px-4 py-6 md:px-6">
           <div>
-            <p className="mb-2 text-meta text-fg-3">Suggested for Oakwood Residence</p>
+            <p className="mb-2 text-meta text-fg-3">Gợi ý cho nhà Oakwood</p>
             <ul className="flex flex-col items-start gap-2">
               {assistant.suggestions.map((s) => (
                 <li key={s}>
@@ -147,7 +147,7 @@ export function AssistantPage() {
           ))}
           {typing && (
             <p className="text-meta text-fg-3" aria-live="polite">
-              Assistant is typing
+              Trợ lý đang trả lời
             </p>
           )}
         </div>
@@ -155,10 +155,10 @@ export function AssistantPage() {
         <form onSubmit={onSubmit} className="border-t border-line px-4 py-4 md:px-6">
           <div className="flex items-end gap-3">
             <Button type="button" variant="ghost" size="sm">
-              Attach
+              Đính kèm
             </Button>
             <Textarea
-              aria-label="Message"
+              aria-label="Tin nhắn"
               rows={1}
               value={draft}
               onChange={(e) => setDraft(e.target.value)}
@@ -168,11 +168,11 @@ export function AssistantPage() {
                   send(draft)
                 }
               }}
-              placeholder="Ask anything about your solar installation, equipment or billing"
+              placeholder="Hỏi bất cứ điều gì về lắp đặt, thiết bị hay thanh toán"
               className="min-h-11 resize-none lg:min-h-10"
             />
             <Button type="submit" variant="primary" disabled={!draft.trim()}>
-              Send
+              Gửi
             </Button>
           </div>
           <p className="mt-2 text-meta text-fg-3">{assistant.disclaimer}</p>
@@ -188,7 +188,7 @@ function Bubble({ role, time, children }: { role: 'user' | 'assistant'; time: st
   return (
     <div className={cx('flex gap-3', isUser && 'justify-end')}>
       {!isUser && (
-        <span className="hidden w-16 shrink-0 pt-3 text-meta text-fg-3 sm:block">Assistant</span>
+        <span className="hidden w-16 shrink-0 pt-3 text-meta text-fg-3 sm:block">Trợ lý</span>
       )}
       <div className={cx('min-w-0 max-w-full lg:max-w-prose', isUser && 'text-right')}>
         <div

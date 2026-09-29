@@ -44,7 +44,7 @@ export const loginContent = {
   notVerifiedLink: "Tài khoản chưa xác thực email? Sang trang xác thực",
   quickTitle: "Thử nhanh theo các vai trò:",
   expiredLabel: "Hết hạn phiên",
-  expiredHint: "Xem pop-up modal",
+  expiredHint: "Xem hộp thoại hết phiên",
   noAccount: "Chưa có tài khoản? ",
   registerLink: "Đăng ký ngay",
   toastSuccess: "Thao tác thành công",

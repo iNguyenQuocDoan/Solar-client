@@ -25,7 +25,7 @@ export function InstallationChecklistPage() {
   const { id } = useParams()
   const task = getInstallationTask(id)
   const checklist = getInstallationChecklist(id)
-  if (!task || !checklist) notFound(`Installation checklist ${id ?? ''} not found`)
+  if (!task || !checklist) notFound(`Không tìm thấy danh sách kiểm tra lắp đặt ${id ?? ''}`)
 
   return <InstallationChecklistView checklist={checklist} defaultNotes={task.fieldLog.notes} />
 }
@@ -141,7 +141,7 @@ function InstallationChecklistView({
               </button>
             ))}
             <Button size="lg" iconLeft="draw" onClick={() => setSignOpen(true)} className="py-2.5">
-              Complete Task & Handover
+              Hoàn thành và bàn giao
             </Button>
           </div>
         </div>
@@ -173,7 +173,7 @@ function InstallationChecklistView({
                 title={phase.title}
                 description={phase.description}
                 badgeIcon={phase.badgeIcon}
-                badgeLabel={`${done} of ${phase.tasks.length} ${phase.badgeSuffix}`}
+                badgeLabel={`${done}/${phase.tasks.length} ${phase.badgeSuffix}`}
                 tasks={phase.tasks}
                 checkedIds={checkedIds}
                 onToggle={toggleTask}
@@ -256,7 +256,7 @@ function InstallationChecklistView({
             note={checklist.hotline.note}
             phoneHref={checklist.hotline.phoneHref}
             callTone="solid"
-            callLabel={`Call ${checklist.hotline.name}`}
+            callLabel={`Gọi ${checklist.hotline.name}`}
           />
         </div>
       </div>
@@ -266,7 +266,7 @@ function InstallationChecklistView({
         title={checklist.dock.title}
         leading={
           <div className="flex min-w-0 items-center gap-space-md">
-            <ProgressRing value={percent} size={48} strokeWidth={4} label={`${percent}% complete`}>
+            <ProgressRing value={percent} size={48} strokeWidth={4} label={`Hoàn thành ${percent}%`}>
               <span className="text-label-md font-bold text-primary">{percent}%</span>
             </ProgressRing>
             <div className="flex min-w-0 flex-col">
