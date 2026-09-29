@@ -1,10 +1,10 @@
 import { useState } from 'react'
 import { Link } from 'react-router'
-import { AdvisoryCard } from '@/components/admin/AdvisoryCard'
-import { AuditTrailTable } from '@/components/admin/AuditTrailTable'
-import { DistributionBar } from '@/components/admin/DistributionBar'
-import { KeyValueList, KeyValueRow } from '@/components/admin/KeyValueList'
-import { QuickLaunchCard } from '@/components/admin/QuickLaunchCard'
+import { AdvisoryCard } from '@/features/dashboard/components/AdvisoryCard'
+import { AuditTrailTable } from '@/features/dashboard/components/AuditTrailTable'
+import { DistributionBar } from '@/features/dashboard/components/DistributionBar'
+import { KeyValueList, KeyValueRow } from '@/features/dashboard/components/KeyValueList'
+import { QuickLaunchCard } from '@/features/dashboard/components/QuickLaunchCard'
 import {
   Button,
   Card,
@@ -16,8 +16,8 @@ import {
   PageHeader,
   ProgressBar,
   StatusBadge,
-} from '@/components/stitch-ui'
-import { ROUTES } from '@/constants/routes'
+} from '@/components/common/stitch-ui'
+import { ROUTES } from '@/routes/paths'
 import {
   adminDashboardHeader,
   adminKpis,
@@ -28,7 +28,7 @@ import {
   quickCreateItems,
   userDistribution,
   type KpiFooter,
-} from '@/lib/mock/adminDashboard'
+} from '@/data/adminDashboard'
 
 /* Dựng từ admin_dashboard/code.html + screen.png. */
 

@@ -1,21 +1,22 @@
 import { useState } from "react";
-import { Avatar } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { FilterChips } from "@/components/ui/chips";
-import { ListRow, ListRowActions } from "@/components/ui/list-row";
-import { ActivityList, Notice, Progress } from "@/components/ui/lists";
-import { PageHeader } from "@/components/ui/page-header";
+import { Avatar } from "@/components/common/ui/avatar";
+import { Badge } from "@/components/common/ui/badge";
+import { Button } from "@/components/common/ui/button";
+import { FilterChips } from "@/components/common/ui/chips";
+import { ListRow, ListRowActions } from "@/components/common/ui/list-row";
+import { ActivityList, Notice, Progress } from "@/components/common/ui/lists";
+import { PageHeader } from "@/components/common/ui/page-header";
 import {
   Panel,
   PanelBody,
   PanelHeader,
-} from "@/components/ui/panel";
-import { Stat, StatRow } from "@/components/ui/stat";
-import { EmptyState } from "@/components/ui/states";
+} from "@/components/common/ui/panel";
+import { Stat, StatRow } from "@/components/common/ui/stat";
+import { EmptyState } from "@/components/common/ui/states";
 import { alerts, type AlertGroup } from "@/data/manage";
-import { fmt } from "@/lib/format";
-import { QueryBoundary, useMockQuery } from "@/services/mock";
+import { fmt } from "@/utils/format";
+import { QueryBoundary } from "@/components/common/ui/query-boundary";
+import { useMockQuery } from "@/hooks/useMockQuery";
 
 type Filter = AlertGroup | "all";
 

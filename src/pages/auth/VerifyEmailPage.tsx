@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useSearchParams } from 'react-router'
 import { toast } from 'sonner'
-import { AuthCard } from '@/components/auth/AuthCard'
-import { Icon } from '@/components/stitch-ui/Icon'
-import { ROUTES } from '@/constants/routes'
-import { useResendVerificationMutation, useVerifyEmailMutation } from '@/features/auth/hooks'
-import { errorMessage } from '@/lib/api/errors'
-import { verifyContent } from '@/lib/mock/auth'
+import { AuthCard } from '@/features/auth/components/AuthCard'
+import { Icon } from '@/components/common/stitch-ui/Icon'
+import { ROUTES } from '@/routes/paths'
+import { useResendVerificationMutation, useVerifyEmailMutation } from '@/features/auth/hooks/useAuthMutations'
+import { errorMessage } from '@/services/api/errors'
+import { verifyContent } from '@/data/auth'
 
 /** Che bớt email: "khachhang@gmail.com" → "k***@gmail.com" (theo thiết kế). */
 function maskEmail(email: string) {

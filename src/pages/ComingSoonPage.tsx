@@ -1,8 +1,8 @@
 import { Link } from 'react-router'
-import { LANDING_CONTAINER } from '@/components/landing/classes'
-import { Icon } from '@/components/stitch-ui/Icon'
-import { ROUTES } from '@/constants/routes'
-import { cn } from '@/lib/cn'
+import { LANDING_CONTAINER } from '@/features/landing/components/classes'
+import { Icon } from '@/components/common/stitch-ui/Icon'
+import { ROUTES } from '@/routes/paths'
+import { cn } from '@/utils/cn'
 
 /*
  * Trang tạm cho các vai trò chưa có màn (Kinh doanh, Quản lý, Khách hàng) và cho

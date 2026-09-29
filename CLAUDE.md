@@ -10,9 +10,9 @@
 Repo có hai thư mục component vì hai nhánh việc dựng song song, nhưng từ 22/09/2026 cả
 hai ăn chung một hệ token trong `src/styles/globals.css`:
 
-- `src/components/ui` (file kebab-case, token `canvas/fg/accent…`): portal khách hàng
+- `src/components/common/ui` (file kebab-case, token `canvas/fg/accent…`): portal khách hàng
   `/customer`, kinh doanh `/ops`, kỹ thuật `/field`, quản lý `/manage`. Lịch sử audit ở `UI_AUDIT.md`.
-- `src/components/stitch-ui` (file PascalCase, token `surface/on-surface/primary…`,
+- `src/components/common/stitch-ui` (file PascalCase, token `surface/on-surface/primary…`,
   Material Symbols): admin `/admin`, kỹ thuật viên `/tech`, `/styleguide`.
 - Token của bộ Stitch nay chỉ là bí danh trỏ vào token của portal kit (màu nền/chữ/đường
   kẻ, bán kính, bóng, họ chữ, thang chữ). Sửa giá trị ở block portal kit là cả hai đổi theo;
@@ -50,7 +50,7 @@ Rút ra từ 4 lượt audit trong `UI_AUDIT.md`; áp cho CẢ HAI bộ componen
 - shadcn/ui cho primitives (dialog, dropdown, tabs, checkbox…) – restyle theo token bên dưới
 - Font: portal dùng Schibsted Grotesk (`globals.css`, thiếu dấu tiếng Việt U+1EA0–1EF1 – xem `docs/design/landing-brief.md`); trang công khai dùng Be Vietnam Pro (`@fontsource/be-vietnam-pro`, nạp trong `PublicLayout`). Plus Jakarta Sans đã bỏ.
 - Icon: Material Symbols Outlined – link Google Fonts trong `index.html`; giữ đúng tên icon như trong file thiết kế (`grid_view`, `solar_power`, `manage_accounts`…)
-- State/data: mock data trong `src/lib/mock/*.ts` cho phần UI; riêng auth đã gọi API thật (xem "Auth API")
+- State/data: mock data trong `src/data/*.ts` cho phần UI; riêng auth đã gọi API thật (xem "Auth API")
 
 ## Nguồn thiết kế (KHÔNG sửa thư mục này)
 
@@ -86,38 +86,51 @@ nhưng GIÁ TRỊ token nay lấy theo hệ chung ở trên. Những chỗ cố 
 ```
 index.html                     # lang="vi", meta/OG tiếng Việt, link Material Symbols
 src/
-  main.tsx                     # RouterProvider
-  styles/globals.css           # @import "tailwindcss" + @theme tokens
-  app/router.tsx               # createBrowserRouter: 2 layout route (admin / tech) + children
-  layouts/
-    AdminLayout.tsx            # <AppShell nav={adminNav}><Outlet/></AppShell>
-    TechLayout.tsx             # <AppShell nav={technicianNav}><Outlet/></AppShell>
-    PublicLayout.tsx           # header + footer trang công khai, font Be Vietnam Pro – KHÔNG có sidebar
-    AuthLayout.tsx             # 2 cột (auth_portal): panel xanh trái + <Outlet/> phải + footer nhỏ
-  pages/
-    admin/                     # 4 màn admin (AdminDashboardPage, UsersPage, RolesPage, ProductsPage)
-    tech/                      # 10 màn technician
-    public/LandingPage.tsx     # trang chủ "/"
-    auth/                      # LoginPage, RegisterPage, ForgotPasswordPage, ResetPasswordPage, VerifyEmailPage
-    ForbiddenPage.tsx  ComingSoonPage.tsx
-    StyleguidePage.tsx
+  main.tsx                     # createRoot + <App/> + globals.css
+  App.tsx                      # <AppProviders><RouterProvider router={router}/></AppProviders>
+  styles/globals.css           # @import "tailwindcss" + @theme tokens; landing.css cho trang chủ
+  routes/
+    router.tsx                 # createBrowserRouter: mọi layout route + children (lazy)
+    paths.ts                   # ROUTES, withId, techTaskPath, surveyPath…
+    RequireRole.tsx            # route bảo vệ theo vai trò + AuthLoadingScreen
+    notFound.ts                # ném Response 404 cho errorElement
+  context/
+    AppProviders.tsx           # QueryClientProvider + AuthProvider + Toaster (sonner)
+    AuthProvider.tsx           # phiên đăng nhập, useAuth
   components/
-    layout/AppShell.tsx        # Sidebar + TopHeader + <main>
-    layout/Sidebar.tsx         # nhận `items` theo role, NavLink để highlight active
-    layout/TopHeader.tsx
-    ui/                        # shadcn + component dùng chung (StatusBadge, MetricCard, DataTable, TaskCard, TimelineStep, ChecklistItem, PhotoGrid…)
-    admin/  tech/              # component riêng theo nhóm màn
-    landing/                   # section trang chủ (hero, công trình, năng lực, lợi ích, theo dõi, CTA) + LandingPhoto
-    auth/                      # PasswordRules, ForbiddenCard, SessionExpiredModal, ChangePasswordDialog
-  lib/mock/                    # dữ liệu giả cho từng màn (UI), KHÔNG còn mock auth
-  lib/api/                     # schema.d.ts (sinh tự động), client.ts, auth.ts, errors.ts, tokens.ts, me.ts
-  lib/auth/                    # AuthProvider.tsx (useAuth, RequireRole), roles.ts, jwt.ts
-  features/auth/hooks.ts       # mutation react-query cho các endpoint auth
-  lib/nav.ts                   # menu admin / technician / public
+    layout/                    # AppShell + Sidebar + TopHeader (Stitch), app-shell (portal kit) và mọi layout route:
+                               # AdminLayout, TechLayout, AuthLayout, PublicLayout, RootLayout, customer-/ops-/field-/manage-layout
+    common/ui/                 # portal kit (kebab-case) + query-boundary
+    common/stitch-ui/          # bộ Stitch (PascalCase, barrel index.ts): StatusBadge, MetricCard, DataTable, TaskCard, Timeline, ChecklistItem, PhotoGrid…
+    common/tech/               # khối dùng ở nhiều nghiệp vụ kỹ thuật viên: SectionCard, ActionDock, JobHeaderCard, MeasurementCard…
+  features/
+    auth/                      # components/ (AuthCard, PasswordRules, ForbiddenCard, SessionExpiredModal, ChangePasswordDialog…),
+                               # hooks/useAuthMutations.ts, services/authService.ts + me.ts, types/auth.ts (DTO)
+    landing/components/        # section trang chủ, classes.ts, photo, reveal
+    surveys/ installations/ tasks/ warranty/   # components/ riêng của từng nghiệp vụ kỹ thuật viên
+    dashboard/                 # components/ chỉ dùng ở màn tổng quan admin và kỹ thuật viên
+    users/ roles/ products/    # components/ riêng của các màn admin
+  pages/                       # màn gắn với route: admin/ tech/ customer/ ops/ field/ manage/ auth/ public/ + trang lẻ
+  data/                        # dữ liệu tĩnh cho UI: mock từng màn (surveys.ts, tasks.ts, session.ts…, customer.ts, manage.ts…)
+                               # và nội dung chữ (auth.ts, landing.ts)
+  services/api/                # client.ts (axios, mở wrapper, refresh), errors.ts (ApiError), tokens.ts
+  types/api-schema.d.ts        # sinh bằng `npm run gen:api`, KHÔNG sửa tay
+  config/                      # nav.ts (menu admin/tech), portals.ts (rail 4 portal), roles.ts, demoAccounts.ts
+  hooks/                       # useMockQuery, useTheme
+  utils/                       # cn, cx, format, img, jwt
 public/placeholders/           # thay cho ảnh lh3.googleusercontent.com
 ```
 
-Nếu repo đã có sẵn cấu trúc khác (ví dụ `src/features/`), giữ cấu trúc hiện tại và map các thư mục trên vào đó – không tái cấu trúc lại toàn bộ.
+Quy tắc đặt file (tái cấu trúc 29/09/2026):
+
+- `pages/` chỉ ghép UI và gọi hook. Component dùng ở MỘT nghiệp vụ nằm trong
+  `features/<nghiệp vụ>/components/`; dùng ở nhiều nghiệp vụ thì vào `components/common/`.
+- Mỗi feature chỉ có các thư mục con `components/ hooks/ services/ types/` thật sự cần.
+  API của nghiệp vụ ở `features/<nghiệp vụ>/services/`, DTO ở `features/<nghiệp vụ>/types/`
+  (alias từ `types/api-schema.d.ts`, không tự đoán field); `services/api/` chỉ giữ HTTP client
+  dùng chung. Một trách nhiệm chỉ ở một nơi.
+- Nghiệp vụ chưa có endpoint (mọi thứ trừ auth) đọc dữ liệu từ `data/*.ts`. Khi backend có
+  endpoint: thêm `services/` + `hooks/` + `types/` vào feature đó rồi bỏ file trong `data/`.
 
 ## Layout chung
 
@@ -139,7 +152,7 @@ Trang chủ và các màn xác thực KHÔNG dùng `AppShell`/sidebar.
   chữ lớn, mỗi section một bố cục; KHÔNG đặt bảng dữ liệu, màn tài khoản, biểu giá hay quy trình theo
   giai đoạn lên trang (giao diện hệ thống chỉ một thẻ ở section theo dõi). Header dính: "Công trình",
   "Năng lực thi công", "Đăng nhập", nút "Nhận khảo sát" → `/register`. Nội dung ở
-  `src/lib/mock/landing.ts`; ảnh thật đặt `src` cho từng `Shot`; lời khách và con số chỉ thêm khi có
+  `src/data/landing.ts`; ảnh thật đặt `src` cho từng `Shot`; lời khách và con số chỉ thêm khi có
   nguồn. Token riêng (`font-vn`, `max-w-landing`, `ld-*`) ở `src/styles/landing.css`.
   Chuyển động chỉ transform/opacity, không thư viện: hero `ld-settle` (ảnh) + `ld-rise` (chữ, nút),
   khối nội dung bọc `<Reveal>` (IntersectionObserver, hiện một lần khi cuộn tới), ảnh công trình phóng
@@ -185,44 +198,44 @@ Auth gọi backend .NET thật, KHÔNG còn mock. Nguồn sự thật là `docs/
   `http://localhost:8080`) để tránh CORS. Xem `.env.example` để biết đủ biến.
 - **Sinh type**: `npm run gen:api` chạy `openapi-typescript` (qua `npx`, vì gói này
   yêu cầu peer `typescript@^5` còn repo dùng `typescript@7`) và ghi ra
-  `src/lib/api/schema.d.ts`. KHÔNG sửa file đó bằng tay; đổi swagger thì chạy lại lệnh.
+  `src/types/api-schema.d.ts`. KHÔNG sửa file đó bằng tay; đổi swagger thì chạy lại lệnh.
 - **Token**: `AuthTokensResponse` trả token trong body (không phải cookie httpOnly) nên
   KHÔNG dùng `withCredentials`. `accessToken` giữ trong bộ nhớ; `refreshToken` vào
   `localStorage` khi tick "Ghi nhớ đăng nhập", ngược lại `sessionStorage`
-  (`src/lib/api/tokens.ts`). Hạn token lấy từ `accessTokenExpiresAt` /
+  (`src/services/api/tokens.ts`). Hạn token lấy từ `accessTokenExpiresAt` /
   `refreshTokenExpiresAt` chứ không hard-code.
-- **Refresh**: interceptor trong `src/lib/api/client.ts` gặp 401 thì gọi
+- **Refresh**: interceptor trong `src/services/api/client.ts` gặp 401 thì gọi
   `POST /api/auth/refresh` theo kiểu single-flight (nhiều request cùng 401 chỉ refresh
   một lần, số còn lại xếp hàng chờ rồi retry). Refresh hỏng → xoá phiên + bắn sự kiện
   `session-expired` trên `window`; `SessionExpiredModal` lắng nghe sự kiện này.
   KHÔNG còn bộ đếm 30 phút giả lập.
 - **Wrapper & lỗi**: response bọc trong `*ApiResponse { isSuccess, traceId, data, error }`;
   interceptor mở wrapper và trả thẳng `data`. Lỗi ném ra `ApiError`
-  (`src/lib/api/errors.ts`) có `status`, `code`, `message`, `fieldErrors`, `traceId`.
+  (`src/services/api/errors.ts`) có `status`, `code`, `message`, `fieldErrors`, `traceId`.
   Swagger không khai kiểu của `ApiError.details` nên `parseFieldErrors` nhận cả 3 dạng
   (`{field: [msg]}`, `[{field, message}]`, `{errors: {...}}`) và bỏ qua dạng lạ.
   Backend chưa có bảng mã lỗi cố định → ưu tiên hiển thị `message` của server, thiếu thì
   dùng câu tiếng Việt theo HTTP status.
 - **Role**: `AuthTokensResponse` không có role → decode claim `role` trong accessToken
-  bằng `jwt-decode` (`src/lib/auth/jwt.ts`) rồi map qua `ROLE_ALIASES` trong
-  `src/lib/auth/roles.ts` về `customer | technician | sales | manager | admin`.
+  bằng `jwt-decode` (`src/utils/jwt.ts`) rồi map qua `ROLE_ALIASES` trong
+  `src/config/roles.ts` về `customer | technician | sales | manager | admin`.
   Không đọc được role thì coi như đăng nhập hỏng, không đoán bừa.
 - **Khôi phục phiên**: mở app mà còn `refreshToken` thì gọi refresh trước;
-  `status = 'loading'` và `RequireRole` hiện `AuthLoadingScreen` để không đá người dùng
+  `status = 'loading'` và `RequireRole` (`src/routes/RequireRole.tsx`) hiện `AuthLoadingScreen` để không đá người dùng
   về `/login` quá sớm.
-- **Điều hướng**: `homePathForRole` trong `src/lib/auth/roles.ts` đưa từng vai trò về portal
+- **Điều hướng**: `homePathForRole` trong `src/config/roles.ts` đưa từng vai trò về portal
   của nó – `admin` → `/admin`, `technician` → `/tech`, `sales` → `/ops`, `manager` → `/manage`,
   `customer` → `/customer`. `<RequireRole role="…">`: chưa đăng nhập → `/login` (nhớ trang đích),
   sai vai trò → `/403`.
-- **API**: 9 hàm trong `src/lib/api/auth.ts` (register, verify-email, resend-verification,
+- **API**: 9 hàm trong `src/features/auth/services/authService.ts` (DTO ở `src/features/auth/types/auth.ts`) (register, verify-email, resend-verification,
   login, refresh, logout, forgot-password, reset-password, change-password); mutation của
-  react-query trong `src/features/auth/hooks.ts`; login/logout nằm trong `AuthProvider`
+  react-query trong `src/features/auth/hooks/useAuthMutations.ts`; login/logout nằm trong `AuthProvider`
   vì còn phải lưu token.
 - **Tài khoản mẫu** ở `/login` chỉ hiện khi `import.meta.env.DEV` và lấy từ
-  `.env.development.local` (không commit) – xem `src/features/auth/demoAccounts.ts`.
+  `.env.development.local` (không commit) – xem `src/config/demoAccounts.ts`.
 - **CHỜ BACKEND**: swagger chưa có endpoint `/me`, nên tên hiển thị tạm lấy từ claim
   `name`/`fullName` trong JWT, không có thì dùng email. Khi có `/me`, chỉ cần điền thân
-  hàm `fetchCurrentUser()` trong `src/lib/api/me.ts`.
+  hàm `fetchCurrentUser()` trong `src/features/auth/services/me.ts`.
 
 ## Biến thể đã chốt
 
@@ -238,7 +251,7 @@ Auth gọi backend .NET thật, KHÔNG còn mock. Nguồn sự thật là `docs/
   là tiếng Anh, khi dựng thì dịch sang tiếng Việt; giữ nguyên tên riêng, mã SKU, mã phiếu,
   tên hãng và thuật ngữ đã quen dùng (inverter, kWh, MPPT, SKU…). Câu chữ viết ngắn, chủ động,
   không quảng cáo: tiêu đề là tên màn hình, mô tả chỉ thêm khi nói được điều gì mới.
-- Mỗi màn = 1 route + 1 file mock. Không hard-code dữ liệu trong JSX.
+- Mỗi màn = 1 route + 1 file dữ liệu trong `src/data/`. Không hard-code dữ liệu trong JSX.
 - Khi dựng xong một màn: chạy dev, chụp màn hình, đặt cạnh `screen.png`, liệt kê khác biệt (spacing, màu, font size, icon) rồi sửa. Chấp nhận sai lệch ≤ 4px.
 - Không cài thêm thư viện UI khác (MUI, Ant, Chakra…). Ngoại lệ đã chốt: `sonner` chỉ dùng cho toast.
 - Không sửa bất kỳ file nào trong `design/stitch/stitch_smart_solar_customer_portal/`.
@@ -248,6 +261,6 @@ Auth gọi backend .NET thật, KHÔNG còn mock. Nguồn sự thật là `docs/
 - `npm run dev` – Vite dev server
 - `npm run build` – `tsc -b && vite build`; phải pass trước khi coi một màn là xong
 - `npm run typecheck` – `tsc -b` (nhanh hơn build, dùng khi lặp)
-- `npm run gen:api` – sinh lại `src/lib/api/schema.d.ts` từ `docs/api/swagger.json`
+- `npm run gen:api` – sinh lại `src/types/api-schema.d.ts` từ `docs/api/swagger.json`
 - `npm run lint` – oxlint (KHÔNG dùng ESLint: repo dùng `typescript@7`, gói này không còn API JS nên typescript-eslint không chạy được)
   (Nếu package.json dùng tên script khác, dùng theo package.json.)

@@ -1,8 +1,8 @@
 import { Link, isRouteErrorResponse, useRouteError } from 'react-router'
-import { Button } from '@/components/stitch-ui/Button'
-import { Card } from '@/components/stitch-ui/Card'
-import { Icon } from '@/components/stitch-ui/Icon'
-import { ROUTES } from '@/constants/routes'
+import { Button } from '@/components/common/stitch-ui/Button'
+import { Card } from '@/components/common/stitch-ui/Card'
+import { Icon } from '@/components/common/stitch-ui/Icon'
+import { ROUTES } from '@/routes/paths'
 
 /*
  * errorElement dùng chung cho các route có [id]: hiển thị khi notFound() ném Response 404.

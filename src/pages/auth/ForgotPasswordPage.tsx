@@ -4,12 +4,12 @@ import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router'
 import { toast } from 'sonner'
 import { z } from 'zod'
-import { AuthCard } from '@/components/auth/AuthCard'
-import { AuthInput } from '@/components/auth/AuthInput'
-import { Icon } from '@/components/stitch-ui/Icon'
-import { ROUTES } from '@/constants/routes'
-import { useForgotPasswordMutation } from '@/features/auth/hooks'
-import { forgotContent } from '@/lib/mock/auth'
+import { AuthCard } from '@/features/auth/components/AuthCard'
+import { AuthInput } from '@/features/auth/components/AuthInput'
+import { Icon } from '@/components/common/stitch-ui/Icon'
+import { ROUTES } from '@/routes/paths'
+import { useForgotPasswordMutation } from '@/features/auth/hooks/useAuthMutations'
+import { forgotContent } from '@/data/auth'
 
 const schema = z.object({ email: z.email('Email không hợp lệ') })
 type ForgotValues = z.infer<typeof schema>
