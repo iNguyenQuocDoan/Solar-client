@@ -1,26 +1,24 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Link, useParams } from 'react-router'
-import {
-  ActionDock,
-  ChoiceCardGroup,
-  FieldSection,
-  SectionCard,
-  SegmentedControl,
-  StepperInput,
-  SurveyHomeownerAside,
-  TaskHeaderCard,
-} from '@/components/tech'
-import { Button, Icon, StatusBadge, Switch, Toast, buttonVariants } from '@/components/stitch-ui'
-import { surveyPhotosPath } from '@/constants/routes'
-import { cn } from '@/lib/cn'
-import { notFound } from '@/lib/notFound'
+import { ActionDock } from '@/components/common/tech/ActionDock'
+import { ChoiceCardGroup } from '@/features/surveys/components/ChoiceCardGroup'
+import { FieldSection } from '@/features/surveys/components/FieldSection'
+import { SectionCard } from '@/components/common/tech/SectionCard'
+import { SegmentedControl } from '@/features/surveys/components/SegmentedControl'
+import { StepperInput } from '@/components/common/tech/StepperInput'
+import { SurveyHomeownerAside } from '@/features/surveys/components/SurveyHomeownerAside'
+import { TaskHeaderCard } from '@/features/surveys/components/TaskHeaderCard'
+import { Button, Icon, StatusBadge, Switch, Toast, buttonVariants } from '@/components/common/stitch-ui'
+import { surveyPhotosPath } from '@/routes/paths'
+import { cn } from '@/utils/cn'
+import { notFound } from '@/routes/notFound'
 import {
   getSurveyById,
   type BreakerAnswer,
   type SurveyObstacle,
   type SurveyRecord,
   type SurveySeverity,
-} from '@/lib/mock/surveys'
+} from '@/data/surveys'
 
 /* Dựng từ site_survey_task/code.html + screen.png. */
 

@@ -1,6 +1,6 @@
-import type { Tone } from '@/components/ui/badge'
-import type { Step } from '@/components/ui/stepper'
-import { img } from '@/services/mock'
+import type { Tone } from '@/components/common/ui/badge'
+import type { Step } from '@/components/common/ui/stepper'
+import { img } from '@/utils/img'
 
 export const manageContext = { period: 'Q4 2024, month to date', region: 'Regional overview', gridCapacity: 94.2 }
 

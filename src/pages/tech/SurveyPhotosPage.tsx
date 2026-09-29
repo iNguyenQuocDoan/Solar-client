@@ -1,16 +1,17 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useParams } from 'react-router'
-import { PhotoInspector, PhotoSectionHeader } from '@/components/tech'
-import { Button, Card, Icon, PhotoCard, PhotoDropzone, PhotoGrid, ProgressBar, StatusBadge, Toast } from '@/components/stitch-ui'
-import { notFound } from '@/lib/notFound'
+import { PhotoInspector } from '@/features/surveys/components/PhotoInspector'
+import { PhotoSectionHeader } from '@/features/surveys/components/PhotoSectionHeader'
+import { Button, Card, Icon, PhotoCard, PhotoDropzone, PhotoGrid, ProgressBar, StatusBadge, Toast } from '@/components/common/stitch-ui'
+import { notFound } from '@/routes/notFound'
 import {
   findSurveyPhotoById,
   getFirstSurveyPhoto,
   getSurveyPhotoDocById,
   getSurveyPhotoProgress,
   type SurveyPhotoDoc,
-} from '@/lib/mock/surveyPhotos'
-import { getSurveyById, type SurveyRecord } from '@/lib/mock/surveys'
+} from '@/data/surveyPhotos'
+import { getSurveyById, type SurveyRecord } from '@/data/surveys'
 
 /* Dựng từ survey_image_documentation/code.html + screen.png. */
 

@@ -1,8 +1,8 @@
 import { useMemo, useState } from 'react'
-import { UserFormDialog, type UserFormValues } from '@/components/admin/UserFormDialog'
-import { UsersTable } from '@/components/admin/UsersTable'
-import { Button, FilterBar, Icon, MetricCard, PageHeader } from '@/components/stitch-ui'
-import { cn } from '@/lib/cn'
+import { UserFormDialog, type UserFormValues } from '@/features/users/components/UserFormDialog'
+import { UsersTable } from '@/features/users/components/UsersTable'
+import { Button, FilterBar, Icon, MetricCard, PageHeader } from '@/components/common/stitch-ui'
+import { cn } from '@/utils/cn'
 import {
   users as initialUsers,
   usersBulkActions,
@@ -14,7 +14,7 @@ import {
   type RoleFilter,
   type StatusFilter,
   type UserRecord,
-} from '@/lib/mock/users'
+} from '@/data/users'
 
 /* Dựng từ user_management/code.html + screen.png. */
 

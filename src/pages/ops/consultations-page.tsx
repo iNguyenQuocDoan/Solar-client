@@ -1,29 +1,30 @@
 import { useMemo, useState } from "react";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { FilterChips } from "@/components/ui/chips";
-import { Input, Select } from "@/components/ui/field";
-import { FilterBar } from "@/components/ui/filter-bar";
-import { Progress } from "@/components/ui/lists";
-import { PageHeader } from "@/components/ui/page-header";
+import { Badge } from "@/components/common/ui/badge";
+import { Button } from "@/components/common/ui/button";
+import { FilterChips } from "@/components/common/ui/chips";
+import { Input, Select } from "@/components/common/ui/field";
+import { FilterBar } from "@/components/common/ui/filter-bar";
+import { Progress } from "@/components/common/ui/lists";
+import { PageHeader } from "@/components/common/ui/page-header";
 import {
   Panel,
   PanelBody,
   PanelFooter,
   PanelHeader,
-} from "@/components/ui/panel";
-import { Pagination } from "@/components/ui/pagination";
-import { Stat, StatRow } from "@/components/ui/stat";
-import { EmptyState } from "@/components/ui/states";
-import { Table, Td, Th, Tr } from "@/components/ui/table";
+} from "@/components/common/ui/panel";
+import { Pagination } from "@/components/common/ui/pagination";
+import { Stat, StatRow } from "@/components/common/ui/stat";
+import { EmptyState } from "@/components/common/ui/states";
+import { Table, Td, Th, Tr } from "@/components/common/ui/table";
 import {
   consultationRequests,
   requestsDirectory,
   requestStages,
   type RequestStage,
 } from "@/data/ops";
-import { cx } from "@/lib/cx";
-import { QueryBoundary, useMockQuery } from "@/services/mock";
+import { cx } from "@/utils/cx";
+import { QueryBoundary } from "@/components/common/ui/query-boundary";
+import { useMockQuery } from "@/hooks/useMockQuery";
 
 type StageFilter = RequestStage | "all";
 

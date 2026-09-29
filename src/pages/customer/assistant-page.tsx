@@ -1,13 +1,13 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { Textarea } from '@/components/ui/field'
-import { KeyValueList } from '@/components/ui/lists'
-import { PageHeader } from '@/components/ui/page-header'
-import { PlaceholderLink } from '@/components/ui/placeholder-link'
-import { Panel, PanelBody, PanelHeader } from '@/components/ui/panel'
+import { Badge } from '@/components/common/ui/badge'
+import { Button } from '@/components/common/ui/button'
+import { Textarea } from '@/components/common/ui/field'
+import { KeyValueList } from '@/components/common/ui/lists'
+import { PageHeader } from '@/components/common/ui/page-header'
+import { PlaceholderLink } from '@/components/common/ui/placeholder-link'
+import { Panel, PanelBody, PanelHeader } from '@/components/common/ui/panel'
 import { assistant } from '@/data/customer'
-import { cx } from '@/lib/cx'
+import { cx } from '@/utils/cx'
 
 type Message = { id: number; role: 'user' | 'assistant'; time: string; text: string }
 

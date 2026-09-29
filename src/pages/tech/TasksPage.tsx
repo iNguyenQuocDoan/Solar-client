@@ -1,13 +1,13 @@
 import { useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router'
-import { NoticeBar } from '@/components/tech/NoticeBar'
-import { QuickStatusDrawer } from '@/components/tech/QuickStatusDrawer'
-import { TaskFilterBar, type TaskFilterValue } from '@/components/tech/TaskFilterBar'
-import { ViewToggle } from '@/components/tech/ViewToggle'
-import { Button, DataTable, Icon, IconButton, PageHeader, StatusBadge, TaskCard, Toast } from '@/components/stitch-ui'
-import type { DataTableColumn } from '@/components/stitch-ui/DataTable'
-import { techTaskPath } from '@/constants/routes'
-import { cn } from '@/lib/cn'
+import { NoticeBar } from '@/features/tasks/components/NoticeBar'
+import { QuickStatusDrawer } from '@/features/tasks/components/QuickStatusDrawer'
+import { TaskFilterBar, type TaskFilterValue } from '@/features/tasks/components/TaskFilterBar'
+import { ViewToggle } from '@/features/tasks/components/ViewToggle'
+import { Button, DataTable, Icon, IconButton, PageHeader, StatusBadge, TaskCard, Toast } from '@/components/common/stitch-ui'
+import type { DataTableColumn } from '@/components/common/stitch-ui/DataTable'
+import { techTaskPath } from '@/routes/paths'
+import { cn } from '@/utils/cn'
 import {
   quickStatusDrawer,
   taskBuckets,
@@ -21,7 +21,7 @@ import {
   workOrders,
   type TaskView,
   type WorkOrder,
-} from '@/lib/mock/tasks'
+} from '@/data/tasks'
 
 /* Dựng từ my_tasks_1/code.html + screen.png (biến thể bảng "List Matrix"). */
 

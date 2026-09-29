@@ -1,11 +1,11 @@
 import { useEffect, useState, type ReactNode } from 'react'
 import { NavLink, useLocation, useNavigate } from 'react-router'
-import { ROUTES } from '@/constants/routes'
-import { type NavItem, type Portal } from '@/constants/nav'
-import { useAuth } from '@/lib/auth/AuthProvider'
-import { roleLabels } from '@/lib/auth/roles'
-import { cx } from '@/lib/cx'
-import { useTheme, type Theme } from '@/lib/theme'
+import { ROUTES } from '@/routes/paths'
+import { type NavItem, type Portal } from '@/config/portals'
+import { useAuth } from '@/context/AuthProvider'
+import { roleLabels } from '@/config/roles'
+import { cx } from '@/utils/cx'
+import { useTheme, type Theme } from '@/hooks/useTheme'
 
 /*
   The shell is a margin, not a frame: a text-only rail on the left, the page as a
