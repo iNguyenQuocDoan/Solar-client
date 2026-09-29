@@ -13,7 +13,7 @@ export const adminNav: NavItem[] = [
   { label: 'Tổng quan', icon: 'grid_view', href: ROUTES.ADMIN.DASHBOARD },
   { label: 'Người dùng', icon: 'manage_accounts', href: ROUTES.ADMIN.USERS },
   { label: 'Vai trò & quyền', icon: 'admin_panel_settings', href: ROUTES.ADMIN.ROLES },
-  { label: 'Danh mục sản phẩm', icon: 'solar_power', href: ROUTES.ADMIN.PRODUCTS },
+  { label: 'Sản phẩm', icon: 'solar_power', href: ROUTES.ADMIN.PRODUCTS },
   { label: 'Danh mục dịch vụ', icon: 'home_repair_service', href: ROUTES.ADMIN.SERVICES },
   { label: 'Nhóm hàng', icon: 'category', href: ROUTES.ADMIN.CATEGORIES },
   { label: 'Kho tri thức AI', icon: 'smart_toy', href: ROUTES.ADMIN.KNOWLEDGE_BASE },

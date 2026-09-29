@@ -1,18 +1,18 @@
 import '@fontsource/be-vietnam-pro/300.css'
 import '@fontsource/be-vietnam-pro/400.css'
 import '@fontsource/be-vietnam-pro/600.css'
-import { Link, Outlet, useLocation } from 'react-router'
+import { Link, NavLink, Outlet, useLocation } from 'react-router'
 import { LANDING_CONTAINER, TEXT_LINK, ctaClass } from '@/features/landing/components/classes'
 import { ROUTES } from '@/routes/paths'
 import { cx } from '@/utils/cx'
 import { footer, header, projects, trust } from '@/data/landing'
 
 /*
- * Shell của các trang công khai ("/", "/coming-soon"). Không dùng AppShell/sidebar.
+ * Shell của các trang công khai ("/", "/coming-soon", "/products"). Không dùng AppShell/sidebar.
  * Font Be Vietnam Pro (300 số khai, 400 chữ, 600 tiêu đề và số đo) chỉ đặt ở đây vì
  * Schibsted Grotesk của portal thiếu dấu tiếng Việt.
  * Header không có menu theo giai đoạn (khảo sát, báo giá, thi công…): điều hướng đặt tên theo
- * giai đoạn đọc thành quy trình. Chỉ link tới phần công trình và phần năng lực thi công.
+ * giai đoạn đọc thành quy trình. Chỉ link tới danh mục sản phẩm, phần công trình và phần năng lực thi công.
  */
 const capabilityLink = { pathname: ROUTES.HOME, hash: `#${trust.id}` }
 const projectsLink = { pathname: ROUTES.HOME, hash: `#${projects.id}` }
@@ -45,6 +45,12 @@ export function PublicLayout() {
             />
           </Link>
           <nav aria-label="Liên kết chính" className="flex items-center gap-6">
+            <NavLink
+              to={ROUTES.PRODUCTS}
+              className={({ isActive }) => cx('tap ld-body hover:text-fg', isActive ? 'text-fg' : 'text-fg-2')}
+            >
+              {header.products}
+            </NavLink>
             <Link to={projectsLink} className="hidden ld-body text-fg-2 hover:text-fg lg:inline">
               {header.projects}
             </Link>
@@ -82,6 +88,9 @@ export function PublicLayout() {
             className="h-7 w-auto self-start dark:rounded-control dark:bg-fg dark:px-2 dark:py-1"
           />
           <nav aria-label="Liên kết cuối trang" className="flex gap-6">
+            <Link to={ROUTES.PRODUCTS} className={cx(TEXT_LINK, 'inline-block py-1')}>
+              {header.products}
+            </Link>
             <Link to={projectsLink} className={cx(TEXT_LINK, 'inline-block py-1')}>
               {header.projects}
             </Link>

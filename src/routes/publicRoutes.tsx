@@ -3,13 +3,18 @@ import { AuthLayout } from '@/components/layout/AuthLayout'
 import { PublicLayout } from '@/components/layout/PublicLayout'
 import { ROUTES } from '@/routes/paths'
 
-/* Route không cần đăng nhập: trang chủ, /coming-soon, các màn xác thực, /403 và /styleguide. */
+/* Route không cần đăng nhập: trang chủ, /coming-soon, /products, các màn xác thực, /403 và /styleguide. */
 export const publicRoutes: RouteObject[] = [
   {
     element: <PublicLayout />,
     children: [
       { path: ROUTES.HOME, lazy: () => import('@/pages/public/LandingPage').then((m) => ({ Component: m.LandingPage })) },
       { path: ROUTES.COMING_SOON, lazy: () => import('@/pages/ComingSoonPage').then((m) => ({ Component: m.ComingSoonPage })) },
+      { path: ROUTES.PRODUCTS, lazy: () => import('@/pages/public/ProductCatalogPage').then((m) => ({ Component: m.ProductCatalogPage })) },
+      {
+        path: ROUTES.PRODUCT_DETAIL,
+        lazy: () => import('@/pages/public/ProductDetailPage').then((m) => ({ Component: m.ProductDetailPage })),
+      },
     ],
   },
   {

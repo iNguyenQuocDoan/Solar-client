@@ -9,7 +9,16 @@ export const fmt = {
   pct: (n: number, digits = 1) => `${n.toFixed(digits)}%`,
 }
 
-/** Định dạng tiền USD kiểu "$7,200.00" như bảng product_catalogue (Stitch kit). */
-export function formatUsd(value: number) {
-  return `$${value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+/**
+ * Tiền theo mã tiền tệ backend trả về (VND, USD…), định dạng kiểu Việt Nam: "12.500.000 ₫", "7.200,00 US$".
+ * Mã lạ hoặc thiếu thì chỉ in số kèm mã để không làm vỡ trang.
+ */
+export function formatMoney(amount: number | null | undefined, currency: string | null | undefined) {
+  if (amount == null) return '—'
+  const code = currency?.trim().toUpperCase() || 'VND'
+  try {
+    return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: code }).format(amount)
+  } catch {
+    return `${new Intl.NumberFormat('vi-VN').format(amount)} ${code}`
+  }
 }

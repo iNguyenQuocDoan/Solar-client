@@ -62,6 +62,9 @@ export const ROUTES = {
   VERIFY_EMAIL: '/verify-email',
   FORBIDDEN: '/403',
   COMING_SOON: '/coming-soon',
+  /** Danh mục sản phẩm công khai (GET /api/products) */
+  PRODUCTS: '/products',
+  PRODUCT_DETAIL: '/products/:id',
   ADMIN: {
     DASHBOARD: '/admin',
     USERS: '/admin/users',

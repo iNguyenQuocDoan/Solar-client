@@ -1,120 +1,145 @@
-import { useMemo, type ReactNode } from 'react'
+import type { ReactNode } from 'react'
+import { IconButton } from '@/components/common/stitch-ui/Button'
 import { DataTable, type DataTableColumn } from '@/components/common/stitch-ui/DataTable'
-import { Icon } from '@/components/common/stitch-ui/Icon'
 import type { PaginationProps } from '@/components/common/stitch-ui/Pagination'
 import { StatusBadge } from '@/components/common/stitch-ui/StatusBadge'
-import { cn } from '@/utils/cn'
-import { formatUsd } from '@/utils/format'
-import type { ProductRecord } from '@/data/products'
+import { formatMoney } from '@/utils/format'
+import { formatPower, isProductActive, productStatusMeta } from '@/features/products/components/productDisplay'
+import type { ProductResponse } from '@/types/res/adminProductsRes'
 
-/* Bảng "Qualified Equipment Inventory" trong product_catalogue; hàng đang chọn tô nhạt + mũi tên primary. */
+/* Bảng sản phẩm của /admin/products, dữ liệu lấy từ GET /api/products. */
 
-function buildColumns(selectedId: string | null): DataTableColumn<ProductRecord>[] {
+export type ProductsTableProps = {
+  products: ProductResponse[]
+  onEdit: (product: ProductResponse) => void
+  onToggleStatus: (product: ProductResponse) => void
+  onDelete: (product: ProductResponse) => void
+  /** id sản phẩm đang chờ đổi trạng thái / xoá, để khoá nút của đúng dòng đó */
+  busyId?: string | null
+  toolbar?: ReactNode
+  pagination?: PaginationProps
+  emptyMessage?: string
+  className?: string
+}
+
+function buildColumns(): DataTableColumn<ProductResponse>[] {
   return [
     {
       key: 'product',
       header: 'Sản phẩm / SKU',
-      render: (product) => {
-        const selected = product.id === selectedId
-        return (
-          <div className="flex items-center gap-space-sm">
-            <div
-              className={cn(
-                'flex h-10 w-10 shrink-0 items-center justify-center rounded-lg',
-                selected ? 'bg-surface-container-high text-primary' : 'bg-surface-container-low text-on-surface-variant',
-              )}
-            >
-              <Icon name={product.icon} className="text-[20px]" />
-            </div>
-            <div className="flex min-w-0 flex-col">
-              <span className={cn('truncate text-label-lg', selected ? 'font-bold text-primary' : 'font-semibold text-on-surface')}>
-                {product.name}
-              </span>
-              <span className="truncate text-label-sm text-outline">{product.sku}</span>
-            </div>
+      render: (product) => (
+        <div className="flex min-w-0 items-center gap-space-sm">
+          {product.imageUrl ? (
+            <img src={product.imageUrl} alt="" className="h-10 w-10 shrink-0 rounded-lg bg-surface-container-low object-cover" />
+          ) : (
+            <span aria-hidden className="h-10 w-10 shrink-0 rounded-lg bg-surface-container-low" />
+          )}
+          <div className="flex min-w-0 flex-col">
+            <span className="truncate text-label-lg font-semibold text-on-surface">{product.name}</span>
+            <span className="truncate text-label-sm text-outline">{product.sku}</span>
           </div>
-        )
-      },
-    },
-    {
-      key: 'category',
-      header: 'Nhóm hàng',
-      render: (product) => (
-        <span className="whitespace-nowrap rounded-full bg-surface-container px-2.5 py-1 text-label-sm text-on-surface-variant">
-          {product.categoryLabel}
-        </span>
-      ),
-    },
-    {
-      key: 'specs',
-      header: 'Thông số chính',
-      render: (product) => (
-        <div className="flex flex-col">
-          <span className="text-label-md font-medium text-on-surface">{product.specPrimary}</span>
-          <span className="text-label-sm text-on-surface-variant">{product.specSecondary}</span>
         </div>
       ),
     },
     {
-      key: 'cost',
-      header: 'Giá gốc',
+      key: 'type',
+      header: 'Loại / nhóm',
+      render: (product) => (
+        <div className="flex flex-col">
+          <span className="text-label-md text-on-surface">{product.productType}</span>
+          {product.category && <span className="text-label-sm text-on-surface-variant">{product.category}</span>}
+        </div>
+      ),
+    },
+    {
+      key: 'brand',
+      header: 'Hãng / model',
+      render: (product) => (
+        <div className="flex flex-col">
+          <span className="text-label-md text-on-surface">{product.brand}</span>
+          {product.model && <span className="text-label-sm text-on-surface-variant">{product.model}</span>}
+        </div>
+      ),
+    },
+    {
+      key: 'power',
+      header: 'Công suất',
       align: 'right',
-      render: (product) => <span className="text-label-lg font-semibold text-on-surface">{formatUsd(product.baseCost)}</span>,
+      render: (product) => <span className="text-label-md text-on-surface">{formatPower(product.ratedPowerW) ?? '—'}</span>,
+    },
+    {
+      key: 'price',
+      header: 'Đơn giá',
+      align: 'right',
+      render: (product) => (
+        <div className="flex flex-col items-end">
+          <span className="whitespace-nowrap text-label-lg font-semibold text-on-surface">
+            {formatMoney(product.unitPrice, product.currency)}
+          </span>
+          {product.unit && <span className="text-label-sm text-on-surface-variant">/ {product.unit}</span>}
+        </div>
+      ),
     },
     {
       key: 'status',
       header: 'Trạng thái',
-      align: 'center',
-      render: (product) => (
-        <StatusBadge
-          variant={product.status === 'active' ? 'positive' : product.status === 'draft' ? 'neutral' : 'error'}
-          size="sm"
-          className="font-semibold"
-        >
-          {product.status === 'active' ? 'Đang bán' : product.status === 'draft' ? 'Nháp' : 'Ngừng kinh doanh'}
-        </StatusBadge>
-      ),
-    },
-    {
-      key: 'open',
-      header: '',
-      align: 'center',
-      className: 'px-space-xs',
-      headerClassName: 'px-space-xs',
-      render: (product) => (
-        <Icon
-          name={product.id === selectedId ? 'arrow_forward' : 'chevron_right'}
-          className={cn('text-[20px]', product.id === selectedId ? 'text-primary' : 'text-outline')}
-        />
-      ),
+      render: (product) => {
+        const meta = productStatusMeta(product.status)
+        return (
+          <StatusBadge variant={meta.variant} size="sm" className="font-semibold">
+            {meta.label}
+          </StatusBadge>
+        )
+      },
     },
   ]
 }
 
-export type ProductsTableProps = {
-  products: ProductRecord[]
-  selectedId: string | null
-  onSelect: (product: ProductRecord) => void
-  toolbar?: ReactNode
-  pagination?: PaginationProps
-  className?: string
-}
+const columns = buildColumns()
 
-export function ProductsTable({ products, selectedId, onSelect, toolbar, pagination, className }: ProductsTableProps) {
-  const columns = useMemo(() => buildColumns(selectedId), [selectedId])
-  const selectedKeys = useMemo(() => new Set(selectedId ? [selectedId] : []), [selectedId])
+export function ProductsTable({
+  products,
+  onEdit,
+  onToggleStatus,
+  onDelete,
+  busyId,
+  toolbar,
+  pagination,
+  emptyMessage = 'Chưa có sản phẩm nào',
+  className,
+}: ProductsTableProps) {
   return (
     <DataTable
       size="compact"
       columns={columns}
       rows={products}
-      rowKey={(product) => product.id}
-      selectedKeys={selectedKeys}
-      onRowClick={onSelect}
+      rowKey={(product) => product.id ?? product.sku ?? ''}
       toolbar={toolbar}
       pagination={pagination}
-      emptyMessage="Không có sản phẩm nào khớp bộ lọc"
+      emptyMessage={emptyMessage}
       className={className}
+      actions={(product) => {
+        const active = isProductActive(product.status)
+        const busy = busyId === product.id
+        return (
+          <>
+            <IconButton icon="edit" label={`Sửa ${product.name ?? ''}`} onClick={() => onEdit(product)} />
+            <IconButton
+              icon={active ? 'visibility_off' : 'visibility'}
+              label={active ? 'Ngừng bán' : 'Mở bán lại'}
+              disabled={busy}
+              onClick={() => onToggleStatus(product)}
+            />
+            <IconButton
+              icon="delete"
+              label={`Xoá ${product.name ?? ''}`}
+              disabled={busy}
+              onClick={() => onDelete(product)}
+              className="hover:text-error"
+            />
+          </>
+        )
+      }}
     />
   )
 }

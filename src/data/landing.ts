@@ -23,6 +23,7 @@ export type Shot = {
 export const pageTitle = 'Smart Solar | Thi công điện mặt trời áp mái cho nhà xưởng và doanh nghiệp'
 
 export const header = {
+  products: 'Sản phẩm',
   projects: 'Công trình',
   capability: 'Năng lực thi công',
   login: 'Đăng nhập',
