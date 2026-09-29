@@ -1,12 +1,12 @@
 import { Link, useParams } from 'react-router'
-import { FieldNoteComposer } from '@/components/tech/FieldNoteComposer'
-import { SectionCard } from '@/components/tech/SectionCard'
-import { VerticalTimeline } from '@/components/tech/VerticalTimeline'
-import { WorkOrderHeaderCard } from '@/components/tech/WorkOrderHeaderCard'
-import { Avatar, Breadcrumb, Button, Card, Icon, StatusBadge, Timeline } from '@/components/stitch-ui'
-import { ROUTES } from '@/constants/routes'
-import { getTaskDetail, type TaskDetail } from '@/lib/mock/taskDetail'
-import { notFound } from '@/lib/notFound'
+import { FieldNoteComposer } from '@/features/tasks/components/FieldNoteComposer'
+import { SectionCard } from '@/components/common/tech/SectionCard'
+import { VerticalTimeline } from '@/features/tasks/components/VerticalTimeline'
+import { WorkOrderHeaderCard } from '@/features/tasks/components/WorkOrderHeaderCard'
+import { Avatar, Breadcrumb, Button, Card, Icon, StatusBadge, Timeline } from '@/components/common/stitch-ui'
+import { ROUTES } from '@/routes/paths'
+import { getTaskDetail, type TaskDetail } from '@/data/taskDetail'
+import { notFound } from '@/routes/notFound'
 
 /* Dựng từ task_detail_timeline/code.html + screen.png. */
 
@@ -58,7 +58,7 @@ function TaskDetailView({ detail }: { detail: TaskDetail }) {
         metrics={summary.metrics}
       />
 
-      {/* Lifecycle Progression – stepper ngang dùng Timeline của components/ui */}
+      {/* Lifecycle Progression – stepper ngang dùng Timeline của components/common/stitch-ui */}
       <Card padding="lg">
         <div className="flex items-center justify-between gap-space-sm pb-space-md">
           <div>

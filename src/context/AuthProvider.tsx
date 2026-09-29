@@ -1,0 +1,193 @@
+import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
+import * as authService from '@/features/auth/services/authService'
+import { SESSION_EXPIRED_EVENT, refreshAccessToken } from '@/services/api/client'
+import { ApiError } from '@/services/api/errors'
+import { fetchCurrentUser } from '@/features/auth/services/me'
+import { clearTokens, getAccessToken, getRefreshToken, hasRefreshToken, saveTokens } from '@/services/api/tokens'
+import { emailFromToken, nameFromToken, roleFromToken, userIdFromToken } from '@/utils/jwt'
+import type { UserRole } from '@/config/roles'
+
+/*
+ * Phiên đăng nhập thật (API .NET ở /api/auth/*).
+ *
+ * - accessToken nằm trong bộ nhớ, refreshToken trong storage (xem services/api/tokens.ts).
+ * - Mở app: còn refreshToken thì gọi /auth/refresh để khôi phục phiên; trong lúc chờ
+ *   status = 'loading' để RequireRole (routes/RequireRole.tsx) không đá người dùng về /login quá sớm.
+ * - Không còn bộ đếm 30 phút giả lập: modal hết hạn mở khi client.ts bắn
+ *   sự kiện "session-expired" (refresh thất bại).
+ */
+
+export type AuthUser = {
+  name: string
+  email: string
+  role: UserRole
+  userId?: string
+}
+
+export type AuthStatus = 'loading' | 'ready'
+
+export type AuthContextValue = {
+  user: AuthUser | null
+  status: AuthStatus
+  isAuthenticated: boolean
+  /** Đăng nhập; ném ApiError nếu sai thông tin. */
+  signIn: (email: string, password: string, remember?: boolean) => Promise<AuthUser>
+  /** Đăng xuất: gọi API rồi xoá phiên; lỗi mạng vẫn xoá phía client. */
+  signOut: () => Promise<void>
+  /** Xoá phiên tại chỗ (dùng khi backend thu hồi phiên sau đổi mật khẩu). */
+  clearSession: () => void
+  sessionExpired: boolean
+  dismissSessionExpired: () => void
+  /** Ép phiên hết hạn – chỉ dùng cho ô demo ở /login khi chạy DEV. */
+  expireSession: () => void
+}
+
+const AuthContext = createContext<AuthContextValue | null>(null)
+
+/**
+ * Dựng AuthUser từ accessToken (+ /me nếu backend đã có).
+ * Không đọc được vai trò thì coi như đăng nhập hỏng – tốt hơn là đoán bừa.
+ */
+async function buildUser(accessToken: string, fallbackEmail?: string): Promise<AuthUser> {
+  const profile = await fetchCurrentUser().catch(() => null)
+
+  const role = profile?.role ?? roleFromToken(accessToken)
+  if (!role) {
+    throw new ApiError({
+      status: 0,
+      message: 'Không đọc được vai trò trong token đăng nhập. Vui lòng liên hệ quản trị viên.',
+    })
+  }
+
+  const email = profile?.email ?? emailFromToken(accessToken) ?? fallbackEmail ?? ''
+  const name = profile?.name ?? nameFromToken(accessToken) ?? email
+
+  return {
+    name,
+    email,
+    role,
+    userId: profile?.userId ?? userIdFromToken(accessToken) ?? undefined,
+  }
+}
+
+export function AuthProvider({ children }: { children: ReactNode }) {
+  const [user, setUser] = useState<AuthUser | null>(null)
+  const [status, setStatus] = useState<AuthStatus>(() => (hasRefreshToken() ? 'loading' : 'ready'))
+  const [sessionExpired, setSessionExpired] = useState(false)
+
+  // Mở app: còn refreshToken thì khôi phục phiên trước khi render route bảo vệ.
+  useEffect(() => {
+    let cancelled = false
+
+    // Không có refreshToken thì status đã là 'ready' ngay từ useState khởi tạo.
+    if (!hasRefreshToken()) return
+
+    void (async () => {
+      try {
+        const accessToken = await refreshAccessToken()
+        const restored = await buildUser(accessToken)
+        if (!cancelled) setUser(restored)
+      } catch {
+        // refreshToken hỏng/hết hạn khi mở app: dọn im lặng, không bật modal.
+        clearTokens()
+        if (!cancelled) setUser(null)
+      } finally {
+        if (!cancelled) setStatus('ready')
+      }
+    })()
+
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
+  // client.ts bắn sự kiện này khi refresh thất bại giữa chừng.
+  useEffect(() => {
+    const onExpired = () => {
+      setUser(null)
+      setSessionExpired(true)
+    }
+    window.addEventListener(SESSION_EXPIRED_EVENT, onExpired)
+    return () => window.removeEventListener(SESSION_EXPIRED_EVENT, onExpired)
+  }, [])
+
+  const signIn = useCallback(async (email: string, password: string, remember = true) => {
+    const tokens = await authService.login({ email, password })
+    if (!tokens.accessToken || !tokens.refreshToken) {
+      throw new ApiError({ status: 0, message: 'Máy chủ không trả về token đăng nhập.' })
+    }
+
+    saveTokens(
+      {
+        accessToken: tokens.accessToken,
+        accessTokenExpiresAt: tokens.accessTokenExpiresAt,
+        refreshToken: tokens.refreshToken,
+        refreshTokenExpiresAt: tokens.refreshTokenExpiresAt,
+        tokenType: tokens.tokenType ?? undefined,
+        userId: tokens.userId,
+      },
+      remember,
+    )
+
+    try {
+      const next = await buildUser(tokens.accessToken, email)
+      setSessionExpired(false)
+      setUser(next)
+      setStatus('ready')
+      return next
+    } catch (error) {
+      // Token không dùng được (thiếu role…) → không giữ phiên dở dang.
+      clearTokens()
+      throw error
+    }
+  }, [])
+
+  const clearSession = useCallback(() => {
+    clearTokens()
+    setUser(null)
+  }, [])
+
+  const signOut = useCallback(async () => {
+    const refreshToken = getRefreshToken()
+    try {
+      if (refreshToken) await authService.logout({ refreshToken })
+    } catch {
+      // Lỗi mạng / token đã bị thu hồi: vẫn xoá phiên phía client.
+    } finally {
+      clearTokens()
+      setUser(null)
+      setSessionExpired(false)
+    }
+  }, [])
+
+  const expireSession = useCallback(() => {
+    clearTokens()
+    setUser(null)
+    setSessionExpired(true)
+  }, [])
+
+  const dismissSessionExpired = useCallback(() => setSessionExpired(false), [])
+
+  const value = useMemo<AuthContextValue>(
+    () => ({
+      user,
+      status,
+      isAuthenticated: user !== null && getAccessToken() !== null,
+      signIn,
+      signOut,
+      clearSession,
+      sessionExpired,
+      dismissSessionExpired,
+      expireSession,
+    }),
+    [user, status, signIn, signOut, clearSession, sessionExpired, dismissSessionExpired, expireSession],
+  )
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
+}
+
+export function useAuth() {
+  const context = useContext(AuthContext)
+  if (!context) throw new Error('useAuth phải dùng bên trong <AuthProvider>')
+  return context
+}

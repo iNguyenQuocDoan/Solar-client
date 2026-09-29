@@ -3,7 +3,7 @@
 @import './landing.css';
 
 /* =====================================================================
-   Portal kit (src/components/ui): customer, sales & operations, field, management.
+   Portal kit (src/components/common/ui): customer, sales & operations, field, management.
    ===================================================================== */
 
 /*
@@ -329,7 +329,7 @@
 }
 
 /* =====================================================================
-   Stitch kit (src/components/stitch-ui): admin and technician portals.
+   Stitch kit (src/components/common/stitch-ui): admin and technician portals.
    ===================================================================== */
 
 /*

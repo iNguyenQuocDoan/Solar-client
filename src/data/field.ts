@@ -1,5 +1,5 @@
-import type { Tone } from '@/components/ui/badge'
-import { img } from '@/services/mock'
+import type { Tone } from '@/components/common/ui/badge'
+import { img } from '@/utils/img'
 
 export const fieldContext = {
   team: 'Team Alpha',

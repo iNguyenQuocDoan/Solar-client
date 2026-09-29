@@ -20,8 +20,8 @@ import {
   TaskCard,
   Timeline,
   type DataTableColumn,
-} from '@/components/stitch-ui'
-import { ROUTES } from '@/constants/routes'
+} from '@/components/common/stitch-ui'
+import { ROUTES } from '@/routes/paths'
 import {
   styleguideBadges,
   styleguideChecklist,
@@ -37,7 +37,7 @@ import {
   styleguideTypeChips,
   styleguideUsers,
   type StyleguideUser,
-} from '@/lib/mock/styleguide'
+} from '@/data/styleguide'
 
 const sections = [
   { id: 'buttons', label: 'Button' },

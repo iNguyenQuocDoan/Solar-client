@@ -1,19 +1,19 @@
 import { useState } from 'react'
 import { useParams } from 'react-router'
-import { ActionDock } from '@/components/tech/ActionDock'
-import { ContactTile } from '@/components/tech/ContactTile'
-import { EvidenceGroup } from '@/components/tech/EvidenceGallery'
-import { ExecutionStepList } from '@/components/tech/ExecutionStepList'
-import { JobHeaderCard } from '@/components/tech/JobHeaderCard'
-import { PanelArrayGrid } from '@/components/tech/PanelArrayGrid'
-import { SectionCard } from '@/components/tech/SectionCard'
-import { StepperInput } from '@/components/tech/StepperInput'
-import { Button, Icon, StatusBadge } from '@/components/stitch-ui'
-import { cn } from '@/lib/cn'
-import { executionCounterLabel, getInstallationTask, type InstallationStep } from '@/lib/mock/installations'
-import { notFound } from '@/lib/notFound'
+import { ActionDock } from '@/components/common/tech/ActionDock'
+import { ContactTile } from '@/features/installations/components/ContactTile'
+import { EvidenceGroup } from '@/components/common/tech/EvidenceGallery'
+import { ExecutionStepList } from '@/components/common/tech/ExecutionStepList'
+import { JobHeaderCard } from '@/components/common/tech/JobHeaderCard'
+import { PanelArrayGrid } from '@/features/installations/components/PanelArrayGrid'
+import { SectionCard } from '@/components/common/tech/SectionCard'
+import { StepperInput } from '@/components/common/tech/StepperInput'
+import { Button, Icon, StatusBadge } from '@/components/common/stitch-ui'
+import { cn } from '@/utils/cn'
+import { executionCounterLabel, getInstallationTask, type InstallationStep } from '@/data/installations'
+import { notFound } from '@/routes/notFound'
 
-/* Dựng từ installation_task/code.html + screen.png. Mọi dữ liệu lấy từ lib/mock/installations.ts. */
+/* Dựng từ installation_task/code.html + screen.png. Mọi dữ liệu lấy từ data/installations.ts. */
 
 type SyncState = 'idle' | 'syncing' | 'synced'
 

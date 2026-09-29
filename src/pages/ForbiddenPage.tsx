@@ -1,7 +1,7 @@
 import { Link } from 'react-router'
-import { ForbiddenCard } from '@/components/auth/ForbiddenCard'
-import { Icon } from '@/components/stitch-ui/Icon'
-import { ROUTES } from '@/constants/routes'
+import { ForbiddenCard } from '@/features/auth/components/ForbiddenCard'
+import { Icon } from '@/components/common/stitch-ui/Icon'
+import { ROUTES } from '@/routes/paths'
 
 /** /403 – render trong AuthLayout, phần <main> là ForbiddenCard. */
 export function ForbiddenPage() {

@@ -1,7 +1,7 @@
 import { useState, type ReactNode } from 'react'
 import { Sidebar, type SidebarProps } from '@/components/layout/Sidebar'
 import { TopHeader, type TopHeaderProps } from '@/components/layout/TopHeader'
-import { cn } from '@/lib/cn'
+import { cn } from '@/utils/cn'
 
 export type AppShellProps = {
   sidebar: SidebarProps

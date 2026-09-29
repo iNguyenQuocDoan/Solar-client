@@ -1,4 +1,4 @@
-import type { Tone } from '@/components/ui/badge'
+import type { Tone } from '@/components/common/ui/badge'
 
 export const opsContext = { team: 'California Residential Team A', region: 'CA region' }
 
