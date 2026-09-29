@@ -1,0 +1,280 @@
+/* =====================================================================
+   Trang công khai (PublicLayout: "/", "/coming-soon"). Brief ở docs/design/landing-brief.md.
+   Chỉ thêm tên mới (font-vn, max-w-landing, max-w-copy, ld-*, .pair*); không đổi token của portal.
+   Màu dùng lại token portal (canvas, fg, fg-2, fg-3, line, line-2, accent) nên dark mode tự theo.
+   ===================================================================== */
+
+@theme {
+  /* Be Vietnam Pro có subset vietnamese; Schibsted Grotesk của portal thiếu U+1EA0–1EF1. */
+  --font-vn: 'Be Vietnam Pro', ui-sans-serif, system-ui, sans-serif;
+
+  /* 12 cột × 78px + gutter 24px. */
+  --container-landing: 75rem;
+  /* Đoạn văn 17px: khoảng 66 ký tự mỗi dòng. */
+  --container-copy: 31rem;
+
+  /* Một đường cong cho mọi chuyển động của trang (chevron FAQ, nút). */
+  --ease-ld: cubic-bezier(0.2, 0, 0, 1);
+}
+
+/* Header dính cao 64px: cuộn tới anchor hay focus bằng bàn phím không bị header che (WCAG 2.4.11). */
+:root:has(.public-shell) {
+  scroll-padding-top: 80px;
+}
+
+/*
+  Thang chữ landing: mobile trước, desktop từ 64rem (lg của portal).
+  Line-height tiêu đề 1,33–1,38 vì dấu chồng của Be Vietnam Pro (Ỗ, Ễ) cao 1,21em trên
+  baseline; thấp hơn thì dấu chạm chân chữ dòng trên. Cỡ số chỉ dùng cho chữ số, không cho chữ.
+*/
+@utility ld-num-l {
+  font-size: 56px;
+  line-height: 56px;
+  letter-spacing: -0.03em;
+  /* 96 chứ không 120: ở 120 cặp số nổi trước h1 trong blur test, trong khi màn đầu phải nói "là gì" trước. */
+  @media (width >= 64rem) {
+    font-size: 96px;
+    line-height: 88px;
+  }
+}
+@utility ld-num-m {
+  font-size: 40px;
+  line-height: 44px;
+  letter-spacing: -0.02em;
+  @media (width >= 64rem) {
+    font-size: 52px;
+    line-height: 56px;
+  }
+}
+@utility ld-h1 {
+  font-size: 32px;
+  line-height: 44px;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  @media (width >= 64rem) {
+    font-size: 48px;
+    line-height: 64px;
+    letter-spacing: -0.02em;
+  }
+}
+@utility ld-h2 {
+  font-size: 26px;
+  line-height: 36px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  @media (width >= 64rem) {
+    font-size: 34px;
+    line-height: 46px;
+    letter-spacing: -0.015em;
+  }
+}
+@utility ld-sub {
+  font-size: 18px;
+  line-height: 26px;
+  font-weight: 600;
+  @media (width >= 64rem) {
+    font-size: 20px;
+    line-height: 30px;
+  }
+}
+@utility ld-lede {
+  font-size: 18px;
+  line-height: 28px;
+  @media (width >= 64rem) {
+    font-size: 20px;
+    line-height: 30px;
+  }
+}
+@utility ld-body {
+  font-size: 16px;
+  line-height: 26px;
+  @media (width >= 64rem) {
+    font-size: 17px;
+    line-height: 28px;
+  }
+}
+/* Giá trị dạng chữ trong cặp đối chiếu (hướng mái, vật cản). */
+@utility ld-num-text {
+  font-size: 20px;
+  line-height: 28px;
+  letter-spacing: -0.01em;
+  @media (width >= 64rem) {
+    font-size: 28px;
+    line-height: 38px;
+  }
+}
+@utility ld-action {
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 600;
+}
+@utility ld-meta {
+  font-size: 13px;
+  line-height: 20px;
+  @media (width >= 64rem) {
+    font-size: 14px;
+  }
+}
+
+@layer components {
+  /*
+    Cặp đối chiếu (signature): hai lần đọc của cùng một đại lượng, nối bằng đường ghi kích
+    thước theo quy ước bản vẽ (TCVN 5705:1993): hai đường gióng, đường kích thước có vạch xiên
+    45° ở hai đầu, số ghi trên đường. Không mũi tên: hai đầu đối xứng nên đường không chỉ hướng.
+
+    Lưới 2 cột: [vế trái | vế phải] / [đường kích thước | câu xử lý]. Đường nằm ở cột trái và
+    kéo qua khe lưới để chạm đúng mép trái vế phải.
+  */
+  .pair {
+    container: pair / inline-size;
+  }
+  .pair-grid {
+    --pair-gap: 16px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-areas:
+      'a b'
+      'dim note';
+    column-gap: var(--pair-gap);
+    @media (width >= 64rem) {
+      --pair-gap: 24px;
+    }
+  }
+  .pair-a {
+    grid-area: a;
+  }
+  .pair-b {
+    grid-area: b;
+  }
+  /* dt đứng trước dd trong DOM để trình đọc màn hình đọc nhãn trước số; về hình thì số ở trên. */
+  .pair-a,
+  .pair-b {
+    display: flex;
+    flex-direction: column-reverse;
+    /* Trong column-reverse, flex-start là đáy: nhãn hai vế luôn thẳng hàng dù giá trị khác số dòng. */
+    justify-content: flex-start;
+    gap: 8px;
+  }
+  .pair-unit {
+    margin-inline-start: 0.12em;
+    font-size: 0.4em;
+    font-weight: 400;
+    letter-spacing: 0;
+    color: var(--color-fg-3);
+  }
+  .pair-dim {
+    grid-area: dim;
+    position: relative;
+    height: 52px;
+    margin-inline-end: calc(-1 * var(--pair-gap));
+  }
+  /* Hai đường gióng. */
+  .pair-dim::before,
+  .pair-dim::after {
+    content: '';
+    position: absolute;
+    top: 4px;
+    bottom: 0;
+    width: 1px;
+    background: var(--color-line-2);
+  }
+  .pair-dim::before {
+    left: 0;
+  }
+  .pair-dim::after {
+    right: 0;
+  }
+  /* Đường kích thước và hai vạch xiên. */
+  .pair-line {
+    position: absolute;
+    inset-inline: 0;
+    bottom: 8px;
+    border-top: 1.5px solid var(--color-accent);
+  }
+  .pair-line::before,
+  .pair-line::after {
+    content: '';
+    position: absolute;
+    top: -8px;
+    width: 1.5px;
+    height: 15px;
+    background: var(--color-accent);
+    rotate: 45deg;
+  }
+  .pair-line::before {
+    left: -1px;
+  }
+  .pair-line::after {
+    right: -1px;
+  }
+  .pair-delta {
+    position: absolute;
+    inset-inline: 12px;
+    bottom: 12px;
+    text-align: center;
+    color: var(--color-accent);
+    font-weight: 600;
+  }
+  /* Chưa đo: đường nét đứt, không vạch xiên. */
+  .pair-dim[data-pending] .pair-line {
+    border-top: 1.5px dashed var(--color-line-2);
+  }
+  .pair-dim[data-pending] .pair-line::before,
+  .pair-dim[data-pending] .pair-line::after {
+    content: none;
+  }
+  .pair-note {
+    grid-area: note;
+    padding-block-start: 12px;
+    padding-inline-start: 24px;
+  }
+
+  /* Khung hẹp (mobile, cột 5/12): câu xử lý xuống dòng riêng, toàn bề ngang. */
+  @container pair (width < 40rem) {
+    .pair-grid {
+      grid-template-areas:
+        'a b'
+        'dim .'
+        'note note';
+    }
+    .pair-note {
+      margin-top: 16px;
+      padding-inline-start: 0;
+    }
+  }
+
+  /* Cặp ảnh ở khung hẹp: hai ảnh xếp dọc, bỏ đường kích thước, giữ chữ chênh lệch. */
+  @container pair (width < 40rem) {
+    .pair-grid[data-kind='photo'] {
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-areas:
+        'a'
+        'b'
+        'dim'
+        'note';
+      row-gap: 24px;
+    }
+    .pair-grid[data-kind='photo'] .pair-dim {
+      height: auto;
+      margin-inline-end: 0;
+    }
+    .pair-grid[data-kind='photo'] .pair-dim::before,
+    .pair-grid[data-kind='photo'] .pair-dim::after,
+    .pair-grid[data-kind='photo'] .pair-line {
+      display: none;
+    }
+    .pair-grid[data-kind='photo'] .pair-delta {
+      position: static;
+      text-align: start;
+    }
+    .pair-grid[data-kind='photo'] .pair-note {
+      margin-top: 0;
+      padding-block-start: 0;
+    }
+  }
+
+  /* FAQ dùng <details> gốc; Safari cần tắt marker riêng. */
+  .faq-item > summary::-webkit-details-marker {
+    display: none;
+  }
+}

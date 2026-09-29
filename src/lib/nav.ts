@@ -37,18 +37,3 @@ export const technicianFooterNav: NavItem[] = [
   { label: 'Cảnh báo', icon: 'notifications', href: ROUTES.TECH.ALERTS },
   { label: 'Tài khoản', icon: 'account_circle', href: ROUTES.TECH.SETTINGS },
 ]
-
-/**
- * Menu header trang công khai (landing_home). `href` là anchor trong trang chủ,
- * PublicLayout cuộn mượt tới section tương ứng.
- */
-export type PublicNavItem = { label: string; hash: string }
-
-export const publicNav: PublicNavItem[] = [
-  { label: 'Trang chủ', hash: '#top' },
-  { label: 'Giải pháp', hash: '#solutions' },
-  { label: 'Sản phẩm', hash: '#products' },
-  { label: 'Quy trình', hash: '#process' },
-  { label: 'Bảo hành & Bảo trì', hash: '#after-sales' },
-  { label: 'Về chúng tôi', hash: '#about' },
-]
