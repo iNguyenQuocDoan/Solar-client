@@ -6,18 +6,12 @@ export type AuthCardProps = {
   children: ReactNode
 }
 
-/** Card trắng bên phải AuthLayout – theo `.auth-view` trong auth_portal/code.html. */
+/*
+ * Khung nội dung của cột form trong AuthLayout. Không còn nền, bóng hay padding riêng: cột phải
+ * đã là nền, bọc thêm một thẻ chỉ tốn 96px chiều cao và làm các màn tràn khỏi một màn hình.
+ */
 export function AuthCard({ className, children }: AuthCardProps) {
-  return (
-    <div
-      className={cn(
-        'flex flex-col rounded-xl bg-surface-container-lowest p-space-lg shadow-sm md:p-space-2xl',
-        className,
-      )}
-    >
-      {children}
-    </div>
-  )
+  return <div className={cn('flex flex-col', className)}>{children}</div>
 }
 
 /** Dấu * đỏ sau nhãn trường bắt buộc. */
