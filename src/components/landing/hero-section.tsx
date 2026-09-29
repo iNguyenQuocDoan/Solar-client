@@ -1,13 +1,12 @@
 import { Link } from 'react-router'
 import { ROUTES } from '@/constants/routes'
 import { hero } from '@/lib/mock/landing'
-import { ReconcilePair } from './reconcile-pair'
 import { LANDING_CONTAINER, TEXT_LINK, ctaClass } from './classes'
+import { TariffLadder } from './tariff-ladder'
 
 /*
-  Màn đầu: nói là gì, cho ai (h1), cho thấy lời hứa duy nhất có bằng chứng (cặp diện tích),
-  rồi hành động chính. Đoạn dẫn ẩn dưới md vì nhãn "Bạn khai / Kỹ thuật viên đo" đã nói cùng ý
-  và nút phải nằm trong màn đầu ở 390 × 664.
+  Màn đầu: sản phẩm và lợi ích chính (bớt phần điện giá cao nhất), rồi hành động chính, rồi
+  bậc thang giá điện để người xem tự thấy lợi ích đó với số của nhà mình.
 */
 export function HeroSection() {
   return (
@@ -16,9 +15,8 @@ export function HeroSection() {
         <h1 id="hero-title" className="ld-h1 max-w-3xl text-fg">
           {hero.title}
         </h1>
-        <p className="mt-4 hidden max-w-xl ld-lede text-fg-2 md:block lg:mt-5">{hero.lede}</p>
-        <ReconcilePair size="l" {...hero.pair} className="mt-8 lg:mt-12" />
-        <div className="mt-6 flex flex-col gap-3 sm:items-start lg:mt-8">
+        <p className="mt-4 max-w-2xl ld-lede text-fg-2 lg:mt-5">{hero.lede}</p>
+        <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-6 lg:mt-8">
           <Link to={ROUTES.REGISTER} className={ctaClass()}>
             {hero.cta}
           </Link>
@@ -29,6 +27,7 @@ export function HeroSection() {
             </Link>
           </p>
         </div>
+        <TariffLadder className="mt-12 lg:mt-16" />
       </div>
     </section>
   )
