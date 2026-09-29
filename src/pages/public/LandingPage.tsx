@@ -1,43 +1,40 @@
 import { useEffect } from 'react'
 import { useLocation } from 'react-router'
 import {
-  AfterSales,
-  Benefits,
-  CtaBanner,
-  Faq,
-  FeaturedProducts,
-  Hero,
-  JourneySteps,
-  PackageCards,
-  SurveySteps,
-  WhyUs,
+  BuildSection,
+  FaqSection,
+  HeroSection,
+  QuoteSection,
+  StartSection,
+  SurveySection,
+  WarrantySection,
 } from '@/components/landing'
+import { pageTitle } from '@/lib/mock/landing'
 
-/** Trang chủ công khai "/" – dựng theo landing_home, mỗi khối là 1 component. */
+/*
+  Trang chủ công khai "/". Thứ tự section theo chuỗi câu hỏi của chủ nhà:
+  là gì → mái tôi được bao nhiêu → tiền đi vào đâu → họ làm gì trên
+  mái → hỏng thì ai lo → thủ tục → cần chuẩn bị gì.
+*/
 export function LandingPage() {
   const { hash } = useLocation()
 
-  // Vào "/" kèm hash (ví dụ từ footer của một route khác) thì cuộn tới section đó.
+  // Vào "/" kèm hash (từ header hay footer của route khác) thì cuộn tới section đó.
   useEffect(() => {
     if (!hash) return
-    document.querySelector(hash)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    document.getElementById(decodeURIComponent(hash.slice(1)))?.scrollIntoView({ block: 'start' })
   }, [hash])
 
-  const scrollToSolutions = () =>
-    document.querySelector('#solutions')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-
   return (
-    <div className="flex w-full flex-col">
-      <Hero onViewSolutions={scrollToSolutions} />
-      <SurveySteps />
-      <Benefits />
-      <PackageCards />
-      <JourneySteps />
-      <WhyUs />
-      <FeaturedProducts />
-      <AfterSales />
-      <Faq />
-      <CtaBanner />
-    </div>
+    <>
+      <title>{pageTitle}</title>
+      <HeroSection />
+      <SurveySection />
+      <QuoteSection />
+      <BuildSection />
+      <WarrantySection />
+      <FaqSection />
+      <StartSection />
+    </>
   )
 }

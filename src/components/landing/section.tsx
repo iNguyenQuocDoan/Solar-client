@@ -1,76 +1,43 @@
 import type { ReactNode } from 'react'
-import { cn } from '@/lib/cn'
+import { cx } from '@/lib/cx'
+import { LANDING_CONTAINER } from './classes'
 
-/** Container chuẩn của landing_home: max-w-[1280px] + margin theo breakpoint. */
-export const LANDING_CONTAINER =
-  'w-full max-w-[1280px] mx-auto px-margin-mobile md:px-margin-tablet lg:px-margin-desktop'
+/*
+  Khoảng cách trước một section đi theo quan hệ nội dung, không một giá trị chung:
+    near    – cùng hồ sơ với section trước (96px)
+    far     – đổi chủ đề (128px)
+    farther – nhảy thời gian hoặc đổi người chịu trách nhiệm (160px)
+*/
+const spaces = {
+  near: 'pt-16 lg:pt-24',
+  far: 'pt-20 lg:pt-32',
+  farther: 'pt-24 lg:pt-40',
+} as const
 
-export type SectionHeadingProps = {
-  eyebrow: string
-  title: string
-  description?: string
-  /** center = tiêu đề giữa (Lợi ích, Gói giải pháp, Hành trình, FAQ) */
-  align?: 'start' | 'center'
-  className?: string
-}
-
-/** Cụm eyebrow + h2 + mô tả lặp lại ở hầu hết section của trang chủ. */
-export function SectionHeading({
-  eyebrow,
-  title,
-  description,
-  align = 'start',
+export function Section({
+  id,
+  space,
+  titleId,
   className,
-}: SectionHeadingProps) {
+  children,
+}: {
+  id: string
+  space: keyof typeof spaces
+  titleId: string
+  className?: string
+  children: ReactNode
+}) {
   return (
-    <div
-      className={cn(
-        'flex flex-col gap-space-2xs',
-        align === 'center' && 'mx-auto max-w-2xl text-center',
-        className,
-      )}
-    >
-      <span className="text-label-lg text-primary-container">{eyebrow}</span>
-      <h2 className="text-headline-xl-mobile text-primary md:text-headline-xl">{title}</h2>
-      {description && <p className="text-body-md text-on-surface-variant">{description}</p>}
-    </div>
+    <section id={id} aria-labelledby={titleId} className={cx(spaces[space], className)}>
+      <div className={LANDING_CONTAINER}>{children}</div>
+    </section>
   )
 }
 
-export type LandingSectionProps = {
-  id: string
-  /** Nền section: surface (mặc định), lowest, low */
-  tone?: 'surface' | 'lowest' | 'low'
-  /** py-space-2xl (48px) hoặc py-space-3xl (64px) như code.html */
-  spacing?: '2xl' | '3xl'
-  className?: string
-  children: ReactNode
-}
-
-const toneClasses = {
-  surface: '',
-  lowest: 'bg-surface-container-lowest',
-  low: 'bg-surface-container-low',
-} as const
-
-export function LandingSection({
-  id,
-  tone = 'surface',
-  spacing = '3xl',
-  className,
-  children,
-}: LandingSectionProps) {
+export function SectionTitle({ id, className, children }: { id: string; className?: string; children: ReactNode }) {
   return (
-    <section
-      id={id}
-      className={cn(
-        'w-full scroll-mt-20',
-        spacing === '3xl' ? 'py-space-3xl' : 'py-space-2xl',
-        toneClasses[tone],
-        className,
-      )}
-    >
+    <h2 id={id} className={cx('ld-h2 max-w-3xl text-fg', className)}>
       {children}
-    </section>
+    </h2>
   )
 }

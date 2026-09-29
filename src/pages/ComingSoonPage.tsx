@@ -1,5 +1,5 @@
 import { Link } from 'react-router'
-import { LANDING_CONTAINER } from '@/components/landing/section'
+import { LANDING_CONTAINER } from '@/components/landing/classes'
 import { Icon } from '@/components/stitch-ui/Icon'
 import { ROUTES } from '@/constants/routes'
 import { cn } from '@/lib/cn'
