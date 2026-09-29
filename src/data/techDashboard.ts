@@ -69,7 +69,7 @@ export const todayAssignments: TodayAssignment[] = [
     type: { label: 'Lắp đặt (ngày 2/2)', variant: 'warning' },
     priority: { label: 'Thường', variant: 'neutral' },
     meta: { icon: 'schedule', text: '11:15 - 14:30' },
-    title: 'David Chen, The Chen Residence',
+    title: 'David Chen, nhà Chen',
     address: '1240 Oak Knolls Way, Saratoga, CA',
     phoneHref: 'tel:5550482910',
     specs: [

@@ -63,7 +63,7 @@ export function StepperInput({
     >
       <button
         type="button"
-        aria-label={`Decrease ${label}`}
+        aria-label={`Giảm ${label}`}
         disabled={min !== undefined && value <= min}
         onClick={() => onChange(clamp(value - step))}
         className={stepButton}
@@ -83,7 +83,7 @@ export function StepperInput({
       </div>
       <button
         type="button"
-        aria-label={`Increase ${label}`}
+        aria-label={`Tăng ${label}`}
         disabled={max !== undefined && value >= max}
         onClick={() => onChange(clamp(value + step))}
         className={stepButton}

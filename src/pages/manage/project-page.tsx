@@ -26,7 +26,7 @@ export function ManageProjectPage() {
       {(data) => (
         <>
           <PageHeader
-            back={{ to: ROUTES.manage.projects, label: 'Projects' }}
+            back={{ to: ROUTES.manage.projects, label: 'Dự án' }}
             meta={
               <>
                 <span className="text-fg-2">{data.id}</span>
@@ -38,9 +38,9 @@ export function ManageProjectPage() {
             description={`${data.address}. ${data.type}.`}
             actions={
               <>
-                <Button variant="ghost">Export dossier</Button>
-                <Button variant="danger">Pause work</Button>
-                <Button variant="primary">Authorize change order</Button>
+                <Button variant="ghost">Xuất hồ sơ</Button>
+                <Button variant="danger">Tạm dừng thi công</Button>
+                <Button variant="primary">Duyệt phiếu thay đổi</Button>
               </>
             }
           />
@@ -48,12 +48,12 @@ export function ManageProjectPage() {
           <Panel className="mb-12">
             <PanelBody className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)_minmax(0,1.2fr)]">
               <div>
-                <p className="text-body text-fg-2">Total turnkey contract value</p>
+                <p className="text-body text-fg-2">Tổng giá trị hợp đồng trọn gói</p>
                 <p className="tnum mt-1 text-display font-semibold">{fmt.usd(data.contract.total)}</p>
                 <p className="tnum text-body text-fg-2">
-                  {fmt.usd(data.contract.cleared)} cleared ({data.contract.clearedPct}% invoiced)
+                  Đã thu {fmt.usd(data.contract.cleared)} (đã xuất hoá đơn {data.contract.clearedPct}%)
                 </p>
-                <Progress value={data.contract.clearedPct} label="Invoiced share" className="mt-3" />
+                <Progress value={data.contract.clearedPct} label="Tỷ lệ đã xuất hoá đơn" className="mt-3" />
               </div>
               <ul className="space-y-3 lg:border-l lg:border-line lg:pl-6">
                 {data.people.map((p) => (
@@ -74,13 +74,13 @@ export function ManageProjectPage() {
 
           <Panel className="mb-12">
             <PanelHeader
-              title="Delivery lifecycle"
+              title="Tiến trình triển khai"
               description={`${data.stage}. ${data.variance}.`}
-              action={<Badge tone="accent">Target PTO {data.targetPto}</Badge>}
+              action={<Badge tone="accent">PTO dự kiến {data.targetPto}</Badge>}
             />
             <PanelBody className="space-y-4">
               <Stepper steps={data.steps} />
-              <Notice tone="ok" title={`Field execution: ${data.pulse.title}`}>
+              <Notice tone="ok" title={`Hiện trường: ${data.pulse.title}`}>
                 {data.pulse.body}
                 <span className="mt-2 flex flex-wrap gap-2">
                   {data.pulse.tags.map((t) => (
@@ -94,7 +94,7 @@ export function ManageProjectPage() {
           <div className="grid gap-x-12 gap-y-12 lg:grid-cols-5">
             <div className="space-y-8 lg:col-span-3">
               <Panel>
-                <PanelHeader title="Engineering and hardware manifest" action={<Badge tone="ok">{data.bom.rev}</Badge>} />
+                <PanelHeader title="Thiết kế & danh mục thiết bị" action={<Badge tone="ok">{data.bom.rev}</Badge>} />
                 <PanelBody className="space-y-6">
                   <dl className="grid gap-4 sm:grid-cols-3">
                     {data.bom.items.map((i) => (
@@ -106,14 +106,14 @@ export function ManageProjectPage() {
                     ))}
                   </dl>
                   <div className="border-t border-line pt-4">
-                    <p className="mb-2 text-body font-medium">Array configuration</p>
+                    <p className="mb-2 text-body font-medium">Cấu hình dàn pin</p>
                     <KeyValueList columns={2} items={data.bom.arrays} />
                   </div>
                 </PanelBody>
               </Panel>
 
               <Panel>
-                <PanelHeader title="Field crew telemetry and quality" description={data.telemetry.crew} />
+                <PanelHeader title="Số đo & chất lượng của đội thi công" description={data.telemetry.crew} />
                 <PanelBody className="space-y-6">
                   <dl className="grid gap-4 sm:grid-cols-3">
                     {data.telemetry.readings.map((r) => (
@@ -126,9 +126,9 @@ export function ManageProjectPage() {
                   </dl>
                   <div>
                     <div className="mb-2 flex items-center justify-between">
-                      <p className="text-body font-medium">Crew photo uploads, mandatory gate evidence</p>
+                      <p className="text-body font-medium">Ảnh đội tải lên, bằng chứng bắt buộc theo mốc</p>
                       <PlaceholderLink className="tap text-body text-accent-fg hover:underline">
-                        View {data.telemetry.photoTotal} raw assets
+                        Xem {data.telemetry.photoTotal} ảnh gốc
                       </PlaceholderLink>
                     </div>
                     <ul className="grid grid-cols-3 gap-3">
@@ -143,25 +143,25 @@ export function ManageProjectPage() {
               </Panel>
 
               <Panel>
-                <PanelHeader title="Self-assessment versus physical survey" action={<Badge tone="ok">{data.audit.tolerance}</Badge>} />
+                <PanelHeader title="Khách tự đánh giá so với khảo sát thực tế" action={<Badge tone="ok">{data.audit.tolerance}</Badge>} />
                 <Table stack>
                   <thead>
                     <tr>
-                      <Th>Metric</Th>
-                      <Th className="whitespace-normal!">Customer self-assessment</Th>
-                      <Th className="whitespace-normal!">Physical site audit (Oct 19)</Th>
-                      <Th>Variance</Th>
-                      <Th className="hidden md:table-cell">Resolution</Th>
+                      <Th>Chỉ tiêu</Th>
+                      <Th className="whitespace-normal!">Khách tự đánh giá</Th>
+                      <Th className="whitespace-normal!">Khảo sát thực tế (19/10)</Th>
+                      <Th>Chênh lệch</Th>
+                      <Th className="hidden md:table-cell">Cách xử lý</Th>
                     </tr>
                   </thead>
                   <tbody>
                     {data.audit.rows.map((r) => (
                       <Tr key={r.metric}>
-                        <Td label="Metric" className="font-medium">{r.metric}</Td>
-                        <Td label="Customer self-assessment" className="text-fg-2">{r.self}</Td>
-                        <Td label="Physical site audit (Oct 19)">{r.survey}</Td>
-                        <Td label="Variance" className={cx(r.variance.startsWith('+') || r.variance.startsWith('-') ? 'text-warn' : 'text-fg-2')}>{r.variance}</Td>
-                        <Td label="Resolution" className="hidden text-fg-2 md:table-cell">{r.resolution}</Td>
+                        <Td label="Chỉ tiêu" className="font-medium">{r.metric}</Td>
+                        <Td label="Khách tự đánh giá" className="text-fg-2">{r.self}</Td>
+                        <Td label="Khảo sát thực tế (19/10)">{r.survey}</Td>
+                        <Td label="Chênh lệch" className={cx(r.variance.startsWith('+') || r.variance.startsWith('-') ? 'text-warn' : 'text-fg-2')}>{r.variance}</Td>
+                        <Td label="Cách xử lý" className="hidden text-fg-2 md:table-cell">{r.resolution}</Td>
                       </Tr>
                     ))}
                   </tbody>
@@ -171,13 +171,13 @@ export function ManageProjectPage() {
 
             <div className="space-y-8 lg:col-span-2">
               <Panel>
-                <PanelHeader title="Financial ledger" action={<Badge tone="ok">{data.ledger.status}</Badge>} />
+                <PanelHeader title="Sổ thanh toán" action={<Badge tone="ok">{data.ledger.status}</Badge>} />
                 <PanelBody className="space-y-4">
                   <div>
                     <p className="tnum text-figure font-semibold">
-                      {fmt.usd(data.contract.cleared)} <span className="text-body font-normal text-fg-2">/ {fmt.usd(data.contract.total)} invoiced and collected</span>
+                      {fmt.usd(data.contract.cleared)} <span className="text-body font-normal text-fg-2">/ {fmt.usd(data.contract.total)} đã xuất hoá đơn và thu</span>
                     </p>
-                    <div className="mt-2 flex h-2 w-full gap-1 overflow-hidden rounded-control" role="img" aria-label="Contract split by milestone">
+                    <div className="mt-2 flex h-2 w-full gap-1 overflow-hidden rounded-control" role="img" aria-label="Phân bổ hợp đồng theo mốc">
                       {data.ledger.split.map((s, i) => (
                         <span key={s.label} className={cx('h-full', ['bg-accent', 'bg-accent/60', 'bg-surface-3'][i])} style={{ width: `${s.pct}%` }} />
                       ))}
@@ -204,13 +204,13 @@ export function ManageProjectPage() {
                 </PanelBody>
                 <PanelFooter>
                   <PlaceholderLink className="text-body text-accent-fg hover:underline">
-                    View full GAAP revenue schedule
+                    Xem lịch ghi nhận doanh thu GAAP đầy đủ
                   </PlaceholderLink>
                 </PanelFooter>
               </Panel>
 
               <Panel>
-                <PanelHeader title="Permitting and interconnection" />
+                <PanelHeader title="Giấy phép & đấu nối lưới" />
                 <PanelBody>
                   <ul className="divide-y divide-line">
                     {data.permits.map((p) => (
@@ -231,7 +231,7 @@ export function ManageProjectPage() {
               </Panel>
 
               <Panel>
-                <PanelHeader title="Management audit trail" description={`${data.trail.length + notes.length} entries today`} />
+                <PanelHeader title="Nhật ký quản lý" description={`${data.trail.length + notes.length} mục hôm nay`} />
                 <PanelBody>
                   <ActivityList items={[...notes, ...data.trail]} />
                 </PanelBody>
@@ -241,13 +241,13 @@ export function ManageProjectPage() {
                     onSubmit={(e) => {
                       e.preventDefault()
                       if (!note.trim()) return
-                      setNotes((n) => [{ time: 'Just now', title: 'Jonathan Mercer (regional director)', body: note.trim() }, ...n])
+                      setNotes((n) => [{ time: 'Vừa xong', title: 'Jonathan Mercer (giám đốc khu vực)', body: note.trim() }, ...n])
                       setNote('')
                     }}
                   >
-                    <Textarea aria-label="Append executive note" rows={1} value={note} onChange={(e) => setNote(e.target.value)} placeholder="Append an executive note" className="min-h-11 resize-none lg:min-h-10" />
+                    <Textarea aria-label="Thêm ghi chú điều hành" rows={1} value={note} onChange={(e) => setNote(e.target.value)} placeholder="Thêm ghi chú điều hành" className="min-h-11 resize-none lg:min-h-10" />
                     <Button type="submit" disabled={!note.trim()}>
-                      Send
+                      Gửi
                     </Button>
                   </form>
                 </PanelFooter>
@@ -258,7 +258,7 @@ export function ManageProjectPage() {
           <p className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-line pt-4 text-body text-fg-2">
             <span>{data.compliance}</span>
             <span>
-              Squad emergency hotline{' '}
+              Đường dây khẩn cấp của đội{' '}
               <a href={`tel:${data.hotline}`} className="tnum font-medium text-fg hover:underline">
                 {data.hotline}
               </a>

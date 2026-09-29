@@ -41,13 +41,13 @@ export function ManagePortfolioPage() {
       {(data) => (
         <>
           <PageHeader
-            title="Project portfolio"
+            title="Danh mục dự án"
             actions={
               <>
                 <Button disabled={selected.size === 0}>
-                  Batch reassign owner{selected.size > 0 ? ` (${selected.size})` : ''}
+                  Đổi người phụ trách hàng loạt{selected.size > 0 ? ` (${selected.size})` : ''}
                 </Button>
-                <Button>Export CSV</Button>
+                <Button>Xuất CSV</Button>
               </>
             }
           />
@@ -59,26 +59,26 @@ export function ManagePortfolioPage() {
           </StatRow>
 
           <Panel>
-            <FilterBar tabs={<FilterChips chips={portfolioStages} value={stage} onChange={setStage} label="Filter by lifecycle stage" />}>
+            <FilterBar tabs={<FilterChips chips={portfolioStages} value={stage} onChange={setStage} label="Lọc theo giai đoạn" />}>
                 <Input
                   type="search"
-                  aria-label="Search projects"
+                  aria-label="Tìm dự án"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  placeholder="Project ID, customer name or address"
+                  placeholder="Mã dự án, tên khách hàng hoặc địa chỉ"
                   className="w-full md:max-w-xs"
                 />
-                <Select aria-label="Sales staff" className="w-auto">
+                <Select aria-label="Nhân viên kinh doanh" className="w-auto">
                   {data.filters.staff.map((o) => (
                     <option key={o}>{o}</option>
                   ))}
                 </Select>
-                <Select aria-label="Health status" className="w-auto">
+                <Select aria-label="Tình trạng" className="w-auto">
                   {data.filters.health.map((o) => (
                     <option key={o}>{o}</option>
                   ))}
                 </Select>
-                <Select aria-label="Period" className="w-auto">
+                <Select aria-label="Khoảng thời gian" className="w-auto">
                   {data.filters.period.map((o) => (
                     <option key={o}>{o}</option>
                   ))}
@@ -87,7 +87,7 @@ export function ManagePortfolioPage() {
 
             {rows.length === 0 ? (
               <PanelBody>
-                <EmptyState title="No projects match" description="Try another stage or clear the search." />
+                <EmptyState title="Không có dự án nào khớp" description="Thử giai đoạn khác hoặc xoá từ khoá tìm kiếm." />
               </PanelBody>
             ) : (
               <Table stack>
@@ -96,21 +96,21 @@ export function ManagePortfolioPage() {
                     <Th className="w-10">
                       <input
                         type="checkbox"
-                        aria-label="Select all visible"
+                        aria-label="Chọn tất cả dòng đang hiện"
                         className="size-4 accent-accent"
                         checked={allSelected}
                         onChange={() => setSelected(allSelected ? new Set() : new Set(rows.map((r) => r.id)))}
                       />
                     </Th>
-                    <Th>Project</Th>
-                    <Th>Customer and site</Th>
-                    <Th className="hidden wide:table-cell">Sales owner</Th>
-                    <Th className="hidden 2xl:table-cell">System</Th>
-                    <Th className="hidden md:table-cell">Lifecycle stage</Th>
-                    <Th className="hidden lg:table-cell">Timeline</Th>
-                    <Th>Health</Th>
+                    <Th>Dự án</Th>
+                    <Th>Khách hàng & công trình</Th>
+                    <Th className="hidden wide:table-cell">Phụ trách kinh doanh</Th>
+                    <Th className="hidden 2xl:table-cell">Hệ thống</Th>
+                    <Th className="hidden md:table-cell">Giai đoạn</Th>
+                    <Th className="hidden lg:table-cell">Mốc thời gian</Th>
+                    <Th>Tình trạng</Th>
                     <Th>
-                      <span className="sr-only">Action</span>
+                      <span className="sr-only">Thao tác</span>
                     </Th>
                   </tr>
                 </thead>
@@ -120,7 +120,7 @@ export function ManagePortfolioPage() {
                       <Td>
                         <input
                           type="checkbox"
-                          aria-label={`Select ${r.id}`}
+                          aria-label={`Chọn ${r.id}`}
                           className="size-4 accent-accent"
                           checked={selected.has(r.id)}
                           onChange={() =>
@@ -133,39 +133,39 @@ export function ManagePortfolioPage() {
                           }
                         />
                       </Td>
-                      <Td label="Project">
+                      <Td label="Dự án">
                         <Link to={withId(ROUTES.manage.project, r.id)} className="tap font-medium whitespace-nowrap text-accent-fg hover:underline">
                           {r.id}
                         </Link>
                         <p className="text-meta text-fg-3">{r.type}</p>
                       </Td>
-                      <Td label="Customer and site">
+                      <Td label="Khách hàng & công trình">
                         <p className="font-medium">{r.customer}</p>
                         <p className="text-meta text-fg-3">{r.address}</p>
                       </Td>
-                      <Td label="Sales owner" className="hidden wide:table-cell">
+                      <Td label="Phụ trách kinh doanh" className="hidden wide:table-cell">
                         <p className="whitespace-nowrap">{r.owner}</p>
                         <p className="text-meta text-fg-3">{r.territory}</p>
                       </Td>
-                      <Td label="System" className="hidden 2xl:table-cell">
+                      <Td label="Hệ thống" className="hidden 2xl:table-cell">
                         <p className="whitespace-nowrap">{r.system}</p>
                         <p className="text-meta text-fg-3">{r.hardware}</p>
                       </Td>
-                      <Td label="Lifecycle stage" className="hidden md:table-cell">
+                      <Td label="Giai đoạn" className="hidden md:table-cell">
                         <p className="whitespace-nowrap">{r.stageLabel}</p>
                         <p className="text-meta text-fg-3">{r.stageNote}</p>
                         <div className="mt-2 flex items-center gap-2">
-                          <Progress value={r.pct} label={`${r.id} progress`} className="w-16" />
+                          <Progress value={r.pct} label={`Tiến độ ${r.id}`} className="w-16" />
                           <span className="tnum text-meta whitespace-nowrap text-fg-2">
                             {r.pct}% {r.progressLabel.toLowerCase()}
                           </span>
                         </div>
                       </Td>
-                      <Td label="Timeline" className="hidden whitespace-nowrap lg:table-cell">
+                      <Td label="Mốc thời gian" className="hidden whitespace-nowrap lg:table-cell">
                         <p className="tnum">{r.milestone}</p>
                         <p className="tnum text-meta text-fg-3">PTO {r.pto}</p>
                       </Td>
-                      <Td label="Health">
+                      <Td label="Tình trạng">
                         <Badge tone={r.healthTone}>{r.health}</Badge>
                       </Td>
                       <Td className="text-right">
@@ -181,7 +181,7 @@ export function ManagePortfolioPage() {
 
             <PanelFooter className="justify-between text-body text-fg-2">
               <span className="tnum">
-                Showing 1 to {rows.length} of {data.total} projects. Contract value in view {fmt.usd(data.valueInView)}.
+                Hiển thị 1–{rows.length} trên {data.total} dự án. Giá trị hợp đồng đang hiển thị {fmt.usd(data.valueInView)}.
               </span>
               <Pagination page={1} pages={15} />
             </PanelFooter>
@@ -190,26 +190,26 @@ export function ManagePortfolioPage() {
           <div className="mt-12 grid gap-x-12 gap-y-12 lg:grid-cols-3 lg:items-start">
             <Panel className="lg:col-span-2">
               <PanelHeader
-                title="Interconnection queue"
-                action={<Badge>Average {data.interconnection.avg}</Badge>}
+                title="Hàng chờ đấu nối lưới"
+                action={<Badge>Trung bình {data.interconnection.avg}</Badge>}
               />
               <PanelBody>
                 <StatRow>
                   {data.interconnection.queues.map((q) => (
-                    <Stat key={q.utility} label={q.utility} value={q.days} unit="days" note={<Badge tone={q.tone}>{q.note}</Badge>} />
+                    <Stat key={q.utility} label={q.utility} value={q.days} unit="ngày" note={<Badge tone={q.tone}>{q.note}</Badge>} />
                   ))}
                 </StatRow>
               </PanelBody>
               <PanelFooter className="justify-between text-body text-fg-2">
                 <span>{data.interconnection.refresh}</span>
                 <PlaceholderLink className="text-accent-fg hover:underline">
-                  Download AHJ bottleneck report
+                  Tải báo cáo điểm nghẽn cấp phép
                 </PlaceholderLink>
               </PanelFooter>
             </Panel>
 
             <Panel>
-              <PanelHeader title="Field squad status" description={`${data.crews.active} installation trucks deployed in Southern California.`} />
+              <PanelHeader title="Tình trạng đội hiện trường" description={`${data.crews.active} xe lắp đặt đang hoạt động ở Nam California.`} />
               <PanelBody>
                 <ul className="divide-y divide-line">
                   {data.crews.rows.map((c) => (
@@ -224,7 +224,7 @@ export function ManagePortfolioPage() {
                 </ul>
               </PanelBody>
               <PanelFooter>
-                <Button size="sm">Open dispatch map</Button>
+                <Button size="sm">Mở bản đồ điều phối</Button>
               </PanelFooter>
             </Panel>
           </div>

@@ -10,8 +10,8 @@ export function PlaceholderPage({ title, portal }: { title: string; portal: Port
     <>
       <PageHeader title={title} />
       <EmptyState
-        title={`${title} is not available in this build`}
-        description="The navigation entry is reserved. The screen will be added with the next iteration."
+        title={`${title} chưa có trong bản này`}
+        description="Mục này đã có trên menu, màn hình sẽ được bổ sung ở đợt sau."
         action={<ButtonLink to={home.to}>{home.label}</ButtonLink>}
       />
     </>

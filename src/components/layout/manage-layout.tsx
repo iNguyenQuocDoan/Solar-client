@@ -15,17 +15,17 @@ export function ManageLayout({ children }: { children?: ReactNode }) {
       context={<p className="font-medium text-fg">{manageContext.region}</p>}
       tools={
         <>
-          <Select size="sm" aria-label="Reporting period" className="text-meta" defaultValue={manageContext.period}>
+          <Select size="sm" aria-label="Kỳ báo cáo" className="text-meta" defaultValue={manageContext.period}>
             <option>{manageContext.period}</option>
-            <option>Q3 2024</option>
-            <option>Last 30 days</option>
+            <option>Quý 3/2024</option>
+            <option>30 ngày gần nhất</option>
           </Select>
           <Button variant="primary" size="sm">
-            Export brief
+            Xuất báo cáo tóm tắt
           </Button>
           <p className="text-body text-fg-2">
             <PlaceholderLink className="tap underline-offset-4 hover:text-fg hover:underline">
-              3 unread notifications
+              3 thông báo chưa đọc
             </PlaceholderLink>
           </p>
         </>

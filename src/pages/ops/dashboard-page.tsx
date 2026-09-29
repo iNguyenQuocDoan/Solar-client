@@ -22,13 +22,13 @@ export function OpsDashboardPage() {
         <>
           <PageHeader
             meta={<span>{opsContext.team}</span>}
-            title={`${data.priorityCount} priority actions today`}
-            description={`Across ${data.pipelineCount} active project pipelines. ${data.conditions}`}
-            actions={<Button>Batch dispatch tasks</Button>}
+            title={`${data.priorityCount} việc ưu tiên hôm nay`}
+            description={`Trên ${data.pipelineCount} giai đoạn đang có hồ sơ. ${data.conditions}`}
+            actions={<Button>Giao việc hàng loạt</Button>}
           />
 
           <Panel className="mb-12">
-            <PanelHeader title="Pipeline" />
+            <PanelHeader title="Phễu bán hàng" />
             <PanelBody>
               <ol className="grid grid-cols-2 gap-y-6 sm:grid-cols-4 lg:grid-cols-8">
                 {data.pipeline.map((s) => (
@@ -45,7 +45,7 @@ export function OpsDashboardPage() {
           <div className="grid gap-x-12 gap-y-12 lg:grid-cols-3">
             <div className="space-y-8 lg:col-span-2">
               <Panel>
-                <PanelHeader title="Priority tasks" />
+                <PanelHeader title="Việc ưu tiên" />
                 <PanelBody>
                   <ul className="divide-y divide-line">
                     {data.tasks.map((t) => (
@@ -69,10 +69,10 @@ export function OpsDashboardPage() {
 
               <Panel>
                 <PanelHeader
-                  title="Upcoming site surveys"
+                  title="Khảo sát sắp tới"
                   action={
                     <Link to={ROUTES.ops.surveys} className="inline-flex items-center gap-1 text-body text-accent-fg hover:underline">
-                      Full field calendar
+                      Xem lịch hiện trường
                     </Link>
                   }
                 />
@@ -104,7 +104,7 @@ export function OpsDashboardPage() {
               </Panel>
 
               <Panel>
-                <PanelHeader title="Recent activity" description="Updated 4 minutes ago" />
+                <PanelHeader title="Hoạt động gần đây" description="Cập nhật 4 phút trước" />
                 <PanelBody>
                   <ActivityList items={data.activity} />
                 </PanelBody>
@@ -113,7 +113,7 @@ export function OpsDashboardPage() {
 
             <div className="space-y-8 lg:border-l lg:border-line lg:pl-8">
               <Panel>
-                <PanelHeader title="Needs attention" />
+                <PanelHeader title="Cần chú ý" />
                 <PanelBody>
                   <ul className="divide-y divide-line">
                     {data.shortcuts.map((s) => (
@@ -132,30 +132,30 @@ export function OpsDashboardPage() {
               </Panel>
 
               <Panel>
-                <PanelHeader title={`${data.quota.month} quota`} action={<span className="tnum text-title font-semibold">{data.quota.pct}%</span>} />
+                <PanelHeader title={`Chỉ tiêu ${data.quota.month.toLowerCase()}`} action={<span className="tnum text-title font-semibold">{data.quota.pct}%</span>} />
                 <PanelBody className="space-y-6">
                   <div>
-                    <Progress value={data.quota.pct} label="Monthly quota progress" />
+                    <Progress value={data.quota.pct} label="Tiến độ chỉ tiêu tháng" />
                     <div className="tnum mt-2 flex justify-between text-meta text-fg-2">
-                      <span>Current {fmt.usd(data.quota.current)}</span>
-                      <span>Target {fmt.usd(data.quota.target)}</span>
+                      <span>Hiện tại {fmt.usd(data.quota.current)}</span>
+                      <span>Mục tiêu {fmt.usd(data.quota.target)}</span>
                     </div>
                   </div>
                   <dl className="grid grid-cols-2 gap-4">
                     <div>
-                      <dt className="text-meta text-fg-2">Active pipeline</dt>
+                      <dt className="text-meta text-fg-2">Giá trị đang theo đuổi</dt>
                       <dd className="tnum text-figure font-semibold">{fmt.usd(data.quota.pipelineValue)}</dd>
                       <dd className="text-meta text-fg-3">{data.quota.pipelineDelta}</dd>
                     </div>
                     <div>
-                      <dt className="text-meta text-fg-2">Close conversion</dt>
+                      <dt className="text-meta text-fg-2">Tỷ lệ chốt</dt>
                       <dd className="tnum text-figure font-semibold">{data.quota.closeRate}%</dd>
                       <dd className="text-meta text-fg-3">{data.quota.closeNote}</dd>
                     </div>
                   </dl>
                   <div>
-                    <p className="mb-2 text-meta text-fg-2">Stage distribution by value</p>
-                    <div className="flex h-2 w-full gap-1 overflow-hidden rounded-control" role="img" aria-label="Pipeline value by stage">
+                    <p className="mb-2 text-meta text-fg-2">Phân bổ giá trị theo giai đoạn</p>
+                    <div className="flex h-2 w-full gap-1 overflow-hidden rounded-control" role="img" aria-label="Giá trị theo giai đoạn">
                       {data.quota.stages.map((s, i) => (
                         <span key={s.label} className={cx('h-full', STAGE_FILL[i])} style={{ width: `${s.pct}%` }} />
                       ))}
@@ -175,10 +175,10 @@ export function OpsDashboardPage() {
 
               <Panel>
                 <PanelHeader
-                  title="Recent inquiries"
+                  title="Yêu cầu gần đây"
                   action={
                     <Link to={ROUTES.ops.consultations} className="text-body text-accent-fg hover:underline">
-                      View all ({data.inquiriesTotal})
+                      Xem tất cả ({data.inquiriesTotal})
                     </Link>
                   }
                 />
@@ -197,7 +197,7 @@ export function OpsDashboardPage() {
                 </PanelBody>
                 <PanelFooter>
                   <ButtonLink to={ROUTES.ops.consultations} size="sm" variant="ghost">
-                    Open intake queue
+                    Mở hàng chờ tiếp nhận
                   </ButtonLink>
                 </PanelFooter>
               </Panel>

@@ -26,11 +26,11 @@ import { regionZones, userRoleMap, userRoleValues, userRoles, type UserRecord } 
  * Validate bằng zod + react-hook-form.
  */
 const userFormSchema = z.object({
-  name: z.string().trim().min(2, 'Full name is required'),
-  email: z.email('Enter a valid email address'),
-  department: z.string().trim().min(2, 'Department is required'),
-  role: z.enum(userRoleValues, { message: 'Select a platform role' }),
-  regions: z.array(z.string()).min(1, 'Assign at least one regional zone'),
+  name: z.string().trim().min(2, 'Vui lòng nhập họ và tên'),
+  email: z.email('Email không hợp lệ'),
+  department: z.string().trim().min(2, 'Vui lòng nhập bộ phận'),
+  role: z.enum(userRoleValues, { message: 'Vui lòng chọn vai trò' }),
+  regions: z.array(z.string()).min(1, 'Chọn ít nhất một khu vực'),
   mfaEnforced: z.boolean(),
 })
 
@@ -87,11 +87,11 @@ function UserForm({ mode, user, onSubmit }: Pick<UserFormDialogProps, 'mode' | '
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-space-md" noValidate>
       <DialogHeader>
         <span className="text-label-sm font-semibold text-outline">
-          {isEdit ? 'Governance Drawer' : 'Invite New User'}
+          {isEdit ? 'Chỉnh sửa quyền truy cập' : 'Mời người dùng mới'}
         </span>
         <DialogTitle className="mt-0.5">{isEdit && user ? user.name : 'New platform account'}</DialogTitle>
         <DialogDescription className="font-mono text-label-sm">
-          {isEdit && user ? `${user.employeeId}, ${user.department}` : 'Provision credentials, role and regional scope'}
+          {isEdit && user ? `${user.employeeId}, ${user.department}` : 'Cấp tài khoản, vai trò và khu vực truy cập'}
         </DialogDescription>
       </DialogHeader>
       <div className="h-px w-full bg-surface-container-high" />
@@ -126,7 +126,7 @@ function UserForm({ mode, user, onSubmit }: Pick<UserFormDialogProps, 'mode' | '
       <Field
         label="Vai trò chính"
         htmlFor={`${idPrefix}-role`}
-        hint={`Clearance: ${role.clearance}`}
+        hint={`Cấp truy cập: ${role.clearance}`}
         help={role.description}
         error={errors.role?.message}
       >
@@ -151,7 +151,7 @@ function UserForm({ mode, user, onSubmit }: Pick<UserFormDialogProps, 'mode' | '
                       <span>{zone?.label ?? zoneValue}</span>
                       <button
                         type="button"
-                        aria-label={`Remove ${zone?.label ?? zoneValue}`}
+                        aria-label={`Bỏ ${zone?.label ?? zoneValue}`}
                         onClick={() => field.onChange(field.value.filter((v) => v !== zoneValue))}
                         className="flex items-center hover:text-error"
                       >
@@ -197,14 +197,14 @@ function UserForm({ mode, user, onSubmit }: Pick<UserFormDialogProps, 'mode' | '
                   className={cn('text-[20px]', field.value ? 'text-tertiary-container' : 'text-outline')}
                 />
                 <div className="flex flex-col">
-                  <span className="text-label-md font-semibold text-on-surface">Hardware FIDO2 / MFA</span>
+                  <span className="text-label-md font-semibold text-on-surface">MFA phần cứng (FIDO2)</span>
                   <span
                     className={cn(
                       'text-label-sm font-medium',
                       field.value ? 'text-tertiary-container' : 'text-outline',
                     )}
                   >
-                    {field.value ? 'Enforced via YubiKey' : 'Not enforced'}
+                    {field.value ? 'Bắt buộc qua YubiKey' : 'Không bắt buộc'}
                   </span>
                 </div>
               </div>
@@ -222,11 +222,11 @@ function UserForm({ mode, user, onSubmit }: Pick<UserFormDialogProps, 'mode' | '
               <Icon name="key" className="text-[20px] text-outline" />
               <div className="flex flex-col">
                 <span className="text-label-md font-semibold text-on-surface">Khoá API</span>
-                <span className="text-label-sm text-outline">{user.apiTokens} active personal keys</span>
+                <span className="text-label-sm text-outline">{user.apiTokens} khoá cá nhân đang dùng</span>
               </div>
             </div>
             <button type="button" className="text-label-sm text-error hover:underline">
-              Revoke All
+              Thu hồi tất cả
             </button>
           </div>
         )}
@@ -249,11 +249,11 @@ function UserForm({ mode, user, onSubmit }: Pick<UserFormDialogProps, 'mode' | '
       <DialogFooter>
         <DialogClose asChild>
           <Button type="button" variant="ghost" size="md" className="h-11 flex-1 font-semibold text-on-surface">
-            Cancel
+            Hủy
           </Button>
         </DialogClose>
         <Button type="submit" size="md" iconLeft={isEdit ? 'save' : 'send'} disabled={isSubmitting} className="h-11 flex-1">
-          {isEdit ? 'Save Changes' : 'Send Invite'}
+          {isEdit ? 'Lưu thay đổi' : 'Gửi lời mời'}
         </Button>
       </DialogFooter>
     </form>

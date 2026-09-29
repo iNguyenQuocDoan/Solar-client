@@ -18,14 +18,14 @@ export function EstimatePage() {
       {(data) => (
         <>
           <PageHeader
-            back={{ to: ROUTES.customer.assessment, label: 'Preliminary assessment' }}
-            title={`Preliminary estimate for ${property.name}`}
-            meta={<Badge tone="ok">Viability score {data.viabilityScore} / 100</Badge>}
+            back={{ to: ROUTES.customer.assessment, label: 'Đánh giá sơ bộ' }}
+            title={`Giá ước tính sơ bộ cho ${property.name}`}
+            meta={<Badge tone="ok">Điểm khả thi {data.viabilityScore} / 100</Badge>}
             actions={
               <>
-                <Button>Download summary</Button>
+                <Button>Tải bản tóm tắt</Button>
                 <ButtonLink to={ROUTES.customer.consultations} variant="primary">
-                  Request on-site survey
+                  Yêu cầu khảo sát tại nhà
                 </ButtonLink>
               </>
             }
@@ -34,20 +34,20 @@ export function EstimatePage() {
           <div className="grid gap-x-12 gap-y-12 lg:grid-cols-3">
             <div className="space-y-8 lg:col-span-2">
               <Panel>
-                <PanelHeader title="Estimated investment" />
+                <PanelHeader title="Chi phí đầu tư ước tính" />
                 <PanelBody>
                   <p className="tnum text-figure font-semibold md:text-display">
-                    {fmt.usd(data.grossRange[0])} to {fmt.usd(data.grossRange[1])}
+                    {fmt.usd(data.grossRange[0])} đến {fmt.usd(data.grossRange[1])}
                   </p>
-                  <p className="mt-1 text-meta text-fg-3">Gross range before incentives</p>
+                  <p className="mt-1 text-meta text-fg-3">Khoảng giá trước ưu đãi</p>
                   <p className="tnum mt-4 text-title font-semibold">
-                    {fmt.usd(data.netRange[0])} to {fmt.usd(data.netRange[1])}{' '}
-                    <span className="text-body font-normal text-fg-2">net after the 30% federal solar tax credit</span>
+                    {fmt.usd(data.netRange[0])} đến {fmt.usd(data.netRange[1])}{' '}
+                    <span className="text-body font-normal text-fg-2">sau khi trừ tín dụng thuế điện mặt trời liên bang 30%</span>
                   </p>
                   <StatRow className="mt-6 border-t border-line pt-6 md:grid-cols-3">
-                    <Stat label="Estimated payback" value={data.paybackYears} unit="years" />
-                    <Stat label="Year 1 net savings" value={`~${fmt.usd(data.year1Savings)}`} unit="/ yr" />
-                    <Stat label="Lifetime CO₂ reduction" value={data.lifetimeCo2Tons} unit="metric tons" />
+                    <Stat label="Thời gian hoàn vốn ước tính" value={data.paybackYears} unit="năm" />
+                    <Stat label="Tiết kiệm năm đầu" value={`~${fmt.usd(data.year1Savings)}`} unit="/ năm" />
+                    <Stat label="Giảm CO₂ cả vòng đời" value={data.lifetimeCo2Tons} unit="tấn" />
                   </StatRow>
                 </PanelBody>
               </Panel>
@@ -65,10 +65,10 @@ export function EstimatePage() {
                   </dl>
                   <Photo
                     src={data.system.render}
-                    alt="Rendered rooftop placement simulation"
+                    alt="Mô phỏng bố trí tấm pin trên mái"
                     ratio="aspect-[3/2]"
-                    caption="Rendered rooftop placement simulation"
-                    meta={`${data.system.panelsMapped} panels mapped`}
+                    caption="Mô phỏng bố trí tấm pin trên mái"
+                    meta={`Đã bố trí ${data.system.panelsMapped} tấm`}
                   />
                 </PanelBody>
               </Panel>
@@ -76,7 +76,7 @@ export function EstimatePage() {
 
             <div className="space-y-8 lg:border-l lg:border-line lg:pl-8">
               <Panel>
-                <PanelHeader title="System assumptions" />
+                <PanelHeader title="Giả định tính toán" />
                 <PanelBody>
                   <dl className="divide-y divide-line">
                     {data.assumptions.map((a) => (
@@ -91,11 +91,11 @@ export function EstimatePage() {
                   </dl>
                 </PanelBody>
               </Panel>
-              <Notice title="Estimation disclaimer">{data.disclaimer}</Notice>
+              <Notice title="Lưu ý về giá ước tính">{data.disclaimer}</Notice>
               <p className="text-body text-fg-2">
-                Numbers look off?{' '}
+                Số liệu chưa đúng?{' '}
                 <Link to={ROUTES.customer.assessment} className="text-accent-fg hover:underline">
-                  Recalculate with different inputs
+                  Tính lại với số liệu khác
                 </Link>
               </p>
             </div>

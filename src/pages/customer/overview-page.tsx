@@ -28,17 +28,17 @@ export function OverviewPage() {
                 <span>{property.address}</span>
               </>
             }
-            title={`${data.milestone.title} in ${data.milestone.daysAway} days`}
-            description={`${data.milestone.when}, confirmed with ${data.milestone.with}.`}
+            title={`${data.milestone.title} sau ${data.milestone.daysAway} ngày`}
+            description={`${data.milestone.when}, đã xác nhận với ${data.milestone.with}.`}
             actions={
               <ButtonLink to={withId(ROUTES.customer.consultation, 'CR-9042')}>
-                View timeline
+                Xem tiến trình
               </ButtonLink>
             }
           />
 
           <Panel className="mb-12">
-            <PanelHeader title="Solar journey" />
+            <PanelHeader title="Hành trình điện mặt trời" />
             <PanelBody>
               <Stepper steps={data.journey} />
             </PanelBody>
@@ -49,13 +49,13 @@ export function OverviewPage() {
               <Panel>
                 <PanelHeader
                   title={data.consultation.title}
-                  description={`Consultation ${data.consultation.id}`}
+                  description={`Tư vấn ${data.consultation.id}`}
                   action={<Badge tone="accent">{data.consultation.status}</Badge>}
                 />
                 <PanelBody className="space-y-6">
                   <div className="grid gap-6 sm:grid-cols-2">
                     <div>
-                      <p className="text-meta text-fg-3">When</p>
+                      <p className="text-meta text-fg-3">Thời gian</p>
                       <p className="mt-1 font-medium">{data.consultation.date}</p>
                       <p className="text-meta text-fg-3">{data.consultation.duration}</p>
                     </div>
@@ -63,7 +63,7 @@ export function OverviewPage() {
                       <Avatar name={advisor.name} />
                       <div className="min-w-0">
                         <p className="font-medium">{advisor.name}</p>
-                        <p className="text-meta text-fg-3">Certified energy advisor</p>
+                        <p className="text-meta text-fg-3">Tư vấn viên năng lượng có chứng chỉ</p>
                         <a href={`mailto:${advisor.email}`} className="tap text-body text-accent-fg hover:underline">
                           {advisor.email}
                         </a>
@@ -71,7 +71,7 @@ export function OverviewPage() {
                     </div>
                   </div>
                   <div>
-                    <p className="text-body font-medium">Before the visit</p>
+                    <p className="text-body font-medium">Trước buổi hẹn</p>
                     <ul className="mt-2 list-disc space-y-1 pl-6 text-body text-fg-2">
                       {data.consultation.prep.map((p) => (
                         <li key={p}>{p}</li>
@@ -81,43 +81,43 @@ export function OverviewPage() {
                 </PanelBody>
                 <PanelFooter>
                   <Button variant="primary">
-                    Call {advisor.name.split(' ')[0]}
+                    Gọi {advisor.name.split(' ')[0]}
                   </Button>
-                  <Button>Reschedule</Button>
+                  <Button>Đổi lịch</Button>
                 </PanelFooter>
               </Panel>
 
               <Panel>
                 <PanelHeader
-                  title="System proposal"
-                  description={`Quote ${data.proposal.id}`}
+                  title="Đề xuất hệ thống"
+                  description={`Báo giá ${data.proposal.id}`}
                   action={<Badge tone="warn">{data.proposal.status}</Badge>}
                 />
                 <PanelBody>
                   <StatRow className="md:grid-cols-3">
-                    <Stat label="System size" value={data.proposal.sizeKw} unit="kW DC" note={`${data.proposal.panels} panels`} />
-                    <Stat label="Estimated annual offset" value={`${data.proposal.offsetPct}%`} note={`Covers ${fmt.num(data.proposal.coversKwh)} kWh per year`} />
-                    <Stat label="Estimated savings" value={fmt.usd(data.proposal.savingsPerYear)} unit="/ yr" note="Includes the 30% federal tax credit" />
+                    <Stat label="Công suất hệ thống" value={data.proposal.sizeKw} unit="kW DC" note={`${data.proposal.panels} tấm pin`} />
+                    <Stat label="Tỷ lệ bù điện năng ước tính" value={`${data.proposal.offsetPct}%`} note={`Đáp ứng ${fmt.num(data.proposal.coversKwh)} kWh mỗi năm`} />
+                    <Stat label="Tiết kiệm ước tính" value={fmt.usd(data.proposal.savingsPerYear)} unit="/ năm" note="Đã tính tín dụng thuế liên bang 30%" />
                   </StatRow>
                   <KeyValueList
                     className="mt-6 border-t border-line pt-4"
                     items={[
                       { k: 'Inverter', v: data.proposal.inverter },
-                      { k: 'Battery storage', v: data.proposal.battery },
+                      { k: 'Pin lưu trữ', v: data.proposal.battery },
                     ]}
                   />
                 </PanelBody>
                 <PanelFooter>
-                  <ButtonLink to={withId(ROUTES.customer.quotation, 'QT-8821')}>Review draft breakdown</ButtonLink>
+                  <ButtonLink to={withId(ROUTES.customer.quotation, 'QT-8821')}>Xem chi tiết bản nháp</ButtonLink>
                 </PanelFooter>
               </Panel>
 
               <Panel>
                 <PanelHeader
-                  title="Scheduled events"
+                  title="Lịch hẹn"
                   action={
                     <PlaceholderLink className="text-body text-accent-fg hover:underline">
-                      View calendar
+                      Xem lịch
                     </PlaceholderLink>
                   }
                 />
@@ -146,9 +146,9 @@ export function OverviewPage() {
 
             <div className="space-y-8 lg:border-l lg:border-line lg:pl-8">
               <Panel>
-                <PanelHeader title="Site readiness" action={<span className="tnum text-title font-semibold">{data.readiness.pct}%</span>} />
+                <PanelHeader title="Mức sẵn sàng của công trình" action={<span className="tnum text-title font-semibold">{data.readiness.pct}%</span>} />
                 <PanelBody>
-                  <Progress value={data.readiness.pct} label="Site readiness" />
+                  <Progress value={data.readiness.pct} label="Mức sẵn sàng của công trình" />
                   <ul className="mt-4 space-y-3">
                     {data.readiness.items.map((item) => (
                       <li key={item.label} className="flex items-start justify-between gap-3 text-body">
@@ -157,37 +157,37 @@ export function OverviewPage() {
                       </li>
                     ))}
                   </ul>
-                  <p className="mt-4 border-t border-line pt-3 text-meta text-fg-3">Assigned crew: {data.readiness.crew}</p>
+                  <p className="mt-4 border-t border-line pt-3 text-meta text-fg-3">Đội được giao: {data.readiness.crew}</p>
                 </PanelBody>
                 <PanelFooter>
                   <ButtonLink to={withId(ROUTES.customer.project, 'SS-8842-CA')} size="sm">
-                    Project milestones
+                    Các mốc dự án
                   </ButtonLink>
                 </PanelFooter>
               </Panel>
 
               <Panel>
-                <PanelHeader title="Warranty" description={data.warranty.plan} />
+                <PanelHeader title="Bảo hành" description={data.warranty.plan} />
                 <PanelBody>
                   <p className="text-body text-fg-2">{data.warranty.summary}</p>
                 </PanelBody>
                 <PanelFooter>
                   <ButtonLink to={ROUTES.customer.warranty} size="sm">
-                    Warranty details
+                    Chi tiết bảo hành
                   </ButtonLink>
                 </PanelFooter>
               </Panel>
 
               <Panel>
-                <PanelHeader title="Project activity" />
+                <PanelHeader title="Hoạt động dự án" />
                 <PanelBody>
                   <ActivityList items={data.activity} />
                 </PanelBody>
                 <PanelFooter>
                   <p className="text-body text-fg-2">
-                    Questions about permits?{' '}
+                    Có câu hỏi về giấy phép?{' '}
                     <Link to={ROUTES.customer.assistant} className="text-accent-fg hover:underline">
-                      Ask the assistant
+                      Hỏi trợ lý
                     </Link>
                   </p>
                 </PanelFooter>

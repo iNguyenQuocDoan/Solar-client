@@ -237,7 +237,7 @@ function SurveyTaskView({ survey }: { survey: SurveyRecord }) {
                         </div>
                       </div>
                       <SegmentedControl
-                        label={`${item.title} shading severity`}
+                        label={`Mức độ che bóng: ${item.title}`}
                         options={audit.shading.options.map((option) => ({
                           ...option,
                           tone: severityTone(option.value),

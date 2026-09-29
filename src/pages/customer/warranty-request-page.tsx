@@ -18,14 +18,14 @@ type Modal = { title: string; description: string; placeholder: string }
 
 const MODALS: Record<'message' | 'reschedule', Modal> = {
   message: {
-    title: 'Add a message for Alex',
-    description: 'Alex receives this note on his field device when he navigates to Oakwood Residence.',
-    placeholder: 'Side gate is unlatched. Friendly golden retriever inside.',
+    title: 'Nhắn cho Alex',
+    description: 'Alex sẽ nhận ghi chú này trên thiết bị hiện trường khi đang di chuyển tới nhà Oakwood.',
+    placeholder: 'Cổng bên không khoá. Trong nhà có chó golden hiền.',
   },
   reschedule: {
-    title: 'Request a new service window',
-    description: 'Share preferred backup dates and whether morning or afternoon works better.',
-    placeholder: 'Prefer Wednesday Nov 13 or Thursday Nov 14 in the morning window.',
+    title: 'Yêu cầu đổi khung giờ',
+    description: 'Cho biết các ngày thay thế bạn muốn và buổi sáng hay chiều tiện hơn.',
+    placeholder: 'Muốn sáng Thứ Tư 13/11 hoặc sáng Thứ Năm 14/11.',
   },
 }
 
@@ -47,7 +47,7 @@ export function WarrantyRequestPage() {
       {(data) => (
         <>
           <PageHeader
-            back={{ to: ROUTES.customer.warranty, label: 'Warranty & Maintenance' }}
+            back={{ to: ROUTES.customer.warranty, label: 'Bảo hành & bảo trì' }}
             meta={
               <>
                 <span className="text-fg-2">{data.id}</span>
@@ -59,9 +59,9 @@ export function WarrantyRequestPage() {
             description={data.site}
             actions={
               <>
-                <Button>Export summary</Button>
+                <Button>Xuất bản tóm tắt</Button>
                 <Button variant="primary" onClick={() => open('message')}>
-                  Message technician
+                  Nhắn kỹ thuật viên
                 </Button>
               </>
             }
@@ -76,11 +76,11 @@ export function WarrantyRequestPage() {
           <Panel className="mb-12">
             <PanelBody className="grid gap-6 lg:grid-cols-[minmax(0,3fr)_minmax(0,1fr)]">
               <div>
-                <p className="mb-3 text-body font-medium">Ticket lifecycle, stage 4 of 5</p>
+                <p className="mb-3 text-body font-medium">Tiến trình yêu cầu, giai đoạn 4/5</p>
                 <Stepper steps={data.steps} />
               </div>
               <div className="lg:border-l lg:border-line lg:pl-6">
-                <p className="text-body text-fg-2">Service window</p>
+                <p className="text-body text-fg-2">Khung giờ dịch vụ</p>
                 <p className="mt-1 text-title font-semibold">{data.window.date}</p>
                 <p className="tnum text-body text-fg-2">{data.window.time}</p>
                 <Badge tone="ok" className="mt-2">
@@ -93,11 +93,11 @@ export function WarrantyRequestPage() {
           <div className="grid gap-x-12 gap-y-12 lg:grid-cols-3">
             <div className="space-y-8 lg:col-span-2">
               <Panel>
-                <PanelHeader title="Reported issue" />
+                <PanelHeader title="Sự cố đã báo" />
                 <PanelBody className="space-y-4">
                   <blockquote className="border-l-2 border-line-2 pl-3 text-body text-fg-2">{data.description}</blockquote>
                   <div>
-                    <p className="mb-2 text-body font-medium">Attached images ({data.photos.length})</p>
+                    <p className="mb-2 text-body font-medium">Ảnh đính kèm ({data.photos.length})</p>
                     <ul className="grid gap-4 sm:grid-cols-2">
                       {data.photos.map((p) => (
                         <li key={p.caption}>
@@ -110,7 +110,7 @@ export function WarrantyRequestPage() {
               </Panel>
 
               <Panel>
-                <PanelHeader title="Technician assessment and plan" description={`Dispatch brief prepared by ${data.technician.name}`} />
+                <PanelHeader title="Đánh giá và phương án của kỹ thuật viên" description={`Tóm tắt do ${data.technician.name} chuẩn bị`} />
                 <PanelBody className="space-y-4">
                   <blockquote className="border-l-2 border-accent pl-3 text-body text-fg-2">{data.plan.brief}</blockquote>
                   <KeyValueList items={data.plan.impact} />
@@ -118,19 +118,19 @@ export function WarrantyRequestPage() {
               </Panel>
 
               <Panel>
-                <PanelHeader title="Service verification" description={`Submission baseline versus post-service sign-off. Protocol ${data.verification.protocol}.`} />
+                <PanelHeader title="Xác nhận sau dịch vụ" description={`So sánh hiện trạng khi gửi với biên bản sau dịch vụ. Quy trình ${data.verification.protocol}.`} />
                 <PanelBody className="grid gap-6 sm:grid-cols-2">
                   <div>
-                    <p className="text-body font-medium">Incident reference</p>
-                    <p className="text-meta text-fg-3">Submitted {data.verification.before.date}</p>
-                    <Photo src={data.verification.before.src} alt="Client baseline photo" className="mt-2" />
+                    <p className="text-body font-medium">Hiện trạng khi báo</p>
+                    <p className="text-meta text-fg-3">Gửi ngày {data.verification.before.date}</p>
+                    <Photo src={data.verification.before.src} alt="Ảnh hiện trạng khách gửi" className="mt-2" />
                     <p className="mt-2 text-body text-fg-2">{data.verification.before.body}</p>
                   </div>
                   <div>
-                    <p className="text-body font-medium">Post-service inspection</p>
-                    <p className="text-meta text-fg-3">Pending visit</p>
+                    <p className="text-body font-medium">Kiểm tra sau dịch vụ</p>
+                    <p className="text-meta text-fg-3">Chờ tới nhà</p>
                     <div className="mt-2 flex aspect-[4/3] items-center justify-center rounded-container border border-dashed border-line-2 px-4 text-center text-body text-fg-2">
-                      Awaiting field completion
+                      Chờ hoàn tất tại hiện trường
                     </div>
                     <p className="mt-2 text-body text-fg-2">{data.verification.after}</p>
                   </div>
@@ -140,7 +140,7 @@ export function WarrantyRequestPage() {
 
             <div className="space-y-8 lg:border-l lg:border-line lg:pl-8">
               <Panel>
-                <PanelHeader title="Certified specialist" />
+                <PanelHeader title="Chuyên viên có chứng chỉ" />
                 <PanelBody className="space-y-4">
                   <div className="flex items-start gap-3">
                     <Avatar name={data.technician.name} size="lg" />
@@ -153,36 +153,36 @@ export function WarrantyRequestPage() {
                   <KeyValueList
                     className="border-t border-line pt-4"
                     items={[
-                      { k: 'Direct cell', v: <span className="tnum">{data.technician.phone}</span> },
-                      { k: 'Background check', v: data.technician.background },
-                      { k: 'Service van', v: data.technician.van },
+                      { k: 'Điện thoại trực tiếp', v: <span className="tnum">{data.technician.phone}</span> },
+                      { k: 'Kiểm tra lý lịch', v: data.technician.background },
+                      { k: 'Xe dịch vụ', v: data.technician.van },
                     ]}
                   />
                 </PanelBody>
                 <PanelFooter>
                   <Button className="w-full">
-                    Call {data.technician.name.split(' ')[0]} directly
+                    Gọi trực tiếp {data.technician.name.split(' ')[0]}
                   </Button>
                 </PanelFooter>
               </Panel>
 
               <Panel>
-                <PanelHeader title="Adjust this visit" />
+                <PanelHeader title="Điều chỉnh lịch hẹn" />
                 <PanelBody className="space-y-2">
                   <Button className="w-full justify-start" onClick={() => open('reschedule')}>
-                    Reschedule visit
+                    Đổi lịch hẹn
                   </Button>
                   <a href="tel:18005557652" className="flex h-11 items-center justify-between rounded-control px-3 text-body text-fg-2 hover:bg-surface-2 lg:h-10">
-                    <span>Call support desk</span>
+                    <span>Gọi bộ phận hỗ trợ</span>
                     <span className="tnum text-meta">{data.supportPhone}</span>
                   </a>
                 </PanelBody>
               </Panel>
 
-              <Notice title="Protection guarantee">
+              <Notice title="Cam kết bảo hành">
                 {data.guarantee}{' '}
                 <PlaceholderLink className="text-accent-fg hover:underline">
-                  Read the warranty terms
+                  Đọc điều khoản bảo hành
                 </PlaceholderLink>
               </Notice>
             </div>
@@ -191,19 +191,19 @@ export function WarrantyRequestPage() {
           <Dialog ref={dialogRef}>
             <form
               method="dialog"
-              onSubmit={() => setSent(modal === 'message' ? `Your note was delivered to ${data.technician.name}.` : 'Your reschedule request was sent to dispatch. Expect confirmation within one business day.')}
+              onSubmit={() => setSent(modal === 'message' ? `Đã gửi ghi chú tới ${data.technician.name}.` : 'Đã gửi yêu cầu đổi lịch cho điều phối. Bạn sẽ nhận xác nhận trong vòng một ngày làm việc.')}
             >
               <DialogTitle>{MODALS[modal].title}</DialogTitle>
               <p className="mt-1 text-body text-fg-2">{MODALS[modal].description}</p>
-              <Field label="Message" htmlFor="modal-text" className="mt-4">
+              <Field label="Nội dung" htmlFor="modal-text" className="mt-4">
                 <Textarea id="modal-text" value={text} onChange={(e) => setText(e.target.value)} placeholder={MODALS[modal].placeholder} />
               </Field>
               <DialogFooter>
                 <Button type="button" variant="ghost" onClick={() => dialogRef.current?.close()}>
-                  Cancel
+                  Hủy
                 </Button>
                 <Button type="submit" variant="primary" disabled={!text.trim()}>
-                  Send
+                  Gửi
                 </Button>
               </DialogFooter>
             </form>

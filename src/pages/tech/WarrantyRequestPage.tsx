@@ -42,7 +42,7 @@ type WarrantyFormValues = z.input<ReturnType<typeof buildWarrantySchema>>
 export function WarrantyRequestPage() {
   const { id } = useParams()
   const warranty = getWarrantyCase(id)
-  if (!warranty) notFound(`Warranty case ${id ?? ''} not found`)
+  if (!warranty) notFound(`Không tìm thấy hồ sơ bảo hành ${id ?? ''}`)
 
   return <WarrantyRequestView warranty={warranty} />
 }
@@ -421,7 +421,7 @@ function WarrantyRequestView({ warranty }: { warranty: WarrantyCase }) {
           <div className="relative h-36 w-full overflow-hidden rounded-xl shadow-inner">
             <img
               src={warranty.site.mapSrc}
-              alt={`Map of ${warranty.site.address}`}
+              alt={`Bản đồ ${warranty.site.address}`}
               className="h-full w-full object-cover"
             />
             <div className="absolute inset-0 bg-primary/10" />
@@ -572,7 +572,7 @@ function WarrantyRequestView({ warranty }: { warranty: WarrantyCase }) {
 
           <div className="flex flex-col gap-space-xs pt-space-sm">
             <Button type="submit" fullWidth disabled={isSubmitting} iconLeft={isSubmitSuccessful ? 'task_alt' : undefined}>
-              {isSubmitting ? 'Submitting...' : signOff.submitLabel}
+              {isSubmitting ? 'Đang gửi...' : signOff.submitLabel}
             </Button>
             <Button type="button" variant="ghost" fullWidth iconLeft="print">
               {signOff.receiptLabel}

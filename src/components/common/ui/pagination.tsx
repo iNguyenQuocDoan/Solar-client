@@ -18,14 +18,14 @@ export function Pagination({
   const shown = pages <= 5 ? Array.from({ length: pages }, (_, i) => i + 1) : [1, 2, 3, null, pages]
   const item = 'press h-11 min-w-11 items-center justify-center rounded-control px-2 text-body lg:h-8 lg:min-w-8'
   return (
-    <nav aria-label="Pagination" className={cx('flex items-center gap-1', className)}>
+    <nav aria-label="Phân trang" className={cx('flex items-center gap-1', className)}>
       <button
         type="button"
         className={cx(item, 'inline-flex px-3 text-fg-2 hover:text-fg disabled:text-fg-3')}
         disabled={page <= 1}
         onClick={() => onChange?.(page - 1)}
       >
-        Previous
+        Trước
       </button>
       {shown.map((p, i) =>
         p === null ? (
@@ -50,7 +50,7 @@ export function Pagination({
         disabled={page >= pages}
         onClick={() => onChange?.(page + 1)}
       >
-        Next
+        Sau
       </button>
     </nav>
   )

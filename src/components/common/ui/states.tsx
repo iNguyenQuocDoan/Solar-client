@@ -14,7 +14,7 @@ export function Skeleton({ className }: { className?: string }) {
 /* Placeholder that matches the shape of a typical page: header, a stat row and two panels. */
 export function PageSkeleton() {
   return (
-    <div aria-busy="true" aria-label="Loading" className="space-y-6">
+    <div aria-busy="true" aria-label="Đang tải" className="space-y-6">
       <div className="space-y-2">
         <Skeleton className="h-7 w-72" />
         <Skeleton className="h-4 w-96 max-w-full" />
@@ -77,12 +77,12 @@ export function ErrorState({
       className="border-l-2 border-danger pl-4"
     >
       <p className="text-meta font-medium text-danger">
-        Something went wrong while loading this page.
+        Không tải được trang này.
       </p>
       {message && <p className="mt-1 text-meta text-fg-2">{message}</p>}
       {onRetry && (
         <Button size="sm" className="mt-3" onClick={onRetry}>
-          Try again
+          Thử lại
         </Button>
       )}
     </div>

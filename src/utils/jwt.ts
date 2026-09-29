@@ -32,11 +32,14 @@ function asString(value: unknown): string | null {
   return typeof value === 'string' && value.trim() ? value.trim() : null
 }
 
-/** Vai trò lấy từ claim `role`. */
+/** Claim role mặc định của ASP.NET Core (ClaimTypes.Role) khi backend không đổi tên thành `role`. */
+const DOTNET_ROLE_CLAIM = 'http://schemas.microsoft.com/ws/2008/06/identity/claims/role'
+
+/** Vai trò lấy từ claim `role`, không có thì thử claim role của .NET. */
 export function roleFromToken(token: string): UserRole | null {
   const claims = decodeToken(token)
   if (!claims) return null
-  return parseRole(claims.role)
+  return parseRole(claims.role ?? claims[DOTNET_ROLE_CLAIM])
 }
 
 /** Email lấy từ claim `email`, không có thì thử các claim quen thuộc khác. */

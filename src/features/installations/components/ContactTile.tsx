@@ -31,7 +31,7 @@ export function ContactTile({
   note,
   phoneHref,
   callTone = 'tonal',
-  callLabel = 'Call contact',
+  callLabel = 'Gọi liên hệ',
   className,
 }: ContactTileProps) {
   const tile = (

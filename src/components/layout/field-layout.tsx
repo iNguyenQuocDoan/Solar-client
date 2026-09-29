@@ -18,7 +18,7 @@ export function FieldLayout({ children }: { children?: ReactNode }) {
       }
       tools={
         <Button variant="danger" size="sm">
-          SOS dispatch
+          Gọi hỗ trợ khẩn
         </Button>
       }
     >

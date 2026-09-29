@@ -22,7 +22,7 @@ const syncIcon: Record<SyncState, string> = { idle: 'sync', syncing: 'refresh', 
 export function InstallationTaskPage() {
   const { id } = useParams()
   const task = getInstallationTask(id)
-  if (!task) notFound(`Installation ${id ?? ''} not found`)
+  if (!task) notFound(`Không tìm thấy công trình lắp đặt ${id ?? ''}`)
 
   return <InstallationTaskView task={task} />
 }
@@ -75,7 +75,7 @@ function InstallationTaskView({ task }: { task: NonNullable<ReturnType<typeof ge
           min={0}
           max={step.counter.total}
           precision={0}
-          label="Mounted panels"
+          label="Số tấm pin đã lắp"
         />
         <span className="text-body-sm text-on-surface-variant">{step.counter.unitLabel}</span>
       </div>
@@ -132,7 +132,7 @@ function InstallationTaskView({ task }: { task: NonNullable<ReturnType<typeof ge
                       defaultValue={serial.value}
                       className="flex-1 bg-transparent text-body-md text-on-surface outline-none"
                     />
-                    <button type="button" title="Scan Barcode" className="p-1 text-primary hover:text-primary-container">
+                    <button type="button" title="Quét mã vạch" className="p-1 text-primary hover:text-primary-container">
                       <Icon name="barcode_scanner" className="text-[22px]" />
                     </button>
                   </div>
@@ -186,7 +186,7 @@ function InstallationTaskView({ task }: { task: NonNullable<ReturnType<typeof ge
             </div>
           </SectionCard>
 
-          <ContactTile {...task.contact} callLabel={`Call ${task.contact.name}`} />
+          <ContactTile {...task.contact} callLabel={`Gọi ${task.contact.name}`} />
         </div>
       </div>
 

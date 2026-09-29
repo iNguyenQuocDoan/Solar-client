@@ -104,7 +104,7 @@ export function DataTable<T>({
   toolbar,
   footer,
   pagination,
-  emptyMessage = 'No records found',
+  emptyMessage = 'Không có bản ghi nào',
   variant = 'card',
   size = 'md',
   divided = false,
@@ -211,7 +211,7 @@ export function DataTable<T>({
                         size="sm"
                         checked={isSelected}
                         onCheckedChange={() => toggleOne(key)}
-                        aria-label={`Select row ${key}`}
+                        aria-label={`Chọn dòng ${key}`}
                       />
                     </td>
                   )}

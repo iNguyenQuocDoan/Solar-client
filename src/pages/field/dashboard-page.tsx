@@ -29,34 +29,34 @@ export function FieldDashboardPage() {
         return (
           <>
             <PageHeader
-              meta={<span>Shift {fieldContext.shiftWindow}</span>}
+              meta={<span>Ca {fieldContext.shiftWindow}</span>}
               title={fieldContext.shift}
-              description={`${data.quota.done} of ${data.quota.total} tasks completed today. ${data.weather.summary}. ${data.weather.detail}.`}
+              description={`Hôm nay đã xong ${data.quota.done}/${data.quota.total} việc. ${data.weather.summary}. ${data.weather.detail}.`}
               actions={
                 <Button>
-                  Call HQ dispatch
+                  Gọi điều phối trung tâm
                 </Button>
               }
             />
 
             <div className="mb-12 flex flex-wrap gap-3">
               <Button variant="primary">
-                Start travel
+                Bắt đầu di chuyển
               </Button>
-              <Button>Add site photo</Button>
-              <Button>Report site issue</Button>
+              <Button>Thêm ảnh công trình</Button>
+              <Button>Báo sự cố tại công trình</Button>
             </div>
 
             <div className="grid gap-x-12 gap-y-12 lg:grid-cols-3">
               <div className="lg:col-span-2">
                 <Panel>
-                  <PanelHeader title="Today's schedule" description={data.date} />
+                  <PanelHeader title="Lịch hôm nay" description={data.date} />
                   <PanelBody className="mb-6">
-                    <FilterChips chips={[...data.queue]} value={filter} onChange={setFilter} label="Filter today's queue" />
+                    <FilterChips chips={[...data.queue]} value={filter} onChange={setFilter} label="Lọc việc hôm nay" />
                   </PanelBody>
                   <PanelBody>
                     {jobs.length === 0 ? (
-                      <EmptyState title="Nothing in this queue today" description="Switch the filter to see the rest of the route." />
+                      <EmptyState title="Hôm nay không có việc loại này" description="Đổi bộ lọc để xem các điểm còn lại trong tuyến." />
                     ) : (
                       <ol className="divide-y divide-line">
                         {jobs.map((job) => (
@@ -79,10 +79,10 @@ export function FieldDashboardPage() {
                                       <span className="font-medium">{job.step}</span>
                                       <span className="tnum text-fg-2">{job.pct}%</span>
                                     </div>
-                                    <Progress value={job.pct ?? 0} label="Installation progress" />
+                                    <Progress value={job.pct ?? 0} label="Tiến độ lắp đặt" />
                                     <p className="mt-2 text-meta text-fg-3">{job.onSite}</p>
                                   </div>
-                                  <img src={job.photo} alt="Roof racking phase" className="aspect-[3/2] w-full rounded-container object-cover" loading="lazy" />
+                                  <img src={job.photo} alt="Giai đoạn lắp khung trên mái" className="aspect-[3/2] w-full rounded-container object-cover" loading="lazy" />
                                 </div>
                               )}
                               <div className="mt-3">
@@ -107,13 +107,13 @@ export function FieldDashboardPage() {
 
               <div className="space-y-8 lg:border-l lg:border-line lg:pl-8">
                 <Panel>
-                  <PanelHeader title={`Week ${data.outlook.week} outlook`} />
+                  <PanelHeader title={`Dự kiến tuần ${data.outlook.week}`} />
                   <PanelBody>
                     <dl className="grid grid-cols-3 divide-x divide-line">
                       {[
-                        ['Surveys', data.outlook.surveys],
-                        ['Installs', data.outlook.installs],
-                        ['Warranty', data.outlook.warranty],
+                        ['Khảo sát', data.outlook.surveys],
+                        ['Lắp đặt', data.outlook.installs],
+                        ['Bảo hành', data.outlook.warranty],
                       ].map(([label, n]) => (
                         <div key={label} className="px-3 first:pl-0 last:pr-0">
                           <dd className="tnum text-figure font-semibold">{n}</dd>
@@ -121,7 +121,7 @@ export function FieldDashboardPage() {
                         </div>
                       ))}
                     </dl>
-                    <p className="mt-4 mb-2 border-t border-line pt-3 text-body font-medium">Tomorrow's first calls</p>
+                    <p className="mt-4 mb-2 border-t border-line pt-3 text-body font-medium">Việc đầu tiên ngày mai</p>
                     <ul className="space-y-2">
                       {data.tomorrow.map((t) => (
                         <li key={t.time} className="flex gap-3 text-body">
@@ -137,7 +137,7 @@ export function FieldDashboardPage() {
                 </Panel>
 
                 <Panel>
-                  <PanelHeader title="Completed today" />
+                  <PanelHeader title="Đã xong hôm nay" />
                   <PanelBody>
                     <ActivityList items={data.completed} />
                   </PanelBody>

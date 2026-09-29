@@ -19,6 +19,8 @@ import { useMockQuery } from '@/hooks/useMockQuery'
 
 type Filter = ApprovalFlag | 'all'
 
+const DECISION_LABEL = { approved: 'đã duyệt', redline: 'yêu cầu sửa', rejected: 'từ chối' } as const
+
 export function ManageApprovalsPage() {
   const query = useMockQuery(['manage', 'approvals'], approvalQueue)
   const [filter, setFilter] = useState<Filter>('all')
@@ -45,18 +47,18 @@ export function ManageApprovalsPage() {
         <>
           <PageHeader
             meta={<span>{data.authority}</span>}
-            title="Quotation approval queue"
+            title="Hàng chờ duyệt báo giá"
             actions={
               <>
-                <Button>Batch parameters</Button>
+                <Button>Tham số duyệt hàng loạt</Button>
                 <Button
                   disabled={eligible.length === 0}
                   onClick={() => {
                     setDecided((d) => ({ ...d, ...Object.fromEntries(eligible.map((a) => [a.id, 'approved' as const])) }))
-                    setToast(`Batch approved ${eligible.length} compliant quotation${eligible.length === 1 ? '' : 's'}.`)
+                    setToast(`Đã duyệt hàng loạt ${eligible.length} báo giá hợp lệ.`)
                   }}
                 >
-                  Approve eligible ({eligible.length})
+                  Duyệt báo giá hợp lệ ({eligible.length})
                 </Button>
               </>
             }
@@ -76,10 +78,10 @@ export function ManageApprovalsPage() {
 
           <div className="grid gap-x-12 gap-y-12 lg:grid-cols-5">
             <div className="space-y-8 lg:col-span-3">
-              <FilterBar className="mb-0" tabs={<FilterChips chips={[...data.chips]} value={filter} onChange={setFilter} label="Filter approvals" />}>
+              <FilterBar className="mb-0" tabs={<FilterChips chips={[...data.chips]} value={filter} onChange={setFilter} label="Lọc báo giá chờ duyệt" />}>
                 <label className="flex items-center gap-2 text-meta whitespace-nowrap text-fg-2">
-                  Sort by
-                  <Select size="sm" className="w-auto" aria-label="Sort by">
+                  Sắp xếp theo
+                  <Select size="sm" className="w-auto" aria-label="Sắp xếp theo">
                     {data.sorts.map((s) => (
                       <option key={s}>{s}</option>
                     ))}
@@ -88,7 +90,7 @@ export function ManageApprovalsPage() {
               </FilterBar>
 
               {rows.length === 0 ? (
-                <EmptyState title="Queue is clear" description={`Nothing pending under this filter. ${data.recentlyApproved} quotations were approved recently.`} />
+                <EmptyState title="Không còn báo giá chờ" description={`Không có báo giá nào chờ duyệt theo bộ lọc này. Gần đây đã duyệt ${data.recentlyApproved} báo giá.`} />
               ) : (
                 <ul className="divide-y divide-line border-t border-line">
                   {rows.map((a) => {
@@ -104,14 +106,14 @@ export function ManageApprovalsPage() {
                                 <div className="mt-1 flex flex-wrap items-center gap-2">
                                   <Badge tone={a.flagTone}>{a.flag}</Badge>
                                   <span className="text-meta text-fg-3">
-                                    {a.address}. Rep {a.rep}.
+                                    {a.address}. Kinh doanh: {a.rep}.
                                   </span>
                                 </div>
                               </div>
                               <div className="shrink-0 text-right">
                                 {a.gross !== a.net && <p className="tnum text-meta text-fg-3 line-through">{fmt.usd(a.gross)}</p>}
                                 <p className="tnum text-figure font-semibold">{fmt.usd(a.net)}</p>
-                                {a.gross !== a.net && <p className="text-meta text-warn">Save {fmt.usd(a.gross - a.net)}, override required</p>}
+                                {a.gross !== a.net && <p className="text-meta text-warn">Giảm {fmt.usd(a.gross - a.net)}, cần duyệt vượt mức</p>}
                               </div>
                             </div>
                             <dl className="mt-3 grid gap-x-6 gap-y-2 border-t border-line pt-3 text-body sm:grid-cols-3">
@@ -123,14 +125,14 @@ export function ManageApprovalsPage() {
                               ))}
                             </dl>
                             <p className="mt-2 text-meta text-fg-3">
-                              Submitted {a.submitted}. {a.stage}.
+                              Gửi {a.submitted}. {a.stage}.
                             </p>
                           <ListRowActions>
                             <ButtonLink to={withId(ROUTES.manage.approval, a.id)} size="sm">
                               {a.actionLabel}
                             </ButtonLink>
-                            <Button size="sm" onClick={() => decide(a.id, 'approved', `${a.id} authorized and sent to ${a.customer}.`)}>
-                              Quick approve
+                            <Button size="sm" onClick={() => decide(a.id, 'approved', `Đã duyệt ${a.id} và gửi cho ${a.customer}.`)}>
+                              Duyệt nhanh
                             </Button>
                           </ListRowActions>
                       </ListRow>
@@ -144,11 +146,11 @@ export function ManageApprovalsPage() {
               <Panel raised>
                 <PanelHeader
                   title={`${selected.id}, ${selected.customer}`}
-                  action={selected.slaHours ? <Badge tone="danger">SLA overdue</Badge> : <Badge tone="warn">Priority 1</Badge>}
+                  action={selected.slaHours ? <Badge tone="danger">Quá hạn SLA</Badge> : <Badge tone="warn">Ưu tiên 1</Badge>}
                 />
                 <PanelBody className="space-y-4">
                   <div>
-                    <p className="mb-2 text-meta text-fg-2">Trigger criteria</p>
+                    <p className="mb-2 text-meta text-fg-2">Lý do cần duyệt</p>
                     <ul className="flex flex-wrap gap-2">
                       {selected.criteria.map((c) => (
                         <li key={c.label}>
@@ -165,32 +167,32 @@ export function ManageApprovalsPage() {
                       </div>
                     ))}
                     <div className="flex justify-between gap-3 border-t border-line pt-2">
-                      <dt className="font-medium">Target final contract</dt>
+                      <dt className="font-medium">Giá trị hợp đồng cuối</dt>
                       <dd className="tnum text-title font-semibold">{fmt.usd(selected.net)}</dd>
                     </div>
                   </dl>
-                  <KeyValueList items={[{ k: 'Projected gross margin', v: selected.margin }]} />
+                  <KeyValueList items={[{ k: 'Biên lợi nhuận gộp dự kiến', v: selected.margin }]} />
                   <blockquote className="border-l-2 border-line-2 pl-3 text-body text-fg-2">
-                    <p className="mb-1 text-meta text-fg-3">Sales note from {selected.rep}</p>
+                    <p className="mb-1 text-meta text-fg-3">Ghi chú của kinh doanh {selected.rep}</p>
                     {selected.note}
                   </blockquote>
                   {decided[selected.id] ? (
-                    <Notice tone={decided[selected.id] === 'rejected' ? 'danger' : 'ok'}>This quotation was marked {decided[selected.id]}.</Notice>
+                    <Notice tone={decided[selected.id] === 'rejected' ? 'danger' : 'ok'}>Báo giá này đã được đánh dấu {DECISION_LABEL[decided[selected.id]!]}.</Notice>
                   ) : (
-                    <Field label="Manager memo or redline condition" htmlFor="memo">
-                      <Textarea id="memo" value={memo} onChange={(e) => setMemo(e.target.value)} placeholder="Approved provided the customer signs within 48 hours" rows={3} />
+                    <Field label="Ghi chú của quản lý hoặc điều kiện sửa" htmlFor="memo">
+                      <Textarea id="memo" value={memo} onChange={(e) => setMemo(e.target.value)} placeholder="Duyệt với điều kiện khách ký trong 48 giờ" rows={3} />
                     </Field>
                   )}
                 </PanelBody>
                 {!decided[selected.id] && (
                   <PanelFooter className="flex-col items-stretch gap-2">
-                    <Button variant="primary" onClick={() => decide(selected.id, 'approved', `${selected.id} authorized with a digital manager stamp and dispatched to the customer.`)}>
-                      Authorize and dispatch to customer
+                    <Button variant="primary" onClick={() => decide(selected.id, 'approved', `Đã duyệt ${selected.id} bằng dấu điện tử của quản lý và gửi cho khách.`)}>
+                      Duyệt và gửi cho khách
                     </Button>
                     <div className="grid grid-cols-2 gap-3">
-                      <Button onClick={() => decide(selected.id, 'redline', `Revision notes for ${selected.id} sent back to ${selected.rep}.`)}>Request redline</Button>
-                      <Button variant="danger" onClick={() => decide(selected.id, 'rejected', `${selected.id} marked as rejected. ${selected.rep} will be notified.`)}>
-                        Reject terms
+                      <Button onClick={() => decide(selected.id, 'redline', `Đã gửi yêu cầu sửa ${selected.id} lại cho ${selected.rep}.`)}>Yêu cầu sửa</Button>
+                      <Button variant="danger" onClick={() => decide(selected.id, 'rejected', `Đã từ chối ${selected.id}. ${selected.rep} sẽ nhận thông báo.`)}>
+                        Từ chối điều khoản
                       </Button>
                     </div>
                   </PanelFooter>
@@ -198,9 +200,9 @@ export function ManageApprovalsPage() {
               </Panel>
 
               <Panel>
-                <PanelHeader title="CAD roof layout preview" />
+                <PanelHeader title="Xem trước bố trí mái (CAD)" />
                 <PanelBody>
-                  <Photo src={data.cad.src} alt="CAD roof layout" ratio="aspect-[16/10]" caption={data.cad.caption} meta={data.cad.meta} />
+                  <Photo src={data.cad.src} alt="Bố trí mái trên bản CAD" ratio="aspect-[16/10]" caption={data.cad.caption} meta={data.cad.meta} />
                 </PanelBody>
               </Panel>
             </div>

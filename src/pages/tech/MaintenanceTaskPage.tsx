@@ -19,7 +19,7 @@ const signOffToneClasses = { default: 'text-on-surface', primary: 'text-primary'
 export function MaintenanceTaskPage() {
   const { id } = useParams()
   const task = getMaintenanceTask(id)
-  if (!task) notFound(`Maintenance work order ${id ?? ''} not found`)
+  if (!task) notFound(`Không tìm thấy phiếu bảo trì ${id ?? ''}`)
 
   return <MaintenanceTaskView task={task} />
 }

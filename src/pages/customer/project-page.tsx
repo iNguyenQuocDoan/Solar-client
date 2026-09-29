@@ -23,20 +23,20 @@ export function ProjectPage() {
               <>
                 <span className="text-fg-2">{data.id}</span>
                 <span>{data.type}</span>
-                <Badge tone="accent">Crew on site</Badge>
+                <Badge tone="accent">Đội đang ở công trình</Badge>
               </>
             }
             title={data.title}
             description={data.address}
             actions={
               <Button variant="primary">
-                Call crew lead
+                Gọi trưởng nhóm thi công
               </Button>
             }
           />
 
           <Panel className="mb-12">
-            <PanelHeader title="Installation lifecycle" description={`Stage ${data.stage} of ${data.stageCount}`} />
+            <PanelHeader title="Tiến trình dự án" description={`Giai đoạn ${data.stage}/${data.stageCount}`} />
             <PanelBody>
               <Stepper steps={data.steps} />
             </PanelBody>
@@ -51,16 +51,16 @@ export function ProjectPage() {
               <div className="space-y-3">
                 <KeyValueList
                   items={[
-                    { k: 'Installation window', v: data.current.window },
-                    { k: 'Build health', v: <Badge tone="ok">{data.current.health}</Badge> },
+                    { k: 'Thời gian lắp đặt', v: data.current.window },
+                    { k: 'Tình trạng thi công', v: <Badge tone="ok">{data.current.health}</Badge> },
                   ]}
                 />
                 <div>
                   <div className="mb-2 flex justify-between text-meta text-fg-2">
-                    <span>Overall progress</span>
+                    <span>Tiến độ chung</span>
                     <span className="tnum">{data.current.pct}%</span>
                   </div>
-                  <Progress value={data.current.pct} label="Overall build progress" />
+                  <Progress value={data.current.pct} label="Tiến độ thi công chung" />
                 </div>
               </div>
             </PanelBody>
@@ -69,7 +69,7 @@ export function ProjectPage() {
           <div className="grid gap-x-12 gap-y-12 lg:grid-cols-3">
             <div className="space-y-8 lg:col-span-2">
               <Panel>
-                <PanelHeader title="Daily build schedule" description="Pacific time" />
+                <PanelHeader title="Lịch thi công theo ngày" description="Giờ Thái Bình Dương (PT)" />
                 <PanelBody>
                   <ol className="divide-y divide-line">
                     {data.schedule.map((s) => (
@@ -95,7 +95,7 @@ export function ProjectPage() {
                             <div className="mt-3">
                               <div className="mb-2 flex justify-between text-meta text-fg-2">
                                 <span>
-                                  {s.progress.done} of {s.progress.total} panels mounted and tested
+                                  Đã lắp và thử {s.progress.done}/{s.progress.total} tấm
                                 </span>
                                 <span className="tnum">{Math.round((s.progress.done / s.progress.total) * 100)}%</span>
                               </div>
@@ -110,7 +110,7 @@ export function ProjectPage() {
               </Panel>
 
               <Panel>
-                <PanelHeader title="Installation photos" />
+                <PanelHeader title="Ảnh lắp đặt" />
                 <PanelBody>
                   <ul className="grid gap-6 sm:grid-cols-3">
                     {data.photos.map((p) => (
@@ -126,7 +126,7 @@ export function ProjectPage() {
 
             <div className="space-y-8 lg:border-l lg:border-line lg:pl-8">
               <Panel>
-                <PanelHeader title="Field crew" description={data.crew.squad} />
+                <PanelHeader title="Đội thi công" description={data.crew.squad} />
                 <PanelBody className="space-y-4">
                   <div className="flex items-start gap-3">
                     <Avatar name={data.crew.lead.name} />
@@ -143,28 +143,28 @@ export function ProjectPage() {
                   <KeyValueList
                     className="border-t border-line pt-4"
                     items={[
-                      { k: 'Team size', v: data.crew.size },
-                      { k: 'Vehicle', v: data.crew.vehicle },
-                      { k: 'Licensure', v: data.crew.license },
+                      { k: 'Quân số', v: data.crew.size },
+                      { k: 'Phương tiện', v: data.crew.vehicle },
+                      { k: 'Giấy phép hành nghề', v: data.crew.license },
                     ]}
                   />
                 </PanelBody>
               </Panel>
 
               <Panel>
-                <PanelHeader title="Field status feed" />
+                <PanelHeader title="Cập nhật từ công trình" />
                 <PanelBody>
                   <ActivityList items={data.feed} />
                 </PanelBody>
                 <PanelFooter>
                   <PlaceholderLink className="text-body text-accent-fg hover:underline">
-                    View complete dispatch log ({data.feedTotal} entries)
+                    Xem toàn bộ nhật ký điều phối ({data.feedTotal} mục)
                   </PlaceholderLink>
                 </PanelFooter>
               </Panel>
 
               <Panel>
-                <PanelHeader title="Project documents" description={`${data.documents.length} authorized files, archived for 25 years`} />
+                <PanelHeader title="Tài liệu dự án" description={`${data.documents.length} tệp chính thức, lưu trữ 25 năm`} />
                 <PanelBody>
                   <ul className="divide-y divide-line">
                     {data.documents.map((d) => (
@@ -173,8 +173,8 @@ export function ProjectPage() {
                           <p className="text-body font-medium">{d.name}</p>
                           <p className="text-meta text-fg-3">{d.meta}</p>
                         </div>
-                        <Button size="sm" variant="ghost" aria-label={`Download ${d.name}`}>
-                          Download
+                        <Button size="sm" variant="ghost" aria-label={`Tải ${d.name}`}>
+                          Tải xuống
                         </Button>
                       </li>
                     ))}
@@ -185,13 +185,13 @@ export function ProjectPage() {
           </div>
 
           <p className="mt-6 border-t border-line pt-4 text-body text-fg-2">
-            Questions about noise, access or power shutoff?{' '}
+            Có câu hỏi về tiếng ồn, lối vào hay cắt điện?{' '}
             <Link to={ROUTES.customer.assistant} className="text-accent-fg hover:underline">
-              Message the concierge
+              Nhắn cho bộ phận hỗ trợ
             </Link>{' '}
-            or read the{' '}
+            hoặc đọc{' '}
             <PlaceholderLink className="text-accent-fg hover:underline">
-              installation FAQ
+              câu hỏi thường gặp về lắp đặt
             </PlaceholderLink>
             .
           </p>

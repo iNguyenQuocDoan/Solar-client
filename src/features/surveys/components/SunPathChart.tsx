@@ -14,7 +14,7 @@ export function SunPathChart({ className }: SunPathChartProps) {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       role="img"
-      aria-label="Sun path from 08:00 to 18:00 with morning shade zone"
+      aria-label="Quỹ đạo mặt trời từ 08:00 đến 18:00, có vùng bóng che buổi sáng"
       className={cn('h-24 w-full', className)}
     >
       {/* Vòm trời */}
@@ -29,7 +29,7 @@ export function SunPathChart({ className }: SunPathChartProps) {
       {/* Vùng bị che buổi sáng */}
       <path d="M 40 80 Q 90 40 120 75 Z" fill="var(--color-secondary-fixed)" opacity={0.45} />
       <text x={75} y={68} fontSize={9} fill="var(--color-secondary)">
-        AM Shade
+        Bóng sáng
       </text>
       {/* Mặt trời */}
       <circle cx={160} cy={25} r={7} fill="var(--color-secondary-container)" />

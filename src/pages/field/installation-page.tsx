@@ -31,7 +31,7 @@ export function FieldInstallationPage() {
       {(data) => (
         <>
           <PageHeader
-            back={{ to: ROUTES.field.tasks, label: 'My Tasks' }}
+            back={{ to: ROUTES.field.tasks, label: 'Việc của tôi' }}
             meta={
               <>
                 <span className="text-fg-2">{data.id}</span>
@@ -42,7 +42,7 @@ export function FieldInstallationPage() {
             }
             title={data.title}
             description={`${data.customer}, ${data.address}`}
-            actions={<Button>Call client</Button>}
+            actions={<Button>Gọi khách hàng</Button>}
           />
 
           <Panel className="mb-12">
@@ -63,8 +63,8 @@ export function FieldInstallationPage() {
             <div className="space-y-8 lg:col-span-3">
               <Panel>
                 <PanelHeader
-                  title="Field verification checklist"
-                  action={<Badge>{completed} of {data.steps.length} complete</Badge>}
+                  title="Danh sách kiểm tra hiện trường"
+                  action={<Badge>Xong {completed}/{data.steps.length}</Badge>}
                 />
                 <PanelBody>
                   <ol className="divide-y divide-line">
@@ -75,7 +75,7 @@ export function FieldInstallationPage() {
                         <li key={step.title} className={cx('flex gap-3 py-4 first:pt-0 last:pb-0', !isDone && !isActive && 'opacity-70')}>
                           <input
                             type="checkbox"
-                            aria-label={`Step ${i + 1} complete`}
+                            aria-label={`Đã xong bước ${i + 1}`}
                             checked={isDone}
                             disabled={!isDone && !isActive}
                             onChange={(e) => setDoneSteps((s) => s.map((d, j) => (j === i ? e.target.checked : d)))}
@@ -84,41 +84,41 @@ export function FieldInstallationPage() {
                           <div className="min-w-0 flex-1">
                             <div className="flex flex-wrap items-center justify-between gap-2">
                               <p className="font-medium">
-                                Step {i + 1}: {step.title}
+                                Bước {i + 1}: {step.title}
                               </p>
-                              {isDone ? <Badge tone="ok">Done</Badge> : isActive ? <Badge tone="accent">In progress</Badge> : <Badge>Pending</Badge>}
+                              {isDone ? <Badge tone="ok">Đã xong</Badge> : isActive ? <Badge tone="accent">Đang làm</Badge> : <Badge>Chờ làm</Badge>}
                             </div>
                             <p className="mt-1 text-body text-fg-2">{step.body}</p>
                             {'signed' in step && isDone && (
                               <p className="mt-2 text-meta text-fg-3">
-                                Signed by {step.signed}. Logged {step.logged}.
+                                Người ký: {step.signed}. Ghi nhận: {step.logged}.
                               </p>
                             )}
                             {'panels' in step && (
                               <div className="mt-3 rounded-container bg-surface-2 px-3 py-3">
                                 <div className="flex flex-wrap items-center justify-between gap-2">
-                                  <p className="text-body font-medium">Panels clamped and wired</p>
+                                  <p className="text-body font-medium">Tấm pin đã kẹp và đấu dây</p>
                                   <div className="flex flex-wrap items-center gap-2">
-                                    <Button size="sm" aria-label="Remove one panel" onClick={() => setPanels((p) => Math.max(0, p - 1))} disabled={isDone}>
-                                      Remove one
+                                    <Button size="sm" aria-label="Bớt một tấm" onClick={() => setPanels((p) => Math.max(0, p - 1))} disabled={isDone}>
+                                      Bớt một
                                     </Button>
                                     <span className="tnum min-w-20 text-center text-body font-semibold">
-                                      {panels} of {total}
+                                      {panels}/{total}
                                     </span>
-                                    <Button size="sm" aria-label="Add one panel" onClick={() => setPanels((p) => Math.min(total, p + 1))} disabled={isDone}>
-                                      Add one
+                                    <Button size="sm" aria-label="Thêm một tấm" onClick={() => setPanels((p) => Math.min(total, p + 1))} disabled={isDone}>
+                                      Thêm một
                                     </Button>
                                   </div>
                                 </div>
-                                <Progress value={(panels / total) * 100} label="Panels mounted" className="mt-2" />
+                                <Progress value={(panels / total) * 100} label="Tấm pin đã lắp" className="mt-2" />
                                 <p className="mt-2 text-meta text-fg-3">
-                                  Lead tech {step.lead}. Updated {step.updated}.
+                                  Trưởng nhóm: {step.lead}. Cập nhật {step.updated}.
                                 </p>
                               </div>
                             )}
                             {'prerequisite' in step && (
                               <p className="mt-2 text-meta text-fg-3">
-                                Prerequisite: {step.prerequisite}. Estimated duration {step.duration}.
+                                Điều kiện trước: {step.prerequisite}. Thời gian dự kiến: {step.duration}.
                               </p>
                             )}
                             {'requirement' in step && <p className="mt-2 text-meta text-fg-3">{step.requirement}.</p>}
@@ -131,7 +131,7 @@ export function FieldInstallationPage() {
               </Panel>
 
               <Panel>
-                <PanelHeader title="Field diagnostics" />
+                <PanelHeader title="Đo kiểm tại hiện trường" />
                 <PanelBody className="grid gap-4 sm:grid-cols-2">
                   {data.diagnostics.map((d) => (
                     <div key={d.label} className="border-t border-line pt-3">
@@ -150,7 +150,7 @@ export function FieldInstallationPage() {
 
               <Panel>
                 <PanelBody>
-                  <Field label="Field notes for the municipal inspector and utility dispatch" htmlFor="notes" hint={`Auto-saved locally. ${notes.length} characters.`}>
+                  <Field label="Ghi chú hiện trường cho cán bộ nghiệm thu và điện lực" htmlFor="notes" hint={`Tự lưu trên máy. ${notes.length} ký tự.`}>
                     <Textarea id="notes" value={notes} onChange={(e) => setNotes(e.target.value)} />
                   </Field>
                 </PanelBody>
@@ -160,18 +160,18 @@ export function FieldInstallationPage() {
             <div className="space-y-8 lg:col-span-2">
               <Panel>
                 <PanelHeader
-                  title="Site visual evidence"
+                  title="Ảnh hiện trường"
                   action={
                     <Button size="sm">
-                      Capture
+                      Chụp ảnh
                     </Button>
                   }
                 />
                 <PanelBody className="space-y-6">
                   <div>
                     <div className="mb-2 flex items-center justify-between">
-                      <p className="text-body font-medium">Before pre-work records ({data.before.length})</p>
-                      <Badge tone="ok">Verified by QA</Badge>
+                      <p className="text-body font-medium">Hiện trạng trước thi công ({data.before.length})</p>
+                      <Badge tone="ok">QA đã xác minh</Badge>
                     </div>
                     <ul className="grid grid-cols-2 gap-3">
                       {data.before.map((p) => (
@@ -183,8 +183,8 @@ export function FieldInstallationPage() {
                   </div>
                   <div>
                     <div className="mb-2 flex items-center justify-between">
-                      <p className="text-body font-medium">Active construction ({data.during.length + 2})</p>
-                      <Badge tone="warn">1 pending after photo</Badge>
+                      <p className="text-body font-medium">Đang thi công ({data.during.length + 2})</p>
+                      <Badge tone="warn">Còn thiếu 1 ảnh sau thi công</Badge>
                     </div>
                     {data.during.map((p) => (
                       <Photo key={p.caption} src={p.src} alt={p.caption} ratio="aspect-[16/9]" caption={p.caption} meta={p.meta} />
@@ -193,32 +193,32 @@ export function FieldInstallationPage() {
                       type="button"
                       className="press mt-3 flex w-full flex-col items-center gap-1 rounded-container border border-dashed border-line-2 px-4 py-6 text-body text-fg-2 hover:bg-surface-2"
                     >
-                      <span className="font-medium text-fg">Upload inverter and battery final setup</span>
-                      <span className="text-center text-meta text-fg-3">AC disconnect, inverter sticker ratings and the finished array for the inspection handoff.</span>
+                      <span className="font-medium text-fg">Tải ảnh inverter và pin lưu trữ sau lắp đặt</span>
+                      <span className="text-center text-meta text-fg-3">Cầu dao cách ly AC, nhãn định mức inverter và dàn pin hoàn thiện để bàn giao nghiệm thu.</span>
                     </button>
                   </div>
                 </PanelBody>
               </Panel>
 
               <Notice tone={data.weather.tone} title={data.weather.summary}>
-                {data.weather.detail}. Safe to work.
+                {data.weather.detail}. An toàn để làm việc.
               </Notice>
             </div>
           </div>
 
           <ActionBar>
               <div className="text-body">
-                <p className="font-medium">Active session: {data.session.tech}</p>
+                <p className="font-medium">Đang làm: {data.session.tech}</p>
                 <p className="tnum text-meta text-fg-3">
                   {data.session.timer}. {data.session.wrap}.
                 </p>
               </div>
               <div className="flex w-full flex-wrap items-center gap-3 sm:ml-auto sm:w-auto">
-                <Button>Log work pause</Button>
-                <Button>Request support</Button>
-                <Button variant="ghost">Sync logs</Button>
+                <Button>Ghi tạm dừng</Button>
+                <Button>Yêu cầu hỗ trợ</Button>
+                <Button variant="ghost">Đồng bộ nhật ký</Button>
                 <Button variant="primary" className="w-full sm:w-auto" disabled={activeIndex === -1} onClick={completeActive}>
-                  {activeIndex === -1 ? 'All steps complete' : `Complete step ${activeIndex + 1}`}
+                  {activeIndex === -1 ? 'Đã xong tất cả các bước' : `Hoàn thành bước ${activeIndex + 1}`}
                 </Button>
               </div>
           </ActionBar>
