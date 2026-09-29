@@ -2,24 +2,23 @@ import '@fontsource/be-vietnam-pro/300.css'
 import '@fontsource/be-vietnam-pro/400.css'
 import '@fontsource/be-vietnam-pro/600.css'
 import { Link, Outlet, useLocation } from 'react-router'
-import { Rich } from '@/components/landing/rich'
 import { LANDING_CONTAINER, TEXT_LINK, ctaClass } from '@/components/landing/classes'
 import { ROUTES } from '@/constants/routes'
 import { cx } from '@/lib/cx'
-import { faq, footer, header, offer } from '@/lib/mock/landing'
+import { footer, header, projects, trust } from '@/lib/mock/landing'
 
 /*
  * Shell của các trang công khai ("/", "/coming-soon"). Không dùng AppShell/sidebar.
  * Font Be Vietnam Pro (300 số khai, 400 chữ, 600 tiêu đề và số đo) chỉ đặt ở đây vì
  * Schibsted Grotesk của portal thiếu dấu tiếng Việt.
  * Header không có menu theo giai đoạn (khảo sát, báo giá, thi công…): điều hướng đặt tên theo
- * giai đoạn đọc thành quy trình. Chỉ link tới phần mô tả món hàng và phần câu hỏi.
+ * giai đoạn đọc thành quy trình. Chỉ link tới phần công trình và phần năng lực thi công.
  */
-const faqLink = { pathname: ROUTES.HOME, hash: `#${faq.id}` }
-const offerLink = { pathname: ROUTES.HOME, hash: `#${offer.id}` }
+const capabilityLink = { pathname: ROUTES.HOME, hash: `#${trust.id}` }
+const projectsLink = { pathname: ROUTES.HOME, hash: `#${projects.id}` }
 
 export function PublicLayout() {
-  // Câu "dữ liệu minh hoạ" chỉ đúng với trang có số liệu mẫu.
+  // Ghi chú nguồn giá điện chỉ đúng với trang chủ (nơi có biểu giá).
   const onHome = useLocation().pathname === ROUTES.HOME
   return (
     <div className="public-shell flex min-h-screen flex-col bg-canvas font-vn text-fg">
@@ -37,11 +36,11 @@ export function PublicLayout() {
             <span className="ld-action text-fg">{footer.brand}</span>
           </Link>
           <nav aria-label="Liên kết chính" className="flex items-center gap-6">
-            <Link to={offerLink} className="hidden ld-body text-fg-2 hover:text-fg lg:inline">
-              {header.offer}
+            <Link to={projectsLink} className="hidden ld-body text-fg-2 hover:text-fg lg:inline">
+              {header.projects}
             </Link>
-            <Link to={faqLink} className="hidden ld-body text-fg-2 hover:text-fg lg:inline">
-              {header.faq}
+            <Link to={capabilityLink} className="hidden ld-body text-fg-2 hover:text-fg lg:inline">
+              {header.capability}
             </Link>
             <Link to={ROUTES.LOGIN} className="tap ld-body text-fg-2 hover:text-fg">
               {header.login}
@@ -57,20 +56,18 @@ export function PublicLayout() {
         <Outlet />
       </main>
 
-      <footer className="mt-24 border-t border-line lg:mt-32">
+      {/* Trang chủ kết thúc bằng dải CTA màu nên footer đứng sát; trang khác cần khoảng trống phía trên. */}
+      <footer className={cx('border-t border-line', !onHome && 'mt-24 lg:mt-32')}>
         <div
           className={cx(
             'flex flex-col gap-3 py-8 ld-meta text-fg-2 lg:flex-row lg:flex-wrap lg:items-baseline lg:justify-between lg:gap-x-8',
             LANDING_CONTAINER,
           )}
         >
-          <p>
-            <span className="font-semibold text-fg">{footer.brand}</span> <Rich value={footer.legal} />
-          </p>
-          {onHome && <p>{footer.sampleNote}</p>}
+          <p className="font-semibold text-fg">{footer.brand}</p>
           <nav aria-label="Liên kết cuối trang" className="flex gap-6">
-            <Link to={faqLink} className={cx(TEXT_LINK, 'inline-block py-1')}>
-              {header.faq}
+            <Link to={projectsLink} className={cx(TEXT_LINK, 'inline-block py-1')}>
+              {header.projects}
             </Link>
             <Link to={ROUTES.LOGIN} className={cx(TEXT_LINK, 'inline-block py-1')}>
               {header.login}
