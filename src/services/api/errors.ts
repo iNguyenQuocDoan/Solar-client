@@ -60,8 +60,25 @@ const ERROR_MESSAGES: Record<string, string> = {
   AUTH_REFRESH_TOKEN_INVALID: 'Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.',
   AUTH_UNAUTHORIZED: 'Bạn cần đăng nhập để thực hiện thao tác này.',
   AUTH_TOO_MANY_REQUESTS: 'Bạn thao tác quá nhanh. Vui lòng chờ ít phút rồi thử lại.',
+  // POST /api/auth/change-password sai mật khẩu hiện tại (quan sát 06/10/2026)
+  AUTH_CURRENT_PASSWORD_INVALID: 'Mật khẩu hiện tại không đúng.',
   // /api/products và /api/admin/products (quan sát ngày 29/09/2026)
   CATALOG_PRODUCT_NOT_FOUND: 'Không tìm thấy sản phẩm. Có thể sản phẩm đã bị xoá.',
+  // /api/customers, /api/pre-surveys, /api/survey-requests (PreSurveyErrorCodes trong image 05/10/2026)
+  PRESURVEY_UNAUTHORIZED: 'Bạn cần đăng nhập để thực hiện thao tác này.',
+  PRESURVEY_VALIDATION_FAILED: 'Dữ liệu chưa hợp lệ. Vui lòng kiểm tra lại các ô được đánh dấu.',
+  CUSTOMER_ALREADY_EXISTS: 'Tài khoản này đã có hồ sơ khách hàng.',
+  CUSTOMER_PROFILE_NOT_FOUND: 'Tài khoản chưa có hồ sơ khách hàng. Hãy khai báo thông tin khách hàng trước.',
+  PROPERTY_SITE_NOT_FOUND: 'Không tìm thấy địa điểm lắp đặt.',
+  PROPERTY_SITE_NOT_OWNED: 'Địa điểm này không thuộc tài khoản của bạn.',
+  PRE_SURVEY_NOT_FOUND: 'Không tìm thấy bản đánh giá.',
+  PRE_SURVEY_NOT_OWNED: 'Bản đánh giá này không thuộc tài khoản của bạn.',
+  PRE_SURVEY_NOT_EDITABLE: 'Bản đánh giá đã gửi nên không sửa được nữa.',
+  PRE_SURVEY_ALREADY_SUBMITTED: 'Bản đánh giá này đã được gửi trước đó.',
+  PRE_SURVEY_INCOMPLETE: 'Bản đánh giá còn thiếu số liệu. Điền đủ các ô ở bước số liệu mặt lắp rồi gửi lại.',
+  SURVEY_REQUEST_UNAVAILABLE: 'Yêu cầu này đã có người nhận hoặc không còn chờ xử lý.',
+  SURVEY_REQUEST_NOT_FOUND: 'Không tìm thấy yêu cầu khảo sát.',
+  SURVEY_REQUEST_NOT_ASSIGNED: 'Yêu cầu này không do bạn phụ trách nên không xem được chi tiết.',
 }
 
 /** Bản dịch theo mã lỗi; chưa có trong bảng thì trả null. */

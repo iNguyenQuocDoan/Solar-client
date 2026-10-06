@@ -641,6 +641,164 @@
         }
       }
     },
+    "/api/customers/me": {
+      "post": {
+        "tags": [
+          "Customers"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCustomerProfileRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCustomerProfileRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCustomerProfileRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/customers/me/sites": {
+      "post": {
+        "tags": [
+          "Customers"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePropertySiteRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePropertySiteRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePropertySiteRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/pre-surveys": {
+      "post": {
+        "tags": [
+          "PreSurveys"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePreSurveyRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePreSurveyRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePreSurveyRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/pre-surveys/{preSurveyId}/submit": {
+      "post": {
+        "tags": [
+          "PreSurveys"
+        ],
+        "parameters": [
+          {
+            "name": "preSurveyId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/pre-surveys/{preSurveyId}": {
+      "put": {
+        "tags": [
+          "PreSurveys"
+        ],
+        "parameters": [
+          {
+            "name": "preSurveyId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatePreSurveyRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatePreSurveyRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatePreSurveyRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/products": {
       "get": {
         "tags": [
@@ -801,6 +959,76 @@
           }
         }
       }
+    },
+    "/api/survey-requests/pending": {
+      "get": {
+        "tags": [
+          "SurveyRequests"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/survey-requests/{surveyRequestId}/claim": {
+      "post": {
+        "tags": [
+          "SurveyRequests"
+        ],
+        "parameters": [
+          {
+            "name": "surveyRequestId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/survey-requests/my": {
+      "get": {
+        "tags": [
+          "SurveyRequests"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/survey-requests/{surveyRequestId}": {
+      "get": {
+        "tags": [
+          "SurveyRequests"
+        ],
+        "parameters": [
+          {
+            "name": "surveyRequestId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -895,6 +1123,61 @@
         },
         "additionalProperties": false
       },
+      "CreateCustomerProfileRequest": {
+        "type": "object",
+        "properties": {
+          "customerType": {
+            "$ref": "#/components/schemas/CustomerType"
+          },
+          "companyName": {
+            "type": "string",
+            "nullable": true
+          },
+          "taxCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "note": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreatePreSurveyRequest": {
+        "type": "object",
+        "properties": {
+          "propertySiteId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "totalAreaM2": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "usableAreaM2": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "tiltDegree": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "azimuthDegree": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "hasObstruction": {
+            "type": "boolean",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "CreateProductRequest": {
         "type": "object",
         "properties": {
@@ -969,6 +1252,61 @@
         },
         "additionalProperties": false
       },
+      "CreatePropertySiteRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "province": {
+            "type": "string",
+            "nullable": true
+          },
+          "district": {
+            "type": "string",
+            "nullable": true
+          },
+          "ward": {
+            "type": "string",
+            "nullable": true
+          },
+          "streetLine": {
+            "type": "string",
+            "nullable": true
+          },
+          "latitude": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "longitude": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "installationSurfaceType": {
+            "$ref": "#/components/schemas/InstallationSurfaceType"
+          },
+          "surfaceMaterial": {
+            "type": "string",
+            "nullable": true
+          },
+          "note": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CustomerType": {
+        "enum": [
+          1,
+          2
+        ],
+        "type": "integer",
+        "format": "int32"
+      },
       "ForgotPasswordRequest": {
         "type": "object",
         "properties": {
@@ -1006,6 +1344,17 @@
           }
         },
         "additionalProperties": false
+      },
+      "InstallationSurfaceType": {
+        "enum": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "type": "integer",
+        "format": "int32"
       },
       "LoginRequest": {
         "type": "object",
@@ -1391,6 +1740,36 @@
         },
         "additionalProperties": false
       },
+      "UpdatePreSurveyRequest": {
+        "type": "object",
+        "properties": {
+          "totalAreaM2": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "usableAreaM2": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "tiltDegree": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "azimuthDegree": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "hasObstruction": {
+            "type": "boolean",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "UpdateProductRequest": {
         "type": "object",
         "properties": {
@@ -1511,7 +1890,7 @@
   },
   "security": [
     {
-      "Bearer": [ ]
+      "Bearer": []
     }
   ]
 }
