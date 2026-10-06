@@ -4,7 +4,7 @@ import { DataTable, type DataTableColumn } from '@/components/common/stitch-ui/D
 import type { PaginationProps } from '@/components/common/stitch-ui/Pagination'
 import { StatusBadge } from '@/components/common/stitch-ui/StatusBadge'
 import { formatMoney } from '@/utils/format'
-import { formatPower, isProductActive, productStatusMeta } from '@/features/products/components/productDisplay'
+import { formatPower, formatSize, isProductActive, productStatusMeta } from '@/features/products/components/productDisplay'
 import type { ProductResponse } from '@/types/res/adminProductsRes'
 
 /* Bảng sản phẩm của /admin/products, dữ liệu lấy từ GET /api/products. */
@@ -18,7 +18,8 @@ export type ProductsTableProps = {
   busyId?: string | null
   toolbar?: ReactNode
   pagination?: PaginationProps
-  emptyMessage?: string
+  /** Nội dung khi không có dòng: chữ, hoặc khối lỗi kèm nút thử lại */
+  emptyMessage?: ReactNode
   className?: string
 }
 
@@ -66,6 +67,13 @@ function buildColumns(): DataTableColumn<ProductResponse>[] {
       header: 'Công suất',
       align: 'right',
       render: (product) => <span className="text-label-md text-on-surface">{formatPower(product.ratedPowerW) ?? '—'}</span>,
+    },
+    {
+      // Tấm pin cần kích thước cho mô phỏng 3D: thấy ngay sản phẩm nào còn thiếu.
+      key: 'size',
+      header: 'Kích thước',
+      align: 'right',
+      render: (product) => <span className="whitespace-nowrap text-label-md text-on-surface">{formatSize(product) ?? '—'}</span>,
     },
     {
       key: 'price',

@@ -6,11 +6,14 @@ import { useAuth } from '@/context/AuthProvider'
 import { roleLabels } from '@/config/roles'
 import { cx } from '@/utils/cx'
 import { useTheme, type Theme } from '@/hooks/useTheme'
+import { ChangePasswordDialog } from '@/features/auth/components/ChangePasswordDialog'
+import { changePasswordContent } from '@/data/auth'
 
 /*
   The shell is a margin, not a frame: a text-only rail on the left, the page as a
   document on the right. Context and tools for the portal live in the rail.
-  Main padding is px-4 below md and px-12 from md; ActionBar and Table bleed by the same amounts.
+  Main padding is px-4 below md and px-6 from md, no max width (dense layout, 05/10/2026);
+  ActionBar and Table bleed by the same amounts.
 */
 export function AppShell({
   portal,
@@ -62,8 +65,8 @@ export function AppShell({
 
       <Rail portal={portal} context={context} tools={tools} open={open} onClose={() => setOpen(false)} />
 
-      <div className="lg:pl-60">
-        <main id="main" className="mx-auto w-full max-w-[1160px] px-4 py-8 md:px-12 md:py-12">
+      <div className="lg:pl-52">
+        <main id="main" className="w-full px-4 py-6 md:px-6">
           {children}
         </main>
       </div>
@@ -89,7 +92,7 @@ function Rail({
       {open && <div className="fixed inset-0 z-30 bg-fg/40 lg:hidden" aria-hidden onClick={onClose} />}
       <aside
         className={cx(
-          'fixed inset-y-0 left-0 z-40 flex w-60 flex-col overflow-y-auto overscroll-contain [scrollbar-width:thin] border-r border-line bg-canvas px-6 pt-6 transition-transform duration-200 lg:translate-x-0',
+          'fixed inset-y-0 left-0 z-40 flex w-52 flex-col overflow-y-auto overscroll-contain [scrollbar-width:thin] border-r border-line bg-canvas px-6 pt-6 transition-transform duration-200 lg:translate-x-0',
           open ? 'translate-x-0' : '-translate-x-full',
         )}
         aria-label="Điều hướng chính"
@@ -123,18 +126,9 @@ function Rail({
             </div>
           ))}
           {tools && <div className="mt-6 space-y-3">{tools}</div>}
-          {portal.support && (
-            <ul className="mt-6 border-t border-line pt-4">
-              {portal.support.map((item) => (
-                <li key={item.label}>
-                  <RailLink item={item} />
-                </li>
-              ))}
-            </ul>
-          )}
         </nav>
 
-        <SessionBlock fallback={portal.user} />
+        <SessionBlock />
       </aside>
     </>
   )
@@ -171,13 +165,17 @@ function RailLink({ item }: { item: NavItem }) {
 /*
   Khối phiên đăng nhập, ghim ở đáy rail khi rail dài hơn màn hình.
   Tài khoản thật lấy từ AuthProvider; portal đi theo vai trò nên không còn ô "đổi portal".
-  Khi chưa có phiên (mock/dev) hiển thị người dùng mẫu của portal.
+  Đổi mật khẩu dùng chung hộp thoại với sidebar admin/kỹ thuật viên (POST /api/auth/change-password).
 */
-function SessionBlock({ fallback }: { fallback: Portal['user'] }) {
+const sessionAction =
+  'press inline-flex h-11 items-center text-meta whitespace-nowrap text-fg-2 underline-offset-4 hover:text-fg hover:underline lg:h-8'
+
+function SessionBlock() {
   const { user, signOut } = useAuth()
   const navigate = useNavigate()
-  const name = user?.name ?? fallback.name
-  const role = user ? roleLabels[user.role] : fallback.role
+  const [changingPassword, setChangingPassword] = useState(false)
+  const name = user?.name ?? ''
+  const role = user ? roleLabels[user.role] : ''
 
   async function handleSignOut() {
     await signOut()
@@ -190,18 +188,20 @@ function SessionBlock({ fallback }: { fallback: Portal['user'] }) {
         {name}
       </p>
       <p className="text-meta text-fg-2">{role}</p>
-      <div className="mt-3 flex items-center justify-between gap-3">
+      <div className="mt-3 flex flex-wrap items-center justify-between gap-x-3">
         <ThemeButton />
         {user && (
-          <button
-            type="button"
-            onClick={handleSignOut}
-            className="press inline-flex h-11 items-center text-meta whitespace-nowrap text-fg-2 underline-offset-4 hover:text-fg hover:underline lg:h-8"
-          >
-            Đăng xuất
-          </button>
+          <>
+            <button type="button" onClick={() => setChangingPassword(true)} className={sessionAction}>
+              {changePasswordContent.menuLabel}
+            </button>
+            <button type="button" onClick={handleSignOut} className={sessionAction}>
+              Đăng xuất
+            </button>
+          </>
         )}
       </div>
+      <ChangePasswordDialog open={changingPassword} onOpenChange={setChangingPassword} />
     </div>
   )
 }

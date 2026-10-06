@@ -14,13 +14,13 @@ export type PageHeaderProps = {
   title: string
   description?: string
   actions?: ReactNode
-  /** Khoảng cách dưới header: admin_dashboard 2xl, user_management xl, none khi đặt trong Card */
-  bottomSpacing?: 'none' | 'xl' | '2xl'
+  /** Khoảng cách dưới header: mặc định lg (bố cục gọn 05/10/2026); user_management xl, none khi đặt trong Card */
+  bottomSpacing?: 'none' | 'lg' | 'xl' | '2xl'
   titleClassName?: string
   className?: string
 }
 
-const bottomSpacingClasses = { none: '', xl: 'mb-space-xl', '2xl': 'mb-space-2xl' } as const
+const bottomSpacingClasses = { none: '', lg: 'mb-space-lg', xl: 'mb-space-xl', '2xl': 'mb-space-2xl' } as const
 
 export function PageHeader({
   breadcrumb,
@@ -29,7 +29,7 @@ export function PageHeader({
   title,
   description,
   actions,
-  bottomSpacing = '2xl',
+  bottomSpacing = 'lg',
   titleClassName,
   className,
 }: PageHeaderProps) {
@@ -44,7 +44,8 @@ export function PageHeader({
 
       <div
         className={cn(
-          'flex flex-col justify-between gap-space-lg xl:flex-row xl:items-end',
+          // Nút thao tác đứng cùng hàng tiêu đề khi đủ chỗ, tự xuống dòng khi hẹp.
+          'flex flex-wrap items-end justify-between gap-x-space-lg gap-y-space-sm',
           bottomSpacingClasses[bottomSpacing],
         )}
       >
@@ -54,7 +55,7 @@ export function PageHeader({
           ) : (
             eyebrow && <div className="mb-1 flex flex-wrap items-center gap-space-xs">{eyebrow}</div>
           )}
-          <h1 className={cn('text-headline-xl tracking-tight text-on-surface', titleClassName)}>{title}</h1>
+          <h1 className={cn('text-headline-lg tracking-tight text-on-surface', titleClassName)}>{title}</h1>
           {description && <p className="mt-1 text-body-md text-on-surface-variant">{description}</p>}
         </div>
         {actions && <div className="flex flex-wrap items-center gap-space-sm">{actions}</div>}

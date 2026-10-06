@@ -54,8 +54,10 @@ export function LoginPage() {
       const user = await signIn(email, password, remember)
       toast.success(loginContent.toastSuccess)
       // Quay lại trang đang muốn vào nếu bị RequireRole chặn, nếu không thì theo vai trò.
+      // `from` có thể là trang của tài khoản vừa đăng xuất (vai trò khác) → chỉ dùng khi thuộc portal của vai trò này.
+      const home = homePathForRole(user.role)
       const from = (location.state as { from?: string } | null)?.from
-      navigate(from ?? homePathForRole(user.role), { replace: true })
+      navigate(from?.startsWith(home) ? from : home, { replace: true })
     } catch (error) {
       setFormError(errorMessage(error, loginContent.errorMessage))
     } finally {

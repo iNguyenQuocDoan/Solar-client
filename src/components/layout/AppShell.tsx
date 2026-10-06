@@ -6,17 +6,16 @@ import { cn } from '@/utils/cn'
 export type AppShellProps = {
   sidebar: SidebarProps
   header: TopHeaderProps
-  /** Padding <main>: admin_dashboard dùng space-lg, my_tasks_1 dùng space-xl */
-  mainPadding: 'lg' | 'xl'
   children: ReactNode
 }
 
 /*
- * Desktop (lg+): sidebar cố định w-72 bên trái, header cố định h-16, <main> nền surface.
- * Dưới lg: sidebar ẩn, mở thành drawer bằng nút menu trong header; bấm overlay hoặc chọn mục thì đóng.
+ * Desktop (lg+): sidebar cố định w-52 bên trái, không có header (sidebar đã có logo + tài khoản), <main> lề 24px.
+ * Dưới lg: header cố định h-14; sidebar ẩn, mở thành drawer bằng nút menu trong header; bấm overlay
+ * hoặc chọn mục thì đóng (bố cục gọn 05/10/2026).
  * Thiết kế không đặt max-width cho <main>; nội dung trải hết chiều rộng còn lại.
  */
-export function AppShell({ sidebar, header, mainPadding, children }: AppShellProps) {
+export function AppShell({ sidebar, header, children }: AppShellProps) {
   const [drawerOpen, setDrawerOpen] = useState(false)
   const closeDrawer = () => setDrawerOpen(false)
 
@@ -37,15 +36,10 @@ export function AppShell({ sidebar, header, mainPadding, children }: AppShellPro
           drawerOpen ? 'translate-x-0' : '-translate-x-full',
         )}
       />
-      <div className="flex min-h-screen flex-col lg:pl-72">
+      <div className="flex min-h-screen flex-col lg:pl-52">
         <TopHeader {...header} onMenuClick={() => setDrawerOpen(true)} />
-        <main
-          className={cn(
-            'w-full flex-1 bg-surface pt-16',
-            mainPadding === 'lg' ? 'px-space-lg pb-space-lg' : 'px-space-xl pb-space-xl',
-          )}
-        >
-          <div className="flex w-full flex-col">{children}</div>
+        <main className="w-full flex-1 bg-surface px-space-lg pt-14 pb-space-lg lg:pt-0">
+          <div className="flex w-full flex-col pt-space-lg">{children}</div>
         </main>
       </div>
     </div>

@@ -11,7 +11,7 @@ Repo có hai thư mục component vì hai nhánh việc dựng song song, nhưng
 hai ăn chung một hệ token trong `src/styles/globals.css`:
 
 - `src/components/common/ui` (file kebab-case, token `canvas/fg/accent…`): portal khách hàng
-  `/customer`, kinh doanh `/ops`, kỹ thuật `/field`, quản lý `/manage`. Lịch sử audit ở `UI_AUDIT.md`.
+  `/customer`, kinh doanh `/ops`, kỹ thuật `/field`, quản lý `/manage`. Nhật ký audit `UI_AUDIT.md` chỉ giữ ở máy, không có trên git.
 - `src/components/common/stitch-ui` (file PascalCase, token `surface/on-surface/primary…`,
   Material Symbols): admin `/admin`, kỹ thuật viên `/tech`, `/styleguide`.
 - Token của bộ Stitch nay chỉ là bí danh trỏ vào token của portal kit (màu nền/chữ/đường
@@ -21,7 +21,7 @@ hai ăn chung một hệ token trong `src/styles/globals.css`:
 
 ## Quy tắc giao diện dùng chung (bắt buộc)
 
-Rút ra từ 4 lượt audit trong `UI_AUDIT.md`; áp cho CẢ HAI bộ component.
+Rút ra từ 4 lượt audit giao diện; áp cho CẢ HAI bộ component.
 
 1. **Bán kính: đúng 2 giá trị** – `--radius-control` 3px cho control (nút, ô nhập, chip)
    và `--radius-container` 6px cho khối (thẻ, panel, dialog). `rounded-full` chỉ cho
@@ -50,7 +50,7 @@ Rút ra từ 4 lượt audit trong `UI_AUDIT.md`; áp cho CẢ HAI bộ componen
 - shadcn/ui cho primitives (dialog, dropdown, tabs, checkbox…) – restyle theo token bên dưới
 - Font: portal dùng Schibsted Grotesk (`globals.css`, thiếu dấu tiếng Việt U+1EA0–1EF1 – xem `docs/design/landing-brief.md`); trang công khai dùng Be Vietnam Pro (`@fontsource/be-vietnam-pro`, nạp trong `PublicLayout`). Plus Jakarta Sans đã bỏ.
 - Icon: Material Symbols Outlined – link Google Fonts trong `index.html`; giữ đúng tên icon như trong file thiết kế (`grid_view`, `solar_power`, `manage_accounts`…)
-- State/data: mock data trong `src/data/*.ts` cho phần UI; riêng auth đã gọi API thật (xem "Auth API")
+- State/data: màn đang hiện đều gọi API thật (auth, sản phẩm, đánh giá sơ bộ, yêu cầu khảo sát); mock trong `src/data/*.ts` chỉ còn phục vụ các màn đã ẩn (xem "Chỉ hiện màn có dữ liệu thật")
 
 ## Nguồn thiết kế (KHÔNG sửa thư mục này)
 
@@ -134,13 +134,40 @@ Quy tắc đặt file (tái cấu trúc 29/09/2026):
   Một trách nhiệm chỉ ở một nơi.
 - DTO nằm ở `src/types/`: request trong `types/req/<nghiệp vụ>Req.ts`, response trong
   `types/res/<nghiệp vụ>Res.ts`. Các file này sinh từ swagger (không tự đoán field, không sửa tay);
-  service và hook import kiểu từ đây.
-- Nghiệp vụ chưa có endpoint (mọi thứ trừ auth và sản phẩm) đọc dữ liệu từ `data/*.ts`. Khi backend có
-  endpoint: thêm `types/req|res/<nghiệp vụ>*.ts`, rồi `services/` + `hooks/` vào feature đó rồi bỏ file trong `data/`.
+  service và hook import kiểu từ đây. Ngoại lệ: swagger của tag Customers, PreSurveys, SurveyRequests chỉ khai
+  "200 OK" nên `customersRes.ts`, `preSurveysRes.ts`, `surveyRequestsRes.ts` viết tay theo contract backend
+  (không có header tự sinh nên `gen:api` không xoá); backend khai response thì `gen:api` ghi đè.
+- Nghiệp vụ chưa có endpoint đọc dữ liệu từ `data/*.ts` và bị ẩn khỏi menu/route (mục dưới). Khi backend có
+  endpoint: thêm `types/req|res/<nghiệp vụ>*.ts`, rồi `services/` + `hooks/` vào feature đó, bỏ file trong `data/`,
+  rồi mở lại route + mục menu.
+
+## Chỉ hiện màn có dữ liệu thật (05/10/2026)
+
+Menu và route chỉ có màn đổ dữ liệu thật từ backend; màn mock giữ code trong `pages/<portal>/` nhưng không có route,
+đường dẫn cũ trong portal rơi vào route `*` và chuyển về trang chủ portal. Đang hiện:
+
+- `/customer` → `/customer/assessment`: đánh giá sơ bộ (hồ sơ → địa điểm → nháp → gửi), `features/pre-surveys`.
+- `/ops` → `/ops/surveys` + `/ops/surveys/:id`: yêu cầu khảo sát chờ nhận / của tôi / chi tiết.
+- `/customer/products(/:id)`, `/ops/products(/:id)`: catalog sản phẩm (GET /api/products) bản portal kit, `pages/catalog-page.tsx`.
+
+Mô phỏng 3D bố trí tấm pin (`features/pre-surveys/components/RoofSimulation.tsx`) ở bước số liệu + xem lại của
+wizard và trang chi tiết yêu cầu của sales. Tính toán ở `roofLayout.ts` (hàm thuần; mái giả định một mặt dốc,
+hình chữ nhật 3:2 vì backend chỉ có diện tích), tấm pin lấy từ catalog `ProductType=SOLAR_PANEL` (cần đủ
+`ratedPowerW`, `widthMm`, `heightMm`). Phần vẽ `RoofScene.tsx` dùng `three` + `@react-three/fiber` (OrbitControls của
+three, không dùng drei), nạp bằng `React.lazy` để three.js chỉ tải khi mở màn có mô phỏng. Không lưu được thiết kế:
+backend chưa có API.
+- `/admin` → `/admin/products`: quản lý sản phẩm.
+- `/tech`, `/field`, `/manage`: chưa có API, chỉ còn trang "Tổng quan" báo chưa có chức năng (`PlaceholderPage`).
+
+Mở lại một màn: thêm route trong `routes/protectedRoutes.tsx` và mục menu trong `config/portals.ts`
+(portal kit) hoặc `config/nav.ts` (admin, technician). Sidebar/header không đặt số liệu giả (tên người dùng,
+thông báo, chip trạng thái): người dùng lấy từ `useAuth`.
 
 ## Layout chung
 
-Mọi màn đều dùng 1 shell: `<aside>` cố định bên trái `w-72` nền `surface-container-lowest`, `<header>` trên cùng, `<main>` nền `surface`. Làm 1 lần trong layout route (`AdminLayout` / `TechLayout` với `<Outlet/>`), KHÔNG copy sidebar vào từng page.
+Mọi màn đều dùng 1 shell: `<aside>` cố định bên trái `w-52` (208px) nền `surface-container-lowest`, `<main>` nền `surface` lề 24px. `<header>` (nút mở menu, logo, người đăng nhập) chỉ hiện dưới `lg`; từ `lg` sidebar đã có logo và khối tài khoản. Làm 1 lần trong layout route (`AdminLayout` / `TechLayout` với `<Outlet/>`), KHÔNG copy sidebar vào từng page.
+
+Mật độ (bố cục gọn 05/10/2026, áp cho cả hai bộ component): lề nội dung 24px (`px-6`, bộ Stitch `px-space-lg`), không giới hạn bề rộng `<main>`; rail portal kit `w-52`; khoảng cách tiêu đề trang → nội dung 24px; giữa cột/khối 24px (`gap-6`); giữa các Panel 16px + đường kẻ; `ListRow` `py-4`. Thêm màn mới thì theo đúng các bậc này, đừng quay lại 48px.
 
 Menu Admin (subtitle "Quản trị hệ thống"): Tổng quan, Người dùng, Vai trò & quyền, Sản phẩm,
 Danh mục dịch vụ, Nhóm hàng, Kho tri thức AI, Cấu hình kỹ thuật, Báo cáo, Cài đặt hệ thống.
@@ -185,12 +212,12 @@ Trang chủ và các màn xác thực KHÔNG dùng `AppShell`/sidebar.
 | `/403`            | `AuthLayout`   | `ForbiddenPage`                                             |
 | `/coming-soon`    | `PublicLayout` | Trang tạm cho Kinh doanh, Quản lý, Khách hàng               |
 | `/products`, `/products/:id` | `PublicLayout` | Danh mục sản phẩm công khai – GET /api/products(/{id}) |
-| `/admin/*`        | `AdminLayout`  | 4 màn admin – bọc `<RequireRole role="admin">`              |
-| `/tech/*`         | `TechLayout`   | 10 màn technician – bọc `<RequireRole role="technician">`   |
-| `/customer/*`     | `CustomerLayout` | Portal khách hàng – bọc `<RequireRole role="customer">`  |
-| `/ops/*`          | `OpsLayout`      | Portal kinh doanh – bọc `<RequireRole role="sales">`     |
-| `/field/*`        | `FieldLayout`    | Portal kỹ thuật – bọc `<RequireRole role="technician">`  |
-| `/manage/*`       | `ManageLayout`   | Portal quản lý – bọc `<RequireRole role="manager">`      |
+| `/admin/*`        | `AdminLayout`  | Sản phẩm – bọc `<RequireRole role="admin">`                 |
+| `/tech/*`         | `TechLayout`   | Tổng quan (chưa có API) – bọc `<RequireRole role="technician">` |
+| `/customer/*`     | `CustomerLayout` | Đánh giá sơ bộ – bọc `<RequireRole role="customer">`     |
+| `/ops/*`          | `OpsLayout`      | Yêu cầu khảo sát – bọc `<RequireRole role="sales">`      |
+| `/field/*`        | `FieldLayout`    | Tổng quan (chưa có API) – bọc `<RequireRole role="technician">` |
+| `/manage/*`       | `ManageLayout`   | Tổng quan (chưa có API) – bọc `<RequireRole role="manager">` |
 | `/styleguide`     | –              | `StyleguidePage`                                            |
 
 `/` trả về trang chủ công khai; KHÔNG còn redirect `/` → `/admin`.
@@ -261,12 +288,13 @@ Auth gọi backend .NET thật, KHÔNG còn mock. Nguồn sự thật là `docs/
   không quảng cáo: tiêu đề là tên màn hình, mô tả chỉ thêm khi nói được điều gì mới.
 - Mỗi màn = 1 route + 1 file dữ liệu trong `src/data/`. Không hard-code dữ liệu trong JSX.
 - Khi dựng xong một màn: chạy dev, chụp màn hình, đặt cạnh `screen.png`, liệt kê khác biệt (spacing, màu, font size, icon) rồi sửa. Chấp nhận sai lệch ≤ 4px.
-- Không cài thêm thư viện UI khác (MUI, Ant, Chakra…). Ngoại lệ đã chốt: `sonner` chỉ dùng cho toast.
+- Không cài thêm thư viện UI khác (MUI, Ant, Chakra…). Ngoại lệ đã chốt: `sonner` chỉ dùng cho toast;
+  `three` + `@react-three/fiber` chỉ cho mô phỏng 3D (05/10/2026).
 - Không sửa bất kỳ file nào trong `design/stitch/stitch_smart_solar_customer_portal/`.
 
 ## Lệnh
 
-- `npm run dev` – Vite dev server
+- `npm run dev -- --port 3000` – Vite dev server; backend gửi link xác minh email / đặt lại mật khẩu về `http://localhost:3000`
 - `npm run build` – `tsc -b && vite build`; phải pass trước khi coi một màn là xong
 - `npm run typecheck` – `tsc -b` (nhanh hơn build, dùng khi lặp)
 - `npm run gen:api` – sinh lại `src/types/req` và `src/types/res` từ `docs/api/swagger.json`

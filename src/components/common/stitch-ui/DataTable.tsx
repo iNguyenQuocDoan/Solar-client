@@ -81,7 +81,8 @@ const sizeStyles = {
   /** product_catalogue: header label-sm text-outline, hàng py-space-sm, hover rất nhạt */
   compact: {
     thead: 'bg-surface-container-low/70 text-label-sm text-outline',
-    th: 'px-space-md py-3 font-semibold',
+    // Không bẻ tiêu đề cột: bảng đã cuộn ngang trong khung khi hẹp.
+    th: 'whitespace-nowrap px-space-md py-3 font-semibold',
     thEdge: { first: '', last: '' },
     td: 'px-space-md',
     tdEdge: { first: '', last: '' },
@@ -145,7 +146,8 @@ export function DataTable<T>({
     <>
       {toolbar &&
         (variant === 'card' ? (
-          <div className="flex items-center justify-between bg-surface-container-low/40 px-space-lg py-space-md">
+          // Lề 16px, thẳng mép với ô đầu của bảng (px-space-md).
+          <div className="flex items-center justify-between bg-surface-container-low/40 px-space-md py-space-md">
             {toolbar}
           </div>
         ) : (

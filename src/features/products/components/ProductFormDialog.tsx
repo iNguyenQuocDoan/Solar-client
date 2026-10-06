@@ -17,7 +17,7 @@ import { Field } from '@/components/common/stitch-ui/Field'
 import { Select } from '@/components/common/stitch-ui/FilterBar'
 import { Input } from '@/components/common/stitch-ui/Input'
 import { useCreateProductMutation, useUpdateProductMutation } from '@/features/products/hooks/useProducts'
-import { PRODUCT_STATUSES, specEntries } from '@/features/products/components/productDisplay'
+import { PRODUCT_STATUSES, SOLAR_PANEL_TYPE, isSolarPanelType, specEntries } from '@/features/products/components/productDisplay'
 import { errorMessage, isApiError } from '@/services/api/errors'
 import type { UpdateProductRequest } from '@/types/req/adminProductsReq'
 import type { ProductResponse } from '@/types/res/adminProductsRes'
@@ -28,6 +28,8 @@ import type { ProductResponse } from '@/types/res/adminProductsRes'
  *   bắt buộc sku, productType, name, brand, unit, unitPrice, currency (đúng 3 ký tự);
  *   unitPrice, warrantyMonth ≥ 0; ratedPowerW, widthMm, heightMm > 0 khi có nhập;
  *   spec phải là JSON object; status chỉ ACTIVE | INACTIVE.
+ * Loại SOLAR_PANEL (không phân biệt hoa thường) bắt buộc thêm ratedPowerW, widthMm, heightMm (dò 05/10/2026);
+ * mô phỏng 3D dùng đúng ba số này.
  * PUT không nhận status nên ô trạng thái chỉ hiện khi thêm mới.
  */
 
@@ -67,6 +69,11 @@ const productFormSchema = z
     spec: z.array(z.object({ key: z.string().trim(), value: z.string().trim() })),
   })
   .superRefine((values, ctx) => {
+    if (isSolarPanelType(values.productType)) {
+      if (!values.ratedPowerW) ctx.addIssue({ code: 'custom', path: ['ratedPowerW'], message: 'Tấm pin cần công suất định mức' })
+      if (!values.widthMm) ctx.addIssue({ code: 'custom', path: ['widthMm'], message: 'Tấm pin cần chiều rộng' })
+      if (!values.heightMm) ctx.addIssue({ code: 'custom', path: ['heightMm'], message: 'Tấm pin cần chiều cao' })
+    }
     const seen = new Set<string>()
     values.spec.forEach((row, i) => {
       if (!row.key && row.value) ctx.addIssue({ code: 'custom', path: ['spec', i, 'key'], message: 'Nhập tên thông số' })
@@ -169,6 +176,7 @@ function ProductForm({ product, suggestions, onDone }: Pick<ProductFormDialogPro
     register,
     control,
     handleSubmit,
+    watch,
     setError,
     formState: { errors, isSubmitting },
   } = useForm<ProductFormValues>({
@@ -204,6 +212,8 @@ function ProductForm({ product, suggestions, onDone }: Pick<ProductFormDialogPro
   }
 
   const f = (name: string) => `${id}-${name}`
+  const isPanel = isSolarPanelType(watch('productType'))
+  const mark = isPanel ? ' *' : ''
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-space-md" noValidate>
@@ -240,15 +250,6 @@ function ProductForm({ product, suggestions, onDone }: Pick<ProductFormDialogPro
         <Field label="Tiền tệ *" htmlFor={f('currency')} error={errors.currency?.message}>
           <Input id={f('currency')} maxLength={3} className="uppercase" invalid={!!errors.currency} {...register('currency')} />
         </Field>
-        <Field label="Công suất định mức" htmlFor={f('ratedPowerW')} error={errors.ratedPowerW?.message}>
-          <Input
-            id={f('ratedPowerW')}
-            inputMode="decimal"
-            invalid={!!errors.ratedPowerW}
-            trailing={<span className="text-label-sm text-outline">W</span>}
-            {...register('ratedPowerW')}
-          />
-        </Field>
         <Field label="Bảo hành" htmlFor={f('warrantyMonth')} error={errors.warrantyMonth?.message}>
           <Input
             id={f('warrantyMonth')}
@@ -257,27 +258,6 @@ function ProductForm({ product, suggestions, onDone }: Pick<ProductFormDialogPro
             trailing={<span className="text-label-sm text-outline">tháng</span>}
             {...register('warrantyMonth')}
           />
-        </Field>
-        <Field label="Chiều rộng" htmlFor={f('widthMm')} error={errors.widthMm?.message}>
-          <Input
-            id={f('widthMm')}
-            inputMode="decimal"
-            invalid={!!errors.widthMm}
-            trailing={<span className="text-label-sm text-outline">mm</span>}
-            {...register('widthMm')}
-          />
-        </Field>
-        <Field label="Chiều cao" htmlFor={f('heightMm')} error={errors.heightMm?.message}>
-          <Input
-            id={f('heightMm')}
-            inputMode="decimal"
-            invalid={!!errors.heightMm}
-            trailing={<span className="text-label-sm text-outline">mm</span>}
-            {...register('heightMm')}
-          />
-        </Field>
-        <Field label="Link ảnh" htmlFor={f('imageUrl')} error={errors.imageUrl?.message} className="sm:col-span-2">
-          <Input id={f('imageUrl')} type="url" placeholder="https://" invalid={!!errors.imageUrl} {...register('imageUrl')} />
         </Field>
         {!isEdit && (
           <Field label="Trạng thái" htmlFor={f('status')} error={errors.status?.message}>
@@ -289,6 +269,46 @@ function ProductForm({ product, suggestions, onDone }: Pick<ProductFormDialogPro
             />
           </Field>
         )}
+
+        {/* Ba số này đi cùng nhau: bắt buộc với tấm pin vì backend kiểm tra và mô phỏng 3D cần chúng. */}
+        <fieldset className="grid grid-cols-1 gap-space-md sm:col-span-2 sm:grid-cols-3">
+          <legend className="mb-space-xs text-label-md font-semibold text-on-surface sm:col-span-3">
+            Công suất và kích thước
+            <span className="ml-space-xs font-normal text-on-surface-variant">
+              {isPanel ? 'bắt buộc với tấm pin, dùng cho mô phỏng bố trí' : `bắt buộc khi loại là ${SOLAR_PANEL_TYPE}`}
+            </span>
+          </legend>
+          <Field label={`Công suất định mức${mark}`} htmlFor={f('ratedPowerW')} error={errors.ratedPowerW?.message}>
+            <Input
+              id={f('ratedPowerW')}
+              inputMode="decimal"
+              invalid={!!errors.ratedPowerW}
+              trailing={<span className="text-label-sm text-outline">W</span>}
+              {...register('ratedPowerW')}
+            />
+          </Field>
+          <Field label={`Chiều rộng${mark}`} htmlFor={f('widthMm')} error={errors.widthMm?.message}>
+            <Input
+              id={f('widthMm')}
+              inputMode="decimal"
+              invalid={!!errors.widthMm}
+              trailing={<span className="text-label-sm text-outline">mm</span>}
+              {...register('widthMm')}
+            />
+          </Field>
+          <Field label={`Chiều cao${mark}`} htmlFor={f('heightMm')} error={errors.heightMm?.message}>
+            <Input
+              id={f('heightMm')}
+              inputMode="decimal"
+              invalid={!!errors.heightMm}
+              trailing={<span className="text-label-sm text-outline">mm</span>}
+              {...register('heightMm')}
+            />
+          </Field>
+        </fieldset>
+        <Field label="Link ảnh" htmlFor={f('imageUrl')} error={errors.imageUrl?.message} className="sm:col-span-2">
+          <Input id={f('imageUrl')} type="url" placeholder="https://" invalid={!!errors.imageUrl} {...register('imageUrl')} />
+        </Field>
       </div>
 
       <fieldset className="flex flex-col gap-space-xs">

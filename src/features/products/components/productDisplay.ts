@@ -17,6 +17,17 @@ export const PRODUCT_STATUSES = [
 
 export type ProductStatus = (typeof PRODUCT_STATUSES)[number]['value']
 
+/*
+ * Loại sản phẩm là chữ tự do; riêng tấm pin có mã SOLAR_PANEL mà backend kiểm tra thêm (dò validator
+ * 05/10/2026, không phân biệt hoa thường): bắt buộc ratedPowerW, widthMm, heightMm. Mô phỏng 3D cũng
+ * chỉ lấy sản phẩm loại này.
+ */
+export const SOLAR_PANEL_TYPE = 'SOLAR_PANEL'
+
+export function isSolarPanelType(productType: string | null | undefined) {
+  return productType?.trim().toUpperCase() === SOLAR_PANEL_TYPE
+}
+
 export function isProductActive(status: string | null | undefined) {
   return status?.trim().toUpperCase() === 'ACTIVE'
 }

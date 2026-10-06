@@ -101,48 +101,6 @@ export const overview = {
   ],
 }
 
-/* Preliminary self-assessment */
-export type AssessmentDraft = {
-  address: string
-  houseType: string
-  roofAge: string
-  length: string
-  width: string
-  tilt: string
-  azimuth: string
-  photos: { name: string; label: string; size: string; note: string; src: string }[]
-  ownerConfirmed: boolean
-  smsUpdates: boolean
-}
-
-export const assessmentDraft: AssessmentDraft = {
-  address: '742 Evergreen Terrace, Springfield, IL',
-  houseType: 'Nhà riêng, 2 tầng',
-  roofAge: '6',
-  length: '12.5',
-  width: '6.8',
-  tilt: '28',
-  azimuth: '180',
-  photos: [
-    { name: 'IMG_4821_SouthPlane.heic', label: 'Góc chụp mái Nam', size: '3.4 MB', note: 'Độ phân giải cao', src: img('oakwood-south-roof', 640, 480) },
-    { name: 'Service_Box_200A.jpg', label: 'Tủ công tơ điện chính', size: '2.1 MB', note: 'Tương thích 200A', src: img('oakwood-service-box', 640, 480) },
-    { name: 'Roof_Chimney_Flashing.jpg', label: 'Vật cản: ống khói', size: '2.8 MB', note: 'Đủ khoảng lùi', src: img('oakwood-chimney', 640, 480) },
-  ],
-  ownerConfirmed: true,
-  smsUpdates: true,
-}
-
-export const assessmentResult = {
-  suitabilityScore: 9.8,
-  usableAreaM2: 85,
-  capacityKw: 11.4,
-  grade: 'A+',
-  annualKwh: 14280,
-  offsetPct: 94,
-  specialist: { name: 'Marcus Thorne', cert: 'Chứng chỉ năng lượng sạch bang Illinois' },
-  referenceCode: 'SOL-2024-EVG-881',
-}
-
 /* Preliminary estimate */
 export const estimate = {
   viabilityScore: 94,

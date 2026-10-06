@@ -7,8 +7,7 @@ import { ManageLayout } from '@/components/layout/manage-layout'
 import { OpsLayout } from '@/components/layout/ops-layout'
 import { PageSkeleton } from '@/components/common/ui/states'
 import { PlaceholderPage } from '@/pages/placeholder-page'
-import { RouteErrorPage } from '@/pages/RouteErrorPage'
-import { ROUTES, withId } from '@/routes/paths'
+import { ROUTES } from '@/routes/paths'
 import { RequireRole } from '@/routes/RequireRole'
 
 const customer = ROUTES.customer
@@ -16,9 +15,16 @@ const ops = ROUTES.ops
 const field = ROUTES.field
 const manage = ROUTES.manage
 
+/** Mọi đường dẫn còn lại trong portal (màn mock đã ẩn, link cũ, gõ sai) về trang có dữ liệu thật. */
+const fallback = (to: string): RouteObject => ({ path: '*', element: <Navigate to={to} replace /> })
+
 /*
   Route cần đăng nhập, mỗi portal bọc trong <RequireRole role="…">:
   chưa đăng nhập → /login (nhớ trang đích), sai vai trò → /403.
+
+  Chỉ màn đã đổ dữ liệu thật từ backend mới có route (05/10/2026). Màn mock vẫn nằm trong
+  pages/<portal>/ và data/*.ts; nối API xong thì thêm lại route ở đây và mục menu trong
+  config/portals.ts (portal kit) hoặc config/nav.ts (admin, technician).
 */
 export const protectedRoutes: RouteObject[] = [
   /* ---- Portal khách hàng ---- */
@@ -35,19 +41,11 @@ export const protectedRoutes: RouteObject[] = [
       </CustomerLayout>
     ),
     children: [
-      { index: true, lazy: () => import('@/pages/customer/overview-page').then((m) => ({ Component: m.OverviewPage })) },
+      { index: true, element: <Navigate to={customer.assessment} replace /> },
       { path: customer.assessment, lazy: () => import('@/pages/customer/assessment-page').then((m) => ({ Component: m.AssessmentPage })) },
-      { path: customer.estimate, lazy: () => import('@/pages/customer/estimate-page').then((m) => ({ Component: m.EstimatePage })) },
-      /* Chủ hộ chỉ có một hồ sơ mở ở mỗi giai đoạn, nên route danh sách mở thẳng hồ sơ đó. */
-      { path: customer.consultations, element: <Navigate to={withId(customer.consultation, 'CR-9042')} replace /> },
-      { path: customer.consultation, lazy: () => import('@/pages/customer/consultation-page').then((m) => ({ Component: m.ConsultationPage })) },
-      { path: customer.quotations, element: <Navigate to={withId(customer.quotation, 'QT-8821')} replace /> },
-      { path: customer.quotation, lazy: () => import('@/pages/customer/quotation-page').then((m) => ({ Component: m.QuotationPage })) },
-      { path: customer.projects, element: <Navigate to={withId(customer.project, 'SS-8842-CA')} replace /> },
-      { path: customer.project, lazy: () => import('@/pages/customer/project-page').then((m) => ({ Component: m.ProjectPage })) },
-      { path: customer.warranty, lazy: () => import('@/pages/customer/warranty-page').then((m) => ({ Component: m.WarrantyPage })) },
-      { path: customer.warrantyRequest, lazy: () => import('@/pages/customer/warranty-request-page').then((m) => ({ Component: m.WarrantyRequestPage })) },
-      { path: customer.assistant, lazy: () => import('@/pages/customer/assistant-page').then((m) => ({ Component: m.AssistantPage })) },
+      { path: customer.products, lazy: () => import('@/pages/catalog-page').then((m) => ({ Component: m.CustomerCatalogPage })) },
+      { path: customer.product, lazy: () => import('@/pages/catalog-product-page').then((m) => ({ Component: m.CustomerCatalogProductPage })) },
+      fallback(customer.assessment),
     ],
   },
 
@@ -65,17 +63,16 @@ export const protectedRoutes: RouteObject[] = [
       </OpsLayout>
     ),
     children: [
-      { index: true, lazy: () => import('@/pages/ops/dashboard-page').then((m) => ({ Component: m.OpsDashboardPage })) },
-      { path: ops.consultations, lazy: () => import('@/pages/ops/consultations-page').then((m) => ({ Component: m.OpsConsultationsPage })) },
-      { path: ops.customers, element: <PlaceholderPage title="Khách hàng" portal="ops" /> },
-      { path: ops.surveys, element: <PlaceholderPage title="Khảo sát" portal="ops" /> },
-      { path: ops.quotations, element: <PlaceholderPage title="Báo giá" portal="ops" /> },
-      { path: ops.contracts, element: <PlaceholderPage title="Hợp đồng" portal="ops" /> },
-      { path: ops.projects, element: <PlaceholderPage title="Dự án" portal="ops" /> },
+      { index: true, element: <Navigate to={ops.surveys} replace /> },
+      { path: ops.surveys, lazy: () => import('@/pages/ops/surveys-page').then((m) => ({ Component: m.OpsSurveysPage })) },
+      { path: ops.survey, lazy: () => import('@/pages/ops/survey-request-page').then((m) => ({ Component: m.OpsSurveyRequestPage })) },
+      { path: ops.products, lazy: () => import('@/pages/catalog-page').then((m) => ({ Component: m.OpsCatalogPage })) },
+      { path: ops.product, lazy: () => import('@/pages/catalog-product-page').then((m) => ({ Component: m.OpsCatalogProductPage })) },
+      fallback(ops.surveys),
     ],
   },
 
-  /* ---- Portal kỹ thuật viên (bộ ui) ---- */
+  /* ---- Portal kỹ thuật viên (bộ ui) – chưa có màn nào nối API ---- */
   {
     path: field.home,
     element: (
@@ -83,26 +80,10 @@ export const protectedRoutes: RouteObject[] = [
         <FieldLayout />
       </RequireRole>
     ),
-    hydrateFallbackElement: (
-      <FieldLayout>
-        <PageSkeleton />
-      </FieldLayout>
-    ),
-    children: [
-      { index: true, lazy: () => import('@/pages/field/dashboard-page').then((m) => ({ Component: m.FieldDashboardPage })) },
-      { path: field.tasks, lazy: () => import('@/pages/field/tasks-page').then((m) => ({ Component: m.FieldTasksPage })) },
-      { path: field.surveys, element: <Navigate to={withId(field.survey, 'SS-PRJ-2024-089')} replace /> },
-      { path: field.survey, lazy: () => import('@/pages/field/survey-page').then((m) => ({ Component: m.FieldSurveyPage })) },
-      { path: field.installations, element: <Navigate to={withId(field.installation, 'SS-PRJ-2024-042')} replace /> },
-      { path: field.installation, lazy: () => import('@/pages/field/installation-page').then((m) => ({ Component: m.FieldInstallationPage })) },
-      { path: field.warranty, element: <PlaceholderPage title="Bảo hành & bảo trì" portal="field" /> },
-      { path: field.schedule, element: <PlaceholderPage title="Lịch làm việc" portal="field" /> },
-      { path: field.notifications, element: <PlaceholderPage title="Thông báo" portal="field" /> },
-      { path: field.profile, element: <PlaceholderPage title="Tài khoản" portal="field" /> },
-    ],
+    children: [{ index: true, element: <PlaceholderPage /> }, fallback(field.home)],
   },
 
-  /* ---- Portal quản lý ---- */
+  /* ---- Portal quản lý – chưa có màn nào nối API ---- */
   {
     path: manage.home,
     element: (
@@ -110,23 +91,7 @@ export const protectedRoutes: RouteObject[] = [
         <ManageLayout />
       </RequireRole>
     ),
-    hydrateFallbackElement: (
-      <ManageLayout>
-        <PageSkeleton />
-      </ManageLayout>
-    ),
-    children: [
-      { index: true, lazy: () => import('@/pages/manage/dashboard-page').then((m) => ({ Component: m.ManageDashboardPage })) },
-      { path: manage.projects, lazy: () => import('@/pages/manage/portfolio-page').then((m) => ({ Component: m.ManagePortfolioPage })) },
-      { path: manage.project, lazy: () => import('@/pages/manage/project-page').then((m) => ({ Component: m.ManageProjectPage })) },
-      { path: manage.approvals, lazy: () => import('@/pages/manage/approvals-page').then((m) => ({ Component: m.ManageApprovalsPage })) },
-      { path: manage.approval, lazy: () => import('@/pages/manage/approval-page').then((m) => ({ Component: m.ManageApprovalPage })) },
-      { path: manage.operations, lazy: () => import('@/pages/manage/operations-page').then((m) => ({ Component: m.ManageOperationsPage })) },
-      { path: manage.revenue, lazy: () => import('@/pages/manage/revenue-page').then((m) => ({ Component: m.ManageRevenuePage })) },
-      { path: manage.alerts, lazy: () => import('@/pages/manage/alerts-page').then((m) => ({ Component: m.ManageAlertsPage })) },
-      { path: manage.notifications, element: <PlaceholderPage title="Thông báo" portal="manage" /> },
-      { path: manage.profile, element: <PlaceholderPage title="Tài khoản" portal="manage" /> },
-    ],
+    children: [{ index: true, element: <PlaceholderPage /> }, fallback(manage.home)],
   },
 
   /* ---- Portal quản trị viên (bộ stitch-ui) ---- */
@@ -138,14 +103,13 @@ export const protectedRoutes: RouteObject[] = [
       </RequireRole>
     ),
     children: [
-      { index: true, lazy: () => import('@/pages/admin/AdminDashboardPage').then((m) => ({ Component: m.AdminDashboardPage })) },
-      { path: 'users', lazy: () => import('@/pages/admin/UsersPage').then((m) => ({ Component: m.UsersPage })) },
-      { path: 'roles', lazy: () => import('@/pages/admin/RolesPage').then((m) => ({ Component: m.RolesPage })) },
+      { index: true, element: <Navigate to={ROUTES.ADMIN.PRODUCTS} replace /> },
       { path: 'products', lazy: () => import('@/pages/admin/ProductsPage').then((m) => ({ Component: m.ProductsPage })) },
+      fallback(ROUTES.ADMIN.PRODUCTS),
     ],
   },
 
-  /* ---- Portal kỹ thuật viên (bộ stitch-ui) ---- */
+  /* ---- Portal kỹ thuật viên (bộ stitch-ui) – chưa có màn nào nối API ---- */
   {
     path: ROUTES.TECH.DASHBOARD,
     element: (
@@ -153,18 +117,6 @@ export const protectedRoutes: RouteObject[] = [
         <TechLayout />
       </RequireRole>
     ),
-    children: [
-      { index: true, lazy: () => import('@/pages/tech/TechDashboardPage').then((m) => ({ Component: m.TechDashboardPage })) },
-      { path: 'tasks', lazy: () => import('@/pages/tech/TasksPage').then((m) => ({ Component: m.TasksPage })) },
-      /* Route có :id ném Response 404 từ notFound(); RouteErrorPage render trong Outlet của TechLayout. */
-      { path: 'tasks/:id', lazy: () => import('@/pages/tech/TaskDetailPage').then((m) => ({ Component: m.TaskDetailPage })), errorElement: <RouteErrorPage /> },
-      { path: 'surveys/:id', lazy: () => import('@/pages/tech/SurveyTaskPage').then((m) => ({ Component: m.SurveyTaskPage })), errorElement: <RouteErrorPage /> },
-      { path: 'surveys/:id/verify', lazy: () => import('@/pages/tech/SurveyVerificationPage').then((m) => ({ Component: m.SurveyVerificationPage })), errorElement: <RouteErrorPage /> },
-      { path: 'surveys/:id/photos', lazy: () => import('@/pages/tech/SurveyPhotosPage').then((m) => ({ Component: m.SurveyPhotosPage })), errorElement: <RouteErrorPage /> },
-      { path: 'installations/:id', lazy: () => import('@/pages/tech/InstallationTaskPage').then((m) => ({ Component: m.InstallationTaskPage })), errorElement: <RouteErrorPage /> },
-      { path: 'installations/:id/checklist', lazy: () => import('@/pages/tech/InstallationChecklistPage').then((m) => ({ Component: m.InstallationChecklistPage })), errorElement: <RouteErrorPage /> },
-      { path: 'maintenance/:id', lazy: () => import('@/pages/tech/MaintenanceTaskPage').then((m) => ({ Component: m.MaintenanceTaskPage })), errorElement: <RouteErrorPage /> },
-      { path: 'warranty/:id', lazy: () => import('@/pages/tech/WarrantyRequestPage').then((m) => ({ Component: m.WarrantyRequestPage })), errorElement: <RouteErrorPage /> },
-    ],
+    children: [{ index: true, element: <PlaceholderPage /> }, fallback(ROUTES.TECH.DASHBOARD)],
   },
 ]

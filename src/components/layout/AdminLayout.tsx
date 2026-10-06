@@ -1,11 +1,16 @@
 import { Outlet } from 'react-router'
 import { AppShell } from '@/components/layout/AppShell'
 import { ROUTES } from '@/routes/paths'
-import { adminSession } from '@/data/session'
 import { adminNav } from '@/config/nav'
+import { roleLabels } from '@/config/roles'
+import { useAuth } from '@/context/AuthProvider'
 
 /** Tương đương app/(admin)/layout.tsx – bọc mọi route /admin/* */
 export function AdminLayout() {
+  const { user } = useAuth()
+  const name = user?.name ?? ''
+  const role = roleLabels.admin
+
   return (
     <AppShell
       sidebar={{
@@ -14,18 +19,9 @@ export function AdminLayout() {
         eyebrow: 'Quản trị nền tảng',
         items: adminNav,
         rootHref: ROUTES.ADMIN.DASHBOARD,
-        user: { ...adminSession.user, href: ROUTES.ADMIN.PROFILE },
+        user: { name, title: role, icon: 'account_circle' },
       }}
-      header={{
-        variant: 'admin',
-        logoSrc: '/placeholders/logo.svg',
-        searchPlaceholder: adminSession.searchPlaceholder,
-        environment: adminSession.environment,
-        systemStatus: adminSession.systemStatus,
-        unreadNotifications: adminSession.unreadNotifications,
-        user: { name: adminSession.user.name, status: adminSession.user.status },
-      }}
-      mainPadding="lg"
+      header={{ logoSrc: '/placeholders/logo.svg', user: { name, role } }}
     >
       <Outlet />
     </AppShell>

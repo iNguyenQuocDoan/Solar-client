@@ -26,7 +26,8 @@ export function AppProviders({ children }: { children: ReactNode }) {
       <AuthProvider>
         {children}
         <Toaster
-          position="bottom-right"
+          // Trên cùng: ở đáy toast đè nút chính của ActionBar (thanh thao tác dính đáy ở các màn nhiều bước).
+          position="top-right"
           toastOptions={{
             unstyled: true,
             classNames: {

@@ -1,31 +1,26 @@
 import { Outlet } from 'react-router'
 import { AppShell } from '@/components/layout/AppShell'
 import { ROUTES } from '@/routes/paths'
-import { technicianSession } from '@/data/session'
-import { technicianFooterNav, technicianNav } from '@/config/nav'
+import { technicianNav } from '@/config/nav'
+import { roleLabels } from '@/config/roles'
+import { useAuth } from '@/context/AuthProvider'
 
 /** Tương đương app/(technician)/layout.tsx – bọc mọi route /tech/* */
 export function TechLayout() {
+  const { user } = useAuth()
+  const name = user?.name ?? ''
+  const role = roleLabels.technician
+
   return (
     <AppShell
       sidebar={{
         variant: 'technician',
         brand: { title: 'Smart Solar', subtitle: 'Kỹ thuật hiện trường', logoSrc: '/placeholders/logo.svg' },
-        eyebrow: technicianSession.syncStatus,
         items: technicianNav,
         rootHref: ROUTES.TECH.DASHBOARD,
-        user: { ...technicianSession.user, href: ROUTES.TECH.SETTINGS },
-        footerLinks: technicianFooterNav,
+        user: { name, title: role, icon: 'engineering' },
       }}
-      header={{
-        variant: 'technician',
-        location: technicianSession.location,
-        telemetry: technicianSession.telemetry,
-        hasUnreadAlerts: technicianSession.hasUnreadAlerts,
-        alertsHref: ROUTES.TECH.ALERTS,
-        profileHref: ROUTES.TECH.SETTINGS,
-      }}
-      mainPadding="xl"
+      header={{ user: { name, role } }}
     >
       <Outlet />
     </AppShell>

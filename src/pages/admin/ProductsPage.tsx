@@ -1,10 +1,10 @@
-import { useMemo, useState } from 'react'
+import { useId, useMemo, useState } from 'react'
 import { toast } from 'sonner'
-import { Button, Card, IconButton, Input, PageHeader, SearchInput, Select, StatusBadge } from '@/components/common/stitch-ui'
+import { Button, IconButton, Input, PageHeader, SearchInput, Select } from '@/components/common/stitch-ui'
 import { DeleteProductDialog } from '@/features/products/components/DeleteProductDialog'
 import { ProductFormDialog } from '@/features/products/components/ProductFormDialog'
 import { ProductsTable } from '@/features/products/components/ProductsTable'
-import { PRODUCT_SORT_OPTIONS, isProductActive, parseSort } from '@/features/products/components/productDisplay'
+import { PRODUCT_SORT_OPTIONS, SOLAR_PANEL_TYPE, isProductActive, parseSort } from '@/features/products/components/productDisplay'
 import { useChangeProductStatusMutation, useProductsQuery } from '@/features/products/hooks/useProducts'
 import { useDebouncedValue } from '@/hooks/useDebouncedValue'
 import { errorMessage } from '@/services/api/errors'
@@ -16,7 +16,6 @@ import type { ProductResponse } from '@/types/res/adminProductsRes'
  */
 
 const PAGE_SIZE = 20
-const breadcrumb = [{ label: 'Quản trị' }, { label: 'Sản phẩm' }]
 
 type Filter = { search: string; productType: string; brand: string; sort: string }
 const defaultFilter: Filter = { search: '', productType: '', brand: '', sort: PRODUCT_SORT_OPTIONS[0]!.value }
@@ -44,11 +43,16 @@ export function ProductsPage() {
   const total = query.data?.totalItems ?? 0
   const isFiltering = filter.search !== '' || filter.productType !== '' || filter.brand !== ''
 
-  // Gợi ý cho ô loại / nhóm trong form: các giá trị đang có trên trang hiện tại.
+  // Gợi ý cho ô loại / nhóm (bộ lọc và form): giá trị đang có trên trang hiện tại, luôn kèm SOLAR_PANEL
+  // vì backend kiểm tra riêng mã này và mô phỏng 3D chỉ dùng tấm pin mang mã này.
   const suggestions = useMemo(() => {
     const unique = (values: (string | null | undefined)[]) => [...new Set(values.filter((v): v is string => Boolean(v)))].sort()
-    return { productTypes: unique(products.map((p) => p.productType)), categories: unique(products.map((p) => p.category)) }
+    return {
+      productTypes: unique([SOLAR_PANEL_TYPE, ...products.map((p) => p.productType)]),
+      categories: unique(products.map((p) => p.category)),
+    }
   }, [products])
+  const typesListId = useId()
 
   const updateFilter = (patch: Partial<Filter>) => {
     setFilter((prev) => ({ ...prev, ...patch }))
@@ -69,7 +73,6 @@ export function ProductsPage() {
   return (
     <>
       <PageHeader
-        breadcrumb={breadcrumb}
         title="Sản phẩm"
         actions={
           <Button size="md" iconLeft="add_circle" onClick={() => setForm({ open: true, product: null })}>
@@ -78,86 +81,85 @@ export function ProductsPage() {
         }
       />
 
-      <Card padding="md" className="mb-space-md">
-        <div className="flex flex-col gap-space-sm lg:flex-row lg:items-center">
-          <SearchInput
-            size="md"
-            aria-label="Tìm sản phẩm"
-            placeholder="Tìm theo tên, SKU, model…"
-            value={filter.search}
-            onChange={(e) => updateFilter({ search: e.target.value })}
-            className="flex-1"
-          />
-          <div className="flex flex-wrap items-center gap-space-xs sm:flex-nowrap">
-            <Input
-              aria-label="Loại sản phẩm"
-              placeholder="Loại sản phẩm"
-              value={filter.productType}
-              onChange={(e) => updateFilter({ productType: e.target.value })}
-              className="sm:w-44"
-            />
-            <Input
-              aria-label="Hãng"
-              placeholder="Hãng"
-              value={filter.brand}
-              onChange={(e) => updateFilter({ brand: e.target.value })}
-              className="sm:w-40"
-            />
-            <Select
-              size="md"
-              aria-label="Sắp xếp"
-              options={PRODUCT_SORT_OPTIONS}
-              value={filter.sort}
-              onChange={(e) => updateFilter({ sort: e.target.value })}
-              className="min-w-[180px]"
-            />
-            <IconButton
-              icon="filter_alt_off"
-              label="Xoá bộ lọc"
-              size="md"
-              disabled={!isFiltering}
-              onClick={() => updateFilter({ search: '', productType: '', brand: '' })}
-              className="h-11 w-11"
-            />
-          </div>
-        </div>
-      </Card>
-
-      {query.isError ? (
-        <Card padding="lg" className="flex flex-col items-start gap-space-sm">
-          <p role="alert" className="text-body-md text-error">
-            {errorMessage(query.error, 'Không tải được danh sách sản phẩm.')}
-          </p>
-          <Button variant="tonal" size="md" iconLeft="refresh" onClick={() => query.refetch()}>
-            Thử lại
-          </Button>
-        </Card>
-      ) : (
-        <ProductsTable
-          products={products}
-          busyId={statusMutation.isPending ? statusMutation.variables?.id : null}
-          onEdit={(product) => setForm({ open: true, product })}
-          onToggleStatus={toggleStatus}
-          onDelete={setDeleting}
-          emptyMessage={
-            query.isPending ? 'Đang tải sản phẩm…' : isFiltering ? 'Không có sản phẩm nào khớp bộ lọc' : 'Chưa có sản phẩm nào. Bấm "Thêm sản phẩm" để tạo.'
-          }
-          toolbar={
-            <div className="flex items-center gap-space-xs">
-              <span className="text-headline-md text-on-surface">Danh mục</span>
-              <StatusBadge variant="neutral" size="sm" dot={false}>
-                {total} sản phẩm
-              </StatusBadge>
-              {query.isFetching && !query.isPending && <span className="text-label-sm text-outline">Đang cập nhật…</span>}
+      {/* Một khối: bộ lọc là thanh công cụ của bảng, không tách thành thẻ riêng. Lỗi hiện trong bảng để bộ lọc vẫn dùng được. */}
+      <ProductsTable
+        products={query.isError ? [] : products}
+        busyId={statusMutation.isPending ? statusMutation.variables?.id : null}
+        onEdit={(product) => setForm({ open: true, product })}
+        onToggleStatus={toggleStatus}
+        onDelete={setDeleting}
+        emptyMessage={
+          query.isError ? (
+            <div role="alert" className="flex flex-col items-center gap-space-sm">
+              <span className="text-error">{errorMessage(query.error, 'Không tải được danh sách sản phẩm.')}</span>
+              <Button variant="tonal" size="sm" iconLeft="refresh" onClick={() => query.refetch()}>
+                Thử lại
+              </Button>
             </div>
-          }
-          pagination={
-            total > 0
-              ? { page, pageSize: PAGE_SIZE, total, visibleCount: products.length, onPageChange: setPage, itemLabel: 'sản phẩm' }
-              : undefined
-          }
-        />
-      )}
+          ) : query.isPending ? (
+            'Đang tải sản phẩm…'
+          ) : isFiltering ? (
+            'Không có sản phẩm nào khớp bộ lọc'
+          ) : (
+            'Chưa có sản phẩm nào. Bấm "Thêm sản phẩm" để tạo.'
+          )
+        }
+        toolbar={
+          <div className="flex w-full flex-col gap-space-xs lg:flex-row lg:items-center">
+            <SearchInput
+              size="md"
+              aria-label="Tìm sản phẩm"
+              placeholder="Tìm theo tên, SKU, model…"
+              value={filter.search}
+              onChange={(e) => updateFilter({ search: e.target.value })}
+              className="flex-1"
+            />
+            <div className="flex flex-wrap items-center gap-space-xs sm:flex-nowrap">
+              <Input
+                aria-label="Loại sản phẩm"
+                placeholder="Loại sản phẩm"
+                list={typesListId}
+                value={filter.productType}
+                onChange={(e) => updateFilter({ productType: e.target.value })}
+                className="sm:w-44"
+              />
+              <datalist id={typesListId}>
+                {suggestions.productTypes.map((value) => (
+                  <option key={value} value={value} />
+                ))}
+              </datalist>
+              <Input
+                aria-label="Hãng"
+                placeholder="Hãng"
+                value={filter.brand}
+                onChange={(e) => updateFilter({ brand: e.target.value })}
+                className="sm:w-40"
+              />
+              <Select
+                size="md"
+                aria-label="Sắp xếp"
+                options={PRODUCT_SORT_OPTIONS}
+                value={filter.sort}
+                onChange={(e) => updateFilter({ sort: e.target.value })}
+                className="min-w-[180px]"
+              />
+              <IconButton
+                icon="filter_alt_off"
+                label="Xoá bộ lọc"
+                size="md"
+                disabled={!isFiltering}
+                onClick={() => updateFilter({ search: '', productType: '', brand: '' })}
+                className="h-11 w-11"
+              />
+            </div>
+          </div>
+        }
+        pagination={
+          !query.isError && total > 0
+            ? { page, pageSize: PAGE_SIZE, total, visibleCount: products.length, onPageChange: setPage, itemLabel: 'sản phẩm' }
+            : undefined
+        }
+      />
 
       <ProductFormDialog
         open={form.open}

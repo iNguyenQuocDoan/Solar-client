@@ -1,18 +1,17 @@
-import { ButtonLink } from '@/components/common/ui/button'
 import { PageHeader } from '@/components/common/ui/page-header'
 import { EmptyState } from '@/components/common/ui/states'
-import { PORTALS, type PortalKey } from '@/config/portals'
 
-/* Route exists in the navigation but its screen is not part of this build yet. The way out is the portal's own home entry. */
-export function PlaceholderPage({ title, portal }: { title: string; portal: PortalKey }) {
-  const home = PORTALS[portal].groups[0]!.items[0]!
+/*
+  Trang chủ của portal chưa có màn nào đổ dữ liệu thật (kỹ thuật viên, quản lý). Các màn mock của
+  portal vẫn nằm trong pages/<portal>/ nhưng đã ẩn khỏi menu và route cho tới khi backend có API.
+*/
+export function PlaceholderPage({ title = 'Tổng quan' }: { title?: string }) {
   return (
     <>
       <PageHeader title={title} />
       <EmptyState
-        title={`${title} chưa có trong bản này`}
-        description="Mục này đã có trên menu, màn hình sẽ được bổ sung ở đợt sau."
-        action={<ButtonLink to={home.to}>{home.label}</ButtonLink>}
+        title="Chưa có chức năng nào dùng dữ liệu thật"
+        description="Các màn của vai trò này đang chờ backend có API. Màn nào nối xong sẽ hiện lại trên menu."
       />
     </>
   )

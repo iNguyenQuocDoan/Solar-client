@@ -13,12 +13,13 @@ export type SidebarVariant = 'admin' | 'technician'
 export type SidebarProps = {
   variant: SidebarVariant
   brand: { title: string; subtitle: string; logoSrc: string }
-  /** Admin: nhãn nhóm menu ("Platform Governance"). Technician: chip trạng thái sync. */
-  eyebrow: string
+  /** Admin: nhãn nhóm menu. Technician: chip trạng thái sync – bỏ trống thì không hiện. */
+  eyebrow?: string
   items: NavItem[]
   /** href của mục dashboard – chỉ active khi khớp chính xác */
   rootHref: string
-  user: { name: string; title: string; icon: string; href: string }
+  /** Người đang đăng nhập; tên lấy từ AuthProvider nếu có. */
+  user: { name: string; title: string; icon: string }
   /** Chỉ technician: Alerts / Settings ở cuối sidebar */
   footerLinks?: NavItem[]
   /** Gọi khi chọn một link – AppShell dùng để đóng drawer trên mobile */
@@ -82,14 +83,14 @@ export function Sidebar({
   return (
     <aside
       className={cn(
-        'fixed left-0 top-0 z-50 flex h-full w-72 flex-col justify-between border-r border-outline-variant/40',
+        'fixed left-0 top-0 z-50 flex h-full w-52 flex-col justify-between border-r border-outline-variant/40',
         s.aside,
         className,
       )}
     >
       <div className="flex flex-col">
         {/* Logo + tiêu đề + subtitle */}
-        <div className={cn('flex h-16 items-center gap-space-sm', s.brandRow)}>
+        <div className={cn('flex h-14 items-center gap-space-sm', s.brandRow)}>
           <img src={brand.logoSrc} alt="" className="h-8 w-auto object-contain" />
           <div className="flex min-w-0 flex-col">
             <span className={cn('truncate text-headline-md leading-none text-primary', s.brandTitle)}>
@@ -113,14 +114,14 @@ export function Sidebar({
               {eyebrow}
             </p>
           </div>
-        ) : (
+        ) : eyebrow ? (
           <div className="px-space-md py-space-sm">
             <div className="flex items-center gap-space-xs rounded-lg bg-surface-container px-space-sm py-space-xs">
               <span className="h-2 w-2 rounded-full bg-primary" />
               <span className="text-label-sm font-semibold text-on-surface">{eyebrow}</span>
             </div>
           </div>
-        )}
+        ) : null}
 
         <nav className={cn('flex flex-col', s.nav)}>
           {items.map((item) => (
@@ -159,17 +160,13 @@ export function Sidebar({
       {/* Khối user cuối sidebar */}
       {isAdmin ? (
         <div className="mx-space-xs mb-space-xs rounded-xl bg-surface-container-low/60 p-space-xs">
-          <Link
-            to={user.href}
-            onClick={onNavigate}
-            className="flex items-center gap-space-sm rounded-lg p-space-xs text-on-surface-variant transition-all hover:bg-surface-container-high hover:text-on-surface"
-          >
+          <div className="flex items-center gap-space-sm rounded-lg p-space-xs text-on-surface-variant">
             <Icon name={user.icon} className="text-[20px]" />
             <div className="flex min-w-0 flex-col">
               <span className="truncate text-label-md text-on-surface">{authUser?.name ?? user.name}</span>
               <span className="truncate text-label-sm text-outline">{user.title}</span>
             </div>
-          </Link>
+          </div>
           <button
             type="button"
             onClick={() => setChangePasswordOpen(true)}

@@ -8,32 +8,14 @@ export type NavItem = {
   badge?: number
 }
 
-/** Menu Admin – thứ tự theo CLAUDE.md, icon theo admin_dashboard/code.html */
-export const adminNav: NavItem[] = [
-  { label: 'Tổng quan', icon: 'grid_view', href: ROUTES.ADMIN.DASHBOARD },
-  { label: 'Người dùng', icon: 'manage_accounts', href: ROUTES.ADMIN.USERS },
-  { label: 'Vai trò & quyền', icon: 'admin_panel_settings', href: ROUTES.ADMIN.ROLES },
-  { label: 'Sản phẩm', icon: 'solar_power', href: ROUTES.ADMIN.PRODUCTS },
-  { label: 'Danh mục dịch vụ', icon: 'home_repair_service', href: ROUTES.ADMIN.SERVICES },
-  { label: 'Nhóm hàng', icon: 'category', href: ROUTES.ADMIN.CATEGORIES },
-  { label: 'Kho tri thức AI', icon: 'smart_toy', href: ROUTES.ADMIN.KNOWLEDGE_BASE },
-  { label: 'Cấu hình kỹ thuật', icon: 'tune', href: ROUTES.ADMIN.TECH_CONFIG },
-  { label: 'Báo cáo', icon: 'analytics', href: ROUTES.ADMIN.REPORTS },
-  { label: 'Cài đặt hệ thống', icon: 'settings', href: ROUTES.ADMIN.SETTINGS },
-]
+/*
+ * Menu chỉ liệt kê màn đã đổ dữ liệu thật từ backend (05/10/2026). Màn mock của admin
+ * (Tổng quan, Người dùng, Vai trò & quyền…) và toàn bộ màn technician vẫn giữ trong pages/
+ * nhưng ẩn khỏi menu và route; nối API xong thì thêm lại mục ở đây (icon theo code.html).
+ */
 
-/** Menu Technician – thứ tự theo CLAUDE.md, icon theo my_tasks_1/code.html */
-export const technicianNav: NavItem[] = [
-  { label: 'Tổng quan', icon: 'dashboard', href: ROUTES.TECH.DASHBOARD },
-  { label: 'Việc của tôi', icon: 'assignment_turned_in', href: ROUTES.TECH.TASKS, badge: 8 },
-  { label: 'Khảo sát', icon: 'square_foot', href: ROUTES.TECH.SURVEYS },
-  { label: 'Lắp đặt', icon: 'solar_power', href: ROUTES.TECH.INSTALLATIONS },
-  { label: 'Bảo hành & bảo trì', icon: 'build_circle', href: ROUTES.TECH.WARRANTY },
-  { label: 'Lịch làm việc', icon: 'calendar_today', href: ROUTES.TECH.SCHEDULE },
-]
+/** Menu Admin */
+export const adminNav: NavItem[] = [{ label: 'Sản phẩm', icon: 'solar_power', href: ROUTES.ADMIN.PRODUCTS }]
 
-/** Hai link cuối sidebar technician (Alerts / Settings) */
-export const technicianFooterNav: NavItem[] = [
-  { label: 'Cảnh báo', icon: 'notifications', href: ROUTES.TECH.ALERTS },
-  { label: 'Tài khoản', icon: 'account_circle', href: ROUTES.TECH.SETTINGS },
-]
+/** Menu Technician – chưa có màn nào nối API, chỉ còn trang tổng quan báo chưa có chức năng */
+export const technicianNav: NavItem[] = [{ label: 'Tổng quan', icon: 'dashboard', href: ROUTES.TECH.DASHBOARD }]

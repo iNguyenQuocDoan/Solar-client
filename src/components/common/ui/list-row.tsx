@@ -22,7 +22,7 @@ export function ListRow({
     <li
       aria-current={selected ? 'true' : undefined}
       className={cx(
-        'py-6',
+        'py-4',
         tone && cx('border-l-2 pl-4', rule),
         selected && '-mx-4 rounded-container bg-surface-2 px-4',
         className,
