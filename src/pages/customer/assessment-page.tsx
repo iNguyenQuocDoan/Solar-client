@@ -1,5 +1,6 @@
 import { useRef, useState, type FormEvent } from 'react'
 import { toast } from 'sonner'
+import { Icon } from '@/components/common/stitch-ui/Icon'
 import { ActionBar } from '@/components/common/ui/action-bar'
 import { Button } from '@/components/common/ui/button'
 import { Dialog, DialogFooter, DialogTitle } from '@/components/common/ui/dialog'
@@ -357,7 +358,7 @@ export function AssessmentPage() {
                 <PanelHeader
                   title="Địa điểm lắp đặt"
                   action={
-                    <Button size="sm" variant="ghost" disabled={submitted} onClick={() => goTo(1)}>
+                    <Button size="sm" icon="edit" disabled={submitted} onClick={() => goTo(1)}>
                       Sửa
                     </Button>
                   }
@@ -381,7 +382,7 @@ export function AssessmentPage() {
                 <PanelHeader
                   title="Số liệu mặt lắp"
                   action={
-                    <Button size="sm" variant="ghost" disabled={submitted} onClick={() => goTo(2)}>
+                    <Button size="sm" icon="edit" disabled={submitted} onClick={() => goTo(2)}>
                       Sửa
                     </Button>
                   }
@@ -409,15 +410,15 @@ export function AssessmentPage() {
           )}
         </form>
 
-        <div className="space-y-4 lg:border-l lg:border-line lg:pl-6">
-          <Notice title="Sau khi gửi">
+        <div className="space-y-4 self-start">
+          <Notice tone="info" title="Sau khi gửi">
             Yêu cầu chuyển tới bộ phận kinh doanh. Chuyên viên nhận yêu cầu sẽ liên hệ để hẹn ngày khảo sát tại công trình
             và kiểm tra lại các số đo bạn khai.
           </Notice>
           {saved.preSurveyId && !submitted && (
-            <p className="text-body text-fg-2">
+            <Notice tone="ok">
               Bản nháp <span className="tnum font-medium text-fg">{shortCode(saved.preSurveyId)}</span> đã lưu trên hệ thống.
-            </p>
+            </Notice>
           )}
         </div>
       </div>
@@ -427,13 +428,14 @@ export function AssessmentPage() {
           Quay lại
         </Button>
         {step === 2 && (
-          <Button variant="ghost" onClick={saveDraft} disabled={busy}>
+          <Button variant="ghost" bleed={false} icon="save" onClick={saveDraft} disabled={busy}>
             Lưu nháp
           </Button>
         )}
         <div className="flex w-full flex-wrap items-center gap-3 sm:ml-auto sm:w-auto">
           {formError && (
-            <span className="text-body text-danger" role="alert">
+            <span className="flex items-center gap-1.5 text-body font-medium text-danger" role="alert">
+              <Icon name="error" className="shrink-0 text-[20px]" />
               {formError}
             </span>
           )}

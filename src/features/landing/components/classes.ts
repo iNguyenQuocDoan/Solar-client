@@ -21,4 +21,4 @@ export function ctaClass(size: 'lg' | 'md' = 'lg', display = 'inline-flex') {
 }
 
 /** Link chữ trong nội dung: gạch chân để nhận ra là link khi không nhìn được màu. */
-export const TEXT_LINK = 'text-accent underline decoration-1 underline-offset-4 hover:decoration-2'
+export const TEXT_LINK = 'text-accent-fg underline decoration-1 underline-offset-4 hover:decoration-2'

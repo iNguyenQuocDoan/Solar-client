@@ -209,11 +209,11 @@ export function RegisterPage() {
           <span className="text-body-sm text-on-surface">
             {registerContent.termsBefore}
             {/* Tab mới: điều hướng tại chỗ sẽ xoá form đang điền dở. */}
-            <Link to={ROUTES.COMING_SOON} target="_blank" rel="noreferrer" className="font-semibold text-primary underline">
+            <Link to={ROUTES.COMING_SOON} target="_blank" rel="noreferrer" className="font-semibold text-accent-fg underline">
               {registerContent.termsLink}
             </Link>
             {registerContent.termsMiddle}
-            <Link to={ROUTES.COMING_SOON} target="_blank" rel="noreferrer" className="font-semibold text-primary underline">
+            <Link to={ROUTES.COMING_SOON} target="_blank" rel="noreferrer" className="font-semibold text-accent-fg underline">
               {registerContent.privacyLink}
             </Link>
             {registerContent.termsAfter}
@@ -236,7 +236,7 @@ export function RegisterPage() {
 
       <div className="mt-space-md text-center">
         <span className="text-body-md text-on-surface-variant">{registerContent.hasAccount}</span>
-        <Link to={ROUTES.LOGIN} className="text-label-lg font-bold text-primary hover:underline">
+        <Link to={ROUTES.LOGIN} className="text-label-lg font-bold text-accent-fg hover:underline">
           {registerContent.loginLink}
         </Link>
       </div>

@@ -10,13 +10,17 @@
 Repo có hai thư mục component vì hai nhánh việc dựng song song, nhưng từ 22/09/2026 cả
 hai ăn chung một hệ token trong `src/styles/globals.css`:
 
-- `src/components/common/ui` (file kebab-case, token `canvas/fg/accent…`): MỌI portal đăng nhập —
-  khách hàng `/customer`, kinh doanh `/ops`, quản trị `/admin`, kỹ thuật viên `/tech` (`/field` chuyển về `/tech`), quản lý
-  `/manage` — dùng chung shell `components/layout/app-shell.tsx` (từ 08/10/2026, theo yêu cầu "admin phải đồng bộ").
-  Nhật ký audit `UI_AUDIT.md` chỉ giữ ở máy, không có trên git.
+- `src/components/common/ui` (file kebab-case, token `canvas/fg/accent…`): MỌI portal đăng nhập. Các portal nhân viên
+  (kinh doanh `/ops`, quản trị `/admin`, kỹ thuật viên `/tech` – `/field` chuyển về `/tech` –, quản lý `/manage`) dùng chung
+  shell `components/layout/app-shell.tsx` (từ 08/10/2026, theo yêu cầu "admin phải đồng bộ"); khách hàng `/customer` có khung
+  riêng `components/layout/customer-shell.tsx` (cùng ngày, theo yêu cầu "khách hàng phải là giao diện khác"), xem "Layout chung".
+  Từ lượt màu 08/10/2026 portal kit cũng dùng icon Material Symbols (qua `Icon` của bộ Stitch) và có thêm `IconButton`,
+  `SearchInput`, `Segmented` (`segmented.tsx`), `PanelAside`, `WithTooltip` (`tooltip.tsx`). Nhật ký audit `UI_AUDIT.md` chỉ giữ
+  ở máy, không có trên git.
 - `src/components/common/stitch-ui` (file PascalCase, token `surface/on-surface/primary…`,
-  Material Symbols): trang công khai/xác thực, hộp thoại đổi mật khẩu, `/styleguide` (chỉ chạy ở dev) và các màn
+  Material Symbols): trang công khai/xác thực, hộp thoại hết phiên, `/styleguide` (chỉ chạy ở dev) và các màn
   mock đã ẩn của admin/kỹ thuật viên. Shell Stitch (`AppShell`, `Sidebar`, `TopHeader`) và `config/nav.ts` đã xoá.
+  (Hộp thoại đổi mật khẩu đã chuyển sang portal kit: `features/auth/components/ChangePasswordDialog.tsx`.)
 - Token của bộ Stitch nay chỉ là bí danh trỏ vào token của portal kit (màu nền/chữ/đường
   kẻ, bán kính, bóng, họ chữ, thang chữ). Sửa giá trị ở block portal kit là cả hai đổi theo;
   ĐỪNG đặt lại hex hay px trong block Stitch.
@@ -26,25 +30,61 @@ hai ăn chung một hệ token trong `src/styles/globals.css`:
 
 Rút ra từ 4 lượt audit giao diện; áp cho CẢ HAI bộ component.
 
-1. **Bán kính: đúng 2 giá trị** – `--radius-control` 3px cho control (nút, ô nhập, chip)
-   và `--radius-container` 6px cho khối (thẻ, panel, dialog). `rounded-full` chỉ cho
-   hình tròn thật (avatar, chấm trạng thái). Trong bộ Stitch, `rounded-lg`… đã được ánh xạ
-   sẵn về hai giá trị này.
+1. **Bán kính: một giá trị 6px cho mọi thứ** (người dùng 08/10/2026: "cái nút nào cũng phải được bo góc chứ không phải
+   chỗ có chỗ không") – nút, ô nhập, nhãn, mục menu, thẻ, dialog, thông báo, toast. Hai token `--radius-control` và
+   `--radius-container` vẫn tách tên nhưng phải bằng nhau; mọi `rounded-*` của bộ Stitch đã ánh xạ về chúng. Không bo
+   một nửa (`rounded-r-*`). Phần tử lồng sát trong khung có đệm dùng bán kính đồng tâm (ô của `Segmented`:
+   `calc(var(--radius-control) - 3px)`). `rounded-full` chỉ cho hình tròn thật (avatar, chấm, điểm mốc tiến độ).
 2. **Bóng chỉ cho lớp nổi** – dialog, drawer, menu (`--shadow-pop`). Thẻ tĩnh phân tách
    bằng nền và viền. `shadow-sm`/`shadow-md` trong bộ Stitch đã bị tắt.
 3. **Thang chữ 5 bậc**: 13 / 15 / 18 / 24 / 32 px. Không dùng `text-[Npx]` cho chữ; cỡ icon
    giữ trong nhóm 16/20/24.
-4. **Một màu nhấn** (`--accent`, xanh lá) + màu ngữ nghĩa `ok/warn/danger/info`. Không
-   thêm màu nhấn mới, không tô màu cho nhãn chỉ để trang trí.
-5. **Nhãn trạng thái**: chỉ trạng thái cần chú ý (lỗi, cảnh báo, chờ duyệt) mới có nền màu;
-   còn lại là chấm màu + chữ. Portal kit: `Badge` (`warn`/`danger` nền nhạt; `ok`/`info`/`accent` chấm màu;
-   `neutral` chấm xám) và `Count` (số đếm cạnh mục menu/tab: `attention` = việc đang chờ người xem, nền accent;
-   còn lại nền xám). Việc cần làm ngay hiện thành Badge cảnh báo ở mô tả đầu trang (vd. "2 yêu cầu chờ hơn 1 ngày").
+4. **Một màu thương hiệu, mỗi màu một vai trò** (lượt màu 08/10/2026, ghi đầy đủ ở đầu `globals.css`). Không thêm
+   màu nhấn mới, không tô màu chỉ để trang trí; thêm sắc độ thì thêm token vào `globals.css` (cả 3 khối sáng/tối),
+   không hard-code ở trang.
+   - `accent` (xanh lá): nút đặc duy nhất của trang, mục menu / tab / trang / lựa chọn đang chọn, tiến độ đã xong.
+     Sắc độ: `accent-soft` (nền "đang chọn", nền nút `soft`), `accent-muted` (mục đang mở trên rail, hover nút soft),
+     `accent-line` (viền control đang chọn / bộ lọc đang áp dụng), `accent-fg` (chữ link, nhãn nút soft).
+   - `danger` (đỏ): **thông báo và yêu cầu cần xử lý** (số đếm việc chờ, chờ nhận, quá hạn, chưa hẹn, thiếu thông số),
+     lỗi, thao tác phá huỷ. Người dùng chốt 08/10/2026: "thông báo hay yêu cầu" phải đỏ. Mỗi sự việc chỉ báo đỏ MỘT lần
+     trên một màn: số đỏ ở menu thì số trên tab cùng màn là xám; nhãn "Chờ hơn 1 ngày" trên dòng thì không thêm vạch đỏ
+     ở lề; "Chưa hẹn" ở đầu trang chi tiết thì dòng thời gian chỉ ghi chữ. Khối đỏ đặc (số đếm, nút xoá đặc) dùng
+     `danger-fill` + `on-danger`; chữ đỏ dùng `danger`.
+   - `warn` (vàng): lưu ý không đòi làm ngay (dữ liệu chưa làm mới được, không vẽ được 3D, sản phẩm đã ngừng bán).
+   - `ok` đang hoạt động / đúng tiến độ; `info` đang xử lý, thông tin cần đọc; `neutral` đã xong / không hoạt động.
+   - Bề mặt: `rail` (vùng điều hướng ngả xanh nhạt), `surface-2` (cột phụ `PanelAside`, khối quy tắc), lớp phủ
+     `hover` / `pressed` (tính từ màu chữ, đúng trên mọi nền). Mọi cặp chữ/nền đạt ≥ 4,5:1 ở cả hai chế độ, kể cả chữ
+     trên lớp phủ rê chuột (đo bằng script, 08/10/2026).
+   - Chế độ tối KHÔNG dùng xanh bạc hà sáng trên nền đen (khuôn "giao diện AI"): `accent` tối là xanh đậm 50% với chữ
+     trắng như chế độ sáng; chữ màu thương hiệu (link) luôn dùng `accent-fg`, không bao giờ `text-accent` hay
+     `text-primary` (hai token đó là màu nền nút, ở chế độ tối không đủ tương phản làm chữ).
+5. **Nhãn trạng thái**: `Badge` – mọi trạng thái là nhãn nền nhạt cùng hình dạng (bán kính 6px), màu theo vai trò ở
+   mục 4; `icon` chỉ cho thông báo cần làm ngay ở đầu trang. `Count` – số đếm cạnh mục menu/tab: `attention` = việc đang
+   chờ người xem, nền đỏ như số thông báo; còn lại nền xám. Việc cần làm ngay hiện thành Badge đỏ có icon ở mô tả đầu
+   trang (vd. "2 yêu cầu chờ hơn 1 ngày"). Nhãn trạng thái không bao giờ có viền; nút `soft` (cùng nền xanh nhạt) luôn
+   có viền xanh mảnh, nên "Đang bán" và "Mở bán lại" không trông giống nhau.
 6. **Không có chrome trang trí**: nhãn IN HOA giãn chữ, chip "badge" không mang thông tin,
    ô icon trang trí cạnh tiêu đề, mũi tên "→" dán sau nhãn link, dấu "•" nối chuỗi meta,
-   chấm nhấp nháy `animate-pulse`. Chuyển động chỉ dùng cho trạng thái tải.
+   chấm nhấp nháy `animate-pulse`. Chuyển động chỉ dùng cho trạng thái tải và phản hồi thao tác (hover, nhấn).
+   Icon (Material Symbols qua `Icon` trong `components/common/stitch-ui/Icon.tsx`, dùng cho cả hai bộ) chỉ khi nó nói
+   thêm điều chữ chưa nói hoặc giúp nhận ra nhanh: mục menu, hàng tài khoản; nút tạo (+), sửa, xoá, gọi, email, bản đồ,
+   lưu nháp, xoá bộ lọc, hiện mật khẩu, thử lại; `Notice` loại ok/warn/danger, toast, thông báo đầu trang. KHÔNG icon
+   cho nút điều hướng bước (Tiếp tục, Quay lại), nút gửi form, nút hành động chính của dòng, `Notice` loại
+   neutral/info, từng dòng chữ hay từng nhãn. Cỡ 16/20/24px (`text-[20px]`); đang chọn dùng bản tô đặc `icon-fill`.
+   Icon nằm trong ô 1em và chỉ hiện khi font đã tải (`html.icons-ready`, gắn ở `main.tsx`), nên mạng chậm không lộ chữ
+   tên icon.
 7. **Khoảng cách** theo thang 4/8/12/16/24/32/48/64 (`space-*` của bộ Stitch đã theo thang này).
 8. **Chạm**: control cao tối thiểu 44px dưới `lg`.
+9. **Thứ bậc thao tác** (`Button`): `primary` nút đặc, một nút mỗi màn; `soft` hành động chính của từng dòng / khối
+   (Nhận yêu cầu, Mở yêu cầu, Mở bán lại), nền xanh nhạt + viền; `secondary` nút trắng có viền; `ghost` thao tác kín
+   đáo (`bleed={false}` khi nằm trong cụm nút); `danger` viền đỏ cho phá huỷ hoàn tác được trong hộp thoại (Ngừng bán);
+   `danger-quiet` nút xoá lặp lại trên từng dòng (xám khi nghỉ, đỏ khi rê / focus, đứng sau vạch ngăn) để cột thao tác
+   không thành dải đỏ; `danger-solid` nút đặc đỏ chỉ để xác nhận việc không hoàn tác (Xoá). Cùng một thao tác dùng cùng
+   một kiểu ở mọi màn (vd. "Sửa" luôn là `secondary` sm có icon). Nút chỉ có icon dùng `IconButton` (`label` = aria-label,
+   `tooltip` = chữ ngắn khi label dài); tooltip thật dùng `WithTooltip` (`ui/tooltip.tsx`: hiện cả khi focus bàn phím,
+   vẽ ra body nên khung cuộn không cắt, tự né mép màn hình), không dùng `title`.
+   Link trong nội dung dùng utility `ui-link` (màu thương hiệu + gạch chân). Chọn một trong vài lựa chọn ngang hàng
+   dùng `Segmented`, không dùng dãy nút đặc. Bộ lọc đang áp dụng: `Select active`. Ô tìm: `SearchInput`.
 
 # Web portal (Stitch kit cho trang công khai, portal kit cho mọi portal đăng nhập)
 
@@ -176,17 +216,45 @@ thông báo, chip trạng thái): người dùng lấy từ `useAuth`.
 
 ## Layout chung
 
-Mọi portal đăng nhập dùng 1 shell (`components/layout/app-shell.tsx`): rail chữ cố định bên trái `w-52` (208px), `<main>` lề 24px.
-Thanh trên mảnh (`Mở menu`) hiện dưới `lg`, và cả từ `lg` khi người dùng bấm "Thu gọn menu" (nhớ trong localStorage,
-`hooks/useSidebarCollapsed.ts`); lúc đó thanh trên hiện thêm gợi ý việc đang chờ (`collapsedHint`). Cuối rail là khối tài khoản:
-tên, vai trò, rồi mỗi thao tác một hàng (Đổi mật khẩu, Giao diện, Đăng xuất). Mục đang mở có nền `accent-soft` + vạch
-accent 3px, nhóm chứa nó đậm lên; trên cùng nội dung có thanh định vị dính (`LocationBar`): portal / nhóm / mục / trang chi tiết.
+**Hai khung, theo người dùng** (08/10/2026: "khách hàng phải là 1 cái giao diện khác chứ tại sao lại y chang bên quản trị"):
+
+- **Nhân viên** – kinh doanh `/ops`, quản trị `/admin`, kỹ thuật viên `/tech`, quản lý `/manage` – dùng `app-shell.tsx`: công cụ
+  làm việc cả ngày, rail trái + bố cục gọn (mục Mật độ bên dưới).
+- **Khách hàng** `/customer` dùng `customer-shell.tsx`: đi theo website công khai – thanh trên dính với logo đầy đủ, menu chữ
+  (mục đang mở đậm + gạch chân xanh), nút tài khoản ghi tên người đang đăng nhập (chữ cái đầu + tên) và mở bảng chức năng
+  (Đổi mật khẩu, Giao diện, Đăng xuất; Esc / bấm ra ngoài thì đóng); nội dung căn giữa tối đa 1200px (`max-w-landing`), lề 16/24px như `<main>` của portal để
+  ActionBar và Table lấn mép đúng; font Be Vietnam Pro 400/500/600 (như trang công khai); trang con có dòng định vị
+  "Sản phẩm / <tên>"; điện thoại có nút Menu mở bảng gồm menu + tài khoản. Control bên trong vẫn là portal kit.
+
+Khung nhân viên (`app-shell.tsx`): rail cố định bên trái `w-52` (208px) trên nền `rail`, `<main>` lề 24px. Đầu rail là biểu tượng
+thương hiệu (`public/images/mark-96.png`, nền trong suốt) + "Smart Solar" + tên portal (ngắt dòng cân bằng `text-balance`); mỗi mục
+menu có icon (`icon` trong `config/portals.ts`, bắt buộc). Mục menu bo đủ 4 góc, thẳng mép với mọi hàng khác của rail; mục đang mở
+có nền `accent-muted` + vạch accent 3px nằm trong mép trái + icon tô đặc; nhóm chứa nó đậm lên. Rail chia ba phần: đầu, menu
+(`flex-1`, tự cuộn), chân (Thu gọn + Tài khoản, không dính đè) – nhóm Tài khoản mở hết trên màn thấp chỉ làm menu ngắn lại.
+Trên cùng nội dung có thanh định vị dính (`LocationBar`): portal / nhóm / mục / trang chi tiết.
+Dưới `lg`: thanh trên mảnh (biểu tượng + nút "Menu" có icon, kèm gợi ý việc đang chờ `collapsedHint`) mở rail thành drawer rộng
+288px (`w-72`, nút đóng là icon ✕). Từ `lg`, "Thu gọn menu" (nhớ trong localStorage, `hooks/useSidebarCollapsed.ts`) thu rail thành
+cột icon 64px: icon mục menu kèm số đếm ở góc, tooltip thật (`WithTooltip`, bên phải, hiện cả khi focus bàn phím); nút thu gọn /
+mở rộng là cùng một nút nên focus không mất.
+Cuối rail: "Thu gọn menu", rồi nhóm **Tài khoản phân tầng** (góp ý 08/10/2026 "không bày tài khoản ra, phân tầng chức năng
+nhỏ"): mặc định chỉ một hàng ghi tên người đang đăng nhập (chữ cái đầu + tên; rail hẹp nên khi chưa có họ tên thì ghi phần
+trước "@" của email; trạng thái mở / đóng nhớ trong localStorage); bấm mới mở tầng con thụt vào có đường dọc: email đầy đủ +
+vai trò (chỉ đọc), Đổi mật khẩu, Giao diện (mở thêm tầng Tự động / Sáng / Tối, lựa chọn đang dùng có nền "đang chọn"
++ dấu tích), Đăng xuất (đỏ khi rê chuột). Mọi hàng cùng chiều cao (44px drawer, 36px desktop). Rail thu gọn chỉ còn nút icon
+Tài khoản, bấm thì rail mở và nhóm mở sẵn.
+**Chỉ khách hàng thấy "Đổi mật khẩu"** (`canChangeOwnPassword` trong `config/roles.ts`, người dùng chốt 08/10/2026): tài khoản nội
+bộ do quản trị cấp; backend vẫn cho mọi vai trò gọi API, đây chỉ là ẩn ở giao diện.
+Bảng (`Table`): khi chia cột, dòng tô nền khi rê chuột, bảng lấn 12px mỗi bên để nền không cắt sát chữ; dưới lg xếp khối
+nhãn/giá trị (ô là lưới `justify-items: start`, cột nhãn tối đa 12rem). Bảng nhiều cột có cụm thao tác dùng `stack="xl"` (xếp
+khối đến 1280px: ở 1024px chia cột thì tên bị bóp còn vài chữ mỗi dòng) và gộp cột phụ vào dòng phụ của cột chính từ xl đến
+2xl, như bảng sản phẩm admin. Bảng mà cả dòng là một link (danh mục sản phẩm) phủ link tên lên cả dòng bằng `::after`,
+dòng `relative cursor-pointer`; tên giữ màu chữ chính, rê chuột mới xanh + gạch chân.
 Trang chi tiết hoặc wizard đặt mắt xích cuối bằng `usePageCrumb(tên)` (`components/layout/page-crumb.tsx`), không tự làm link "quay lại". Số đếm thật cạnh mục menu truyền qua
 `badges` của layout (`ops-layout`: hàng chờ; `AdminLayout`: tổng sản phẩm). Làm 1 lần trong layout route với `<Outlet/>`,
 KHÔNG copy rail vào từng page; layout còn được vẽ làm khung chờ (`hydrateFallbackElement`) TRƯỚC `RequireRole` nên
 query trong layout phải chờ `useAuth().user` đúng vai trò mới gọi API.
 
-Mật độ (bố cục gọn 05/10/2026, áp cho cả hai bộ component): lề nội dung 24px (`px-6`, bộ Stitch `px-space-lg`), không giới hạn bề rộng `<main>`; rail portal kit `w-52`; khoảng cách tiêu đề trang → nội dung 24px; giữa cột/khối 24px (`gap-6`); giữa các Panel 16px + đường kẻ; `ListRow` `py-4`. Thêm màn mới thì theo đúng các bậc này, đừng quay lại 48px.
+Mật độ (bố cục gọn 05/10/2026, cho khung nhân viên và cả hai bộ component; cổng khách hàng thì nội dung căn giữa tối đa 1200px): lề nội dung 24px (`px-6`, bộ Stitch `px-space-lg`), không giới hạn bề rộng `<main>`; rail portal kit `w-52`; khoảng cách tiêu đề trang → nội dung 24px; giữa cột/khối 24px (`gap-6`); giữa các Panel 16px + đường kẻ; `ListRow` `py-4`. Thêm màn mới thì theo đúng các bậc này, đừng quay lại 48px.
 
 Menu Admin (subtitle "Quản trị hệ thống"): Tổng quan, Người dùng, Vai trò & quyền, Sản phẩm,
 Danh mục dịch vụ, Nhóm hàng, Kho tri thức AI, Cấu hình kỹ thuật, Báo cáo, Cài đặt hệ thống.
@@ -287,9 +355,10 @@ Auth gọi backend .NET thật, KHÔNG còn mock. Nguồn sự thật là `docs/
   vì còn phải lưu token.
 - **Tài khoản mẫu** ở `/login` chỉ hiện khi `import.meta.env.DEV` và lấy từ
   `.env.development.local` (không commit) – xem `src/config/demoAccounts.ts`.
-- **CHỜ BACKEND**: swagger chưa có endpoint `/me`, nên tên hiển thị tạm lấy từ claim
-  `name`/`fullName` trong JWT, không có thì dùng email. Khi có `/me`, chỉ cần điền thân
-  hàm `fetchCurrentUser()` trong `src/features/auth/services/me.ts`.
+- **CHỜ BACKEND**: swagger chưa có endpoint `/me` (đọc hồ sơ người đăng nhập) và token thật chỉ có `sub`, `email`, role
+  (dò lại 08/10/2026), nên tên hiển thị trên nút tài khoản tạm là email. Tên lấy theo thứ tự: `/me` → claim
+  `fullName` / `name` / claim name của .NET / `family_name` + `given_name` → email. Khi có `/me`, chỉ cần điền thân
+  hàm `fetchCurrentUser()` trong `src/features/auth/services/me.ts`; backend thêm claim họ tên thì tên tự hiện.
 
 ## Biến thể đã chốt
 

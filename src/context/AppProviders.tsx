@@ -3,6 +3,7 @@ import type { ReactNode } from 'react'
 import { Toaster } from 'sonner'
 import { AuthProvider } from '@/context/AuthProvider'
 import { isApiError } from '@/services/api/errors'
+import { cx } from '@/utils/cx'
 
 /* Lỗi 4xx (chưa đăng nhập, không có quyền, không tìm thấy…) thử lại cũng không khỏi: báo ngay. */
 const queryClient = new QueryClient({
@@ -17,9 +18,12 @@ const queryClient = new QueryClient({
 })
 
 /*
- * Toast dùng sonner, restyle theo Toast cũ trong roles_permissions:
- * nền inverse-surface, chữ inverse-on-surface, icon tertiary-fixed.
+ * Toast (sonner, unstyled) theo màu ngữ nghĩa của hệ token (08/10/2026): nền sáng có viền + bóng lớp nổi, icon tô theo
+ * loại – thành công xanh (ok), thông tin xanh dương (info) –; lỗi và cảnh báo nằm trên nền đỏ / vàng nhạt để khác hẳn
+ * thông báo thường. Nền và viền chỉ đặt trong class theo loại (sonner ghép `toast` + `[loại]`, cx không gộp class nên
+ * đặt ở cả hai sẽ đè nhau tuỳ thứ tự CSS).
  */
+const toastSurface = 'border-line bg-canvas'
 export function AppProviders({ children }: { children: ReactNode }) {
   return (
     <QueryClientProvider client={queryClient}>
@@ -31,14 +35,19 @@ export function AppProviders({ children }: { children: ReactNode }) {
           toastOptions={{
             unstyled: true,
             classNames: {
-              toast:
-                'flex w-full items-center gap-space-sm rounded-xl bg-inverse-surface px-space-md py-3 text-inverse-on-surface shadow-level-3',
-              title: 'text-label-md',
-              description: 'text-body-sm text-inverse-on-surface/80',
-              icon: 'text-tertiary-fixed',
-              // unstyled: sonner không tô nút hành động ("Hoàn tác"), phải tự đặt.
+              toast: 'flex w-full items-start gap-3 rounded-container border px-4 py-3 font-sans text-fg shadow-pop',
+              default: toastSurface,
+              loading: toastSurface,
+              success: cx(toastSurface, '[&_[data-icon]]:text-ok'),
+              info: cx(toastSurface, '[&_[data-icon]]:text-info'),
+              warning: 'border-warn/40 bg-warn-soft [&_[data-icon]]:text-warn',
+              error: 'border-danger/40 bg-danger-soft [&_[data-icon]]:text-danger',
+              title: 'text-body font-medium',
+              description: 'mt-0.5 text-meta text-fg-2',
+              icon: 'mt-px flex shrink-0',
+              // unstyled: sonner không tô nút hành động ("Hoàn tác"), phải tự đặt; cùng kiểu nút secondary.
               actionButton:
-                'ml-auto shrink-0 rounded-lg bg-inverse-on-surface/15 px-3 py-1.5 text-label-md font-semibold text-inverse-on-surface hover:bg-inverse-on-surface/25',
+                'press ml-auto shrink-0 rounded-control border border-line-2 bg-canvas px-3 py-1 text-meta font-semibold text-fg hover:bg-surface-2',
             },
           }}
         />

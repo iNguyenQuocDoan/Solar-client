@@ -1,5 +1,5 @@
 import { Canvas, useThree } from '@react-three/fiber'
-import { useEffect, useMemo, useRef } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { PANEL_GAP_M, type RoofLayout } from '@/features/pre-surveys/components/roofLayout'
@@ -9,6 +9,7 @@ import { PANEL_GAP_M, type RoofLayout } from '@/features/pre-surveys/components/
   (RoofSimulation nạp bằng React.lazy). Đơn vị là mét. Trục thế giới: +X là Đông, -Z là Bắc.
   Vẽ theo yêu cầu (frameloop "demand"): chỉ vẽ lại khi kéo xoay hoặc số liệu đổi, không tốn CPU khi đứng yên.
   Màu vật liệu là hex cố định vì three.js không đọc được token oklch; nền canvas trong suốt nên theo theme trang.
+  Mặt đất và chữ hướng đổi theo giao diện sáng / tối (GROUND), nếu không đĩa đất sáng chói giữa trang nền tối.
 */
 
 export type RoofView = 'angle' | 'top' | 'front'
@@ -22,8 +23,30 @@ const COLORS = {
   panel: '#1f2b40',
   frame: '#c4cad2',
   cell: '#33435f',
-  ground: '#e3e7de',
-  letter: '#2f3a2c',
+}
+
+/* Mặt đất + chữ hướng theo giao diện: sáng thì đất xám nhạt chữ tối, tối thì đất xám đậm chữ sáng (cùng tông trang). */
+const GROUND = {
+  light: { ground: '#e3e7de', letter: '#2f3a2c' },
+  dark: { ground: '#2a2e29', letter: '#c9d1c7' },
+}
+
+/* Trang đang ở giao diện tối? Đọc color-scheme của <html> (globals.css đặt theo hệ thống hoặc data-theme), theo dõi khi đổi. */
+function useDarkScheme() {
+  const read = () => getComputedStyle(document.documentElement).colorScheme.includes('dark')
+  const [dark, setDark] = useState(read)
+  useEffect(() => {
+    const update = () => setDark(read())
+    const media = window.matchMedia('(prefers-color-scheme: dark)')
+    media.addEventListener('change', update)
+    const observer = new MutationObserver(update)
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] })
+    return () => {
+      media.removeEventListener('change', update)
+      observer.disconnect()
+    }
+  }, [])
+  return dark
 }
 
 function rise(layout: RoofLayout) {
@@ -149,12 +172,12 @@ function Roof({ layout }: { layout: RoofLayout }) {
 }
 
 /* Chữ chỉ hướng trên mặt đất (B, Đ, N, T), vẽ bằng canvas để không phải tải font 3D. */
-function Letter({ text, position, size }: { text: string; position: [number, number, number]; size: number }) {
+function Letter({ text, color, position, size }: { text: string; color: string; position: [number, number, number]; size: number }) {
   const texture = useMemo(() => {
     const canvas = document.createElement('canvas')
     canvas.width = canvas.height = 128
     const ctx = canvas.getContext('2d')!
-    ctx.fillStyle = COLORS.letter
+    ctx.fillStyle = color
     ctx.font = '600 92px system-ui, sans-serif'
     ctx.textAlign = 'center'
     ctx.textBaseline = 'middle'
@@ -162,7 +185,7 @@ function Letter({ text, position, size }: { text: string; position: [number, num
     const t = new THREE.CanvasTexture(canvas)
     t.colorSpace = THREE.SRGBColorSpace
     return t
-  }, [text])
+  }, [text, color])
   useEffect(() => () => texture.dispose(), [texture])
   return (
     <sprite position={position} scale={[size, size, 1]}>
@@ -173,18 +196,19 @@ function Letter({ text, position, size }: { text: string; position: [number, num
 
 /* Chữ hướng đặt gần nhà (không theo mép đất) để vẫn nằm trong khung ở góc nhìn từ trên. */
 function Ground({ radius, letterRadius }: { radius: number; letterRadius: number }) {
+  const palette = useDarkScheme() ? GROUND.dark : GROUND.light
   const r = letterRadius
   const size = Math.max(letterRadius * 0.12, 2)
   return (
     <>
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.02, 0]}>
         <circleGeometry args={[radius, 64]} />
-        <meshStandardMaterial color={COLORS.ground} />
+        <meshStandardMaterial color={palette.ground} />
       </mesh>
-      <Letter text="B" position={[0, size / 2, -r]} size={size} />
-      <Letter text="N" position={[0, size / 2, r]} size={size} />
-      <Letter text="Đ" position={[r, size / 2, 0]} size={size} />
-      <Letter text="T" position={[-r, size / 2, 0]} size={size} />
+      <Letter text="B" color={palette.letter} position={[0, size / 2, -r]} size={size} />
+      <Letter text="N" color={palette.letter} position={[0, size / 2, r]} size={size} />
+      <Letter text="Đ" color={palette.letter} position={[r, size / 2, 0]} size={size} />
+      <Letter text="T" color={palette.letter} position={[-r, size / 2, 0]} size={size} />
     </>
   )
 }

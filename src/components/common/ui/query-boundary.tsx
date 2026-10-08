@@ -1,5 +1,6 @@
 import type { UseQueryResult } from "@tanstack/react-query";
 import type { ReactNode } from "react";
+import { Notice } from "@/components/common/ui/lists";
 import { ErrorState, PageSkeleton } from "@/components/common/ui/states";
 import { isApiError } from "@/services/api/errors";
 
@@ -38,16 +39,14 @@ export function QueryBoundary<T>({
   return (
     <>
       {query.isError && (
-        <p role="status" className="mb-4 border-l-2 border-warn pl-3 text-meta text-fg-2">
-          Không làm mới được dữ liệu, đang hiện bản tải lúc trước.{" "}
-          <button
-            type="button"
-            className="tap font-medium text-fg underline underline-offset-4"
-            onClick={() => query.refetch()}
-          >
-            Thử lại
-          </button>
-        </p>
+        <div role="status" className="mb-4">
+          <Notice tone="warn">
+            Không làm mới được dữ liệu, đang hiện bản tải lúc trước.{" "}
+            <button type="button" className="tap ui-link font-medium" onClick={() => query.refetch()}>
+              Thử lại
+            </button>
+          </Notice>
+        </div>
       )}
       {children(query.data)}
     </>

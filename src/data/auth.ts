@@ -48,7 +48,7 @@ export const loginContent = {
   expiredHint: "Xem hộp thoại hết phiên",
   noAccount: "Chưa có tài khoản? ",
   registerLink: "Đăng ký ngay",
-  toastSuccess: "Thao tác thành công",
+  toastSuccess: "Đã đăng nhập",
 } as const;
 
 /** /register */
@@ -74,7 +74,7 @@ export const registerContent = {
   submitting: "Đang tạo tài khoản...",
   hasAccount: "Đã có tài khoản? ",
   loginLink: "Đăng nhập",
-  toastSuccess: "Thao tác thành công",
+  toastSuccess: "Đã tạo tài khoản. Kiểm tra email để kích hoạt.",
 } as const;
 
 /** /forgot-password */
@@ -87,7 +87,7 @@ export const forgotContent = {
   submit: "Gửi hướng dẫn",
   submitting: "Đang gửi...",
   cancel: "Hủy",
-  toastSuccess: "Thao tác thành công",
+  toastSuccess: "Đã gửi yêu cầu đặt lại mật khẩu",
 } as const;
 
 /** /reset-password */
@@ -106,7 +106,7 @@ export const resetContent = {
   failedMessage: "Liên kết đã hết hạn hoặc không còn đúng.",
   requestNewLink: "Gửi lại liên kết",
   success: "Mật khẩu của bạn đã được cập nhật thành công. Đang chuyển hướng...",
-  toastSuccess: "Thao tác thành công",
+  toastSuccess: "Đã đặt lại mật khẩu",
 } as const;
 
 /** /verify-email */
@@ -131,7 +131,8 @@ export const verifyContent = {
   wrongEmail: "Sai email đăng ký? ",
   registerAgain: "Đăng ký lại với email khác",
   resendSeconds: 60,
-  toastSuccess: "Thao tác thành công",
+  toastVerified: "Đã xác minh email",
+  toastResent: "Đã gửi lại email xác minh",
 } as const;
 
 /** /403 */

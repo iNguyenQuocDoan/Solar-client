@@ -68,7 +68,7 @@ export function ForgotPasswordPage() {
             role="status"
             className="flex items-start gap-2.5 rounded-lg bg-surface-container-low p-space-sm text-on-surface-variant"
           >
-            <Icon name="info" className="mt-0.5 shrink-0 text-[20px] text-primary" />
+            <Icon name="info" className="mt-0.5 shrink-0 text-[20px] text-accent-fg" />
             <span className="text-body-sm">{forgotContent.notice}</span>
           </div>
         )}

@@ -56,7 +56,7 @@ export function VerifyEmailPage() {
           return
         }
         setVerifyState('success')
-        toast.success(verifyContent.toastSuccess)
+        toast.success(verifyContent.toastVerified)
       } catch (error) {
         setVerifyState('error')
         setVerifyError(errorMessage(error, verifyContent.failedMessage))
@@ -79,7 +79,7 @@ export function VerifyEmailPage() {
     try {
       await resendMutation.mutateAsync({ email: resendEmail })
       setSecondsLeft(verifyContent.resendSeconds)
-      toast.success(verifyContent.toastSuccess)
+      toast.success(verifyContent.toastResent)
     } catch (error) {
       toast.error(errorMessage(error))
     }
@@ -89,7 +89,7 @@ export function VerifyEmailPage() {
   if (verifyState === 'pending') {
     return (
       <AuthCard className="items-center text-center">
-        <Icon name="progress_activity" className="mb-space-md animate-spin text-[42px] text-primary" />
+        <Icon name="progress_activity" className="mb-space-md animate-spin text-[42px] text-accent-fg" />
         <h1 className="text-headline-xl text-on-surface">{verifyContent.verifyingTitle}</h1>
       </AuthCard>
     )
@@ -169,7 +169,7 @@ export function VerifyEmailPage() {
 
   return (
     <AuthCard className="items-center text-center">
-      <div className="relative mb-space-md flex h-20 w-20 items-center justify-center rounded-full bg-surface-container-high text-primary shadow-sm">
+      <div className="relative mb-space-md flex h-20 w-20 items-center justify-center rounded-full bg-surface-container-high text-accent-fg shadow-sm">
         <Icon name="mark_email_unread" className="text-[42px]" />
       </div>
 
@@ -178,7 +178,7 @@ export function VerifyEmailPage() {
 
       {/* Mở trang trực tiếp (không có ?email): hỏi email để gửi lại, thay vì vừa ghi "đã gửi tới email" vừa báo lỗi thiếu email. */}
       {emailParam ? (
-        <div className="mb-space-lg inline-flex items-center gap-2 rounded-xl bg-surface-container px-4 py-2 text-headline-md text-primary">
+        <div className="mb-space-lg inline-flex items-center gap-2 rounded-xl bg-surface-container px-4 py-2 text-headline-md text-accent-fg">
           <Icon name="alternate_email" className="text-[20px]" />
           <span className="font-bold">{maskEmail(emailParam)}</span>
         </div>
@@ -230,7 +230,7 @@ export function VerifyEmailPage() {
       <div className="mt-space-xl w-full max-w-md border-t border-surface-container pt-space-md text-center">
         <span className="text-body-sm text-on-surface-variant">
           {verifyContent.wrongEmail}
-          <Link to={ROUTES.REGISTER} className="font-bold text-primary hover:underline">
+          <Link to={ROUTES.REGISTER} className="font-bold text-accent-fg hover:underline">
             {verifyContent.registerAgain}
           </Link>
         </span>

@@ -3,9 +3,11 @@ import { useEffect, useId, useState } from 'react'
 import { useForm, type UseFormRegisterReturn } from 'react-hook-form'
 import { toast } from 'sonner'
 import { z } from 'zod'
+import { Icon } from '@/components/common/stitch-ui/Icon'
 import { Button } from '@/components/common/ui/button'
 import { DialogFooter, DialogTitle, ModalDialog } from '@/components/common/ui/dialog'
 import { Field, Input } from '@/components/common/ui/field'
+import { Notice } from '@/components/common/ui/lists'
 import { useChangePasswordMutation } from '@/features/auth/hooks/useAuthMutations'
 import { errorMessage, isApiError } from '@/services/api/errors'
 import { changePasswordContent, isStrongPassword, passwordRules, registerContent } from '@/data/auth'
@@ -92,14 +94,18 @@ function ChangePasswordForm({ onDone, onBusyChange }: { onDone: () => void; onBu
         <PasswordField id={f('current')} label={changePasswordContent.currentLabel} autoComplete="current-password" error={errors.currentPassword?.message} field={register('currentPassword')} />
         <PasswordField id={f('new')} label={changePasswordContent.newLabel} autoComplete="new-password" error={errors.newPassword?.message} field={register('newPassword')} />
         <PasswordField id={f('confirm')} label={changePasswordContent.confirmLabel} autoComplete="new-password" error={errors.confirm?.message} field={register('confirm')} />
-        <div>
-          <p className="text-meta text-fg-2">{registerContent.rulesTitle}</p>
-          <ul className="mt-1 grid gap-1 text-meta sm:grid-cols-2">
+        {/* Quy tắc đạt: dấu tích tròn màu xanh (ok); chưa đạt: vòng tròn xám. Chữ đọc thêm "(đã đạt)" cho trình đọc màn hình. */}
+        <div className="rounded-container bg-surface-2 px-4 py-3">
+          <p className="text-meta font-medium text-fg-2">{registerContent.rulesTitle}</p>
+          <ul className="mt-2 grid gap-1.5 text-meta sm:grid-cols-2">
             {passwordRules.map((rule) => {
               const passed = rule.test(newPassword)
               return (
                 <li key={rule.id} className={cx('flex items-center gap-2', passed ? 'text-fg' : 'text-fg-2')}>
-                  <span aria-hidden className={cx('size-2 shrink-0 rounded-full', passed ? 'bg-ok' : 'bg-line-2')} />
+                  <Icon
+                    name={passed ? 'check_circle' : 'radio_button_unchecked'}
+                    className={cx('shrink-0 text-[16px]', passed ? 'icon-fill text-ok' : 'text-fg-3')}
+                  />
                   {rule.label}
                   <span className="sr-only">{passed ? '(đã đạt)' : '(chưa đạt)'}</span>
                 </li>
@@ -109,9 +115,9 @@ function ChangePasswordForm({ onDone, onBusyChange }: { onDone: () => void; onBu
         </div>
       </div>
       {formError && (
-        <p role="alert" className="mt-4 border-l-2 border-danger pl-3 text-body text-danger">
-          {formError}
-        </p>
+        <div role="alert" className="mt-4">
+          <Notice tone="danger">{formError}</Notice>
+        </div>
       )}
       <DialogFooter>
         <Button variant="ghost" disabled={submitting} onClick={onDone}>
@@ -125,7 +131,7 @@ function ChangePasswordForm({ onDone, onBusyChange }: { onDone: () => void; onBu
   )
 }
 
-/* Ô mật khẩu của portal kit với nút chữ Hiện / Ẩn (không dùng icon, cùng kiểu với rail). */
+/* Ô mật khẩu của portal kit với nút Hiện / Ẩn (icon con mắt + chữ, cùng kiểu với các nút có icon khác). */
 function PasswordField({
   id,
   label,
@@ -144,7 +150,15 @@ function PasswordField({
     <Field label={label} htmlFor={id} error={error}>
       <div className="flex gap-2">
         <Input id={id} type={shown ? 'text' : 'password'} autoComplete={autoComplete} aria-invalid={error ? true : undefined} {...field} />
-        <Button variant="ghost" className="mx-0 shrink-0" aria-pressed={shown} aria-label={shown ? `Ẩn ${label.toLowerCase()}` : `Hiện ${label.toLowerCase()}`} onClick={() => setShown((v) => !v)}>
+        <Button
+          variant="ghost"
+          bleed={false}
+          icon={shown ? 'visibility_off' : 'visibility'}
+          className="shrink-0"
+          aria-pressed={shown}
+          aria-label={shown ? `Ẩn ${label.toLowerCase()}` : `Hiện ${label.toLowerCase()}`}
+          onClick={() => setShown((v) => !v)}
+        >
           {shown ? 'Ẩn' : 'Hiện'}
         </Button>
       </div>

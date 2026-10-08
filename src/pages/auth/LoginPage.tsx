@@ -117,7 +117,7 @@ export function LoginPage() {
               {loginContent.emailLabel} <RequiredMark />
             </span>
             {emailIsValid && (
-              <span className="flex items-center gap-1 text-label-sm text-primary">
+              <span className="flex items-center gap-1 text-label-sm text-accent-fg">
                 <Icon name="check_circle" className="text-[14px]" /> {loginContent.emailValid}
               </span>
             )}
@@ -128,7 +128,7 @@ export function LoginPage() {
             autoComplete="email"
             leadingIcon="mail"
             placeholder={loginContent.emailPlaceholder}
-            trailing={emailIsValid ? <Icon name="check_circle" className="text-[20px] text-primary" /> : undefined}
+            trailing={emailIsValid ? <Icon name="check_circle" className="text-[20px] text-accent-fg" /> : undefined}
             {...register('email')}
           />
           {errors.email && <span className="text-body-sm text-error">{errors.email.message}</span>}
@@ -139,7 +139,7 @@ export function LoginPage() {
             <label htmlFor="login-password" className="text-label-lg text-on-surface">
               {loginContent.passwordLabel} <RequiredMark />
             </label>
-            <Link to={ROUTES.FORGOT_PASSWORD} className="text-label-sm font-semibold text-primary hover:underline">
+            <Link to={ROUTES.FORGOT_PASSWORD} className="text-label-sm font-semibold text-accent-fg hover:underline">
               {loginContent.forgotLink}
             </Link>
           </div>
@@ -188,7 +188,7 @@ export function LoginPage() {
                 onClick={() => void doSignIn(account.email, account.password, true)}
                 className="flex flex-col rounded-lg bg-surface-container px-2.5 py-1.5 text-left transition-colors hover:bg-surface-container-high disabled:opacity-60"
               >
-                <span className="text-label-sm font-semibold text-primary">{account.roleLabel}</span>
+                <span className="text-label-sm font-semibold text-accent-fg">{account.roleLabel}</span>
                 <span className="text-label-sm font-normal text-on-surface-variant">{account.description}</span>
               </button>
             ))}
@@ -206,7 +206,7 @@ export function LoginPage() {
 
       <div className="mt-space-md text-center">
         <span className="text-body-md text-on-surface-variant">{loginContent.noAccount}</span>
-        <Link to={ROUTES.REGISTER} className="text-label-lg font-bold text-primary hover:underline">
+        <Link to={ROUTES.REGISTER} className="text-label-lg font-bold text-accent-fg hover:underline">
           {loginContent.registerLink}
         </Link>
       </div>

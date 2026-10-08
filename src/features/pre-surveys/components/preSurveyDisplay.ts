@@ -55,11 +55,11 @@ export function surfaceTypeLabel(value: number | null | undefined) {
 }
 
 /*
-  Màu theo việc còn phải làm (Badge): "Chờ nhận" cần người nhận nên tô nền cảnh báo; đã nhận / đang xem xét
+  Màu theo việc còn phải làm (Badge): "Chờ nhận" là yêu cầu cần người nhận nên tô đỏ; đã nhận / đang xem xét
   là đang xử lý (chấm xanh dương); đã hẹn là đúng tiến độ (chấm xanh lá); xong hoặc huỷ thì chấm xám.
 */
 const STATUS_META: Record<SurveyRequestStatus, { label: string; tone: Tone }> = {
-  1: { label: 'Chờ nhận', tone: 'warn' },
+  1: { label: 'Chờ nhận', tone: 'danger' },
   2: { label: 'Đã nhận', tone: 'info' },
   3: { label: 'Đang xem xét', tone: 'info' },
   4: { label: 'Đã hẹn khảo sát', tone: 'ok' },

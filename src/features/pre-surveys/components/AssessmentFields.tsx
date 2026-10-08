@@ -1,4 +1,5 @@
 import { useState, type ReactNode } from 'react'
+import { Icon } from '@/components/common/stitch-ui/Icon'
 import { Field, Input, Radio, Textarea } from '@/components/common/ui/field'
 import { COMPASS_GRID, CUSTOMER_TYPES, SURFACE_TYPES } from '@/features/pre-surveys/components/preSurveyDisplay'
 import type { FormErrors, ProfileForm, SiteForm, SurfaceForm } from '@/features/pre-surveys/components/assessmentForm'
@@ -18,8 +19,9 @@ function CoordinateFields({ value, errors, onChange }: FieldsProps<SiteForm>) {
   const shown = open || hasError
   return (
     <details className="sm:col-span-2" open={shown} onToggle={(e) => setOpen(e.currentTarget.open)}>
-      {/* `tap` là inline-flex nên mất mũi tên mặc định của summary; chữ đổi theo trạng thái thay cho mũi tên. */}
-      <summary className="tap w-fit cursor-pointer text-body font-medium text-accent-fg hover:underline">
+      {/* `tap` là inline-flex nên mất mũi tên mặc định của summary: icon mở / thu cùng chữ đổi theo trạng thái thay cho mũi tên. */}
+      <summary className="tap w-fit cursor-pointer gap-1 text-body font-medium text-accent-fg underline-offset-4 hover:underline">
+        <Icon name={shown ? 'expand_less' : 'add_location_alt'} className="text-[20px]" />
         {shown ? 'Ẩn toạ độ' : 'Thêm toạ độ (không bắt buộc)'}
       </summary>
       <div className="mt-4 grid gap-4 sm:grid-cols-2">

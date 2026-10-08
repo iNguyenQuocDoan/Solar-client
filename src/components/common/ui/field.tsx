@@ -1,4 +1,5 @@
 import type { InputHTMLAttributes, ReactNode, SelectHTMLAttributes, TextareaHTMLAttributes } from 'react'
+import { Icon } from '@/components/common/stitch-ui/Icon'
 import { cx } from '@/utils/cx'
 
 /* `required`: dấu * màu đỏ sau nhãn (chỉ để nhìn; ô nhập tự đặt aria-required). */
@@ -43,8 +44,18 @@ export function Field({
 
 type ControlSize = 'sm' | 'md'
 
-const control =
-  'rounded-control border border-line-2 bg-transparent text-body text-fg placeholder:text-fg-3 focus:border-fg disabled:border-line disabled:bg-surface-2 disabled:text-fg-3 aria-invalid:border-danger'
+/*
+  Trạng thái ô nhập: rê chuột viền đậm lên; focus là MỘT vòng liền 2px màu thương hiệu (viền 1px + outline 1px sát viền,
+  thay cho vòng focus chung cách 2px trông thành hai vòng); lỗi viền đỏ, vòng focus cũng đỏ; tắt thì nền xám.
+  Nền trắng (canvas) để ô nhập luôn trông là chỗ điền được, kể cả trên nền xám.
+*/
+/* Màu chữ, viền, nền KHÔNG nằm trong `shape`: cx không gộp class, hai màu chữ cùng lúc thì lớp nào thắng tuỳ thứ tự CSS. */
+const shape = 'rounded-control border text-body placeholder:text-fg-3 disabled:border-line disabled:bg-surface-2 disabled:text-fg-3'
+const states =
+  'not-disabled:hover:border-fg-3 focus:border-accent focus-visible:outline-1 focus-visible:outline-offset-0 focus-visible:outline-accent aria-invalid:border-danger aria-invalid:outline-danger not-disabled:aria-invalid:hover:border-danger'
+const control = cx(shape, states, 'border-line-2 bg-canvas text-fg')
+/* Bộ lọc đang áp dụng (giá trị khác mặc định): nền + viền + chữ màu thương hiệu để thấy ngay đang lọc theo gì. */
+const controlActive = cx(shape, states, 'border-accent-line bg-accent-soft font-medium text-accent-fg')
 
 /* Same heights as Button: 44px touch target below the desktop breakpoint. sm is for dense rows (pagination, rail). */
 const heights: Record<ControlSize, string> = {
@@ -59,13 +70,30 @@ export function Input({ className, size = 'md', ...rest }: Omit<InputHTMLAttribu
   return <input className={cx(control, width(className), heights[size], 'px-3', className)} {...rest} />
 }
 
+/* Ô tìm kiếm: icon kính lúp ở đầu ô để nhận ra ngay là ô tìm, không chỉ dựa vào chữ gợi ý. */
+export function SearchInput({ className, size = 'md', ...rest }: Omit<InputHTMLAttributes<HTMLInputElement>, 'size' | 'type'> & { size?: ControlSize }) {
+  return (
+    <span className={cx('relative block', width(className), className)}>
+      <Icon name="search" className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-[20px] text-fg-3" />
+      <input type="search" className={cx(control, 'w-full pr-3 pl-10', heights[size])} {...rest} />
+    </span>
+  )
+}
+
 export function Textarea({ className, rows = 4, ...rest }: TextareaHTMLAttributes<HTMLTextAreaElement>) {
   return <textarea rows={rows} className={cx(control, width(className), 'px-3 py-2', className)} {...rest} />
 }
 
-export function Select({ className, size = 'md', children, ...rest }: Omit<SelectHTMLAttributes<HTMLSelectElement>, 'size'> & { size?: ControlSize }) {
+/** `active`: ô lọc đang có giá trị khác "Tất cả…", tô màu để thấy bộ lọc đang áp dụng. */
+export function Select({
+  className,
+  size = 'md',
+  active,
+  children,
+  ...rest
+}: Omit<SelectHTMLAttributes<HTMLSelectElement>, 'size'> & { size?: ControlSize; active?: boolean }) {
   return (
-    <select className={cx(control, width(className), heights[size], 'px-3 pr-8', className)} {...rest}>
+    <select className={cx(active ? controlActive : control, width(className), heights[size], 'cursor-pointer px-3 pr-8', className)} {...rest}>
       {children}
     </select>
   )

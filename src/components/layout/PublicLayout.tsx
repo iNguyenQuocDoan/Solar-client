@@ -52,19 +52,25 @@ export function PublicLayout() {
             />
           </Link>
           <nav aria-label="Liên kết chính" className="flex items-center gap-6">
+            {/* Trang đang mở: chữ đậm màu chính + gạch chân màu thương hiệu, không chỉ đậm hơn một chút. */}
             <NavLink
               to={ROUTES.PRODUCTS}
-              className={({ isActive }) => cx('tap ld-body hover:text-fg', isActive ? 'text-fg' : 'text-fg-2')}
+              className={({ isActive }) =>
+                cx(
+                  'tap ld-body underline-offset-8 hover:text-fg',
+                  isActive ? 'font-semibold text-fg underline decoration-accent decoration-2' : 'text-fg-2 hover:underline hover:decoration-line-2',
+                )
+              }
             >
               {header.products}
             </NavLink>
-            <Link to={projectsLink} className="hidden ld-body text-fg-2 hover:text-fg lg:inline">
+            <Link to={projectsLink} className="hidden ld-body text-fg-2 underline-offset-8 hover:text-fg hover:underline hover:decoration-line-2 lg:inline">
               {header.projects}
             </Link>
-            <Link to={capabilityLink} className="hidden ld-body text-fg-2 hover:text-fg lg:inline">
+            <Link to={capabilityLink} className="hidden ld-body text-fg-2 underline-offset-8 hover:text-fg hover:underline hover:decoration-line-2 lg:inline">
               {header.capability}
             </Link>
-            <Link to={account.to} className="tap ld-body text-fg-2 hover:text-fg">
+            <Link to={account.to} className="tap ld-body text-fg-2 underline-offset-8 hover:text-fg hover:underline hover:decoration-line-2">
               {account.label}
             </Link>
             {!user && (

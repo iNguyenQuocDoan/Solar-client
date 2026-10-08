@@ -1,7 +1,7 @@
 import { Component, lazy, Suspense, useMemo, useState, type ReactNode } from 'react'
-import { Button } from '@/components/common/ui/button'
 import { Field, Select } from '@/components/common/ui/field'
 import { Notice } from '@/components/common/ui/lists'
+import { Segmented, type SegmentedOption } from '@/components/common/ui/segmented'
 import { EmptyState, Skeleton } from '@/components/common/ui/states'
 import { Facts } from '@/features/pre-surveys/components/Facts'
 import { directionLabel } from '@/features/pre-surveys/components/preSurveyDisplay'
@@ -55,7 +55,8 @@ class SceneBoundary extends Component<{ children: ReactNode }, { failed: boolean
   }
 }
 
-const VIEWS: { value: RoofView; label: string }[] = [
+/* Không icon: ba nhãn chữ vừa một hàng trên điện thoại 360px. */
+const VIEWS: SegmentedOption<RoofView>[] = [
   { value: 'angle', label: 'Góc nghiêng' },
   { value: 'top', label: 'Từ trên' },
   { value: 'front', label: 'Nhìn vào mặt mái' },
@@ -134,12 +135,9 @@ export function RoofSimulation({
       )}
 
       {webgl && (
-        <div className="flex flex-wrap items-center gap-2">
-          {VIEWS.map((v) => (
-            <Button key={v.value} size="sm" variant={view === v.value ? 'primary' : 'secondary'} aria-pressed={view === v.value} onClick={() => setView(v.value)}>
-              {v.label}
-            </Button>
-          ))}
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+          {/* Góc nhìn là một lựa chọn trong ba, không phải ba hành động: nhóm chọn thay cho nút đặc tranh với nút chính của trang. */}
+          <Segmented label="Góc nhìn mô phỏng" options={VIEWS} value={view} onChange={setView} className="w-full sm:w-auto" />
           <span className="text-meta text-fg-3">Kéo để xoay; phóng to bằng Ctrl + lăn chuột hoặc chụm hai ngón.</span>
         </div>
       )}

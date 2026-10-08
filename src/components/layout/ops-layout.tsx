@@ -10,7 +10,7 @@ import { ROUTES } from '@/routes/paths'
 
 /*
   Children replace the Outlet while the first page module is still loading, so the rail never pops in late.
-  Số đếm trên menu lấy từ chính API hàng chờ (cùng cache với trang, tự làm mới mỗi phút). Tô màu nhấn khi có việc
+  Số đếm trên menu lấy từ chính API hàng chờ (cùng cache với trang, tự làm mới mỗi phút). Tô đỏ khi có việc
   đang chờ: còn yêu cầu chưa ai nhận, hoặc yêu cầu đã nhận mà chưa hẹn ngày khảo sát.
 */
 export function OpsLayout({ children }: { children?: ReactNode }) {

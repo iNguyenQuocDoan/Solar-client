@@ -11,10 +11,26 @@
   Theme follows the system preference and can be pinned with
   <html data-theme="light|dark">.
 
+  Colour roles (08/10/2026 – mỗi màu một vai trò, dùng giống nhau ở mọi màn):
+    accent        thương hiệu + hành động chính: nút đặc duy nhất của trang, vạch mục menu đang mở,
+                  tab / trang / bộ lọc đang chọn, tiến độ đã xong
+    accent-soft   nền "đang chọn" trong nội dung, nền của nút hành động phụ mang màu (Button soft)
+    accent-muted  nền mục đang mở trên rail (rail đã ngả xanh nên cần đậm hơn accent-soft), hover của nút soft
+    accent-line   viền của control đang chọn / bộ lọc đang áp dụng
+    accent-fg     chữ màu thương hiệu trên nền sáng: link, nhãn nút soft, icon mục đang mở
+    ok            đúng tiến độ, đang hoạt động (đang bán, đã hẹn)
+    info          đang xử lý (đã nhận, đang xem xét), thông tin trung tính cần đọc
+    danger        thông báo / yêu cầu cần xử lý (số đếm việc chờ, chờ nhận, quá hạn, chưa hẹn, thiếu thông số), lỗi,
+                  thao tác phá huỷ (xoá); không dùng cho thao tác thường
+    warn          lưu ý không đòi làm ngay (dữ liệu chưa làm mới được, không vẽ được 3D, sản phẩm đã ngừng bán)
+    rail          bề mặt vùng điều hướng, tách menu khỏi nội dung
+    hover/pressed lớp phủ trung tính khi rê chuột / nhấn, dùng được trên mọi bề mặt (định nghĩa trong @theme)
+
   Text colour rule:
     fg    primary text, headings, figures
     fg-2  secondary body: descriptions, key labels, supporting sentences
     fg-3  tertiary meta: timestamps, captions, units, hints, sub-lines in lists
+  Mọi cặp chữ/nền ở trên đạt ≥ 4,5:1 ở cả hai chế độ (đo 08/10/2026), kể cả fg-3 trên rail.
 */
 :root {
   color-scheme: light;
@@ -22,6 +38,7 @@
   --canvas: oklch(98.6% 0.003 110);
   --surface-2: oklch(95.6% 0.006 110);
   --surface-3: oklch(92.5% 0.008 110);
+  --rail: oklch(96% 0.012 155);
   --line: oklch(87% 0.01 110);
   /* Control boundary: 3.5:1 on canvas, 3.2:1 on surface-2 (WCAG 1.4.11). */
   --line-2: oklch(62% 0.014 120);
@@ -33,6 +50,8 @@
   --accent: #0d5c3a;
   --accent-hover: #0a4a2f;
   --accent-soft: oklch(94.5% 0.035 160);
+  --accent-muted: oklch(91.5% 0.05 160);
+  --accent-line: oklch(62% 0.1 160);
   --accent-fg: oklch(38% 0.09 160);
   --on-accent: oklch(98.5% 0.01 150);
 
@@ -41,7 +60,10 @@
   --warn: oklch(52% 0.13 70);
   --warn-soft: oklch(95.5% 0.05 80);
   --danger: oklch(50% 0.18 27);
+  --danger-fill: oklch(50% 0.18 27);
+  --danger-hover: oklch(44% 0.17 27);
   --danger-soft: oklch(95.5% 0.03 25);
+  --on-danger: oklch(98.5% 0.01 25);
   --info: oklch(48% 0.14 255);
   --info-soft: oklch(95% 0.03 255);
 
@@ -56,6 +78,7 @@
     --canvas: oklch(17% 0.006 130);
     --surface-2: oklch(22% 0.008 130);
     --surface-3: oklch(27% 0.009 130);
+    --rail: oklch(20.5% 0.01 150);
     --line: oklch(30% 0.01 130);
     --line-2: oklch(52% 0.012 130);
 
@@ -63,22 +86,27 @@
     --fg-2: oklch(74% 0.012 150);
     --fg-3: oklch(68% 0.012 150);
 
-    --accent: oklch(74% 0.14 160);
-    --accent-hover: oklch(80% 0.14 160);
+    --accent: oklch(50% 0.11 160);
+    --accent-hover: oklch(54% 0.11 160);
     --accent-soft: oklch(28% 0.045 160);
-    --accent-fg: oklch(80% 0.13 160);
-    --on-accent: oklch(18% 0.04 160);
+    --accent-muted: oklch(32% 0.06 160);
+    --accent-line: oklch(52% 0.09 160);
+    --accent-fg: oklch(78% 0.1 160);
+    --on-accent: oklch(98.5% 0.01 150);
 
-    --ok: oklch(76% 0.13 155);
+    --ok: oklch(76% 0.1 155);
     --ok-soft: oklch(28% 0.05 155);
     --warn: oklch(82% 0.13 80);
     --warn-soft: oklch(30% 0.06 75);
     --danger: oklch(76% 0.15 25);
+    --danger-fill: oklch(56% 0.17 27);
+    --danger-hover: oklch(52% 0.17 27);
     --danger-soft: oklch(30% 0.07 25);
+    --on-danger: oklch(98.5% 0.01 25);
     --info: oklch(78% 0.11 255);
     --info-soft: oklch(30% 0.06 255);
 
-    --ring: oklch(74% 0.14 160);
+    --ring: oklch(66% 0.11 160);
     --shadow-pop: 0 8px 24px -6px oklch(0% 0 0 / 0.6), 0 1px 2px oklch(0% 0 0 / 0.4);
   }
 }
@@ -89,6 +117,7 @@
   --canvas: oklch(17% 0.006 130);
   --surface-2: oklch(22% 0.008 130);
   --surface-3: oklch(27% 0.009 130);
+  --rail: oklch(20.5% 0.01 150);
   --line: oklch(30% 0.01 130);
   --line-2: oklch(52% 0.012 130);
 
@@ -96,22 +125,27 @@
   --fg-2: oklch(74% 0.012 150);
   --fg-3: oklch(68% 0.012 150);
 
-  --accent: oklch(74% 0.14 160);
-  --accent-hover: oklch(80% 0.14 160);
+  --accent: oklch(50% 0.11 160);
+  --accent-hover: oklch(54% 0.11 160);
   --accent-soft: oklch(28% 0.045 160);
-  --accent-fg: oklch(80% 0.13 160);
-  --on-accent: oklch(18% 0.04 160);
+  --accent-muted: oklch(32% 0.06 160);
+  --accent-line: oklch(52% 0.09 160);
+  --accent-fg: oklch(78% 0.1 160);
+  --on-accent: oklch(98.5% 0.01 150);
 
-  --ok: oklch(76% 0.13 155);
+  --ok: oklch(76% 0.1 155);
   --ok-soft: oklch(28% 0.05 155);
   --warn: oklch(82% 0.13 80);
   --warn-soft: oklch(30% 0.06 75);
   --danger: oklch(76% 0.15 25);
+  --danger-fill: oklch(56% 0.17 27);
+  --danger-hover: oklch(52% 0.17 27);
   --danger-soft: oklch(30% 0.07 25);
+  --on-danger: oklch(98.5% 0.01 25);
   --info: oklch(78% 0.11 255);
   --info-soft: oklch(30% 0.06 255);
 
-  --ring: oklch(74% 0.14 160);
+  --ring: oklch(66% 0.11 160);
   --shadow-pop: 0 8px 24px -6px oklch(0% 0 0 / 0.6), 0 1px 2px oklch(0% 0 0 / 0.4);
 }
 
@@ -122,6 +156,7 @@
   --color-canvas: var(--canvas);
   --color-surface-2: var(--surface-2);
   --color-surface-3: var(--surface-3);
+  --color-rail: var(--rail);
   --color-line: var(--line);
   --color-line-2: var(--line-2);
   --color-fg: var(--fg);
@@ -130,6 +165,8 @@
   --color-accent: var(--accent);
   --color-accent-hover: var(--accent-hover);
   --color-accent-soft: var(--accent-soft);
+  --color-accent-muted: var(--accent-muted);
+  --color-accent-line: var(--accent-line);
   --color-accent-fg: var(--accent-fg);
   --color-on-accent: var(--on-accent);
   --color-ok: var(--ok);
@@ -137,10 +174,16 @@
   --color-warn: var(--warn);
   --color-warn-soft: var(--warn-soft);
   --color-danger: var(--danger);
+  --color-danger-fill: var(--danger-fill);
+  --color-danger-hover: var(--danger-hover);
   --color-danger-soft: var(--danger-soft);
+  --color-on-danger: var(--on-danger);
   --color-info: var(--info);
   --color-info-soft: var(--info-soft);
   --color-ring: var(--ring);
+  /* Lớp phủ trung tính khi rê chuột / nhấn: tính từ màu chữ nên đúng trên canvas, rail, panel và cả dark mode. */
+  --color-hover: oklch(from var(--fg) l c h / 0.06);
+  --color-pressed: oklch(from var(--fg) l c h / 0.1);
 
   /*
     Type scale: five steps, one family. Adjacent steps differ by at least 2px.
@@ -166,8 +209,14 @@
   --text-display--line-height: 36px;
   --text-display--letter-spacing: -0.02em;
 
-  /* Shape rule (portal kit): two radii. Controls and small fills 3px, containers (media, dialog, tinted blocks) 6px. Only avatars are round. */
-  --radius-control: 3px;
+  /*
+    Shape rule (08/10/2026, người dùng: "cái nút nào cũng phải được bo góc chứ không phải chỗ có chỗ không"):
+    MỘT bán kính 6px cho mọi nút, ô nhập, nhãn, mục menu VÀ khối (thẻ, dialog, thông báo, toast). 3px cũ trông như vuông
+    cạnh khối 6px, nên đọc thành "chỗ bo chỗ không". Hai token giữ tên riêng để sau này tách được, nhưng phải bằng nhau.
+    Phần tử lồng sát bên trong một khung có đệm (ô của Segmented) dùng bán kính khung trừ đệm để góc đồng tâm.
+    Chỉ hình tròn thật (chấm, ảnh đại diện, điểm mốc tiến độ) dùng rounded-full.
+  */
+  --radius-control: 6px;
   --radius-container: 6px;
 
   --shadow-pop: var(--shadow-pop);
@@ -242,6 +291,30 @@
   }
 }
 
+/*
+  Link chữ trong nội dung portal (điện thoại, email, toạ độ, tên sản phẩm dẫn tới trang chi tiết):
+  màu thương hiệu + gạch chân mảnh để nhận ra là link cả khi không phân biệt được màu; rê chuột thì gạch chân đậm lên.
+*/
+@utility ui-link {
+  color: var(--color-accent-fg);
+  text-decoration-line: underline;
+  text-decoration-thickness: 1px;
+  text-decoration-color: oklch(from var(--accent-fg) l c h / 0.4);
+  text-underline-offset: 4px;
+  &:hover {
+    text-decoration-color: currentColor;
+  }
+}
+
+/* Icon Material Symbols bản tô đặc: mục menu đang mở, bước đã xong (bản viền là trạng thái thường). */
+@utility icon-fill {
+  font-variation-settings:
+    'FILL' 1,
+    'wght' 400,
+    'GRAD' 0,
+    'opsz' 24;
+}
+
 @layer utilities {
   .tnum {
     font-variant-numeric: tabular-nums;
@@ -249,6 +322,7 @@
   /*
     Stacked table (see Table). Selectors are scoped under .scroll-x so they win
     over the cell utilities (px-3, border-b, text-right, hidden) without !important.
+    .table-stack xếp khối dưới lg, .table-stack-xl dưới xl.
   */
   @media (width < 64rem) {
     .scroll-x .table-stack,
@@ -269,7 +343,10 @@
     }
     .scroll-x .table-stack td {
       display: grid;
-      grid-template-columns: minmax(96px, 35%) minmax(0, 1fr);
+      /* Cột nhãn tối đa 12rem: bảng xếp khối ở màn rộng (đến xl) không bỏ trống một khoảng lớn giữa nhãn và giá trị. */
+      grid-template-columns: minmax(96px, min(35%, 12rem)) minmax(0, 1fr);
+      /* Phần tử trong ô rộng theo nội dung: nhãn trạng thái nền màu không bị kéo dài hết cột. */
+      justify-items: start;
       column-gap: 16px;
       padding: 4px 0;
       border: 0;
@@ -289,6 +366,52 @@
     /* Stacked cells wrap; nowrap only makes sense in columns. */
     .scroll-x .table-stack td,
     .scroll-x .table-stack td * {
+      white-space: normal;
+    }
+  }
+  /* Cùng bộ quy tắc cho bảng nhiều cột (`<Table stack="xl">`): xếp khối đến xl. Viết lại vì điều kiện media khác. */
+  @media (width < 80rem) {
+    .scroll-x .table-stack-xl,
+    .scroll-x .table-stack-xl tbody {
+      display: block;
+    }
+    .scroll-x .table-stack-xl thead {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+    }
+    .scroll-x .table-stack-xl tr {
+      display: block;
+      padding-block: 16px;
+      border-bottom: 1px solid var(--color-line);
+    }
+    .scroll-x .table-stack-xl td {
+      display: grid;
+      /* Cột nhãn tối đa 12rem: bảng xếp khối ở màn rộng (đến xl) không bỏ trống một khoảng lớn giữa nhãn và giá trị. */
+      grid-template-columns: minmax(96px, min(35%, 12rem)) minmax(0, 1fr);
+      /* Phần tử trong ô rộng theo nội dung: nhãn trạng thái nền màu không bị kéo dài hết cột. */
+      justify-items: start;
+      column-gap: 16px;
+      padding: 4px 0;
+      border: 0;
+      text-align: start;
+    }
+    /* The label owns column 1 for every line of the cell; the cell's own lines flow down column 2. */
+    .scroll-x .table-stack-xl td[data-label]::before {
+      grid-row: 1 / span 12;
+      content: attr(data-label);
+      color: var(--color-fg-3);
+      font-size: var(--text-meta);
+      line-height: var(--text-meta--line-height);
+    }
+    .scroll-x .table-stack-xl td:not([data-label]) {
+      display: block;
+    }
+    /* Stacked cells wrap; nowrap only makes sense in columns. */
+    .scroll-x .table-stack-xl td,
+    .scroll-x .table-stack-xl td * {
       white-space: normal;
     }
   }
@@ -569,6 +692,17 @@
     direction: ltr;
     font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
     -webkit-font-smoothing: antialiased;
+    /*
+      Mỗi icon là đúng một ô vuông 1em: font chưa tải xong thì chữ tên icon ("solar_power") không đẩy lệch bố cục.
+      Trước khi font sẵn sàng (main.tsx gắn .icons-ready) icon trong suốt, nên mạng chậm chỉ thấy chỗ trống đúng cỡ,
+      không bao giờ thấy chữ tên icon; mọi nút có icon đều có chữ hoặc aria-label nên vẫn dùng được.
+    */
+    width: 1em;
+    height: 1em;
+    overflow: hidden;
+  }
+  html:not(.icons-ready) .material-symbols {
+    color: transparent;
   }
 }
 

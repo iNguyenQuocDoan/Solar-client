@@ -1,38 +1,45 @@
 import type { ReactNode } from 'react'
+import { Icon } from '@/components/common/stitch-ui/Icon'
 import { cx } from '@/utils/cx'
 
 export type Tone = 'neutral' | 'ok' | 'warn' | 'danger' | 'info' | 'accent'
 
 /*
-  Colour carries meaning, never decoration (CLAUDE.md, rules 4–5).
-  - warn / danger: something needs attention, so it sits on a tinted field and is found at a glance in a long list.
-  - ok / info / accent: a coloured dot before plain text; progress is visible without shouting.
-  - neutral: muted text with a grey dot (finished, cancelled, not on sale).
-  The colour is never the only signal: the words say the same thing.
+  Nhãn trạng thái (08/10/2026): mọi trạng thái là một nhãn nền nhạt cùng một hình dạng, màu theo nghĩa
+  (xem vai trò màu trong globals.css), để quét một cột trạng thái là phân biệt được ngay:
+    ok       đang hoạt động / đúng tiến độ (Đang bán, Đã hẹn khảo sát)
+    info     đang xử lý (Đã nhận, Đang xem xét)
+    danger   thông báo / yêu cầu cần xử lý (Chờ nhận, Chưa hẹn, Chờ hơn 1 ngày, thiếu thông số), lỗi
+    warn     lưu ý không đòi làm ngay (Đã ngừng bán ở trang chi tiết)
+    accent   thuộc về người đang xem (ít dùng)
+    neutral  đã xong / không còn hoạt động (Ngừng bán, Hoàn tất, Đã huỷ)
+  Màu không bao giờ là tín hiệu duy nhất: chữ nói cùng một điều. `icon` chỉ dùng cho thông báo cần làm ngay
+  (đầu trang), không gắn icon cho mọi nhãn.
 */
-const fills: Record<'warn' | 'danger', string> = {
+const tones: Record<Tone, string> = {
+  neutral: 'bg-surface-3 text-fg-2',
+  ok: 'bg-ok-soft text-ok',
+  info: 'bg-info-soft text-info',
+  accent: 'bg-accent-soft text-accent-fg',
   warn: 'bg-warn-soft text-warn',
   danger: 'bg-danger-soft text-danger',
 }
 
-const dots: Record<Exclude<Tone, 'warn' | 'danger'>, string> = {
-  neutral: 'bg-fg-3',
-  ok: 'bg-ok',
-  info: 'bg-info',
-  accent: 'bg-accent',
-}
-
-export function Badge({ tone = 'neutral', className, children }: { tone?: Tone; className?: string; children: ReactNode }) {
-  if (tone === 'warn' || tone === 'danger') {
-    return (
-      <span className={cx('inline-flex items-center rounded-control px-2 text-meta font-medium', fills[tone], className)}>
-        {children}
-      </span>
-    )
-  }
+export function Badge({
+  tone = 'neutral',
+  icon,
+  className,
+  children,
+}: {
+  tone?: Tone
+  /** Tên icon Material Symbols trước chữ, cho cảnh báo cần làm ngay. */
+  icon?: string
+  className?: string
+  children: ReactNode
+}) {
   return (
-    <span className={cx('inline-flex items-center gap-2 text-meta font-medium', tone === 'neutral' ? 'text-fg-2' : 'text-fg', className)}>
-      <span aria-hidden className={cx('size-2 shrink-0 rounded-full', dots[tone])} />
+    <span className={cx('inline-flex min-h-6 items-center gap-1.5 rounded-control px-2 py-0.5 text-meta font-medium', tones[tone], className)}>
+      {icon && <Icon name={icon} className="-ml-0.5 shrink-0 text-[16px]" />}
       {children}
     </span>
   )
@@ -40,15 +47,16 @@ export function Badge({ tone = 'neutral', className, children }: { tone?: Tone; 
 
 /*
   A count beside a menu item or tab. `attention`: work waiting for the person looking at it
-  (requests to claim, requests still to schedule), filled with the accent so it is the first
-  thing the eye lands on; otherwise a quiet total for reference.
+  (requests to claim, requests still to schedule), filled red like a notification count so it is the first
+  thing the eye lands on (quyết định 08/10/2026: thông báo và yêu cầu đang chờ dùng màu đỏ); otherwise a quiet total
+  for reference. The quiet fill is a tint of the text colour, so it shows on every surface (rail, selected row, tab).
 */
 export function Count({ value, attention, className }: { value: number; attention?: boolean; className?: string }) {
   return (
     <span
       className={cx(
         'tnum inline-flex h-5 min-w-5 shrink-0 items-center justify-center rounded-control px-1 text-meta font-semibold',
-        attention ? 'bg-accent text-on-accent' : 'bg-surface-2 text-fg-2',
+        attention ? 'bg-danger-fill text-on-danger' : 'bg-fg/8 text-fg-2',
         className,
       )}
     >

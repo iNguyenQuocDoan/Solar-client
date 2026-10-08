@@ -1,15 +1,15 @@
 import { useNavigate } from 'react-router'
-import { Dialog, DialogTitle } from '@/components/common/stitch-ui/Dialog'
 import * as DialogPrimitive from '@radix-ui/react-dialog'
 import { Icon } from '@/components/common/stitch-ui/Icon'
+import { Button } from '@/components/common/ui/button'
 import { ROUTES } from '@/routes/paths'
 import { useAuth } from '@/context/AuthProvider'
 import { sessionExpiredContent } from '@/data/auth'
 
 /*
- * Modal "Phiên đăng nhập đã hết hạn" – bật khi phiên hết hạn sau 30 phút không thao tác
- * hoặc khi gọi expireSession(). Dùng Dialog (Radix) nhưng bỏ nút X mặc định vì thiết kế
- * chỉ có 2 nút hành động.
+ * Modal "Phiên đăng nhập đã hết hạn" – bật khi refresh token hỏng (client.ts bắn sự kiện session-expired).
+ * Dùng Radix Dialog cho hành vi (khoá focus, Esc), còn hình thức theo hộp thoại của portal kit (08/10/2026, thống nhất):
+ * nền canvas có viền, bóng lớp nổi, tiêu đề cỡ title căn trái, nút chính bên phải. Bỏ nút X mặc định vì chỉ có 2 lựa chọn.
  */
 export function SessionExpiredModal() {
   const navigate = useNavigate()
@@ -26,36 +26,27 @@ export function SessionExpiredModal() {
   }
 
   return (
-    <Dialog open={sessionExpired} onOpenChange={(open) => !open && dismissSessionExpired()}>
+    <DialogPrimitive.Root open={sessionExpired} onOpenChange={(open) => !open && dismissSessionExpired()}>
       <DialogPrimitive.Portal>
-        <DialogPrimitive.Overlay className="fixed inset-0 z-60 bg-inverse-surface/60 backdrop-blur-sm data-[state=open]:animate-[dialog-fade-in_150ms_ease-out]" />
-        <DialogPrimitive.Content aria-describedby={undefined} className="fixed left-1/2 top-1/2 z-70 flex w-[calc(100vw-2rem)] max-w-md -translate-x-1/2 -translate-y-1/2 flex-col items-center rounded-xl bg-surface-container-lowest p-space-xl text-center shadow-xl focus:outline-none data-[state=open]:animate-[dialog-pop-in_180ms_ease-out]">
-          <div className="mb-space-md flex h-16 w-16 items-center justify-center rounded-full bg-error-container text-error">
-            <Icon name="timer_off" className="text-[36px]" />
+        <DialogPrimitive.Overlay className="fixed inset-0 z-60 bg-fg/40 data-[state=open]:animate-[dialog-fade-in_150ms_ease-out]" />
+        <DialogPrimitive.Content
+          aria-describedby={undefined}
+          className="fixed top-1/2 left-1/2 z-70 w-[calc(100vw-2rem)] max-w-md -translate-x-1/2 -translate-y-1/2 rounded-container border border-line bg-canvas p-6 text-fg shadow-pop focus:outline-none data-[state=open]:animate-[dialog-pop-in_180ms_ease-out]"
+        >
+          <div className="flex items-start gap-3">
+            <Icon name="timer_off" className="mt-0.5 shrink-0 text-[24px] text-danger" />
+            <DialogPrimitive.Title className="text-title font-semibold">{sessionExpiredContent.title}</DialogPrimitive.Title>
           </div>
-          <DialogTitle className="mb-space-lg text-headline-xl text-on-surface">
-            {sessionExpiredContent.title}
-          </DialogTitle>
-
-          <div className="flex w-full flex-col gap-space-xs">
-            <button
-              type="button"
-              onClick={goToLogin}
-              className="flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-primary text-label-lg text-on-primary shadow-sm transition-all hover:bg-primary-container"
-            >
-              <Icon name="login" className="text-[20px]" />
-              {sessionExpiredContent.primary}
-            </button>
-            <button
-              type="button"
-              onClick={goHome}
-              className="h-11 w-full rounded-xl bg-surface-container text-label-md text-on-surface transition-all hover:bg-surface-container-high"
-            >
+          <div className="mt-6 flex flex-wrap justify-end gap-3">
+            <Button variant="ghost" onClick={goHome}>
               {sessionExpiredContent.secondary}
-            </button>
+            </Button>
+            <Button variant="primary" onClick={goToLogin}>
+              {sessionExpiredContent.primary}
+            </Button>
           </div>
         </DialogPrimitive.Content>
       </DialogPrimitive.Portal>
-    </Dialog>
+    </DialogPrimitive.Root>
   )
 }

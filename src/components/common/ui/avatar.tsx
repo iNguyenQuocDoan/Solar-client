@@ -1,6 +1,17 @@
 import { cx } from '@/utils/cx'
 
-export function Avatar({ name, size = 'md', className }: { name: string; size?: 'sm' | 'md' | 'lg'; className?: string }) {
+/* `accent`: chữ cái đầu của người đang đăng nhập (nút tài khoản), nền màu thương hiệu nhạt. */
+export function Avatar({
+  name,
+  size = 'md',
+  tone = 'neutral',
+  className,
+}: {
+  name: string
+  size?: 'sm' | 'md' | 'lg'
+  tone?: 'neutral' | 'accent'
+  className?: string
+}) {
   const initials = name
     .split(/\s+/)
     .filter((p) => /^\p{L}/u.test(p))
@@ -12,7 +23,8 @@ export function Avatar({ name, size = 'md', className }: { name: string; size?: 
     <span
       aria-hidden
       className={cx(
-        'inline-flex shrink-0 items-center justify-center rounded-full bg-surface-3 font-medium text-fg-2',
+        'inline-flex shrink-0 items-center justify-center rounded-full font-semibold',
+        tone === 'accent' ? 'bg-accent-muted text-accent-fg' : 'bg-surface-3 text-fg-2',
         dims,
         className,
       )}

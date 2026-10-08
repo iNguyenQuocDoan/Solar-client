@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Input, Select } from '@/components/common/ui/field'
+import { SearchInput, Select } from '@/components/common/ui/field'
 import { PageHeader } from '@/components/common/ui/page-header'
 import { Pagination } from '@/components/common/ui/pagination'
 import { EmptyState, ErrorState, Skeleton } from '@/components/common/ui/states'
@@ -34,8 +34,7 @@ function CatalogPage({ detailPattern }: { detailPattern: string }) {
       <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center">
         <label className="flex-1">
           <span className="sr-only">Tìm sản phẩm</span>
-          <Input
-            type="search"
+          <SearchInput
             name="search"
             placeholder="Tìm theo tên, hãng, model"
             value={search}

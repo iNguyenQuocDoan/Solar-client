@@ -6,6 +6,7 @@ import { z } from 'zod'
 import { Button } from '@/components/common/ui/button'
 import { DialogFooter, DialogTitle, ModalDialog } from '@/components/common/ui/dialog'
 import { Field, Input } from '@/components/common/ui/field'
+import { Notice } from '@/components/common/ui/lists'
 import { useCreateProductMutation, useUpdateProductMutation } from '@/features/products/hooks/useProducts'
 import { SOLAR_PANEL_TYPE, isSolarPanelType, specEntries } from '@/features/products/components/productDisplay'
 import { errorMessage, isApiError } from '@/services/api/errors'
@@ -236,7 +237,7 @@ function ProductForm({
             {isEdit ? <span className="tnum">{product?.sku}</span> : 'Ô có dấu * là bắt buộc.'}
           </p>
         </div>
-        <Button variant="ghost" className="-mt-2" disabled={isSubmitting} onClick={onDone}>
+        <Button variant="ghost" icon="close" className="-mt-2" disabled={isSubmitting} onClick={onDone}>
           Đóng
         </Button>
       </div>
@@ -329,13 +330,13 @@ function ProductForm({
                 </label>
                 <Input id={f(`spec-${i}-value`)} placeholder="Ví dụ: 21,8%" {...register(`spec.${i}.value`)} />
               </div>
-              <Button variant="ghost" aria-label={`Bỏ thông số ${i + 1}`} onClick={() => spec.remove(i)}>
+              <Button variant="ghost" bleed={false} icon="close" aria-label={`Bỏ thông số ${i + 1}`} onClick={() => spec.remove(i)}>
                 Bỏ
               </Button>
             </div>
           ))}
         </div>
-        <Button variant="ghost" size="sm" className="mt-2" onClick={() => spec.append({ key: '', value: '' })}>
+        <Button variant="ghost" size="sm" icon="add" className="mt-2" onClick={() => spec.append({ key: '', value: '' })}>
           Thêm thông số
         </Button>
       </fieldset>
@@ -348,9 +349,9 @@ function ProductForm({
       </datalist>
 
       {errors.root?.message && (
-        <p role="alert" className="mt-4 border-l-2 border-danger pl-3 text-body text-danger">
-          {errors.root.message}
-        </p>
+        <div role="alert" className="mt-4">
+          <Notice tone="danger">{errors.root.message}</Notice>
+        </div>
       )}
 
       <DialogFooter className="sticky bottom-0 -mx-6 -mb-6 border-t border-line bg-canvas px-6 py-4">

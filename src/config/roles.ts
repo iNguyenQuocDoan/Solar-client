@@ -33,6 +33,14 @@ const ROLE_ALIASES: Record<string, UserRole> = {
   systemadmin: 'admin',
 }
 
+/*
+ * Ai được tự đổi mật khẩu trong giao diện (quyết định 08/10/2026): chỉ khách hàng. Tài khoản nội bộ (sales, kỹ thuật
+ * viên, quản lý, quản trị) do quản trị cấp. Backend vẫn cho mọi vai trò gọi API đổi mật khẩu; đây chỉ là ẩn ở giao diện.
+ */
+export function canChangeOwnPassword(role: UserRole | undefined) {
+  return role === 'customer'
+}
+
 /** Khi JWT có nhiều role, lấy vai trò quyền cao nhất theo thứ tự này. */
 const ROLE_PRIORITY: UserRole[] = ['admin', 'manager', 'sales', 'technician', 'customer']
 

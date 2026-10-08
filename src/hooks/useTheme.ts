@@ -3,6 +3,13 @@ import { useCallback, useEffect, useState } from "react";
 export type Theme = "system" | "light" | "dark";
 const KEY = "solar-theme";
 
+/** Ba lựa chọn giao diện, dùng chung cho rail nhân viên và menu tài khoản của khách hàng. */
+export const THEME_OPTIONS: { value: Theme; label: string; icon: string }[] = [
+  { value: "system", label: "Tự động", icon: "contrast" },
+  { value: "light", label: "Sáng", icon: "light_mode" },
+  { value: "dark", label: "Tối", icon: "dark_mode" },
+];
+
 function read(): Theme {
   try {
     const v = localStorage.getItem(KEY);

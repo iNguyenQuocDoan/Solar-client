@@ -3,7 +3,7 @@ import { toast } from 'sonner'
 import { Badge } from '@/components/common/ui/badge'
 import { Button } from '@/components/common/ui/button'
 import { DialogFooter, DialogTitle, ModalDialog } from '@/components/common/ui/dialog'
-import { Input, Select } from '@/components/common/ui/field'
+import { SearchInput, Select } from '@/components/common/ui/field'
 import { FilterBar } from '@/components/common/ui/filter-bar'
 import { PageHeader } from '@/components/common/ui/page-header'
 import { Pagination } from '@/components/common/ui/pagination'
@@ -180,11 +180,13 @@ export function AdminProductsPage() {
         title="Sản phẩm"
         description={
           incompletePanels > 0 ? (
-            <Badge tone="warn">{incompletePanels} tấm pin thiếu công suất hoặc kích thước, chưa dùng được cho mô phỏng bố trí</Badge>
+            <Badge tone="danger" icon="warning">
+              {incompletePanels} tấm pin thiếu công suất hoặc kích thước, chưa dùng được cho mô phỏng bố trí
+            </Badge>
           ) : undefined
         }
         actions={
-          <Button variant="primary" onClick={() => setForm({ open: true, product: null })}>
+          <Button variant="primary" icon="add" onClick={() => setForm({ open: true, product: null })}>
             Thêm sản phẩm
           </Button>
         }
@@ -193,18 +195,22 @@ export function AdminProductsPage() {
       <FilterBar>
         <label className="min-w-0 flex-1 basis-64">
           <span className="sr-only">Tìm sản phẩm</span>
-          <Input
-            type="search"
+          <SearchInput
             name="search"
             placeholder="Tìm theo tên, SKU, hãng"
             value={filter.search}
             onChange={(e) => updateFilter({ search: e.target.value })}
           />
         </label>
-        {/* Loại và hãng là danh sách chọn từ dữ liệu thật: backend chỉ lọc khớp đúng cả chuỗi. */}
+        {/* Loại và hãng là danh sách chọn từ dữ liệu thật: backend chỉ lọc khớp đúng cả chuỗi. Đang lọc thì ô tô màu. */}
         <label className="w-full sm:w-52">
           <span className="sr-only">Loại sản phẩm</span>
-          <Select name="productType" value={filter.productType} onChange={(e) => updateFilter({ productType: e.target.value })}>
+          <Select
+            name="productType"
+            active={filter.productType !== ''}
+            value={filter.productType}
+            onChange={(e) => updateFilter({ productType: e.target.value })}
+          >
             <option value="">Tất cả loại</option>
             {options.productTypes.map((type) => (
               <option key={type} value={type}>
@@ -215,7 +221,7 @@ export function AdminProductsPage() {
         </label>
         <label className="w-full sm:w-44">
           <span className="sr-only">Hãng</span>
-          <Select name="brand" value={filter.brand} onChange={(e) => updateFilter({ brand: e.target.value })}>
+          <Select name="brand" active={filter.brand !== ''} value={filter.brand} onChange={(e) => updateFilter({ brand: e.target.value })}>
             <option value="">Tất cả hãng</option>
             {options.brands.map((brand) => (
               <option key={brand} value={brand}>
@@ -235,7 +241,7 @@ export function AdminProductsPage() {
           </Select>
         </label>
         {isFiltering && (
-          <Button variant="ghost" onClick={clearFilters}>
+          <Button variant="ghost" bleed={false} icon="filter_alt_off" onClick={clearFilters}>
             Xoá bộ lọc
           </Button>
         )}
@@ -302,7 +308,7 @@ export function AdminProductsPage() {
                     {h.hiddenAt && `, ngừng bán lúc ${formatDateTime(h.hiddenAt)}`}
                   </p>
                 </div>
-                <Button size="sm" disabled={pendingIds.has(h.id)} onClick={() => void reopen(h)}>
+                <Button size="sm" variant="soft" disabled={pendingIds.has(h.id)} onClick={() => void reopen(h)}>
                   {pendingIds.has(h.id) ? 'Đang mở bán…' : 'Mở bán lại'}
                 </Button>
               </li>

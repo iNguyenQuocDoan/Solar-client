@@ -11,7 +11,10 @@ export type AuthInputProps = Omit<ComponentProps<'input'>, 'size'> & {
   size?: 'md' | 'lg'
 }
 
-/** Ô nhập của auth_portal: nền surface-container-low, sáng lên và viền primary khi focus. */
+/*
+  Ô nhập của màn xác thực, cùng kiểu với ô nhập portal kit (08/10/2026, thống nhất): nền trắng có viền, rê chuột viền đậm
+  lên, focus là một vòng liền 2px màu thương hiệu, lỗi (aria-invalid) viền đỏ. Giữ icon ở đầu ô của thiết kế xác thực.
+*/
 export function AuthInput({ leadingIcon, trailing, size = 'lg', className, ...rest }: AuthInputProps) {
   return (
     <div className="relative flex items-center">
@@ -23,8 +26,9 @@ export function AuthInput({ leadingIcon, trailing, size = 'lg', className, ...re
       )}
       <input
         className={cn(
-          'w-full rounded-xl bg-surface-container-low text-body-md text-on-surface transition-all placeholder:text-outline',
-          'focus:bg-surface-container-lowest focus:outline-none focus:ring-2 focus:ring-primary',
+          'w-full rounded-control border border-line-2 bg-canvas text-body-md text-on-surface transition-colors placeholder:text-outline',
+          'hover:border-fg-3 focus:border-accent focus-visible:outline-1 focus-visible:outline-offset-0 focus-visible:outline-accent',
+          'aria-invalid:border-danger aria-invalid:outline-danger',
           size === 'lg' ? 'h-12' : 'h-11',
           leadingIcon ? 'pl-11' : 'pl-3.5',
           trailing ? 'pr-11' : 'pr-4',

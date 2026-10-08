@@ -22,7 +22,7 @@ export function CtaSection() {
         <Reveal delay={150} className="col-span-4 flex flex-col gap-3 sm:items-start lg:col-span-4 lg:col-start-9 lg:self-end">
           <Link
             to={ROUTES.REGISTER}
-            className="press inline-flex h-12 items-center justify-center rounded-control bg-on-accent px-6 ld-action whitespace-nowrap text-accent hover:bg-canvas"
+            className="press inline-flex h-12 items-center justify-center rounded-control bg-on-accent px-6 ld-action whitespace-nowrap text-accent hover:bg-on-accent/90"
           >
             {cta.button}
           </Link>

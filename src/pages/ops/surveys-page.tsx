@@ -52,8 +52,16 @@ export function OpsSurveysPage() {
         description={
           overdue || unscheduled ? (
             <span className="flex flex-wrap gap-2">
-              {overdue > 0 && <Badge tone="warn">{overdue} yêu cầu chờ hơn 1 ngày chưa ai nhận</Badge>}
-              {unscheduled > 0 && <Badge tone="warn">{unscheduled} yêu cầu của bạn chưa hẹn ngày khảo sát</Badge>}
+              {overdue > 0 && (
+                <Badge tone="danger" icon="schedule">
+                  {overdue} yêu cầu chờ hơn 1 ngày chưa ai nhận
+                </Badge>
+              )}
+              {unscheduled > 0 && (
+                <Badge tone="danger" icon="event_busy">
+                  {unscheduled} yêu cầu của bạn chưa hẹn ngày khảo sát
+                </Badge>
+              )}
             </span>
           ) : undefined
         }
@@ -64,9 +72,10 @@ export function OpsSurveysPage() {
         className="mb-4"
         value={tab}
         onChange={setTab}
+        // Số trên tab chỉ để tham khảo (xám): số đỏ báo việc chờ đã nằm ở menu bên trái, cùng màn hình, không nói hai lần.
         chips={[
-          { value: 'pending', label: 'Chờ nhận', count: pending.data?.length, attention: true },
-          { value: 'my', label: 'Của tôi', count: my.data?.length, attention: unscheduled > 0 },
+          { value: 'pending', label: 'Chờ nhận', count: pending.data?.length },
+          { value: 'my', label: 'Của tôi', count: my.data?.length },
         ]}
       />
 
@@ -87,7 +96,7 @@ export function OpsSurveysPage() {
               <EmptyState
                 title="Bạn chưa nhận yêu cầu nào"
                 action={
-                  <Button size="sm" onClick={() => setTab('pending')}>
+                  <Button size="sm" variant="soft" onClick={() => setTab('pending')}>
                     Xem yêu cầu chờ nhận
                   </Button>
                 }

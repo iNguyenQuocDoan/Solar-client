@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { cx } from "@/utils/cx";
 import { Button } from "@/components/common/ui/button";
+import { Icon } from "@/components/common/stitch-ui/Icon";
 
 export function Skeleton({ className }: { className?: string }) {
   return (
@@ -64,6 +65,7 @@ export function EmptyState({
   );
 }
 
+/* Lỗi tải dữ liệu: khối nền đỏ nhạt + icon, cùng kiểu với Notice tone="danger", nút "Thử lại" là nút thật. */
 export function ErrorState({
   title = "Không tải được trang này.",
   message,
@@ -74,19 +76,17 @@ export function ErrorState({
   onRetry?: () => void;
 }) {
   return (
-    <div
-      role="alert"
-      className="border-l-2 border-danger pl-4"
-    >
-      <p className="text-meta font-medium text-danger">
-        {title}
-      </p>
-      {message && <p className="mt-1 text-meta text-fg-2">{message}</p>}
-      {onRetry && (
-        <Button size="sm" className="mt-3" onClick={onRetry}>
-          Thử lại
-        </Button>
-      )}
+    <div role="alert" className="flex gap-3 rounded-container bg-danger-soft px-4 py-3">
+      <Icon name="error" className="mt-px shrink-0 text-[20px] text-danger" />
+      <div className="min-w-0">
+        <p className="text-body font-semibold text-danger">{title}</p>
+        {message && <p className="mt-1 text-body text-fg-2">{message}</p>}
+        {onRetry && (
+          <Button size="sm" icon="refresh" className="mt-3" onClick={onRetry}>
+            Thử lại
+          </Button>
+        )}
+      </div>
     </div>
   );
 }

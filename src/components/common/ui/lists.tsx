@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { Icon } from "@/components/common/stitch-ui/Icon";
 import { cx } from "@/utils/cx";
 
 export type ActivityItem = {
@@ -6,7 +7,52 @@ export type ActivityItem = {
   title: ReactNode;
   body?: ReactNode;
   by?: string;
+  /**
+   * Mốc của một tiến trình: `done` đã xong, `current` bước đang tới, `todo` chưa tới / không diễn ra.
+   * Có `state` thì danh sách vẽ thành dòng thời gian có điểm mốc màu.
+   */
+  state?: "done" | "current" | "todo";
 };
+
+/*
+  Dòng thời gian tiến độ: điểm mốc tô theo trạng thái (đã xong = tròn đặc màu thương hiệu có dấu tích, bước đang tới =
+  vòng màu thương hiệu, chưa tới = vòng xám), nối bằng một đường dọc; đoạn đã đi qua cũng mang màu thương hiệu.
+  Việc cần chú ý (vd. chưa hẹn ngày) nói bằng Badge cảnh báo trong nội dung, không bằng màu điểm mốc.
+*/
+function Timeline({ items, className }: { items: ActivityItem[]; className?: string }) {
+  return (
+    <ol className={className}>
+      {items.map((item, i) => {
+        const last = i === items.length - 1;
+        return (
+          <li key={i} className="relative grid grid-cols-[20px_1fr] gap-x-3 pb-5 last:pb-0">
+            {!last && (
+              <span
+                aria-hidden
+                className={cx("absolute top-6 bottom-1 left-2.25 w-0.5", item.state === "done" ? "bg-accent-line" : "bg-line")}
+              />
+            )}
+            <span aria-hidden className="flex h-5 items-center justify-center">
+              {item.state === "done" ? (
+                <span className="flex size-5 items-center justify-center rounded-full bg-accent text-on-accent">
+                  <Icon name="check" className="text-[16px]" />
+                </span>
+              ) : (
+                <span className={cx("size-3.5 rounded-full border-2 bg-canvas", item.state === "current" ? "border-accent" : "border-line-2")} />
+              )}
+            </span>
+            <div className="min-w-0">
+              <p className="text-body font-medium text-fg">{item.title}</p>
+              <div className="tnum mt-0.5 text-meta text-fg-2">{item.time}</div>
+              {item.body && <p className="mt-1 text-body text-fg-2">{item.body}</p>}
+              {item.by && <p className="mt-1 text-meta text-fg-3">{item.by}</p>}
+            </div>
+          </li>
+        );
+      })}
+    </ol>
+  );
+}
 
 /* Time-stamped activity list. Time sits in its own column so entries scan vertically. */
 export function ActivityList({
@@ -16,6 +62,7 @@ export function ActivityList({
   items: ActivityItem[];
   className?: string;
 }) {
+  if (items.some((item) => item.state)) return <Timeline items={items} className={className} />;
   return (
     <ol className={cx("@container divide-y divide-line", className)}>
       {items.map((item, i) => (
@@ -145,28 +192,38 @@ export function Photo({
   );
 }
 
-/* Inline notice: a coloured rule in the margin, no box. */
+/*
+  Thông báo trong trang: khối nền nhạt theo nghĩa, để phân biệt "đọc để biết" (neutral, info), "đã xong" (ok),
+  "lưu ý" (warn), "lỗi / không hoàn tác" (danger) với nội dung thường. Không có viền hay bóng.
+  Icon chỉ cho ok / warn / danger (nó nói trạng thái); khối chỉ để đọc thì không gắn icon, tránh icon ở mọi khối.
+*/
+const noticeTones = {
+  neutral: { box: 'bg-surface-2', icon: null, iconColor: '' },
+  info: { box: 'bg-info-soft', icon: null, iconColor: '' },
+  ok: { box: 'bg-ok-soft', icon: 'check_circle', iconColor: 'text-ok' },
+  warn: { box: 'bg-warn-soft', icon: 'warning', iconColor: 'text-warn' },
+  danger: { box: 'bg-danger-soft', icon: 'error', iconColor: 'text-danger' },
+} as const
+
 export function Notice({
   tone = 'neutral',
   title,
   children,
   className,
 }: {
-  tone?: 'neutral' | 'warn' | 'danger' | 'ok'
+  tone?: keyof typeof noticeTones
   title?: ReactNode
   children: ReactNode
   className?: string
 }) {
-  const tones = {
-    neutral: 'border-line-2',
-    warn: 'border-warn',
-    danger: 'border-danger',
-    ok: 'border-ok',
-  }
+  const t = noticeTones[tone]
   return (
-    <div className={cx('border-l-2 py-1 pl-4 text-body', tones[tone], className)}>
-      {title && <p className="font-semibold text-fg">{title}</p>}
-      <div className={cx('text-fg-2', title ? 'mt-1' : undefined)}>{children}</div>
+    <div className={cx('flex gap-3 rounded-container px-4 py-3 text-body', t.box, className)}>
+      {t.icon && <Icon name={t.icon} className={cx('mt-px shrink-0 text-[20px]', t.iconColor)} />}
+      <div className="min-w-0">
+        {title && <p className="font-semibold text-fg">{title}</p>}
+        <div className={cx('text-fg-2', title ? 'mt-1' : undefined)}>{children}</div>
+      </div>
     </div>
   )
 }

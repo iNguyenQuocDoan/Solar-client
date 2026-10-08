@@ -53,14 +53,19 @@ export function emailFromToken(token: string): string | null {
   )
 }
 
-/** Tên hiển thị lấy từ claim name/fullName nếu backend có phát. */
+/**
+ * Tên hiển thị lấy từ claim name/fullName (hoặc họ + tên tách rời) nếu backend có phát. Token thật (dò lại 08/10/2026)
+ * chỉ có sub, email, role nên hiện tại trả null và giao diện hiện email; backend thêm claim là tên tự hiện.
+ */
 export function nameFromToken(token: string): string | null {
   const claims = decodeToken(token)
   if (!claims) return null
+  const familyGiven = [asString(claims.family_name), asString(claims.given_name)].filter(Boolean).join(' ')
   return (
     asString(claims.fullName) ??
     asString(claims.name) ??
-    asString(claims['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'])
+    asString(claims['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name']) ??
+    (familyGiven || null)
   )
 }
 

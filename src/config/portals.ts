@@ -5,6 +5,8 @@ export type PortalKey = 'customer' | 'ops' | 'manage' | 'admin' | 'tech'
 export type NavItem = {
   label: string
   to: string
+  /** Tên icon Material Symbols: hiện trước nhãn, và là thứ duy nhất còn thấy khi rail thu gọn. */
+  icon: string
   end?: boolean
   badge?: string
   /** Mẫu đường dẫn khác cũng tính là đang ở mục này, khi trang con không nằm dưới `to` (vd. chi tiết yêu cầu thuộc "Của tôi"). */
@@ -35,8 +37,8 @@ export const PORTALS: Record<PortalKey, Portal> = {
     groups: [
       {
         items: [
-          { label: 'Đánh giá sơ bộ', to: ROUTES.customer.assessment },
-          { label: 'Sản phẩm', to: ROUTES.customer.products },
+          { label: 'Đánh giá sơ bộ', to: ROUTES.customer.assessment, icon: 'fact_check' },
+          { label: 'Sản phẩm', to: ROUTES.customer.products, icon: 'solar_power' },
         ],
       },
     ],
@@ -49,31 +51,31 @@ export const PORTALS: Record<PortalKey, Portal> = {
       {
         label: 'Yêu cầu khảo sát',
         items: [
-          { label: 'Chờ nhận', to: ROUTES.ops.surveys, end: true },
+          { label: 'Chờ nhận', to: ROUTES.ops.surveys, icon: 'move_to_inbox', end: true },
           // Backend chỉ trả chi tiết cho sales đã nhận yêu cầu, nên mọi trang chi tiết đều thuộc "Của tôi".
-          { label: 'Của tôi', to: ROUTES.ops.surveysMine, alsoActiveOn: [ROUTES.ops.survey] },
+          { label: 'Của tôi', to: ROUTES.ops.surveysMine, icon: 'assignment_ind', alsoActiveOn: [ROUTES.ops.survey] },
         ],
       },
-      { items: [{ label: 'Sản phẩm', to: ROUTES.ops.products }] },
+      { items: [{ label: 'Sản phẩm', to: ROUTES.ops.products, icon: 'solar_power' }] },
     ],
   },
   manage: {
     key: 'manage',
     name: 'Quản lý',
     home: ROUTES.manage.home,
-    groups: [{ items: [{ label: 'Sản phẩm', to: ROUTES.manage.products }] }],
+    groups: [{ items: [{ label: 'Sản phẩm', to: ROUTES.manage.products, icon: 'solar_power' }] }],
   },
   admin: {
     key: 'admin',
     name: 'Quản trị hệ thống',
     home: ROUTES.ADMIN.DASHBOARD,
-    groups: [{ items: [{ label: 'Sản phẩm', to: ROUTES.ADMIN.PRODUCTS }] }],
+    groups: [{ items: [{ label: 'Sản phẩm', to: ROUTES.ADMIN.PRODUCTS, icon: 'solar_power' }] }],
   },
   /* Vai trò kỹ thuật viên đăng nhập vào /tech (homePathForRole). */
   tech: {
     key: 'tech',
     name: 'Kỹ thuật hiện trường',
     home: ROUTES.TECH.DASHBOARD,
-    groups: [{ items: [{ label: 'Sản phẩm', to: ROUTES.TECH.PRODUCTS }] }],
+    groups: [{ items: [{ label: 'Sản phẩm', to: ROUTES.TECH.PRODUCTS, icon: 'solar_power' }] }],
   },
 }

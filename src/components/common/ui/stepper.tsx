@@ -1,10 +1,12 @@
+import { Icon } from '@/components/common/stitch-ui/Icon'
 import { cx } from '@/utils/cx'
 
 export type Step = { label: string; meta?: string; state: 'done' | 'active' | 'upcoming' }
 
 /*
-  Progress rail: each stage is a segment of a line. Done segments are ink,
-  the current one is the accent, upcoming ones are faint. No circles, no numbers.
+  Progress rail: each stage is a segment of a line. Done and current segments carry the accent, so the
+  stretch already covered reads as one green run; upcoming ones are faint. A done stage adds a check,
+  the current one is bold. No circles, no numbers.
 */
 export function Stepper({ steps, className }: { steps: Step[]; className?: string }) {
   return (
@@ -14,14 +16,21 @@ export function Stepper({ steps, className }: { steps: Step[]; className?: strin
           key={step.label}
           aria-current={step.state === 'active' ? 'step' : undefined}
           className={cx(
-            'border-l-2 pl-3 md:border-l-0 md:border-t-2 md:pt-3 md:pl-0',
-            step.state === 'done' && 'border-fg',
-            step.state === 'active' && 'border-accent',
-            step.state === 'upcoming' && 'border-line',
+            'border-l-[3px] pl-3 md:border-t-[3px] md:border-l-0 md:pt-3 md:pl-0',
+            step.state === 'upcoming' ? 'border-line' : 'border-accent',
           )}
         >
-          <p className={cx('text-body', step.state === 'upcoming' ? 'text-fg-3' : 'text-fg', step.state === 'active' && 'font-semibold')}>
+          <p
+            className={cx(
+              'flex items-center gap-1.5 text-body',
+              step.state === 'upcoming' && 'text-fg-3',
+              step.state === 'done' && 'text-fg-2',
+              step.state === 'active' && 'font-semibold text-fg',
+            )}
+          >
+            {step.state === 'done' && <Icon name="check_circle" className="icon-fill shrink-0 text-[20px] text-accent-fg" />}
             {step.label}
+            {step.state === 'done' && <span className="sr-only"> (đã xong)</span>}
           </p>
           {step.meta && <p className="mt-1 text-meta text-fg-3">{step.meta}</p>}
         </li>

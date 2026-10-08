@@ -12,10 +12,10 @@ import { cn } from '@/utils/cn'
 export function ComingSoonPage() {
   return (
     <div className={cn('flex flex-col items-center py-space-3xl text-center', LANDING_CONTAINER)}>
-      <div className="mb-space-md flex h-20 w-20 items-center justify-center rounded-full bg-surface-container-high text-primary shadow-sm">
+      <div className="mb-space-md flex h-20 w-20 items-center justify-center rounded-full bg-surface-container-high text-accent-fg shadow-sm">
         <Icon name="construction" className="text-[42px]" />
       </div>
-      <h1 className="text-headline-xl-mobile text-primary md:text-headline-xl">Trang này chưa có nội dung</h1>
+      <h1 className="text-headline-xl-mobile text-accent-fg md:text-headline-xl">Trang này chưa có nội dung</h1>
       <p className="mt-space-xs max-w-xl text-body-lg text-on-surface-variant">
         Nội dung đang được soạn. Bạn có thể quay về trang chủ, hoặc đăng nhập để dùng các chức năng đang có.
       </p>

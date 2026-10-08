@@ -4,7 +4,8 @@ import { Badge } from '@/components/common/ui/badge'
 import { buttonClass } from '@/components/common/ui/button'
 import { ActivityList } from '@/components/common/ui/lists'
 import { PageHeader } from '@/components/common/ui/page-header'
-import { Panel, PanelBody, PanelHeader } from '@/components/common/ui/panel'
+import { Icon } from '@/components/common/stitch-ui/Icon'
+import { Panel, PanelAside, PanelBody, PanelHeader } from '@/components/common/ui/panel'
 import { QueryBoundary } from '@/components/common/ui/query-boundary'
 import { usePageCrumb } from '@/components/layout/page-crumb'
 import { Stat, StatRow } from '@/components/common/ui/stat'
@@ -23,8 +24,14 @@ import { RoofSimulation } from '@/features/pre-surveys/components/RoofSimulation
 import { useSurveyRequestQuery } from '@/features/pre-surveys/hooks/useSurveyRequests'
 import type { SurveyRequestDetail } from '@/types/res/surveyRequestsRes'
 
-const link = 'text-accent-fg hover:underline'
 const num = new Intl.NumberFormat('vi-VN', { maximumFractionDigits: 1 })
+
+/* Mốc "Khảo sát tại công trình": hoàn tất là đã xong, huỷ thì không diễn ra, còn lại là bước đang tới. */
+function surveyStepState(status: number): 'done' | 'current' | 'todo' {
+  if (status === 5) return 'done'
+  if (status === 6) return 'todo'
+  return 'current'
+}
 
 /** Có toạ độ thì ghim đúng điểm, không thì tìm theo địa chỉ. */
 function mapUrl(r: SurveyRequestDetail) {
@@ -55,7 +62,7 @@ export function OpsSurveyRequestPage() {
               meta={
                 <>
                   <Badge tone={status.tone}>{status.label}</Badge>
-                  {unscheduled && <Badge tone="warn">Chưa hẹn ngày khảo sát</Badge>}
+                  {unscheduled && <Badge tone="danger">Chưa hẹn ngày khảo sát</Badge>}
                   <span className="tnum">Mã {shortCode(r.surveyRequestId)}</span>
                 </>
               }
@@ -65,17 +72,21 @@ export function OpsSurveyRequestPage() {
                 <>
                   {r.customerPhone && (
                     <a className={buttonClass('primary')} href={`tel:${r.customerPhone}`}>
+                      <Icon name="call" className="-ml-0.5 text-[20px]" />
                       Gọi {r.customerPhone}
                     </a>
                   )}
                   {r.customerEmail && (
                     <a className={buttonClass('secondary')} href={`mailto:${r.customerEmail}`}>
+                      <Icon name="mail" className="-ml-0.5 text-[20px]" />
                       Gửi email
                     </a>
                   )}
                   {map && (
                     <a className={buttonClass('secondary')} href={map} target="_blank" rel="noreferrer">
+                      <Icon name="map" className="-ml-0.5 text-[20px]" />
                       Xem bản đồ
+                      <span className="sr-only"> (mở tab mới)</span>
                     </a>
                   )}
                 </>
@@ -107,7 +118,7 @@ export function OpsSurveyRequestPage() {
                               {
                                 k: 'Toạ độ',
                                 v: (
-                                  <a className={`tnum ${link}`} href={`https://www.google.com/maps?q=${r.latitude},${r.longitude}`} target="_blank" rel="noreferrer">
+                                  <a className="tnum ui-link" href={`https://www.google.com/maps?q=${r.latitude},${r.longitude}`} target="_blank" rel="noreferrer">
                                     {r.latitude}, {r.longitude}
                                   </a>
                                 ),
@@ -132,7 +143,7 @@ export function OpsSurveyRequestPage() {
                 </Panel>
               </div>
 
-              <div className="space-y-4 lg:border-l lg:border-line lg:pl-6">
+              <PanelAside aria-label="Khách hàng và tiến độ">
                 <Panel>
                   <PanelHeader title="Khách hàng" />
                   <PanelBody>
@@ -143,7 +154,7 @@ export function OpsSurveyRequestPage() {
                         {
                           k: 'Điện thoại',
                           v: r.customerPhone ? (
-                            <a className={`tnum ${link}`} href={`tel:${r.customerPhone}`}>
+                            <a className="tnum ui-link" href={`tel:${r.customerPhone}`}>
                               {r.customerPhone}
                             </a>
                           ) : (
@@ -153,7 +164,7 @@ export function OpsSurveyRequestPage() {
                         {
                           k: 'Email',
                           v: r.customerEmail ? (
-                            <a className={`wrap-anywhere ${link}`} href={`mailto:${r.customerEmail}`}>
+                            <a className="ui-link wrap-anywhere" href={`mailto:${r.customerEmail}`}>
                               {/* Cột hẹp: ưu tiên xuống dòng ngay sau "@" thay vì giữa tên miền. */}
                               {r.customerEmail.split('@').map((part, i) => (i === 0 ? part : [<Fragment key={i}>@<wbr /></Fragment>, part]))}
                             </a>
@@ -171,18 +182,20 @@ export function OpsSurveyRequestPage() {
                   <PanelBody>
                     <ActivityList
                       items={[
-                        { time: formatDateTime(r.submittedAt), title: 'Khách gửi yêu cầu' },
-                        ...(r.assignedAt ? [{ time: formatDateTime(r.assignedAt), title: 'Bạn nhận yêu cầu' }] : []),
+                        { time: formatDateTime(r.submittedAt), title: 'Khách gửi yêu cầu', state: 'done' },
+                        ...(r.assignedAt ? [{ time: formatDateTime(r.assignedAt), title: 'Bạn nhận yêu cầu', state: 'done' as const }] : []),
                         {
-                          time: r.scheduledAt ? formatDateTime(r.scheduledAt) : unscheduled ? <Badge tone="warn">Chưa hẹn</Badge> : '—',
+                          // "Chưa hẹn" đã là nhãn đỏ ở đầu trang: ở đây chỉ ghi chữ, không báo đỏ lần hai.
+                          time: r.scheduledAt ? formatDateTime(r.scheduledAt) : unscheduled ? 'Chưa hẹn ngày' : '—',
                           title: 'Khảo sát tại công trình',
                           body: r.salesNote ?? undefined,
+                          state: surveyStepState(r.status),
                         },
                       ]}
                     />
                   </PanelBody>
                 </Panel>
-              </div>
+              </PanelAside>
             </div>
           </>
         )

@@ -19,11 +19,11 @@ export function PasswordRules({ value, className }: PasswordRulesProps) {
           return (
             <li
               key={rule.id}
-              className={cn('flex items-center gap-1.5', passed ? 'text-primary' : 'text-on-surface-variant')}
+              className={cn('flex items-center gap-1.5', passed ? 'text-ok' : 'text-on-surface-variant')}
             >
               <Icon
                 name={passed ? 'check_circle' : 'radio_button_unchecked'}
-                className={cn('text-[16px]', passed ? 'text-primary' : 'text-outline')}
+                className={cn('text-[16px]', passed ? 'text-ok' : 'text-outline')}
               />
               <span>{rule.label}</span>
             </li>

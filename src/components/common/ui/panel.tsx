@@ -21,6 +21,18 @@ export function Panel({ raised, className, children, ...rest }: HTMLAttributes<H
   )
 }
 
+/*
+  Cột phụ của trang chi tiết / wizard (khách hàng, tiến độ, ghi chú sau khi gửi): nền xám nhạt tách vùng thông tin
+  tham khảo khỏi vùng làm việc chính. Chỉ cao bằng nội dung của nó (self-start), Panel bên trong vẫn chia bằng đường kẻ.
+*/
+export function PanelAside({ className, children, ...rest }: HTMLAttributes<HTMLElement>) {
+  return (
+    <aside className={cx('space-y-4 self-start rounded-container bg-surface-2 p-4 lg:p-5', className)} {...rest}>
+      {children}
+    </aside>
+  )
+}
+
 /* Title and action share a line; when the action is long they wrap instead of squeezing the title. */
 export function PanelHeader({
   title,

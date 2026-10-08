@@ -12,7 +12,7 @@ export function CatalogError({ error, onRetry }: { error: unknown; onRetry: () =
       <p className="ld-body font-semibold text-fg">Không tải được sản phẩm</p>
       <p className="mx-auto mt-2 max-w-[46ch] ld-body text-fg-2">{errorMessage(error)}</p>
       {retryable && (
-        <button type="button" onClick={onRetry} className="tap mt-4 ld-body text-accent underline underline-offset-4">
+        <button type="button" onClick={onRetry} className="tap mt-4 ld-body text-accent-fg underline underline-offset-4">
           Thử lại
         </button>
       )}

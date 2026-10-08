@@ -11,7 +11,7 @@ function read() {
 }
 
 /**
- * Thu gọn sidebar trên desktop (từ lg), nhớ theo trình duyệt và dùng chung cho mọi portal.
+ * Thu gọn sidebar trên desktop (từ lg) thành cột icon 64px, nhớ theo trình duyệt và dùng chung cho mọi portal.
  * Dưới lg sidebar luôn là drawer nên trạng thái này không có tác dụng.
  */
 export function useSidebarCollapsed() {

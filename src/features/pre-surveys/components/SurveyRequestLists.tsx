@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import { Badge } from '@/components/common/ui/badge'
 import { Button, ButtonLink } from '@/components/common/ui/button'
-import { ListRow, ListRowActions } from '@/components/common/ui/list-row'
+import { ListRow } from '@/components/common/ui/list-row'
 import { Facts } from '@/features/pre-surveys/components/Facts'
 import {
   formatArea,
@@ -16,18 +16,26 @@ import { ROUTES, withId } from '@/routes/paths'
 import type { MySurveyRequestItem, PendingSurveyRequestItem, SurveyRequestStatus } from '@/types/res/surveyRequestsRes'
 
 /*
-  Hàng chờ yêu cầu khảo sát của sales, dạng danh sách thay vì bảng: mỗi yêu cầu là một khối đọc được
-  một lượt (công trình, khu vực, vài con số), thao tác nằm ngay dưới. Yêu cầu chờ quá một ngày có vạch
-  cảnh báo ở lề kèm chữ, không chỉ dựa vào màu.
+  Hàng chờ yêu cầu khảo sát của sales, dạng danh sách thay vì bảng: mỗi yêu cầu là một khối đọc được một lượt.
+  Từ lg mỗi khối hai cột: trái là công trình, khu vực, vài con số; phải là thời gian / trạng thái và nút hành động, để mắt
+  quét dọc cột phải là biết yêu cầu nào chờ lâu và bấm ngay, không bỏ trống nửa phải màn hình.
+  Mỗi tín hiệu nói một lần: chờ quá một ngày là nhãn đỏ cạnh thời gian (không thêm vạch đỏ ở lề nói lại điều đó).
 */
 
-function RequestHeading({ name, aside }: { name: string | null; aside: ReactNode }) {
+function RequestRow({ main, side }: { main: ReactNode; side: ReactNode }) {
   return (
-    <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1">
-      <h3 className="text-title font-semibold">{name || 'Công trình chưa đặt tên'}</h3>
-      <div className="flex flex-wrap items-center gap-2 text-meta text-fg-3">{aside}</div>
-    </div>
+    <ListRow>
+      <div className="grid gap-x-8 gap-y-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-start">
+        <div className="min-w-0">{main}</div>
+        <div className="flex flex-wrap items-center gap-3 lg:flex-col lg:items-end">{side}</div>
+      </div>
+    </ListRow>
   )
+}
+
+/* h2: ngay dưới tiêu đề trang (h1); nhảy thẳng h3 thì trình đọc màn hình và kiểm tra trợ năng báo sai thứ tự tiêu đề. */
+function Heading({ name }: { name: string | null }) {
+  return <h2 className="text-title font-semibold">{name || 'Công trình chưa đặt tên'}</h2>
 }
 
 function Area({ district, province }: { district: string | null; province: string | null }) {
@@ -64,31 +72,35 @@ export function PendingRequestList({
       {[...rows].sort(oldestFirst).map((r) => {
         const overdue = isOverdue(r.submittedAt)
         return (
-          <ListRow key={r.surveyRequestId} tone={overdue ? 'warn' : undefined}>
-            <RequestHeading
-              name={r.propertyName}
-              aside={
-                <>
+          <RequestRow
+            key={r.surveyRequestId}
+            main={
+              <>
+                <Heading name={r.propertyName} />
+                <Area district={r.district} province={r.province} />
+                <Facts
+                  className="mt-3"
+                  items={[
+                    { k: 'Khách hàng', v: r.customerName || '—' },
+                    { k: 'Bề mặt', v: surfaceTypeLabel(r.installationSurfaceType) },
+                    { k: 'Dùng được / tổng', v: `${formatArea(r.usableAreaM2)} / ${formatArea(r.totalAreaM2)}` },
+                  ]}
+                />
+              </>
+            }
+            side={
+              <>
+                <span className="flex flex-wrap items-center gap-2 text-body text-fg-2">
                   <When iso={r.submittedAt} prefix="Gửi" />
-                  {overdue && <Badge tone="warn">Chờ hơn 1 ngày</Badge>}
-                </>
-              }
-            />
-            <Area district={r.district} province={r.province} />
-            <Facts
-              className="mt-3"
-              items={[
-                { k: 'Khách hàng', v: r.customerName || '—' },
-                { k: 'Bề mặt', v: surfaceTypeLabel(r.installationSurfaceType) },
-                { k: 'Dùng được / tổng', v: `${formatArea(r.usableAreaM2)} / ${formatArea(r.totalAreaM2)}` },
-              ]}
-            />
-            <ListRowActions>
-              <Button size="sm" disabled={claimingId !== null} onClick={() => onClaim(r)}>
-                {claimingId === r.surveyRequestId ? 'Đang nhận…' : 'Nhận yêu cầu'}
-              </Button>
-            </ListRowActions>
-          </ListRow>
+                  {overdue && <Badge tone="danger">Chờ hơn 1 ngày</Badge>}
+                </span>
+                {/* Hành động chính của từng yêu cầu: nút soft (có màu, không đặc) để nhiều dòng không thành một dãy nút đặc. */}
+                <Button size="sm" variant="soft" disabled={claimingId !== null} onClick={() => onClaim(r)}>
+                  {claimingId === r.surveyRequestId ? 'Đang nhận…' : 'Nhận yêu cầu'}
+                </Button>
+              </>
+            }
+          />
         )
       })}
     </ul>
@@ -118,27 +130,35 @@ export function MyRequestList({ rows }: { rows: MySurveyRequestItem[] }) {
         const status = surveyStatusMeta(r.status)
         const hint = nextStep(r)
         return (
-          <ListRow key={r.surveyRequestId}>
-            <RequestHeading name={r.propertyName} aside={<Badge tone={status.tone}>{status.label}</Badge>} />
-            <Area district={r.district} province={r.province} />
-            <Facts
-              className="mt-3"
-              items={[
-                { k: 'Khách hàng', v: r.customerName || '—' },
-                { k: 'Bạn nhận', v: r.assignedAt ? <When iso={r.assignedAt} /> : '—' },
-                {
-                  k: 'Hẹn khảo sát',
-                  v: r.scheduledAt ? formatDateTime(r.scheduledAt) : needsScheduling(r.status) ? <Badge tone="warn">Chưa hẹn</Badge> : '—',
-                },
-              ]}
-            />
-            <ListRowActions>
-              <ButtonLink to={withId(ROUTES.ops.survey, r.surveyRequestId)} size="sm">
-                Mở yêu cầu
-              </ButtonLink>
-              {hint && <span className="text-body text-fg-2">{hint}</span>}
-            </ListRowActions>
-          </ListRow>
+          <RequestRow
+            key={r.surveyRequestId}
+            main={
+              <>
+                <Heading name={r.propertyName} />
+                <Area district={r.district} province={r.province} />
+                <Facts
+                  className="mt-3"
+                  items={[
+                    { k: 'Khách hàng', v: r.customerName || '—' },
+                    { k: 'Bạn nhận', v: r.assignedAt ? <When iso={r.assignedAt} /> : '—' },
+                    {
+                      k: 'Hẹn khảo sát',
+                      v: r.scheduledAt ? formatDateTime(r.scheduledAt) : needsScheduling(r.status) ? <Badge tone="danger">Chưa hẹn</Badge> : '—',
+                    },
+                  ]}
+                />
+                {hint && <p className="mt-3 text-body text-fg-2">{hint}</p>}
+              </>
+            }
+            side={
+              <>
+                <Badge tone={status.tone}>{status.label}</Badge>
+                <ButtonLink to={withId(ROUTES.ops.survey, r.surveyRequestId)} size="sm" variant="soft">
+                  Mở yêu cầu
+                </ButtonLink>
+              </>
+            }
+          />
         )
       })}
     </ul>

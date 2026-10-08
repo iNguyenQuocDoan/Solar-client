@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Pagination } from '@/components/common/ui/pagination'
-import { Input, Select } from '@/components/common/ui/field'
+import { SearchInput, Select } from '@/components/common/ui/field'
 import { LANDING_CONTAINER } from '@/features/landing/components/classes'
 import { CatalogError } from '@/features/products/components/CatalogError'
 import { ProductCard } from '@/features/products/components/ProductCard'
@@ -36,8 +36,7 @@ export function ProductCatalogPage() {
       <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
         <label className="flex-1">
           <span className="sr-only">Tìm sản phẩm</span>
-          <Input
-            type="search"
+          <SearchInput
             placeholder="Tìm theo tên, hãng, model"
             value={search}
             onChange={(e) => {
