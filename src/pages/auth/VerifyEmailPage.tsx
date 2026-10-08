@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Link, useSearchParams } from 'react-router'
 import { toast } from 'sonner'
 import { AuthCard } from '@/features/auth/components/AuthCard'
+import { AuthInput } from '@/features/auth/components/AuthInput'
 import { Icon } from '@/components/common/stitch-ui/Icon'
 import { ROUTES } from '@/routes/paths'
 import { useResendVerificationMutation, useVerifyEmailMutation } from '@/features/auth/hooks/useAuthMutations'
@@ -27,6 +28,9 @@ export function VerifyEmailPage() {
   const [searchParams] = useSearchParams()
   const token = searchParams.get('token')
   const emailParam = searchParams.get('email')
+  // Link trong email chỉ có ?token, không có ?email: link hết hạn thì cho khách tự gõ email để gửi lại.
+  const [typedEmail, setTypedEmail] = useState('')
+  const resendEmail = emailParam ?? typedEmail.trim()
 
   const verifyMutation = useVerifyEmailMutation()
   const resendMutation = useResendVerificationMutation()
@@ -68,12 +72,12 @@ export function VerifyEmailPage() {
 
   const resend = async () => {
     if (secondsLeft > 0 || resendMutation.isPending) return
-    if (!emailParam) {
+    if (!resendEmail) {
       toast.error(verifyContent.missingEmail)
       return
     }
     try {
-      await resendMutation.mutateAsync({ email: emailParam })
+      await resendMutation.mutateAsync({ email: resendEmail })
       setSecondsLeft(verifyContent.resendSeconds)
       toast.success(verifyContent.toastSuccess)
     } catch (error) {
@@ -117,6 +121,21 @@ export function VerifyEmailPage() {
         </div>
         <h1 className="mb-1 text-headline-xl text-on-surface">{verifyContent.failedTitle}</h1>
         <p className="mb-space-lg max-w-md text-body-md text-on-surface-variant">{verifyError}</p>
+        {!emailParam && (
+          <div className="mb-space-sm flex w-full max-w-md flex-col gap-1 text-left">
+            <label htmlFor="resend-email" className="text-label-lg text-on-surface">
+              Email đã đăng ký
+            </label>
+            <AuthInput
+              id="resend-email"
+              type="email"
+              autoComplete="email"
+              leadingIcon="mail"
+              value={typedEmail}
+              onChange={(e) => setTypedEmail(e.target.value)}
+            />
+          </div>
+        )}
         <div className="flex w-full max-w-md flex-col items-center gap-space-sm sm:flex-row">
           <button
             type="button"
@@ -147,24 +166,37 @@ export function VerifyEmailPage() {
   }
 
   /* ------------------------------------------------- không có token: kiểm tra hộp thư */
-  const displayEmail = emailParam ? maskEmail(emailParam) : verifyContent.unknownEmail
 
   return (
     <AuthCard className="items-center text-center">
       <div className="relative mb-space-md flex h-20 w-20 items-center justify-center rounded-full bg-surface-container-high text-primary shadow-sm">
         <Icon name="mark_email_unread" className="text-[42px]" />
-        <span className="absolute right-1 top-1 flex h-5 w-5 items-center justify-center rounded-full bg-secondary-container text-label-sm font-bold text-on-secondary-container">
-          1
-        </span>
       </div>
 
       <h1 className="mb-1 text-headline-xl text-on-surface">{verifyContent.title}</h1>
       <p className="mb-space-md max-w-md text-body-lg text-on-surface-variant">{verifyContent.description}</p>
 
-      <div className="mb-space-lg inline-flex items-center gap-2 rounded-xl bg-surface-container px-4 py-2 text-headline-md text-primary">
-        <Icon name="alternate_email" className="text-[20px]" />
-        <span className="font-bold">{displayEmail}</span>
-      </div>
+      {/* Mở trang trực tiếp (không có ?email): hỏi email để gửi lại, thay vì vừa ghi "đã gửi tới email" vừa báo lỗi thiếu email. */}
+      {emailParam ? (
+        <div className="mb-space-lg inline-flex items-center gap-2 rounded-xl bg-surface-container px-4 py-2 text-headline-md text-primary">
+          <Icon name="alternate_email" className="text-[20px]" />
+          <span className="font-bold">{maskEmail(emailParam)}</span>
+        </div>
+      ) : (
+        <div className="mb-space-md flex w-full max-w-md flex-col gap-1 text-left">
+          <label htmlFor="resend-email-inbox" className="text-label-lg text-on-surface">
+            Email đã đăng ký
+          </label>
+          <AuthInput
+            id="resend-email-inbox"
+            type="email"
+            autoComplete="email"
+            leadingIcon="mail"
+            value={typedEmail}
+            onChange={(e) => setTypedEmail(e.target.value)}
+          />
+        </div>
+      )}
 
       <p className="mb-space-lg max-w-sm text-body-sm text-on-surface-variant">{verifyContent.hint}</p>
 
@@ -172,7 +204,7 @@ export function VerifyEmailPage() {
         <button
           type="button"
           onClick={() => void resend()}
-          disabled={secondsLeft > 0 || resendMutation.isPending || !emailParam}
+          disabled={secondsLeft > 0 || resendMutation.isPending || !resendEmail}
           className="flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-primary text-label-lg text-on-primary shadow-sm transition-all hover:bg-primary-container disabled:cursor-not-allowed disabled:opacity-60 sm:flex-1"
         >
           <Icon
@@ -194,9 +226,6 @@ export function VerifyEmailPage() {
         </Link>
       </div>
 
-      {!emailParam && (
-        <p className="mt-space-sm max-w-md text-body-sm text-error">{verifyContent.missingEmail}</p>
-      )}
 
       <div className="mt-space-xl w-full max-w-md border-t border-surface-container pt-space-md text-center">
         <span className="text-body-sm text-on-surface-variant">

@@ -10,10 +10,13 @@
 Repo có hai thư mục component vì hai nhánh việc dựng song song, nhưng từ 22/09/2026 cả
 hai ăn chung một hệ token trong `src/styles/globals.css`:
 
-- `src/components/common/ui` (file kebab-case, token `canvas/fg/accent…`): portal khách hàng
-  `/customer`, kinh doanh `/ops`, kỹ thuật `/field`, quản lý `/manage`. Nhật ký audit `UI_AUDIT.md` chỉ giữ ở máy, không có trên git.
+- `src/components/common/ui` (file kebab-case, token `canvas/fg/accent…`): MỌI portal đăng nhập —
+  khách hàng `/customer`, kinh doanh `/ops`, quản trị `/admin`, kỹ thuật viên `/tech` (`/field` chuyển về `/tech`), quản lý
+  `/manage` — dùng chung shell `components/layout/app-shell.tsx` (từ 08/10/2026, theo yêu cầu "admin phải đồng bộ").
+  Nhật ký audit `UI_AUDIT.md` chỉ giữ ở máy, không có trên git.
 - `src/components/common/stitch-ui` (file PascalCase, token `surface/on-surface/primary…`,
-  Material Symbols): admin `/admin`, kỹ thuật viên `/tech`, `/styleguide`.
+  Material Symbols): trang công khai/xác thực, hộp thoại đổi mật khẩu, `/styleguide` (chỉ chạy ở dev) và các màn
+  mock đã ẩn của admin/kỹ thuật viên. Shell Stitch (`AppShell`, `Sidebar`, `TopHeader`) và `config/nav.ts` đã xoá.
 - Token của bộ Stitch nay chỉ là bí danh trỏ vào token của portal kit (màu nền/chữ/đường
   kẻ, bán kính, bóng, họ chữ, thang chữ). Sửa giá trị ở block portal kit là cả hai đổi theo;
   ĐỪNG đặt lại hex hay px trong block Stitch.
@@ -34,14 +37,16 @@ Rút ra từ 4 lượt audit giao diện; áp cho CẢ HAI bộ component.
 4. **Một màu nhấn** (`--accent`, xanh lá) + màu ngữ nghĩa `ok/warn/danger/info`. Không
    thêm màu nhấn mới, không tô màu cho nhãn chỉ để trang trí.
 5. **Nhãn trạng thái**: chỉ trạng thái cần chú ý (lỗi, cảnh báo, chờ duyệt) mới có nền màu;
-   còn lại là chấm màu + chữ (`StatusBadge`).
+   còn lại là chấm màu + chữ. Portal kit: `Badge` (`warn`/`danger` nền nhạt; `ok`/`info`/`accent` chấm màu;
+   `neutral` chấm xám) và `Count` (số đếm cạnh mục menu/tab: `attention` = việc đang chờ người xem, nền accent;
+   còn lại nền xám). Việc cần làm ngay hiện thành Badge cảnh báo ở mô tả đầu trang (vd. "2 yêu cầu chờ hơn 1 ngày").
 6. **Không có chrome trang trí**: nhãn IN HOA giãn chữ, chip "badge" không mang thông tin,
    ô icon trang trí cạnh tiêu đề, mũi tên "→" dán sau nhãn link, dấu "•" nối chuỗi meta,
    chấm nhấp nháy `animate-pulse`. Chuyển động chỉ dùng cho trạng thái tải.
 7. **Khoảng cách** theo thang 4/8/12/16/24/32/48/64 (`space-*` của bộ Stitch đã theo thang này).
 8. **Chạm**: control cao tối thiểu 44px dưới `lg`.
 
-# Admin + Technician portal (Stitch kit)
+# Web portal (Stitch kit cho trang công khai, portal kit cho mọi portal đăng nhập)
 
 ## Stack
 
@@ -100,8 +105,8 @@ src/
     AppProviders.tsx           # QueryClientProvider + AuthProvider + Toaster (sonner)
     AuthProvider.tsx           # phiên đăng nhập, useAuth
   components/
-    layout/                    # AppShell + Sidebar + TopHeader (Stitch), app-shell (portal kit) và mọi layout route:
-                               # AdminLayout, TechLayout, AuthLayout, PublicLayout, RootLayout, customer-/ops-/field-/manage-layout
+    layout/                    # app-shell (shell chung của mọi portal) và mọi layout route:
+                               # AdminLayout, TechLayout, AuthLayout, PublicLayout, RootLayout, customer-/ops-/manage-layout
     common/ui/                 # portal kit (kebab-case) + query-boundary
     common/stitch-ui/          # bộ Stitch (PascalCase, barrel index.ts): StatusBadge, MetricCard, DataTable, TaskCard, Timeline, ChecklistItem, PhotoGrid…
     common/tech/               # khối dùng ở nhiều nghiệp vụ kỹ thuật viên: SectionCard, ActionDock, JobHeaderCard, MeasurementCard…
@@ -119,7 +124,7 @@ src/
   types/                       # sinh bằng `npm run gen:api` (scripts/gen-api-types.mjs), KHÔNG sửa tay
     req/                       # request DTO theo tag swagger: authReq.ts, …
     res/                       # response DTO: apiRes.ts (ApiResponse<T>, ApiErrorBody), authRes.ts, …
-  config/                      # nav.ts (menu admin/tech), portals.ts (rail 4 portal), roles.ts, demoAccounts.ts
+  config/                      # portals.ts (menu của mọi portal), roles.ts, demoAccounts.ts
   hooks/                       # useMockQuery, useTheme
   utils/                       # cn, cx, format, img, jwt
 public/placeholders/           # thay cho ảnh lh3.googleusercontent.com
@@ -156,16 +161,30 @@ hình chữ nhật 3:2 vì backend chỉ có diện tích), tấm pin lấy từ
 `ratedPowerW`, `widthMm`, `heightMm`). Phần vẽ `RoofScene.tsx` dùng `three` + `@react-three/fiber` (OrbitControls của
 three, không dùng drei), nạp bằng `React.lazy` để three.js chỉ tải khi mở màn có mô phỏng. Không lưu được thiết kế:
 backend chưa có API.
-- `/admin` → `/admin/products`: quản lý sản phẩm.
-- `/tech`, `/field`, `/manage`: chưa có API, chỉ còn trang "Tổng quan" báo chưa có chức năng (`PlaceholderPage`).
+- `/admin` → `/admin/products`: quản lý sản phẩm (`pages/admin/products-page.tsx`, bộ portal kit; tấm pin thiếu
+  công suất/kích thước được tô cảnh báo vì mô phỏng không dùng được). Backend ẩn sản phẩm INACTIVE khỏi GET danh sách
+  và GET chi tiết với mọi vai trò (dò 08/10/2026), nên: tạo mới luôn ACTIVE; "Ngừng bán" hỏi xác nhận, có "Hoàn tác";
+  sản phẩm đã ngừng bán được nhớ trong localStorage (`features/products/hiddenProducts.ts`) để "Mở bán lại" — chỉ trên
+  trình duyệt đã bấm. Khi backend có cách liệt kê sản phẩm ngừng bán thì bỏ cơ chế này.
+- `/tech/products(/:id)`, `/manage/products(/:id)`: kỹ thuật viên và quản lý chưa có API riêng, nên trang chủ của họ là
+  danh mục sản phẩm thật (GET /api/products, bản portal kit). Không còn trang giữ chỗ "chưa có chức năng" (08/10/2026);
+  `/field/*` chuyển về `/tech`.
 
 Mở lại một màn: thêm route trong `routes/protectedRoutes.tsx` và mục menu trong `config/portals.ts`
-(portal kit) hoặc `config/nav.ts` (admin, technician). Sidebar/header không đặt số liệu giả (tên người dùng,
+(mọi portal). Sidebar/header không đặt số liệu giả (tên người dùng,
 thông báo, chip trạng thái): người dùng lấy từ `useAuth`.
 
 ## Layout chung
 
-Mọi màn đều dùng 1 shell: `<aside>` cố định bên trái `w-52` (208px) nền `surface-container-lowest`, `<main>` nền `surface` lề 24px. `<header>` (nút mở menu, logo, người đăng nhập) chỉ hiện dưới `lg`; từ `lg` sidebar đã có logo và khối tài khoản. Làm 1 lần trong layout route (`AdminLayout` / `TechLayout` với `<Outlet/>`), KHÔNG copy sidebar vào từng page.
+Mọi portal đăng nhập dùng 1 shell (`components/layout/app-shell.tsx`): rail chữ cố định bên trái `w-52` (208px), `<main>` lề 24px.
+Thanh trên mảnh (`Mở menu`) hiện dưới `lg`, và cả từ `lg` khi người dùng bấm "Thu gọn menu" (nhớ trong localStorage,
+`hooks/useSidebarCollapsed.ts`); lúc đó thanh trên hiện thêm gợi ý việc đang chờ (`collapsedHint`). Cuối rail là khối tài khoản:
+tên, vai trò, rồi mỗi thao tác một hàng (Đổi mật khẩu, Giao diện, Đăng xuất). Mục đang mở có nền `accent-soft` + vạch
+accent 3px, nhóm chứa nó đậm lên; trên cùng nội dung có thanh định vị dính (`LocationBar`): portal / nhóm / mục / trang chi tiết.
+Trang chi tiết hoặc wizard đặt mắt xích cuối bằng `usePageCrumb(tên)` (`components/layout/page-crumb.tsx`), không tự làm link "quay lại". Số đếm thật cạnh mục menu truyền qua
+`badges` của layout (`ops-layout`: hàng chờ; `AdminLayout`: tổng sản phẩm). Làm 1 lần trong layout route với `<Outlet/>`,
+KHÔNG copy rail vào từng page; layout còn được vẽ làm khung chờ (`hydrateFallbackElement`) TRƯỚC `RequireRole` nên
+query trong layout phải chờ `useAuth().user` đúng vai trò mới gọi API.
 
 Mật độ (bố cục gọn 05/10/2026, áp cho cả hai bộ component): lề nội dung 24px (`px-6`, bộ Stitch `px-space-lg`), không giới hạn bề rộng `<main>`; rail portal kit `w-52`; khoảng cách tiêu đề trang → nội dung 24px; giữa cột/khối 24px (`gap-6`); giữa các Panel 16px + đường kẻ; `ListRow` `py-4`. Thêm màn mới thì theo đúng các bậc này, đừng quay lại 48px.
 
@@ -213,11 +232,11 @@ Trang chủ và các màn xác thực KHÔNG dùng `AppShell`/sidebar.
 | `/coming-soon`    | `PublicLayout` | Trang tạm cho Kinh doanh, Quản lý, Khách hàng               |
 | `/products`, `/products/:id` | `PublicLayout` | Danh mục sản phẩm công khai – GET /api/products(/{id}) |
 | `/admin/*`        | `AdminLayout`  | Sản phẩm – bọc `<RequireRole role="admin">`                 |
-| `/tech/*`         | `TechLayout`   | Tổng quan (chưa có API) – bọc `<RequireRole role="technician">` |
+| `/tech/*`         | `TechLayout`   | Sản phẩm (danh mục) – bọc `<RequireRole role="technician">` |
 | `/customer/*`     | `CustomerLayout` | Đánh giá sơ bộ – bọc `<RequireRole role="customer">`     |
 | `/ops/*`          | `OpsLayout`      | Yêu cầu khảo sát – bọc `<RequireRole role="sales">`      |
-| `/field/*`        | `FieldLayout`    | Tổng quan (chưa có API) – bọc `<RequireRole role="technician">` |
-| `/manage/*`       | `ManageLayout`   | Tổng quan (chưa có API) – bọc `<RequireRole role="manager">` |
+| `/field/*`        | —                | chuyển về `/tech` |
+| `/manage/*`       | `ManageLayout`   | Sản phẩm (danh mục) – bọc `<RequireRole role="manager">` |
 | `/styleguide`     | –              | `StyleguidePage`                                            |
 
 `/` trả về trang chủ công khai; KHÔNG còn redirect `/` → `/admin`.
@@ -294,7 +313,10 @@ Auth gọi backend .NET thật, KHÔNG còn mock. Nguồn sự thật là `docs/
 
 ## Lệnh
 
-- `npm run dev -- --port 3000` – Vite dev server; backend gửi link xác minh email / đặt lại mật khẩu về `http://localhost:3000`
+- `npm run dev -- --port 3000` – Vite dev server; backend gửi link xác minh email / đặt lại mật khẩu về `http://localhost:3000`.
+  Proxy `/api` trỏ `API_PROXY_TARGET` (mặc định `http://localhost:8080`). Máy có dịch vụ khác giữ 8080 (vd. PEMHTTPD đi kèm
+  bộ cài PostgreSQL) thì chạy API ở cổng khác: `API_HOST_PORT=8081 docker compose -f docker-compose.pull.yml up -d` trong thư mục
+  backend, rồi `API_PROXY_TARGET=http://localhost:8081 npm run dev -- --port 3000`.
 - `npm run build` – `tsc -b && vite build`; phải pass trước khi coi một màn là xong
 - `npm run typecheck` – `tsc -b` (nhanh hơn build, dùng khi lặp)
 - `npm run gen:api` – sinh lại `src/types/req` và `src/types/res` từ `docs/api/swagger.json`

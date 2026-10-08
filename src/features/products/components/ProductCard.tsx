@@ -1,7 +1,7 @@
 import { Link } from 'react-router'
 import { ROUTES, withId } from '@/routes/paths'
 import { formatMoney } from '@/utils/format'
-import { formatPower, formatWarranty } from '@/features/products/components/productDisplay'
+import { formatPower, formatWarranty, productTypeLabel } from '@/features/products/components/productDisplay'
 import type { ProductResponse } from '@/types/res/adminProductsRes'
 
 /* Một ô trong lưới /products. Cả thẻ là link tới trang chi tiết. */
@@ -28,7 +28,7 @@ export function ProductCard({ product }: { product: ProductResponse }) {
       </div>
       <div className="flex flex-1 flex-col gap-1 p-4">
         <p className="ld-meta text-fg-2">
-          {[product.brand, product.productType].filter(Boolean).join(', ')}
+          {[product.brand, productTypeLabel(product.productType)].filter(Boolean).join(', ')}
         </p>
         <h2 className="ld-body font-semibold text-fg group-hover:underline">{product.name}</h2>
         {facts.length > 0 && <p className="ld-meta text-fg-2">{facts.join(', ')}</p>}

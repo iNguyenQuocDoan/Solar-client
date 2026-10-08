@@ -212,7 +212,13 @@ export function SiteFields({ value, errors, onChange }: FieldsProps<SiteForm>) {
   )
 }
 
-export function SurfaceFields({ value, errors, onChange }: FieldsProps<SurfaceForm>) {
+/** `onBlur`: rời ô số thì kiểm tra phạm vi ngay (xem changeSurface / blurSurface ở assessment-page). */
+export function SurfaceFields({
+  value,
+  errors,
+  onChange,
+  onBlur,
+}: FieldsProps<SurfaceForm> & { onBlur?: (field: 'totalAreaM2' | 'usableAreaM2' | 'tiltDegree') => void }) {
   return (
     <div className="grid gap-4 sm:grid-cols-2">
       <Field label="Tổng diện tích" htmlFor="totalArea" error={errors.totalAreaM2}>
@@ -222,6 +228,7 @@ export function SurfaceFields({ value, errors, onChange }: FieldsProps<SurfaceFo
             inputMode="decimal"
             value={value.totalAreaM2}
             onChange={(e) => onChange({ totalAreaM2: e.target.value })}
+            onBlur={() => onBlur?.('totalAreaM2')}
             aria-invalid={Boolean(errors.totalAreaM2)}
           />
         </WithUnit>
@@ -233,6 +240,7 @@ export function SurfaceFields({ value, errors, onChange }: FieldsProps<SurfaceFo
             inputMode="decimal"
             value={value.usableAreaM2}
             onChange={(e) => onChange({ usableAreaM2: e.target.value })}
+            onBlur={() => onBlur?.('usableAreaM2')}
             aria-invalid={Boolean(errors.usableAreaM2)}
           />
         </WithUnit>
@@ -244,6 +252,7 @@ export function SurfaceFields({ value, errors, onChange }: FieldsProps<SurfaceFo
             inputMode="decimal"
             value={value.tiltDegree}
             onChange={(e) => onChange({ tiltDegree: e.target.value })}
+            onBlur={() => onBlur?.('tiltDegree')}
             aria-invalid={Boolean(errors.tiltDegree)}
           />
         </WithUnit>

@@ -66,18 +66,30 @@ export function toNumber(value: string) {
   return raw === '' ? null : Number(raw)
 }
 
-type Range = { label: string; unit?: string; min: number; max: number; minExclusive?: boolean }
+/**
+ * Diện tích hay được gõ theo kiểu Việt: "1.200" là một nghìn hai trăm, không phải 1,2 m². Dấu chấm chia đúng
+ * nhóm ba chữ số thì coi là phân cách hàng nghìn (phần lẻ sau dấu phẩy); còn lại đọc như toNumber.
+ * Chỉ dùng cho diện tích: toạ độ "10.762" hay góc "12.5" vẫn là số thập phân.
+ */
+export function toArea(value: string) {
+  const raw = value.trim()
+  if (/^\d{1,3}(\.\d{3})+(,\d+)?$/.test(raw)) return Number(raw.replace(/\./g, '').replace(',', '.'))
+  return toNumber(raw)
+}
+
+type Range = { label: string; unit?: string; min: number; max: number; minExclusive?: boolean; parse?: (value: string) => number | null }
 
 /** Kiểm tra một ô số; trả về câu lỗi hoặc null. */
 function numberIssue(value: string, range: Range, required: boolean) {
-  const n = toNumber(value)
+  const n = (range.parse ?? toNumber)(value)
   if (n === null) return required ? `Nhập ${range.label}.` : null
-  if (Number.isNaN(n)) return `Nhập ${range.label} bằng số.`
+  // isFinite gạt cả NaN lẫn "Infinity" / "1e400" (Number() đọc được nhưng không phải số đo).
+  if (!Number.isFinite(n)) return `Nhập ${range.label} bằng số.`
   const unit = range.unit ? ` ${range.unit}` : ''
   if (range.minExclusive ? n <= range.min : n < range.min) {
     return range.minExclusive ? `${capitalize(range.label)} phải lớn hơn ${range.min}${unit}.` : `${capitalize(range.label)} từ ${range.min} đến ${range.max}${unit}.`
   }
-  if (n > range.max) return `Kiểm tra lại ${range.label}; tối đa ${range.max}${unit}.`
+  if (n > range.max) return `Kiểm tra lại ${range.label}; tối đa ${new Intl.NumberFormat('vi-VN').format(range.max)}${unit}.`
   return null
 }
 
@@ -139,9 +151,24 @@ export const siteSchema = z
     }),
   )
 
-const AREA: Range = { label: 'diện tích', unit: 'm²', min: 0, max: Number.POSITIVE_INFINITY, minExclusive: true }
+/* Trần 1.000.000 m² (100 ha) chỉ để chặn số vô nghĩa; mái nhà xưởng lớn nhất cũng chỉ vài chục nghìn m². */
+const AREA: Range = { label: 'diện tích', unit: 'm²', min: 0, max: 1_000_000, minExclusive: true, parse: toArea }
+const TOTAL_AREA: Range = { ...AREA, label: 'tổng diện tích' }
+const USABLE_AREA: Range = { ...AREA, label: 'diện tích dùng được' }
 const TILT: Range = { label: 'độ dốc mái', unit: 'độ', min: 0, max: 90 }
 const AZIMUTH: Range = { label: 'góc phương vị', unit: 'độ', min: 0, max: 360 }
+
+/**
+ * Lỗi phạm vi của một ô số ở bước số liệu, kiểm tra ngay khi gõ để không phải đợi bấm "Tiếp tục"
+ * mới biết sai. Không xét bắt buộc (đang gõ dở) và không xét liên ô (dùng được ≤ tổng): hai việc đó
+ * để schema lo lúc gửi. Câu báo lỗi trùng với schema vì cùng dùng numberIssue và cùng khoảng.
+ */
+export function liveSurfaceIssue(field: keyof SurfaceForm, value: string): string | null {
+  if (field === 'totalAreaM2') return numberIssue(value, TOTAL_AREA, false)
+  if (field === 'usableAreaM2') return numberIssue(value, USABLE_AREA, false)
+  if (field === 'tiltDegree') return numberIssue(value, TILT, false)
+  return null
+}
 
 /**
  * Lưu nháp cho phép bỏ trống (backend nhận null); đi tiếp sang bước gửi thì phải đủ cả 5 ô,
@@ -157,22 +184,22 @@ export function surfaceSchema(required: boolean) {
       hasObstruction: z.enum(['', 'yes', 'no']),
     })
     .superRefine((f, ctx) => {
-      issue<SurfaceForm>(ctx, 'totalAreaM2', numberIssue(f.totalAreaM2, { ...AREA, label: 'tổng diện tích' }, required))
-      issue<SurfaceForm>(ctx, 'usableAreaM2', numberIssue(f.usableAreaM2, { ...AREA, label: 'diện tích dùng được' }, required))
+      issue<SurfaceForm>(ctx, 'totalAreaM2', numberIssue(f.totalAreaM2, TOTAL_AREA, required))
+      issue<SurfaceForm>(ctx, 'usableAreaM2', numberIssue(f.usableAreaM2, USABLE_AREA, required))
       issue<SurfaceForm>(ctx, 'tiltDegree', numberIssue(f.tiltDegree, TILT, required))
       // Hướng chọn trên la bàn nên chỉ có thể thiếu, không thể sai định dạng.
       if (required && !f.azimuthDegree.trim()) issue<SurfaceForm>(ctx, 'azimuthDegree', 'Chọn hướng mặt mái.')
       else issue<SurfaceForm>(ctx, 'azimuthDegree', numberIssue(f.azimuthDegree, AZIMUTH, false))
       if (required && !f.hasObstruction) issue<SurfaceForm>(ctx, 'hasObstruction', 'Cho biết mặt lắp có vật cản hay không.')
-      const total = toNumber(f.totalAreaM2)
-      const usable = toNumber(f.usableAreaM2)
+      const total = toArea(f.totalAreaM2)
+      const usable = toArea(f.usableAreaM2)
       if (total !== null && usable !== null && usable > total)
         issue<SurfaceForm>(ctx, 'usableAreaM2', 'Diện tích dùng được không lớn hơn tổng diện tích.')
     })
     .transform(
       (f): UpdatePreSurveyRequest => ({
-        totalAreaM2: toNumber(f.totalAreaM2),
-        usableAreaM2: toNumber(f.usableAreaM2),
+        totalAreaM2: toArea(f.totalAreaM2),
+        usableAreaM2: toArea(f.usableAreaM2),
         tiltDegree: toNumber(f.tiltDegree),
         azimuthDegree: toNumber(f.azimuthDegree),
         hasObstruction: f.hasObstruction === '' ? null : f.hasObstruction === 'yes',

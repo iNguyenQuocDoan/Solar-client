@@ -1,153 +1,119 @@
-import type { ReactNode } from 'react'
-import { IconButton } from '@/components/common/stitch-ui/Button'
-import { DataTable, type DataTableColumn } from '@/components/common/stitch-ui/DataTable'
-import type { PaginationProps } from '@/components/common/stitch-ui/Pagination'
-import { StatusBadge } from '@/components/common/stitch-ui/StatusBadge'
-import { formatMoney } from '@/utils/format'
-import { formatPower, formatSize, isProductActive, productStatusMeta } from '@/features/products/components/productDisplay'
+import { Badge } from '@/components/common/ui/badge'
+import { Table, Td, Th, Tr } from '@/components/common/ui/table'
+import { formatPower, formatSize, isProductActive, panelSpecGaps, productStatusMeta, productTypeLabel } from '@/features/products/components/productDisplay'
 import type { ProductResponse } from '@/types/res/adminProductsRes'
+import { cx } from '@/utils/cx'
+import { formatMoney } from '@/utils/format'
 
-/* Bảng sản phẩm của /admin/products, dữ liệu lấy từ GET /api/products. */
+/*
+  Bảng sản phẩm của /admin/products (bộ portal kit, cùng kiểu với danh mục của khách hàng và sales).
+  Dưới lg mỗi dòng xếp thành khối nhãn/giá trị nên không phải cuộn ngang.
+  Tấm pin thiếu công suất hoặc kích thước được tô cảnh báo ngay trong ô: mô phỏng bố trí không dùng được tấm đó.
+*/
 
 export type ProductsTableProps = {
   products: ProductResponse[]
   onEdit: (product: ProductResponse) => void
   onToggleStatus: (product: ProductResponse) => void
   onDelete: (product: ProductResponse) => void
-  /** id sản phẩm đang chờ đổi trạng thái / xoá, để khoá nút của đúng dòng đó */
-  busyId?: string | null
-  toolbar?: ReactNode
-  pagination?: PaginationProps
-  /** Nội dung khi không có dòng: chữ, hoặc khối lỗi kèm nút thử lại */
-  emptyMessage?: ReactNode
-  className?: string
+  /** id các sản phẩm đang chờ đổi trạng thái, để khoá thao tác của đúng những dòng đó */
+  busyIds?: ReadonlySet<string>
 }
 
-function buildColumns(): DataTableColumn<ProductResponse>[] {
-  return [
-    {
-      key: 'product',
-      header: 'Sản phẩm / SKU',
-      render: (product) => (
-        <div className="flex min-w-0 items-center gap-space-sm">
-          {product.imageUrl ? (
-            <img src={product.imageUrl} alt="" className="h-10 w-10 shrink-0 rounded-lg bg-surface-container-low object-cover" />
-          ) : (
-            <span aria-hidden className="h-10 w-10 shrink-0 rounded-lg bg-surface-container-low" />
-          )}
-          <div className="flex min-w-0 flex-col">
-            <span className="truncate text-label-lg font-semibold text-on-surface">{product.name}</span>
-            <span className="truncate text-label-sm text-outline">{product.sku}</span>
-          </div>
-        </div>
-      ),
-    },
-    {
-      key: 'type',
-      header: 'Loại / nhóm',
-      render: (product) => (
-        <div className="flex flex-col">
-          <span className="text-label-md text-on-surface">{product.productType}</span>
-          {product.category && <span className="text-label-sm text-on-surface-variant">{product.category}</span>}
-        </div>
-      ),
-    },
-    {
-      key: 'brand',
-      header: 'Hãng / model',
-      render: (product) => (
-        <div className="flex flex-col">
-          <span className="text-label-md text-on-surface">{product.brand}</span>
-          {product.model && <span className="text-label-sm text-on-surface-variant">{product.model}</span>}
-        </div>
-      ),
-    },
-    {
-      key: 'power',
-      header: 'Công suất',
-      align: 'right',
-      render: (product) => <span className="text-label-md text-on-surface">{formatPower(product.ratedPowerW) ?? '—'}</span>,
-    },
-    {
-      // Tấm pin cần kích thước cho mô phỏng 3D: thấy ngay sản phẩm nào còn thiếu.
-      key: 'size',
-      header: 'Kích thước',
-      align: 'right',
-      render: (product) => <span className="whitespace-nowrap text-label-md text-on-surface">{formatSize(product) ?? '—'}</span>,
-    },
-    {
-      key: 'price',
-      header: 'Đơn giá',
-      align: 'right',
-      render: (product) => (
-        <div className="flex flex-col items-end">
-          <span className="whitespace-nowrap text-label-lg font-semibold text-on-surface">
-            {formatMoney(product.unitPrice, product.currency)}
-          </span>
-          {product.unit && <span className="text-label-sm text-on-surface-variant">/ {product.unit}</span>}
-        </div>
-      ),
-    },
-    {
-      key: 'status',
-      header: 'Trạng thái',
-      render: (product) => {
-        const meta = productStatusMeta(product.status)
-        return (
-          <StatusBadge variant={meta.variant} size="sm" className="font-semibold">
-            {meta.label}
-          </StatusBadge>
-        )
-      },
-    },
-  ]
-}
+/* Thao tác trong dòng là chữ, không phải nút đặc: một trang chỉ có một nút đặc (Thêm sản phẩm). */
+const action =
+  'press inline-flex h-11 items-center rounded-control px-2 text-body font-medium underline-offset-4 not-disabled:hover:underline disabled:text-fg-3 lg:h-8'
 
-const columns = buildColumns()
-
-export function ProductsTable({
-  products,
-  onEdit,
-  onToggleStatus,
-  onDelete,
-  busyId,
-  toolbar,
-  pagination,
-  emptyMessage = 'Chưa có sản phẩm nào',
-  className,
-}: ProductsTableProps) {
+export function ProductsTable({ products, onEdit, onToggleStatus, onDelete, busyIds }: ProductsTableProps) {
   return (
-    <DataTable
-      size="compact"
-      columns={columns}
-      rows={products}
-      rowKey={(product) => product.id ?? product.sku ?? ''}
-      toolbar={toolbar}
-      pagination={pagination}
-      emptyMessage={emptyMessage}
-      className={className}
-      actions={(product) => {
-        const active = isProductActive(product.status)
-        const busy = busyId === product.id
-        return (
-          <>
-            <IconButton icon="edit" label={`Sửa ${product.name ?? ''}`} onClick={() => onEdit(product)} />
-            <IconButton
-              icon={active ? 'visibility_off' : 'visibility'}
-              label={active ? 'Ngừng bán' : 'Mở bán lại'}
-              disabled={busy}
-              onClick={() => onToggleStatus(product)}
-            />
-            <IconButton
-              icon="delete"
-              label={`Xoá ${product.name ?? ''}`}
-              disabled={busy}
-              onClick={() => onDelete(product)}
-              className="hover:text-error"
-            />
-          </>
-        )
-      }}
-    />
+    <Table stack>
+      <thead>
+        <tr>
+          <Th>Sản phẩm</Th>
+          <Th className="hidden md:table-cell">Loại / nhóm</Th>
+          <Th className="hidden lg:table-cell">Hãng / model</Th>
+          <Th className="text-right">Công suất</Th>
+          <Th className="hidden text-right lg:table-cell">Kích thước</Th>
+          <Th className="text-right">Đơn giá</Th>
+          <Th>Trạng thái</Th>
+          <Th className="text-right">
+            <span className="sr-only">Thao tác</span>
+          </Th>
+        </tr>
+      </thead>
+      <tbody>
+        {products.map((p) => {
+          const status = productStatusMeta(p.status)
+          const gaps = panelSpecGaps(p)
+          const active = isProductActive(p.status)
+          const busy = Boolean(p.id && busyIds?.has(p.id))
+          return (
+            <Tr key={p.id ?? p.sku}>
+              <Td label="Sản phẩm">
+                <div className="flex items-center gap-3">
+                  <div className="size-10 shrink-0 overflow-hidden rounded-control bg-surface-2">
+                    {p.imageUrl && <img src={p.imageUrl} alt="" loading="lazy" className="size-full object-cover" />}
+                  </div>
+                  <div className="min-w-0">
+                    <p className="font-medium text-fg">{p.name || '—'}</p>
+                    <p className="tnum text-meta text-fg-3">{p.sku}</p>
+                  </div>
+                </div>
+              </Td>
+              <Td label="Loại / nhóm" className="hidden md:table-cell">
+                {productTypeLabel(p.productType) ?? '—'}
+                {/* Mã loại vẫn hiện cho admin: bộ lọc, form và backend dùng đúng mã này. */}
+                <p className="text-meta text-fg-3">
+                  {[productTypeLabel(p.productType) !== p.productType ? p.productType : null, p.category].filter(Boolean).join(', ')}
+                </p>
+              </Td>
+              <Td label="Hãng / model" className="hidden lg:table-cell">
+                {p.brand || '—'}
+                {p.model && <p className="text-meta text-fg-3">{p.model}</p>}
+              </Td>
+              <Td label="Công suất" className="tnum text-right whitespace-nowrap">
+                {gaps.power ? <Badge tone="warn">Thiếu công suất</Badge> : (formatPower(p.ratedPowerW) ?? '—')}
+              </Td>
+              <Td label="Kích thước" className="tnum hidden text-right whitespace-nowrap lg:table-cell">
+                {gaps.size ? <Badge tone="warn">Thiếu kích thước</Badge> : (formatSize(p) ?? '—')}
+              </Td>
+              <Td label="Đơn giá" className="tnum text-right whitespace-nowrap">
+                {formatMoney(p.unitPrice, p.currency)}
+                {p.unit && <span className="text-fg-3"> / {p.unit}</span>}
+              </Td>
+              <Td label="Trạng thái" className="whitespace-nowrap">
+                <Badge tone={status.tone}>{status.label}</Badge>
+              </Td>
+              <Td label="Thao tác" className="text-right whitespace-nowrap">
+                {/* Không dùng lề âm: ô cuối sát mép bảng, lấn ra là bảng sinh thanh cuộn ngang. */}
+                <div className="inline-flex gap-1">
+                  <button type="button" className={cx(action, 'text-accent-fg')} aria-label={`Sửa ${p.name ?? ''}`} onClick={() => onEdit(p)}>
+                    Sửa
+                  </button>
+                  <button
+                    type="button"
+                    className={cx(action, 'text-fg-2 not-disabled:hover:text-fg')}
+                    aria-label={`${active ? 'Ngừng bán' : 'Mở bán lại'} ${p.name ?? ''}`}
+                    disabled={busy}
+                    onClick={() => onToggleStatus(p)}
+                  >
+                    {busy ? 'Đang đổi…' : active ? 'Ngừng bán' : 'Mở bán lại'}
+                  </button>
+                  <button
+                    type="button"
+                    className={cx(action, 'text-danger')}
+                    aria-label={`Xoá ${p.name ?? ''}`}
+                    disabled={busy}
+                    onClick={() => onDelete(p)}
+                  >
+                    Xoá
+                  </button>
+                </div>
+              </Td>
+            </Tr>
+          )
+        })}
+      </tbody>
+    </Table>
   )
 }

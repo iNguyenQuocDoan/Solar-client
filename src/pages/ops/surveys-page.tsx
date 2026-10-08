@@ -1,11 +1,12 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router'
+import { matchPath, useLocation, useNavigate } from 'react-router'
 import { toast } from 'sonner'
+import { Badge } from '@/components/common/ui/badge'
 import { Button } from '@/components/common/ui/button'
 import { FilterChips } from '@/components/common/ui/chips'
 import { PageHeader } from '@/components/common/ui/page-header'
 import { QueryBoundary } from '@/components/common/ui/query-boundary'
 import { EmptyState } from '@/components/common/ui/states'
+import { isOverdue, needsScheduling } from '@/features/pre-surveys/components/preSurveyDisplay'
 import { MyRequestList, PendingRequestList } from '@/features/pre-surveys/components/SurveyRequestLists'
 import {
   useClaimSurveyRequestMutation,
@@ -20,11 +21,18 @@ type Tab = 'pending' | 'my'
 
 /* Yêu cầu khảo sát sinh ra khi khách hàng gửi bản đánh giá sơ bộ. Sales nhận yêu cầu rồi xem chi tiết để liên hệ. */
 export function OpsSurveysPage() {
-  const [tab, setTab] = useState<Tab>('pending')
+  const navigate = useNavigate()
+  // Tab theo đường dẫn (/ops/surveys và /ops/surveys/mine) để menu bên trái đánh dấu đúng mục.
+  const { pathname } = useLocation()
+  // matchPath (không so chuỗi): "/ops/surveys/mine/" có dấu "/" cuối vẫn là tab "Của tôi", khớp với menu.
+  const tab: Tab = matchPath(ROUTES.ops.surveysMine, pathname) ? 'my' : 'pending'
+  const setTab = (next: Tab) => navigate(next === 'my' ? ROUTES.ops.surveysMine : ROUTES.ops.surveys)
   const pending = usePendingSurveyRequestsQuery()
   const my = useMySurveyRequestsQuery()
   const claim = useClaimSurveyRequestMutation()
-  const navigate = useNavigate()
+  // Việc đang chờ, hiện ngay dưới tiêu đề để không phải mở từng tab mới biết.
+  const overdue = pending.data?.filter((r) => isOverdue(r.submittedAt)).length ?? 0
+  const unscheduled = my.data?.filter((r) => needsScheduling(r.status)).length ?? 0
 
   async function onClaim(row: PendingSurveyRequestItem) {
     try {
@@ -39,7 +47,17 @@ export function OpsSurveysPage() {
 
   return (
     <>
-      <PageHeader title="Yêu cầu khảo sát" />
+      <PageHeader
+        title="Yêu cầu khảo sát"
+        description={
+          overdue || unscheduled ? (
+            <span className="flex flex-wrap gap-2">
+              {overdue > 0 && <Badge tone="warn">{overdue} yêu cầu chờ hơn 1 ngày chưa ai nhận</Badge>}
+              {unscheduled > 0 && <Badge tone="warn">{unscheduled} yêu cầu của bạn chưa hẹn ngày khảo sát</Badge>}
+            </span>
+          ) : undefined
+        }
+      />
 
       <FilterChips
         label="Danh sách yêu cầu"
@@ -47,8 +65,8 @@ export function OpsSurveysPage() {
         value={tab}
         onChange={setTab}
         chips={[
-          { value: 'pending', label: 'Chờ nhận', count: pending.data?.length },
-          { value: 'my', label: 'Của tôi', count: my.data?.length },
+          { value: 'pending', label: 'Chờ nhận', count: pending.data?.length, attention: true },
+          { value: 'my', label: 'Của tôi', count: my.data?.length, attention: unscheduled > 0 },
         ]}
       />
 

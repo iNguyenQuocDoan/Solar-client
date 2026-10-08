@@ -6,6 +6,7 @@ import {
   formatSize,
   formatWarranty,
   isProductActive,
+  productTypeLabel,
   specEntries,
 } from '@/features/products/components/productDisplay'
 import { useProductQuery } from '@/features/products/hooks/useProducts'
@@ -45,7 +46,7 @@ function ProductDetail({ product }: { product: ProductResponse }) {
   const facts = [
     { label: 'Hãng', value: product.brand },
     { label: 'Model', value: product.model },
-    { label: 'Loại', value: product.productType },
+    { label: 'Loại', value: productTypeLabel(product.productType) },
     { label: 'Nhóm hàng', value: product.category },
     { label: 'SKU', value: product.sku },
     { label: 'Công suất định mức', value: formatPower(product.ratedPowerW) },
@@ -65,7 +66,7 @@ function ProductDetail({ product }: { product: ProductResponse }) {
       </div>
 
       <div>
-        <p className="ld-meta text-fg-2">{[product.brand, product.productType].filter(Boolean).join(', ')}</p>
+        <p className="ld-meta text-fg-2">{[product.brand, productTypeLabel(product.productType)].filter(Boolean).join(', ')}</p>
         <h1 className="mt-1 ld-h2 text-fg">{product.name}</h1>
         {!isProductActive(product.status) && <p className="mt-3 ld-body font-semibold text-warn">Sản phẩm đã ngừng bán</p>}
         <p className="mt-4 ld-h2 text-fg">

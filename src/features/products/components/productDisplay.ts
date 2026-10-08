@@ -1,5 +1,5 @@
-import type { StatusVariant } from '@/components/common/stitch-ui/StatusBadge'
-import type { ProductSortBy, ProductSortDirection } from '@/features/products/services/productService'
+import type { Tone } from '@/components/common/ui/badge'
+import type { ProductListParams, ProductSortBy, ProductSortDirection } from '@/features/products/services/productService'
 import type { ProductResponse } from '@/types/res/adminProductsRes'
 
 /*
@@ -11,9 +11,9 @@ import type { ProductResponse } from '@/types/res/adminProductsRes'
  * giá trị lạ thì in nguyên văn thay vì đoán nghĩa.
  */
 export const PRODUCT_STATUSES = [
-  { value: 'ACTIVE', label: 'Đang bán', variant: 'positive' },
-  { value: 'INACTIVE', label: 'Ngừng bán', variant: 'neutral' },
-] as const satisfies readonly { value: string; label: string; variant: StatusVariant }[]
+  { value: 'ACTIVE', label: 'Đang bán', tone: 'ok' },
+  { value: 'INACTIVE', label: 'Ngừng bán', tone: 'neutral' },
+] as const satisfies readonly { value: string; label: string; tone: Tone }[]
 
 export type ProductStatus = (typeof PRODUCT_STATUSES)[number]['value']
 
@@ -24,18 +24,44 @@ export type ProductStatus = (typeof PRODUCT_STATUSES)[number]['value']
  */
 export const SOLAR_PANEL_TYPE = 'SOLAR_PANEL'
 
+/** Danh sách tấm pin cho mô phỏng và cảnh báo thiếu thông số ở admin: cùng tham số nên dùng chung một cache. */
+export const SOLAR_PANEL_QUERY = {
+  ProductType: SOLAR_PANEL_TYPE,
+  PageSize: 100,
+  SortBy: 'ratedPowerW',
+  SortDirection: 'desc',
+} as const satisfies ProductListParams
+
 export function isSolarPanelType(productType: string | null | undefined) {
   return productType?.trim().toUpperCase() === SOLAR_PANEL_TYPE
+}
+
+/** Tên loại cho khách và sales: mã SOLAR_PANEL đọc thành "Tấm pin"; loại khác là chữ tự do nên giữ nguyên. Admin vẫn thấy mã gốc. */
+export function productTypeLabel(productType: string | null | undefined) {
+  if (!productType?.trim()) return null
+  return isSolarPanelType(productType) ? 'Tấm pin' : productType
 }
 
 export function isProductActive(status: string | null | undefined) {
   return status?.trim().toUpperCase() === 'ACTIVE'
 }
 
-export function productStatusMeta(status: string | null | undefined): { label: string; variant: StatusVariant } {
+export function productStatusMeta(status: string | null | undefined): { label: string; tone: Tone } {
   const found = PRODUCT_STATUSES.find((s) => s.value === status?.trim().toUpperCase())
   if (found) return found
-  return { label: status?.trim() || 'Chưa đặt trạng thái', variant: 'neutral' }
+  return { label: status?.trim() || 'Chưa đặt trạng thái', tone: 'warn' }
+}
+
+/**
+ * Thông số tấm pin còn thiếu (công suất, kích thước). Backend bắt buộc chúng khi tạo/sửa loại SOLAR_PANEL,
+ * nhưng dữ liệu cũ vẫn có thể thiếu; tấm thiếu thì mô phỏng bố trí không dùng được nên phải lộ ra ở admin.
+ */
+export function panelSpecGaps(product: Pick<ProductResponse, 'productType' | 'ratedPowerW' | 'widthMm' | 'heightMm'>) {
+  if (!isSolarPanelType(product.productType)) return { power: false, size: false }
+  return {
+    power: !(Number(product.ratedPowerW) > 0),
+    size: !(Number(product.widthMm) > 0) || !(Number(product.heightMm) > 0),
+  }
 }
 
 /** Tuỳ chọn sắp xếp; value = "SortBy:SortDirection" theo giá trị backend chấp nhận. */
@@ -70,6 +96,7 @@ export function formatSize(product: Pick<ProductResponse, 'widthMm' | 'heightMm'
 /** Bảo hành theo tháng; tròn năm thì đổi sang năm. */
 export function formatWarranty(months: number | null | undefined) {
   if (months == null) return null
+  if (months === 0) return 'Không bảo hành'
   return months % 12 === 0 ? `${months / 12} năm` : `${months} tháng`
 }
 

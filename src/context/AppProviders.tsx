@@ -36,6 +36,9 @@ export function AppProviders({ children }: { children: ReactNode }) {
               title: 'text-label-md',
               description: 'text-body-sm text-inverse-on-surface/80',
               icon: 'text-tertiary-fixed',
+              // unstyled: sonner không tô nút hành động ("Hoàn tác"), phải tự đặt.
+              actionButton:
+                'ml-auto shrink-0 rounded-lg bg-inverse-on-surface/15 px-3 py-1.5 text-label-md font-semibold text-inverse-on-surface hover:bg-inverse-on-surface/25',
             },
           }}
         />

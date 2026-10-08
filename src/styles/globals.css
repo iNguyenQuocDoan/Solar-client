@@ -317,13 +317,28 @@
   }
 }
 
+/*
+  Portal shell: thanh trên (48px, dưới lg hoặc khi rail thu gọn) + thanh định vị (40px) dính ở đầu trang.
+  Chừa chỗ đó khi trình duyệt cuộn tới phần tử được focus hoặc neo #id, để nó không bị thanh che (WCAG 2.4.11).
+*/
+:root:has(#main) {
+  scroll-padding-top: 6rem;
+}
+
+/*
+  Transitions are switched off (0s), not shortened to 0.01ms: transition-property defaults to `all`,
+  so a non-zero duration on every element would make every element animate every inherited change.
+  The drawer's children then stayed `visibility: hidden` for a frame after it opened, and the close
+  button could not take focus. Nothing in the app waits for transitionend.
+*/
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
   *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+    transition-duration: 0s !important;
+    transition-delay: 0s !important;
     scroll-behavior: auto !important;
   }
 }

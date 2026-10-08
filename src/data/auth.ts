@@ -34,7 +34,8 @@ export const loginContent = {
   emailPlaceholder: "ten.ban@gmail.com",
   emailValid: "Email hợp lệ",
   passwordLabel: "Mật khẩu",
-  passwordPlaceholder: "••••••••",
+  // Chấm tròn làm ô trống trông như đã điền: dùng lời nhắc.
+  passwordPlaceholder: "Nhập mật khẩu",
   forgotLink: "Quên mật khẩu?",
   remember: "Ghi nhớ đăng nhập trên thiết bị này",
   submit: "Đăng nhập",
@@ -61,7 +62,8 @@ export const registerContent = {
   phonePlaceholder: "0912 xxx xxx",
   passwordLabel: "Mật khẩu mới",
   confirmLabel: "Xác nhận mật khẩu",
-  passwordPlaceholder: "••••••••",
+  // Chấm tròn làm ô trống trông như đã điền: dùng lời nhắc.
+  passwordPlaceholder: "Nhập mật khẩu",
   rulesTitle: "Quy chuẩn an toàn mật khẩu:",
   termsBefore: "Tôi đồng ý với ",
   termsLink: "Điều khoản sử dụng",
@@ -90,8 +92,9 @@ export const forgotContent = {
 
 /** /reset-password */
 export const resetContent = {
-  tokenValid: "Mã token hợp lệ",
-  tokenInvalid: "Thiếu mã token",
+  // Chỉ biết link có mã, chưa biết mã còn hạn: server kiểm tra khi bấm đặt lại.
+  tokenValid: "Đã nhận mã từ liên kết",
+  tokenInvalid: "Liên kết thiếu mã đặt lại",
   title: "Đặt lại mật khẩu mới",
   passwordLabel: "Mật khẩu mới",
   passwordPlaceholder: "Nhập mật khẩu mới",
@@ -99,7 +102,7 @@ export const resetContent = {
   confirmPlaceholder: "Nhập lại mật khẩu mới",
   submit: "Đặt lại mật khẩu",
   submitting: "Đang cập nhật...",
-  missingToken: "Liên kết đặt lại mật khẩu thiếu mã token hoặc không hợp lệ.",
+  missingToken: "Liên kết đặt lại mật khẩu không đầy đủ hoặc không hợp lệ. Hãy mở lại liên kết trong email, hoặc yêu cầu gửi lại.",
   failedMessage: "Liên kết đã hết hạn hoặc không còn đúng.",
   requestNewLink: "Gửi lại liên kết",
   success: "Mật khẩu của bạn đã được cập nhật thành công. Đang chuyển hướng...",
@@ -133,12 +136,11 @@ export const verifyContent = {
 
 /** /403 */
 export const forbiddenContent = {
-  title: "Truy cập không được phép (403 Forbidden)",
+  title: "Không có quyền truy cập trang này",
   descriptionBefore: "Tài khoản của bạn (",
   descriptionAfter: ") không có quyền mở trang này.",
   guestLabel: "Khách",
   switchAccount: "Đổi tài khoản khác",
-  hotline: "Liên hệ Hotline hỗ trợ: 1900 6868",
   requiredPrefix: "Cần quyền ",
 } as const;
 
@@ -148,10 +150,10 @@ export const changePasswordContent = {
   currentLabel: "Mật khẩu hiện tại",
   newLabel: "Mật khẩu mới",
   confirmLabel: "Xác nhận mật khẩu mới",
-  placeholder: "••••••••",
+  placeholder: "Nhập mật khẩu",
   submit: "Đổi mật khẩu",
   submitting: "Đang cập nhật...",
-  cancel: "Hủy",
+  cancel: "Huỷ",
   success: "Đã đổi mật khẩu thành công.",
   successRelogin: "Đã đổi mật khẩu. Vui lòng đăng nhập lại.",
   menuLabel: "Đổi mật khẩu",

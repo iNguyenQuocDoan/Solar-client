@@ -79,6 +79,10 @@ const ERROR_MESSAGES: Record<string, string> = {
   SURVEY_REQUEST_UNAVAILABLE: 'Yêu cầu này đã có người nhận hoặc không còn chờ xử lý.',
   SURVEY_REQUEST_NOT_FOUND: 'Không tìm thấy yêu cầu khảo sát.',
   SURVEY_REQUEST_NOT_ASSIGNED: 'Yêu cầu này không do bạn phụ trách nên không xem được chi tiết.',
+  // Mã chung của backend (dò GET bằng từng vai trò ngày 08/10/2026)
+  AUTH_FORBIDDEN: 'Tài khoản của bạn không có quyền xem nội dung này.',
+  RESOURCE_NOT_FOUND: 'Không tìm thấy dữ liệu yêu cầu. Kiểm tra lại đường dẫn.',
+  REQUEST_NOT_ACCEPTABLE: 'Máy chủ không hỗ trợ thao tác này.',
 }
 
 /** Bản dịch theo mã lỗi; chưa có trong bảng thì trả null. */
@@ -90,7 +94,8 @@ export function messageForCode(code: string | null | undefined) {
 /** Thông báo mặc định theo HTTP status khi server không trả message. */
 const STATUS_MESSAGES: Record<number, string> = {
   400: 'Dữ liệu gửi lên không hợp lệ. Vui lòng kiểm tra lại.',
-  401: 'Email hoặc mật khẩu không chính xác. Vui lòng kiểm tra lại.',
+  // Đăng nhập sai luôn có mã AUTH_INVALID_CREDENTIALS; 401 không mã chỉ còn là phiên hết hạn.
+  401: 'Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.',
   403: 'Bạn không có quyền thực hiện thao tác này.',
   404: 'Không tìm thấy dữ liệu yêu cầu.',
   409: 'Dữ liệu đã tồn tại trên hệ thống.',

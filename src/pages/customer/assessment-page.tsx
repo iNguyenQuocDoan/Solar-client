@@ -7,6 +7,7 @@ import { KeyValueList, Notice } from '@/components/common/ui/lists'
 import { PageHeader } from '@/components/common/ui/page-header'
 import { Panel, PanelBody, PanelHeader } from '@/components/common/ui/panel'
 import { Stepper, type Step } from '@/components/common/ui/stepper'
+import { usePageCrumb } from '@/components/layout/page-crumb'
 import { useAuth } from '@/context/AuthProvider'
 import { ProfileFields, SiteFields, SurfaceFields } from '@/features/pre-surveys/components/AssessmentFields'
 import { RoofSimulation } from '@/features/pre-surveys/components/RoofSimulation'
@@ -18,7 +19,9 @@ import {
   profileSchema,
   serverFieldErrors,
   siteSchema,
+  liveSurfaceIssue,
   surfaceSchema,
+  toArea,
   toNumber,
   type FormErrors,
   type ProfileForm,
@@ -107,6 +110,8 @@ export function AssessmentPage() {
   const submitPreSurvey = useSubmitPreSurveyMutation()
   const busy = [createProfile, createSite, createPreSurvey, updatePreSurvey, submitPreSurvey].some((m) => m.isPending)
 
+  // Thanh định vị ghi bước đang làm: "Cổng khách hàng / Đánh giá sơ bộ / Số liệu mặt lắp".
+  usePageCrumb(STEP_LABELS[step])
   const firstStep = profileDone ? 1 : 0
   const steps: Step[] = STEP_LABELS.map((label, i) => ({
     label,
@@ -122,6 +127,29 @@ export function AssessmentPage() {
         return next
       })
     }
+  }
+
+  const editSurface = editor(setSurface)
+  /*
+    Ô số ở bước số liệu báo lỗi phạm vi (độ dốc âm, diện tích ≤ 0…) không đợi bấm Tiếp tục: rời ô là kiểm tra.
+    Đang gõ thì không báo lỗi mới (gõ "0,5" sẽ qua "0"); ô đang báo lỗi thì kiểm tra lại từng phím để lỗi
+    biến mất ngay khi sửa đúng.
+  */
+  function changeSurface(patch: Partial<SurfaceForm>) {
+    const showing = Object.keys(patch).filter((key) => errors[key])
+    editSurface(patch)
+    const live: Record<string, string> = {}
+    for (const key of showing) {
+      const value = patch[key as keyof SurfaceForm]
+      const problem = typeof value === 'string' ? liveSurfaceIssue(key as keyof SurfaceForm, value) : null
+      if (problem) live[key] = problem
+    }
+    if (Object.keys(live).length > 0) setErrors((e) => ({ ...e, ...live }))
+  }
+
+  function blurSurface(field: 'totalAreaM2' | 'usableAreaM2' | 'tiltDegree') {
+    const problem = liveSurfaceIssue(field, surface[field])
+    if (problem) setErrors((e) => ({ ...e, [field]: problem }))
   }
 
   function goTo(target: number) {
@@ -217,6 +245,13 @@ export function AssessmentPage() {
       setRequestId(surveyRequestId)
       dialogRef.current?.showModal()
     } catch (error) {
+      // Lần gửi trước đã tới server nhưng mất phản hồi: bản đánh giá đã gửi rồi, coi như xong
+      // (không có mã yêu cầu trong phản hồi lỗi nên hộp thoại bỏ dòng mã).
+      if (isApiError(error) && error.code === 'PRE_SURVEY_ALREADY_SUBMITTED') {
+        setRequestId('')
+        dialogRef.current?.showModal()
+        return
+      }
       if (isApiError(error) && error.code === 'PRE_SURVEY_INCOMPLETE') setStep(2)
       fail(error)
     }
@@ -280,7 +315,7 @@ export function AssessmentPage() {
             <Panel>
               <PanelHeader title="Số liệu mặt lắp" description="Đo mặt lắp lớn nhất. Chưa đủ số liệu thì lưu nháp, điền tiếp sau." />
               <PanelBody>
-                <SurfaceFields value={surface} errors={errors} onChange={editor(setSurface)} />
+                <SurfaceFields value={surface} errors={errors} onChange={changeSurface} onBlur={blurSurface} />
               </PanelBody>
             </Panel>
           )}
@@ -289,8 +324,8 @@ export function AssessmentPage() {
               <PanelHeader title="Mô phỏng bố trí" description="Cập nhật theo số liệu bạn nhập ở trên." />
               <PanelBody>
                 <RoofSimulation
-                  totalAreaM2={toNumber(surface.totalAreaM2)}
-                  usableAreaM2={toNumber(surface.usableAreaM2)}
+                  totalAreaM2={toArea(surface.totalAreaM2)}
+                  usableAreaM2={toArea(surface.usableAreaM2)}
                   tiltDegree={toNumber(surface.tiltDegree)}
                   azimuthDegree={toNumber(surface.azimuthDegree)}
                   hasObstruction={surface.hasObstruction === '' ? null : surface.hasObstruction === 'yes'}
@@ -413,10 +448,12 @@ export function AssessmentPage() {
         <p className="mt-2 text-body text-fg-2">
           Chuyên viên kinh doanh sẽ nhận yêu cầu cho {saved.site?.name ?? 'địa điểm của bạn'} và liên hệ để hẹn ngày khảo sát.
         </p>
-        <KeyValueList
-          className="mt-4 border-t border-line pt-4"
-          items={[{ k: 'Mã yêu cầu', v: <span className="tnum">{shortCode(requestId)}</span> }]}
-        />
+        {requestId && (
+          <KeyValueList
+            className="mt-4 border-t border-line pt-4"
+            items={[{ k: 'Mã yêu cầu', v: <span className="tnum">{shortCode(requestId)}</span> }]}
+          />
+        )}
         <DialogFooter>
           <Button variant="ghost" onClick={() => dialogRef.current?.close()}>
             Đóng

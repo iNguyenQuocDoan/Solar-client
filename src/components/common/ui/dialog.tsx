@@ -1,4 +1,4 @@
-import type { DialogHTMLAttributes, ReactNode, Ref } from 'react'
+import { useLayoutEffect, useRef, type DialogHTMLAttributes, type ReactNode, type Ref } from 'react'
 import { cx } from '@/utils/cx'
 
 /*
@@ -10,13 +10,75 @@ export function Dialog({ ref, className, children, ...rest }: DialogHTMLAttribut
     <dialog
       ref={ref}
       className={cx(
-        'm-auto w-[calc(100%-2rem)] max-w-md rounded-container border border-line bg-canvas p-6 text-fg shadow-pop backdrop:bg-fg/40',
+        'm-auto w-[calc(100%-2rem)] rounded-container border border-line bg-canvas p-6 text-fg shadow-pop backdrop:bg-fg/40',
+        // cx không gộp class: chỉ đặt bề rộng mặc định khi nơi gọi không tự đặt max-w-*.
+        !/(^|\s)max-w-/.test(className ?? '') && 'max-w-md',
         className,
       )}
       {...rest}
     >
       {children}
     </dialog>
+  )
+}
+
+/*
+  Controlled variant for dialogs the parent opens with state. Children mount only while open, so a form
+  inside starts fresh each time. Esc closes through onOpenChange unless `dismissible` is false (e.g. while saving).
+*/
+export function ModalDialog({
+  open,
+  onOpenChange,
+  dismissible = true,
+  onAfterClose,
+  className,
+  children,
+  ...rest
+}: Omit<DialogHTMLAttributes<HTMLDialogElement>, 'open'> & {
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  dismissible?: boolean
+  /**
+   * Chạy ngay sau khi hộp thoại đóng, tức là SAU khi trình duyệt trả focus về nút đã mở nó. Dùng để chuyển focus
+   * tới chỗ khác khi nút đó không còn (dòng vừa xoá / vừa ngừng bán biến khỏi bảng).
+   */
+  onAfterClose?: () => void
+}) {
+  const ref = useRef<HTMLDialogElement>(null)
+  // Luôn gọi bản onAfterClose mới nhất mà không phải đưa nó vào deps (hàm mới mỗi lần render).
+  const afterCloseRef = useRef(onAfterClose)
+  useLayoutEffect(() => {
+    afterCloseRef.current = onAfterClose
+  })
+  // Layout effect: đóng trước khi trình duyệt vẽ, nếu không sẽ loé một khung dialog rỗng (children đã gỡ).
+  useLayoutEffect(() => {
+    const dialog = ref.current
+    if (!dialog) return
+    if (open && !dialog.open) dialog.showModal()
+    if (!open && dialog.open) {
+      dialog.close()
+      afterCloseRef.current?.()
+    }
+  }, [open])
+  return (
+    <Dialog
+      ref={ref}
+      className={className}
+      onCancel={(e) => {
+        if (!dismissible) e.preventDefault()
+      }}
+      onClose={() => {
+        // Chrome cho lần Esc thứ hai đóng hộp thoại dù sự kiện cancel đã bị chặn: đang bận thì mở lại ngay.
+        if (!dismissible && open) {
+          ref.current?.showModal()
+          return
+        }
+        onOpenChange(false)
+      }}
+      {...rest}
+    >
+      {open && children}
+    </Dialog>
   )
 }
 

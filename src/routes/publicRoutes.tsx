@@ -28,8 +28,13 @@ export const publicRoutes: RouteObject[] = [
       { path: ROUTES.FORBIDDEN, lazy: () => import('@/pages/ForbiddenPage').then((m) => ({ Component: m.ForbiddenPage })) },
     ],
   },
-  {
-    path: ROUTES.STYLEGUIDE,
-    lazy: () => import('@/pages/StyleguidePage').then((m) => ({ Component: m.StyleguidePage })),
-  },
+  // Bảng mẫu component chỉ cho lúc phát triển: bản build không có route này (số liệu trong đó là mẫu).
+  ...(import.meta.env.DEV
+    ? [
+        {
+          path: ROUTES.STYLEGUIDE,
+          lazy: () => import('@/pages/StyleguidePage').then((m) => ({ Component: m.StyleguidePage })),
+        },
+      ]
+    : []),
 ]

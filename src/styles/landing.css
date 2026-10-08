@@ -142,7 +142,7 @@
     ld-settle  ảnh hero thu từ 108% về 100% khi tải trang
     ld-rise    chữ và nút hero trượt lên 16px và hiện dần, lệch nhau bằng ld-delay-*
     ld-reveal  khối nội dung trượt lên khi cuộn tới (component Reveal gắn data-shown)
-  prefers-reduced-motion: rule chung trong globals.css đưa animation/transition về 0,01ms,
+  prefers-reduced-motion: rule chung trong globals.css đưa animation về 0,01ms và tắt transition,
   còn ld-reveal được hiện ngay (xem @media cuối file).
 */
 @keyframes ld-settle {

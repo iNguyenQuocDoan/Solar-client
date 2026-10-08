@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { Link, useNavigate } from 'react-router'
+import { Link, Navigate, useNavigate } from 'react-router'
 import { toast } from 'sonner'
 import { z } from 'zod'
 import { AuthCard, RequiredMark } from '@/features/auth/components/AuthCard'
@@ -12,14 +12,17 @@ import { ROUTES } from '@/routes/paths'
 import { useRegisterMutation } from '@/features/auth/hooks/useAuthMutations'
 import { errorMessage, isApiError } from '@/services/api/errors'
 import { isStrongPassword, registerContent } from '@/data/auth'
+import { homePathForRole } from '@/config/roles'
+import { useAuth } from '@/context/AuthProvider'
 
 const schema = z
   .object({
     name: z.string().trim().min(2, 'Vui lòng nhập họ và tên'),
-    email: z.email('Email không hợp lệ'),
+    email: z.email({ error: (issue) => (issue.input ? 'Email không hợp lệ' : 'Vui lòng nhập email') }),
     phone: z
       .string()
       .trim()
+      .min(1, 'Vui lòng nhập số điện thoại')
       .regex(/^[0-9\s.+-]{9,15}$/, 'Số điện thoại không hợp lệ'),
     password: z.string().refine(isStrongPassword, 'Mật khẩu chưa đạt đủ 4 quy chuẩn an toàn'),
     confirm: z.string().min(1, 'Vui lòng xác nhận mật khẩu'),
@@ -46,6 +49,7 @@ const SERVER_FIELD_MAP: Record<string, keyof RegisterValues> = {
 /** /register – view "Đăng ký tài khoản Khách hàng" của auth_portal. */
 export function RegisterPage() {
   const navigate = useNavigate()
+  const { user, status } = useAuth()
   const registerMutation = useRegisterMutation()
   const [formError, setFormError] = useState<string | null>(null)
 
@@ -92,6 +96,9 @@ export function RegisterPage() {
       if (!mappedAny) setFormError(errorMessage(error))
     }
   })
+
+  // Đã đăng nhập thì không đăng ký thêm tài khoản: vào thẳng trang làm việc.
+  if (status === 'ready' && user) return <Navigate to={homePathForRole(user.role)} replace />
 
   return (
     <AuthCard>
@@ -201,11 +208,12 @@ export function RegisterPage() {
           <input type="checkbox" className="mt-1 h-4 w-4 rounded accent-primary" {...register('terms')} />
           <span className="text-body-sm text-on-surface">
             {registerContent.termsBefore}
-            <Link to={ROUTES.COMING_SOON} className="font-semibold text-primary underline">
+            {/* Tab mới: điều hướng tại chỗ sẽ xoá form đang điền dở. */}
+            <Link to={ROUTES.COMING_SOON} target="_blank" rel="noreferrer" className="font-semibold text-primary underline">
               {registerContent.termsLink}
             </Link>
             {registerContent.termsMiddle}
-            <Link to={ROUTES.COMING_SOON} className="font-semibold text-primary underline">
+            <Link to={ROUTES.COMING_SOON} target="_blank" rel="noreferrer" className="font-semibold text-primary underline">
               {registerContent.privacyLink}
             </Link>
             {registerContent.termsAfter}

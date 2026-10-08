@@ -1,7 +1,24 @@
 import type { UseQueryResult } from "@tanstack/react-query";
 import type { ReactNode } from "react";
 import { ErrorState, PageSkeleton } from "@/components/common/ui/states";
+import { isApiError } from "@/services/api/errors";
 
+/* 4xx (không có quyền, không tìm thấy…) gọi lại vẫn vậy: không bày nút "Thử lại" vô ích. */
+const retryable = (error: unknown) => !(isApiError(error) && error.status >= 400 && error.status < 500);
+
+/* Tiêu đề nói đúng chuyện gì xảy ra; đường quay lại danh sách nằm ở thanh định vị của shell. */
+function errorTitle(error: unknown) {
+  if (isApiError(error) && error.status === 404) return "Không tìm thấy nội dung này.";
+  if (isApiError(error) && error.status === 403) return "Bạn không có quyền xem nội dung này.";
+  return undefined;
+}
+
+/*
+  Loading → skeleton; nothing loaded yet and it failed → error state.
+  If data is already on screen and a background refresh fails (polling, window focus), the data stays
+  and a quiet notice sits above it: replacing a working list with an error page would hide what the
+  person was reading.
+*/
 export function QueryBoundary<T>({
   query,
   children,
@@ -10,12 +27,29 @@ export function QueryBoundary<T>({
   children: (data: T) => ReactNode;
 }) {
   if (query.isPending) return <PageSkeleton />;
-  if (query.isError)
+  if (query.data === undefined)
     return (
       <ErrorState
-        message={query.error.message}
-        onRetry={() => query.refetch()}
+        title={errorTitle(query.error)}
+        message={query.error?.message}
+        onRetry={retryable(query.error) ? () => query.refetch() : undefined}
       />
     );
-  return <>{children(query.data)}</>;
+  return (
+    <>
+      {query.isError && (
+        <p role="status" className="mb-4 border-l-2 border-warn pl-3 text-meta text-fg-2">
+          Không làm mới được dữ liệu, đang hiện bản tải lúc trước.{" "}
+          <button
+            type="button"
+            className="tap font-medium text-fg underline underline-offset-4"
+            onClick={() => query.refetch()}
+          >
+            Thử lại
+          </button>
+        </p>
+      )}
+      {children(query.data)}
+    </>
+  );
 }

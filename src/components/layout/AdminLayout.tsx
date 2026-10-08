@@ -1,29 +1,22 @@
+import type { ReactNode } from 'react'
 import { Outlet } from 'react-router'
-import { AppShell } from '@/components/layout/AppShell'
-import { ROUTES } from '@/routes/paths'
-import { adminNav } from '@/config/nav'
-import { roleLabels } from '@/config/roles'
+import { AppShell } from '@/components/layout/app-shell'
+import { PORTALS } from '@/config/portals'
 import { useAuth } from '@/context/AuthProvider'
+import { useProductsQuery } from '@/features/products/hooks/useProducts'
+import { ROUTES } from '@/routes/paths'
 
-/** Tương đương app/(admin)/layout.tsx – bọc mọi route /admin/* */
-export function AdminLayout() {
-  const { user } = useAuth()
-  const name = user?.name ?? ''
-  const role = roleLabels.admin
-
+/*
+  Bọc mọi route /admin/*. Dùng chung shell của portal kit với khách hàng và sales (08/10/2026) để cả web một kiểu.
+  Tổng số sản phẩm cạnh mục menu: cùng API với trang Sản phẩm, PageSize 1 vì chỉ cần totalItems.
+*/
+export function AdminLayout({ children }: { children?: ReactNode }) {
+  // Layout còn là khung chờ trước RequireRole: chỉ gọi khi phiên admin đã khôi phục xong.
+  const isAdmin = useAuth().user?.role === 'admin'
+  const productTotal = useProductsQuery({ PageSize: 1 }, { enabled: isAdmin }).data?.totalItems
   return (
-    <AppShell
-      sidebar={{
-        variant: 'admin',
-        brand: { title: 'Smart Solar', subtitle: 'Quản trị hệ thống', logoSrc: '/placeholders/logo.svg' },
-        eyebrow: 'Quản trị nền tảng',
-        items: adminNav,
-        rootHref: ROUTES.ADMIN.DASHBOARD,
-        user: { name, title: role, icon: 'account_circle' },
-      }}
-      header={{ logoSrc: '/placeholders/logo.svg', user: { name, role } }}
-    >
-      <Outlet />
+    <AppShell portal={PORTALS.admin} badges={{ [ROUTES.ADMIN.PRODUCTS]: { value: productTotal } }}>
+      {children ?? <Outlet />}
     </AppShell>
   )
 }

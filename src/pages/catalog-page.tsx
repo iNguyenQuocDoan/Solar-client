@@ -36,6 +36,7 @@ function CatalogPage({ detailPattern }: { detailPattern: string }) {
           <span className="sr-only">Tìm sản phẩm</span>
           <Input
             type="search"
+            name="search"
             placeholder="Tìm theo tên, hãng, model"
             value={search}
             onChange={(e) => {
@@ -47,6 +48,7 @@ function CatalogPage({ detailPattern }: { detailPattern: string }) {
         <label className="sm:w-56">
           <span className="sr-only">Sắp xếp</span>
           <Select
+            name="sort"
             value={sort}
             onChange={(e) => {
               setSort(e.target.value as typeof sort)
@@ -94,4 +96,12 @@ export function CustomerCatalogPage() {
 
 export function OpsCatalogPage() {
   return <CatalogPage detailPattern={ROUTES.ops.product} />
+}
+
+export function TechCatalogPage() {
+  return <CatalogPage detailPattern={ROUTES.TECH.PRODUCT} />
+}
+
+export function ManageCatalogPage() {
+  return <CatalogPage detailPattern={ROUTES.manage.product} />
 }

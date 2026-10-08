@@ -4,6 +4,8 @@ import '@fontsource/be-vietnam-pro/600.css'
 import { Link, NavLink, Outlet, useLocation } from 'react-router'
 import { LANDING_CONTAINER, TEXT_LINK, ctaClass } from '@/features/landing/components/classes'
 import { ROUTES } from '@/routes/paths'
+import { homePathForRole } from '@/config/roles'
+import { useAuth } from '@/context/AuthProvider'
 import { cx } from '@/utils/cx'
 import { footer, header, projects, trust } from '@/data/landing'
 
@@ -20,6 +22,11 @@ const projectsLink = { pathname: ROUTES.HOME, hash: `#${projects.id}` }
 export function PublicLayout() {
   // Ghi chú nguồn giá điện chỉ đúng với trang chủ (nơi có biểu giá).
   const onHome = useLocation().pathname === ROUTES.HOME
+  // Đã đăng nhập: thay "Đăng nhập" bằng đường vào trang làm việc, ẩn nút đăng ký.
+  const { user } = useAuth()
+  const account = user
+    ? { to: homePathForRole(user.role), label: 'Vào trang làm việc' }
+    : { to: ROUTES.LOGIN, label: header.login }
   return (
     <div className="public-shell flex min-h-screen flex-col bg-canvas font-vn text-fg">
       <a
@@ -57,12 +64,14 @@ export function PublicLayout() {
             <Link to={capabilityLink} className="hidden ld-body text-fg-2 hover:text-fg lg:inline">
               {header.capability}
             </Link>
-            <Link to={ROUTES.LOGIN} className="tap ld-body text-fg-2 hover:text-fg">
-              {header.login}
+            <Link to={account.to} className="tap ld-body text-fg-2 hover:text-fg">
+              {account.label}
             </Link>
-            <Link to={ROUTES.REGISTER} className={ctaClass('md', 'hidden lg:inline-flex')}>
-              {header.register}
-            </Link>
+            {!user && (
+              <Link to={ROUTES.REGISTER} className={ctaClass('md', 'hidden lg:inline-flex')}>
+                {header.register}
+              </Link>
+            )}
           </nav>
         </div>
       </header>
@@ -94,8 +103,8 @@ export function PublicLayout() {
             <Link to={projectsLink} className={cx(TEXT_LINK, 'inline-block py-1')}>
               {header.projects}
             </Link>
-            <Link to={ROUTES.LOGIN} className={cx(TEXT_LINK, 'inline-block py-1')}>
-              {header.login}
+            <Link to={account.to} className={cx(TEXT_LINK, 'inline-block py-1')}>
+              {account.label}
             </Link>
           </nav>
           <p>{footer.copyright}</p>

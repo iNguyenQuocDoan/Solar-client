@@ -17,9 +17,11 @@ export function ForbiddenCard() {
 
   const currentRoleLabel = user ? roleLabels[user.role] : forbiddenContent.guestLabel
 
+  // Đăng nhập lại bằng tài khoản đúng vai trò thì quay về đúng trang vừa bị chặn.
   const switchAccount = async () => {
+    const from = (location.state as { from?: string } | null)?.from
     await signOut()
-    navigate(ROUTES.LOGIN, { replace: true })
+    navigate(ROUTES.LOGIN, { replace: true, state: from ? { from } : undefined })
   }
 
   return (
@@ -50,12 +52,6 @@ export function ForbiddenCard() {
           >
             {forbiddenContent.switchAccount}
           </button>
-          <a
-            href="tel:19006868"
-            className="rounded-lg bg-surface-container-low px-3 py-1.5 text-label-sm text-primary underline"
-          >
-            {forbiddenContent.hotline}
-          </a>
         </div>
       </div>
     </div>

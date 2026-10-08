@@ -6,15 +6,20 @@ import { KeyValueList } from '@/components/common/ui/lists'
 import { PageHeader } from '@/components/common/ui/page-header'
 import { Panel, PanelBody, PanelHeader } from '@/components/common/ui/panel'
 import { QueryBoundary } from '@/components/common/ui/query-boundary'
-import { formatPower, formatSize, formatWarranty, isProductActive, specEntries } from '@/features/products/components/productDisplay'
+import { usePageCrumb } from '@/components/layout/page-crumb'
+import { formatPower, formatSize, formatWarranty, isProductActive, productTypeLabel, specEntries } from '@/features/products/components/productDisplay'
 import { useProductQuery } from '@/features/products/hooks/useProducts'
 import { ROUTES } from '@/routes/paths'
 import { formatMoney } from '@/utils/format'
 
-/* Chi tiết một sản phẩm trong portal khách hàng và kinh doanh, đọc GET /api/products/{id}. */
-function CatalogProductPage({ listPath, action }: { listPath: string; action?: ReactNode }) {
+/*
+  Chi tiết một sản phẩm trong các portal (khách hàng, kinh doanh, kỹ thuật viên, quản lý), đọc GET /api/products/{id}.
+  Đường quay lại danh mục nằm ở thanh định vị của shell, nên trang không có link "quay lại" riêng.
+*/
+function CatalogProductPage({ action }: { action?: ReactNode }) {
   const { id } = useParams()
   const query = useProductQuery(id)
+  usePageCrumb(query.data?.name)
 
   return (
     <QueryBoundary query={query}>
@@ -22,7 +27,7 @@ function CatalogProductPage({ listPath, action }: { listPath: string; action?: R
         const facts = [
           { k: 'Hãng', v: p.brand },
           { k: 'Model', v: p.model },
-          { k: 'Loại', v: p.productType },
+          { k: 'Loại', v: productTypeLabel(p.productType) ?? '—' },
           { k: 'Nhóm hàng', v: p.category },
           { k: 'SKU', v: p.sku },
           { k: 'Công suất định mức', v: formatPower(p.ratedPowerW) },
@@ -33,10 +38,9 @@ function CatalogProductPage({ listPath, action }: { listPath: string; action?: R
         return (
           <>
             <PageHeader
-              back={{ to: listPath, label: 'Sản phẩm' }}
               meta={
                 <>
-                  <span>{[p.brand, p.productType].filter(Boolean).join(', ')}</span>
+                  <span>{[p.brand, productTypeLabel(p.productType)].filter(Boolean).join(', ')}</span>
                   {!isProductActive(p.status) && <Badge tone="warn">Đã ngừng bán</Badge>}
                 </>
               }
@@ -86,7 +90,6 @@ function CatalogProductPage({ listPath, action }: { listPath: string; action?: R
 export function CustomerCatalogProductPage() {
   return (
     <CatalogProductPage
-      listPath={ROUTES.customer.products}
       action={
         <ButtonLink to={ROUTES.customer.assessment} variant="primary">
           Gửi đánh giá sơ bộ
@@ -97,5 +100,13 @@ export function CustomerCatalogProductPage() {
 }
 
 export function OpsCatalogProductPage() {
-  return <CatalogProductPage listPath={ROUTES.ops.products} />
+  return <CatalogProductPage />
+}
+
+export function TechCatalogProductPage() {
+  return <CatalogProductPage />
+}
+
+export function ManageCatalogProductPage() {
+  return <CatalogProductPage />
 }

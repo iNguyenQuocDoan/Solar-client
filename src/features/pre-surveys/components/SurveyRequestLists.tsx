@@ -8,6 +8,7 @@ import {
   formatDateTime,
   formatRelative,
   isOverdue,
+  needsScheduling,
   surfaceTypeLabel,
   surveyStatusMeta,
 } from '@/features/pre-surveys/components/preSurveyDisplay'
@@ -24,7 +25,7 @@ function RequestHeading({ name, aside }: { name: string | null; aside: ReactNode
   return (
     <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1">
       <h3 className="text-title font-semibold">{name || 'Công trình chưa đặt tên'}</h3>
-      <div className="text-meta text-fg-3">{aside}</div>
+      <div className="flex flex-wrap items-center gap-2 text-meta text-fg-3">{aside}</div>
     </div>
   )
 }
@@ -69,7 +70,7 @@ export function PendingRequestList({
               aside={
                 <>
                   <When iso={r.submittedAt} prefix="Gửi" />
-                  {overdue && <span className="font-medium text-warn">, chờ hơn 1 ngày</span>}
+                  {overdue && <Badge tone="warn">Chờ hơn 1 ngày</Badge>}
                 </>
               }
             />
@@ -105,7 +106,7 @@ function byNextAction(a: MySurveyRequestItem, b: MySurveyRequestItem) {
 
 /** Gợi ý bước tiếp theo theo trạng thái; trạng thái đã xong thì không cần gợi ý. */
 function nextStep(r: MySurveyRequestItem) {
-  if (r.status === 2 || r.status === 3) return 'Gọi khách để hẹn ngày khảo sát.'
+  if (needsScheduling(r.status)) return 'Gọi khách để hẹn ngày khảo sát.'
   if (r.status === 4 && r.scheduledAt) return `Khảo sát lúc ${formatDateTime(r.scheduledAt)}.`
   return null
 }
@@ -125,7 +126,10 @@ export function MyRequestList({ rows }: { rows: MySurveyRequestItem[] }) {
               items={[
                 { k: 'Khách hàng', v: r.customerName || '—' },
                 { k: 'Bạn nhận', v: r.assignedAt ? <When iso={r.assignedAt} /> : '—' },
-                { k: 'Hẹn khảo sát', v: r.scheduledAt ? formatDateTime(r.scheduledAt) : 'Chưa hẹn' },
+                {
+                  k: 'Hẹn khảo sát',
+                  v: r.scheduledAt ? formatDateTime(r.scheduledAt) : needsScheduling(r.status) ? <Badge tone="warn">Chưa hẹn</Badge> : '—',
+                },
               ]}
             />
             <ListRowActions>

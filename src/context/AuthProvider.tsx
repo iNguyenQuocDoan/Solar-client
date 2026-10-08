@@ -1,6 +1,7 @@
+import { useQueryClient } from '@tanstack/react-query'
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
 import * as authService from '@/features/auth/services/authService'
-import { SESSION_EXPIRED_EVENT, refreshAccessToken } from '@/services/api/client'
+import { SESSION_EXPIRED_EVENT, refreshAccessToken, waitForRefresh } from '@/services/api/client'
 import { ApiError } from '@/services/api/errors'
 import { fetchCurrentUser } from '@/features/auth/services/me'
 import { clearTokens, getAccessToken, getRefreshToken, hasRefreshToken, saveTokens } from '@/services/api/tokens'
@@ -15,6 +16,8 @@ import type { UserRole } from '@/config/roles'
  *   status = 'loading' để RequireRole (routes/RequireRole.tsx) không đá người dùng về /login quá sớm.
  * - Không còn bộ đếm 30 phút giả lập: modal hết hạn mở khi client.ts bắn
  *   sự kiện "session-expired" (refresh thất bại).
+ * - Đổi người dùng (đăng nhập, đăng xuất, hết phiên) thì xoá cache của React Query, để người sau không
+ *   thấy dữ liệu của người trước (tên, số điện thoại khách…) trong lúc chờ tải lại.
  */
 
 export type AuthUser = {
@@ -74,6 +77,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null)
   const [status, setStatus] = useState<AuthStatus>(() => (hasRefreshToken() ? 'loading' : 'ready'))
   const [sessionExpired, setSessionExpired] = useState(false)
+  const queryClient = useQueryClient()
 
   // Mở app: còn refreshToken thì khôi phục phiên trước khi render route bảo vệ.
   useEffect(() => {
@@ -104,15 +108,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // client.ts bắn sự kiện này khi refresh thất bại giữa chừng.
   useEffect(() => {
     const onExpired = () => {
+      queryClient.clear()
       setUser(null)
       setSessionExpired(true)
     }
     window.addEventListener(SESSION_EXPIRED_EVENT, onExpired)
     return () => window.removeEventListener(SESSION_EXPIRED_EVENT, onExpired)
-  }, [])
+  }, [queryClient])
 
   const signIn = useCallback(async (email: string, password: string, remember = true) => {
     const tokens = await authService.login({ email, password })
+    queryClient.clear()
     if (!tokens.accessToken || !tokens.refreshToken) {
       throw new ApiError({ status: 0, message: 'Máy chủ không trả về token đăng nhập.' })
     }
@@ -140,31 +146,36 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       clearTokens()
       throw error
     }
-  }, [])
+  }, [queryClient])
 
   const clearSession = useCallback(() => {
     clearTokens()
+    queryClient.clear()
     setUser(null)
-  }, [])
+  }, [queryClient])
 
   const signOut = useCallback(async () => {
-    const refreshToken = getRefreshToken()
     try {
+      // Đang refresh thì chờ xong rồi mới đọc token: gửi token cũ (đã bị đổi) sẽ bị coi là dùng lại.
+      await waitForRefresh()
+      const refreshToken = getRefreshToken()
       if (refreshToken) await authService.logout({ refreshToken })
     } catch {
       // Lỗi mạng / token đã bị thu hồi: vẫn xoá phiên phía client.
     } finally {
       clearTokens()
+      queryClient.clear()
       setUser(null)
       setSessionExpired(false)
     }
-  }, [])
+  }, [queryClient])
 
   const expireSession = useCallback(() => {
     clearTokens()
+    queryClient.clear()
     setUser(null)
     setSessionExpired(true)
-  }, [])
+  }, [queryClient])
 
   const dismissSessionExpired = useCallback(() => setSessionExpired(false), [])
 

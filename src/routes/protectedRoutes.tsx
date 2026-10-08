@@ -2,17 +2,14 @@ import { Navigate, type RouteObject } from 'react-router'
 import { AdminLayout } from '@/components/layout/AdminLayout'
 import { TechLayout } from '@/components/layout/TechLayout'
 import { CustomerLayout } from '@/components/layout/customer-layout'
-import { FieldLayout } from '@/components/layout/field-layout'
 import { ManageLayout } from '@/components/layout/manage-layout'
 import { OpsLayout } from '@/components/layout/ops-layout'
 import { PageSkeleton } from '@/components/common/ui/states'
-import { PlaceholderPage } from '@/pages/placeholder-page'
 import { ROUTES } from '@/routes/paths'
 import { RequireRole } from '@/routes/RequireRole'
 
 const customer = ROUTES.customer
 const ops = ROUTES.ops
-const field = ROUTES.field
 const manage = ROUTES.manage
 
 /** Mọi đường dẫn còn lại trong portal (màn mock đã ẩn, link cũ, gõ sai) về trang có dữ liệu thật. */
@@ -24,7 +21,7 @@ const fallback = (to: string): RouteObject => ({ path: '*', element: <Navigate t
 
   Chỉ màn đã đổ dữ liệu thật từ backend mới có route (05/10/2026). Màn mock vẫn nằm trong
   pages/<portal>/ và data/*.ts; nối API xong thì thêm lại route ở đây và mục menu trong
-  config/portals.ts (portal kit) hoặc config/nav.ts (admin, technician).
+  config/portals.ts (mọi portal, kể cả admin và kỹ thuật viên, dùng chung shell portal kit từ 08/10/2026).
 */
 export const protectedRoutes: RouteObject[] = [
   /* ---- Portal khách hàng ---- */
@@ -65,6 +62,7 @@ export const protectedRoutes: RouteObject[] = [
     children: [
       { index: true, element: <Navigate to={ops.surveys} replace /> },
       { path: ops.surveys, lazy: () => import('@/pages/ops/surveys-page').then((m) => ({ Component: m.OpsSurveysPage })) },
+      { path: ops.surveysMine, lazy: () => import('@/pages/ops/surveys-page').then((m) => ({ Component: m.OpsSurveysPage })) },
       { path: ops.survey, lazy: () => import('@/pages/ops/survey-request-page').then((m) => ({ Component: m.OpsSurveyRequestPage })) },
       { path: ops.products, lazy: () => import('@/pages/catalog-page').then((m) => ({ Component: m.OpsCatalogPage })) },
       { path: ops.product, lazy: () => import('@/pages/catalog-product-page').then((m) => ({ Component: m.OpsCatalogProductPage })) },
@@ -72,18 +70,10 @@ export const protectedRoutes: RouteObject[] = [
     ],
   },
 
-  /* ---- Portal kỹ thuật viên (bộ ui) – chưa có màn nào nối API ---- */
-  {
-    path: field.home,
-    element: (
-      <RequireRole role="technician">
-        <FieldLayout />
-      </RequireRole>
-    ),
-    children: [{ index: true, element: <PlaceholderPage /> }, fallback(field.home)],
-  },
+  /* ---- /field: bản portal kit cũ của kỹ thuật viên, gộp về /tech (08/10/2026) ---- */
+  { path: `${ROUTES.field.home}/*`, element: <Navigate to={ROUTES.TECH.DASHBOARD} replace /> },
 
-  /* ---- Portal quản lý – chưa có màn nào nối API ---- */
+  /* ---- Portal quản lý: chưa có API riêng, dùng danh mục sản phẩm thật ---- */
   {
     path: manage.home,
     element: (
@@ -91,10 +81,20 @@ export const protectedRoutes: RouteObject[] = [
         <ManageLayout />
       </RequireRole>
     ),
-    children: [{ index: true, element: <PlaceholderPage /> }, fallback(manage.home)],
+    hydrateFallbackElement: (
+      <ManageLayout>
+        <PageSkeleton />
+      </ManageLayout>
+    ),
+    children: [
+      { index: true, element: <Navigate to={manage.products} replace /> },
+      { path: manage.products, lazy: () => import('@/pages/catalog-page').then((m) => ({ Component: m.ManageCatalogPage })) },
+      { path: manage.product, lazy: () => import('@/pages/catalog-product-page').then((m) => ({ Component: m.ManageCatalogProductPage })) },
+      fallback(manage.products),
+    ],
   },
 
-  /* ---- Portal quản trị viên (bộ stitch-ui) ---- */
+  /* ---- Portal quản trị viên ---- */
   {
     path: ROUTES.ADMIN.DASHBOARD,
     element: (
@@ -102,14 +102,19 @@ export const protectedRoutes: RouteObject[] = [
         <AdminLayout />
       </RequireRole>
     ),
+    hydrateFallbackElement: (
+      <AdminLayout>
+        <PageSkeleton />
+      </AdminLayout>
+    ),
     children: [
       { index: true, element: <Navigate to={ROUTES.ADMIN.PRODUCTS} replace /> },
-      { path: 'products', lazy: () => import('@/pages/admin/ProductsPage').then((m) => ({ Component: m.ProductsPage })) },
+      { path: 'products', lazy: () => import('@/pages/admin/products-page').then((m) => ({ Component: m.AdminProductsPage })) },
       fallback(ROUTES.ADMIN.PRODUCTS),
     ],
   },
 
-  /* ---- Portal kỹ thuật viên (bộ stitch-ui) – chưa có màn nào nối API ---- */
+  /* ---- Portal kỹ thuật viên /tech: chưa có API riêng, dùng danh mục sản phẩm thật ---- */
   {
     path: ROUTES.TECH.DASHBOARD,
     element: (
@@ -117,6 +122,16 @@ export const protectedRoutes: RouteObject[] = [
         <TechLayout />
       </RequireRole>
     ),
-    children: [{ index: true, element: <PlaceholderPage /> }, fallback(ROUTES.TECH.DASHBOARD)],
+    hydrateFallbackElement: (
+      <TechLayout>
+        <PageSkeleton />
+      </TechLayout>
+    ),
+    children: [
+      { index: true, element: <Navigate to={ROUTES.TECH.PRODUCTS} replace /> },
+      { path: ROUTES.TECH.PRODUCTS, lazy: () => import('@/pages/catalog-page').then((m) => ({ Component: m.TechCatalogPage })) },
+      { path: ROUTES.TECH.PRODUCT, lazy: () => import('@/pages/catalog-product-page').then((m) => ({ Component: m.TechCatalogProductPage })) },
+      fallback(ROUTES.TECH.PRODUCTS),
+    ],
   },
 ]

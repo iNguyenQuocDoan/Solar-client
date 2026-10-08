@@ -1,18 +1,21 @@
 import type { InputHTMLAttributes, ReactNode, SelectHTMLAttributes, TextareaHTMLAttributes } from 'react'
 import { cx } from '@/utils/cx'
 
+/* `required`: dấu * màu đỏ sau nhãn (chỉ để nhìn; ô nhập tự đặt aria-required). */
 export function Field({
   label,
   hint,
   error,
   htmlFor,
+  required,
   children,
   className,
 }: {
-  label: string
+  label: ReactNode
   hint?: string
   error?: string
   htmlFor?: string
+  required?: boolean
   children: ReactNode
   className?: string
 }) {
@@ -20,6 +23,11 @@ export function Field({
     <div className={cx('flex flex-col gap-2', className)}>
       <label htmlFor={htmlFor} className="text-body font-medium text-fg">
         {label}
+        {required && (
+          <span aria-hidden className="text-danger">
+            {' *'}
+          </span>
+        )}
       </label>
       {children}
       {error ? (

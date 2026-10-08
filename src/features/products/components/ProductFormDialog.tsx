@@ -1,23 +1,13 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useId } from 'react'
+import { useEffect, useId, useState } from 'react'
 import { useFieldArray, useForm, type Path } from 'react-hook-form'
 import { toast } from 'sonner'
 import { z } from 'zod'
-import { Button, IconButton } from '@/components/common/stitch-ui/Button'
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/common/stitch-ui/Dialog'
-import { Field } from '@/components/common/stitch-ui/Field'
-import { Select } from '@/components/common/stitch-ui/FilterBar'
-import { Input } from '@/components/common/stitch-ui/Input'
+import { Button } from '@/components/common/ui/button'
+import { DialogFooter, DialogTitle, ModalDialog } from '@/components/common/ui/dialog'
+import { Field, Input } from '@/components/common/ui/field'
 import { useCreateProductMutation, useUpdateProductMutation } from '@/features/products/hooks/useProducts'
-import { PRODUCT_STATUSES, SOLAR_PANEL_TYPE, isSolarPanelType, specEntries } from '@/features/products/components/productDisplay'
+import { SOLAR_PANEL_TYPE, isSolarPanelType, specEntries } from '@/features/products/components/productDisplay'
 import { errorMessage, isApiError } from '@/services/api/errors'
 import type { UpdateProductRequest } from '@/types/req/adminProductsReq'
 import type { ProductResponse } from '@/types/res/adminProductsRes'
@@ -30,7 +20,7 @@ import type { ProductResponse } from '@/types/res/adminProductsRes'
  *   spec phải là JSON object; status chỉ ACTIVE | INACTIVE.
  * Loại SOLAR_PANEL (không phân biệt hoa thường) bắt buộc thêm ratedPowerW, widthMm, heightMm (dò 05/10/2026);
  * mô phỏng 3D dùng đúng ba số này.
- * PUT không nhận status nên ô trạng thái chỉ hiện khi thêm mới.
+ * PUT không nhận status; thêm mới luôn gửi ACTIVE vì backend ẩn sản phẩm INACTIVE khỏi mọi danh sách (dò 08/10/2026).
  */
 
 const required = (label: string) => z.string().trim().min(1, `Vui lòng nhập ${label}`)
@@ -151,6 +141,12 @@ function toRequest(values: ProductFormValues): UpdateProductRequest {
   }
 }
 
+/** Hai bộ dòng thông số giống nhau (bỏ khoảng trắng hai đầu như zod đã làm). */
+function sameSpecRows(a: ProductFormValues['spec'], b: ProductFormValues['spec']) {
+  const norm = (rows: ProductFormValues['spec']) => JSON.stringify(rows.map((r) => [r.key.trim(), r.value.trim()]))
+  return norm(a) === norm(b)
+}
+
 /** Backend trả lỗi theo tên PascalCase ("UnitPrice"); form dùng camelCase. */
 const FORM_FIELDS = new Set(Object.keys(emptyValues))
 function toFormField(serverField: string): Path<ProductFormValues> | null {
@@ -167,7 +163,12 @@ export type ProductFormDialogProps = {
   suggestions?: { productTypes: string[]; categories: string[] }
 }
 
-function ProductForm({ product, suggestions, onDone }: Pick<ProductFormDialogProps, 'product' | 'suggestions'> & { onDone: () => void }) {
+function ProductForm({
+  product,
+  suggestions,
+  onDone,
+  onBusyChange,
+}: Pick<ProductFormDialogProps, 'product' | 'suggestions'> & { onDone: () => void; onBusyChange: (busy: boolean) => void }) {
   const id = useId()
   const isEdit = Boolean(product?.id)
   const createMutation = useCreateProductMutation()
@@ -185,14 +186,23 @@ function ProductForm({ product, suggestions, onDone }: Pick<ProductFormDialogPro
   })
   const spec = useFieldArray({ control, name: 'spec' })
 
+  // Đang lưu thì không cho đóng dialog (Esc, Huỷ): đóng giữa chừng mất lỗi từng ô và dễ bấm lưu lần hai.
+  useEffect(() => {
+    onBusyChange(isSubmitting)
+    return () => onBusyChange(false)
+  }, [isSubmitting, onBusyChange])
+
   const onSubmit = async (values: ProductFormValues) => {
     const body = toRequest(values)
+    // Không đụng tới thông số thì gửi lại đúng spec cũ: đi qua ô nhập, số và true/false sẽ thành chuỗi.
+    if (product && sameSpecRows(values.spec, valuesFromProduct(product).spec)) body.spec = product.spec ?? null
     try {
       if (isEdit && product?.id) {
         await updateMutation.mutateAsync({ id: product.id, body })
         toast.success(`Đã lưu ${values.name}`)
       } else {
-        await createMutation.mutateAsync({ ...body, status: values.status })
+        // Luôn tạo ở trạng thái Đang bán: backend ẩn sản phẩm ngừng bán khỏi mọi danh sách, tạo xong sẽ không thấy đâu.
+        await createMutation.mutateAsync({ ...body, status: 'ACTIVE' })
         toast.success(`Đã thêm ${values.name}`)
       }
       onDone()
@@ -213,123 +223,121 @@ function ProductForm({ product, suggestions, onDone }: Pick<ProductFormDialogPro
 
   const f = (name: string) => `${id}-${name}`
   const isPanel = isSolarPanelType(watch('productType'))
-  const mark = isPanel ? ' *' : ''
+  /* aria-invalid tô viền đỏ (portal kit), aria-describedby không cần vì Field đặt lỗi ngay dưới ô với role="alert". */
+  const invalid = (name: keyof ProductFormValues) => (errors[name] ? true : undefined)
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-space-md" noValidate>
-      <DialogHeader>
-        <DialogTitle>{isEdit ? 'Sửa sản phẩm' : 'Thêm sản phẩm'}</DialogTitle>
-        <DialogDescription>{isEdit ? product?.sku : 'Ô có dấu * là bắt buộc.'}</DialogDescription>
-      </DialogHeader>
+    <form onSubmit={handleSubmit(onSubmit)} noValidate>
+      {/* Form dài: trên điện thoại "Đóng" ở đầu và hàng nút ở chân (dính đáy) để không phải cuộn hết form mới thoát được. */}
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <DialogTitle>{isEdit ? 'Sửa sản phẩm' : 'Thêm sản phẩm'}</DialogTitle>
+          <p className="mt-1 text-body text-fg-2">
+            {isEdit ? <span className="tnum">{product?.sku}</span> : 'Ô có dấu * là bắt buộc.'}
+          </p>
+        </div>
+        <Button variant="ghost" className="-mt-2" disabled={isSubmitting} onClick={onDone}>
+          Đóng
+        </Button>
+      </div>
 
-      <div className="grid grid-cols-1 gap-space-md sm:grid-cols-2">
-        <Field label="Tên sản phẩm *" htmlFor={f('name')} error={errors.name?.message} className="sm:col-span-2">
-          <Input id={f('name')} invalid={!!errors.name} {...register('name')} />
+      <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <Field label="Tên sản phẩm" required htmlFor={f('name')} error={errors.name?.message} className="sm:col-span-2">
+          <Input id={f('name')} aria-required aria-invalid={invalid('name')} {...register('name')} />
         </Field>
-        <Field label="SKU *" htmlFor={f('sku')} error={errors.sku?.message}>
-          <Input id={f('sku')} invalid={!!errors.sku} {...register('sku')} />
+        <Field label="SKU" required htmlFor={f('sku')} error={errors.sku?.message}>
+          <Input id={f('sku')} aria-required aria-invalid={invalid('sku')} {...register('sku')} />
         </Field>
-        <Field label="Hãng *" htmlFor={f('brand')} error={errors.brand?.message}>
-          <Input id={f('brand')} invalid={!!errors.brand} {...register('brand')} />
+        <Field label="Hãng" required htmlFor={f('brand')} error={errors.brand?.message}>
+          <Input id={f('brand')} aria-required aria-invalid={invalid('brand')} {...register('brand')} />
         </Field>
-        <Field label="Loại sản phẩm *" htmlFor={f('productType')} error={errors.productType?.message}>
-          <Input id={f('productType')} list={f('types')} invalid={!!errors.productType} {...register('productType')} />
+        <Field label="Loại sản phẩm" required htmlFor={f('productType')} error={errors.productType?.message}>
+          <Input id={f('productType')} list={f('types')} aria-required aria-invalid={invalid('productType')} {...register('productType')} />
         </Field>
         <Field label="Nhóm hàng" htmlFor={f('category')} error={errors.category?.message}>
-          <Input id={f('category')} list={f('categories')} invalid={!!errors.category} {...register('category')} />
+          <Input id={f('category')} list={f('categories')} aria-invalid={invalid('category')} {...register('category')} />
         </Field>
         <Field label="Model" htmlFor={f('model')} error={errors.model?.message}>
-          <Input id={f('model')} invalid={!!errors.model} {...register('model')} />
+          <Input id={f('model')} aria-invalid={invalid('model')} {...register('model')} />
         </Field>
-        <Field label="Đơn vị tính *" htmlFor={f('unit')} error={errors.unit?.message} help="Ví dụ: tấm, bộ, cái">
-          <Input id={f('unit')} invalid={!!errors.unit} {...register('unit')} />
+        <Field label="Đơn vị tính" required htmlFor={f('unit')} error={errors.unit?.message} hint="Ví dụ: tấm, bộ, cái">
+          <Input id={f('unit')} aria-required aria-invalid={invalid('unit')} {...register('unit')} />
         </Field>
-        <Field label="Đơn giá *" htmlFor={f('unitPrice')} error={errors.unitPrice?.message}>
-          <Input id={f('unitPrice')} inputMode="decimal" invalid={!!errors.unitPrice} {...register('unitPrice')} />
+        <Field label="Đơn giá" required htmlFor={f('unitPrice')} error={errors.unitPrice?.message}>
+          <Input id={f('unitPrice')} inputMode="decimal" aria-required aria-invalid={invalid('unitPrice')} {...register('unitPrice')} />
         </Field>
-        <Field label="Tiền tệ *" htmlFor={f('currency')} error={errors.currency?.message}>
-          <Input id={f('currency')} maxLength={3} className="uppercase" invalid={!!errors.currency} {...register('currency')} />
+        <Field label="Tiền tệ" required htmlFor={f('currency')} error={errors.currency?.message}>
+          <Input id={f('currency')} maxLength={3} className="uppercase" aria-required aria-invalid={invalid('currency')} {...register('currency')} />
         </Field>
-        <Field label="Bảo hành" htmlFor={f('warrantyMonth')} error={errors.warrantyMonth?.message}>
-          <Input
-            id={f('warrantyMonth')}
-            inputMode="numeric"
-            invalid={!!errors.warrantyMonth}
-            trailing={<span className="text-label-sm text-outline">tháng</span>}
-            {...register('warrantyMonth')}
-          />
+        <Field label="Bảo hành (tháng)" htmlFor={f('warrantyMonth')} error={errors.warrantyMonth?.message}>
+          <Input id={f('warrantyMonth')} inputMode="numeric" aria-invalid={invalid('warrantyMonth')} {...register('warrantyMonth')} />
         </Field>
-        {!isEdit && (
-          <Field label="Trạng thái" htmlFor={f('status')} error={errors.status?.message}>
-            <Select
-              id={f('status')}
-              size="md"
-              options={PRODUCT_STATUSES.map((s) => ({ value: s.value, label: s.label }))}
-              {...register('status')}
-            />
-          </Field>
-        )}
 
         {/* Ba số này đi cùng nhau: bắt buộc với tấm pin vì backend kiểm tra và mô phỏng 3D cần chúng. */}
-        <fieldset className="grid grid-cols-1 gap-space-md sm:col-span-2 sm:grid-cols-3">
-          <legend className="mb-space-xs text-label-md font-semibold text-on-surface sm:col-span-3">
-            Công suất và kích thước
-            <span className="ml-space-xs font-normal text-on-surface-variant">
-              {isPanel ? 'bắt buộc với tấm pin, dùng cho mô phỏng bố trí' : `bắt buộc khi loại là ${SOLAR_PANEL_TYPE}`}
+        <fieldset className="grid grid-cols-1 gap-4 border-t border-line pt-4 sm:col-span-2 sm:grid-cols-3">
+          <legend className="contents">
+            <span className="text-body font-semibold sm:col-span-3">
+              Công suất và kích thước
+              <span className="block text-meta font-normal text-fg-2">
+                {isPanel ? 'Bắt buộc với tấm pin, dùng cho mô phỏng bố trí.' : `Bắt buộc khi loại là ${SOLAR_PANEL_TYPE}.`}
+              </span>
             </span>
           </legend>
-          <Field label={`Công suất định mức${mark}`} htmlFor={f('ratedPowerW')} error={errors.ratedPowerW?.message}>
-            <Input
-              id={f('ratedPowerW')}
-              inputMode="decimal"
-              invalid={!!errors.ratedPowerW}
-              trailing={<span className="text-label-sm text-outline">W</span>}
-              {...register('ratedPowerW')}
-            />
+          <Field label="Công suất định mức (W)" required={isPanel} htmlFor={f('ratedPowerW')} error={errors.ratedPowerW?.message}>
+            <Input id={f('ratedPowerW')} inputMode="decimal" aria-required={isPanel} aria-invalid={invalid('ratedPowerW')} {...register('ratedPowerW')} />
           </Field>
-          <Field label={`Chiều rộng${mark}`} htmlFor={f('widthMm')} error={errors.widthMm?.message}>
-            <Input
-              id={f('widthMm')}
-              inputMode="decimal"
-              invalid={!!errors.widthMm}
-              trailing={<span className="text-label-sm text-outline">mm</span>}
-              {...register('widthMm')}
-            />
+          <Field label="Chiều rộng (mm)" required={isPanel} htmlFor={f('widthMm')} error={errors.widthMm?.message}>
+            <Input id={f('widthMm')} inputMode="decimal" aria-required={isPanel} aria-invalid={invalid('widthMm')} {...register('widthMm')} />
           </Field>
-          <Field label={`Chiều cao${mark}`} htmlFor={f('heightMm')} error={errors.heightMm?.message}>
-            <Input
-              id={f('heightMm')}
-              inputMode="decimal"
-              invalid={!!errors.heightMm}
-              trailing={<span className="text-label-sm text-outline">mm</span>}
-              {...register('heightMm')}
-            />
+          <Field label="Chiều cao (mm)" required={isPanel} htmlFor={f('heightMm')} error={errors.heightMm?.message}>
+            <Input id={f('heightMm')} inputMode="decimal" aria-required={isPanel} aria-invalid={invalid('heightMm')} {...register('heightMm')} />
           </Field>
         </fieldset>
+
         <Field label="Link ảnh" htmlFor={f('imageUrl')} error={errors.imageUrl?.message} className="sm:col-span-2">
-          <Input id={f('imageUrl')} type="url" placeholder="https://" invalid={!!errors.imageUrl} {...register('imageUrl')} />
+          <Input id={f('imageUrl')} type="url" placeholder="https://" aria-invalid={invalid('imageUrl')} {...register('imageUrl')} />
         </Field>
       </div>
 
-      <fieldset className="flex flex-col gap-space-xs">
-        <legend className="mb-space-xs text-label-md font-semibold text-on-surface">Thông số kỹ thuật</legend>
-        {spec.fields.length === 0 && <p className="text-label-sm text-outline">Chưa có thông số nào.</p>}
-        {spec.fields.map((row, i) => (
-          <div key={row.id} className="grid grid-cols-[1fr_1fr_auto] items-start gap-space-xs">
-            <Field label={<span className="sr-only">Tên thông số {i + 1}</span>} htmlFor={f(`spec-${i}-key`)} error={errors.spec?.[i]?.key?.message}>
-              <Input id={f(`spec-${i}-key`)} size="sm" placeholder="Ví dụ: Hiệu suất" invalid={!!errors.spec?.[i]?.key} {...register(`spec.${i}.key`)} />
-            </Field>
-            <Field label={<span className="sr-only">Giá trị thông số {i + 1}</span>} htmlFor={f(`spec-${i}-value`)}>
-              <Input id={f(`spec-${i}-value`)} size="sm" placeholder="Ví dụ: 21,8%" {...register(`spec.${i}.value`)} />
-            </Field>
-            <IconButton icon="close" label={`Bỏ thông số ${i + 1}`} size="md" className="mt-0.5" onClick={() => spec.remove(i)} />
-          </div>
-        ))}
-        <div>
-          <Button variant="ghost" size="sm" iconLeft="add" onClick={() => spec.append({ key: '', value: '' })}>
-            Thêm thông số
-          </Button>
+      <fieldset className="mt-4 border-t border-line pt-4">
+        <legend className="contents">
+          <span className="text-body font-semibold">Thông số kỹ thuật</span>
+        </legend>
+        {spec.fields.length === 0 && <p className="mt-2 text-meta text-fg-3">Chưa có thông số nào.</p>}
+        <div className="mt-2 space-y-2">
+          {spec.fields.map((row, i) => (
+            <div key={row.id} className="grid grid-cols-[1fr_1fr_auto] items-start gap-2">
+              <div>
+                <label htmlFor={f(`spec-${i}-key`)} className="sr-only">
+                  Tên thông số {i + 1}
+                </label>
+                <Input
+                  id={f(`spec-${i}-key`)}
+                  placeholder="Ví dụ: Hiệu suất"
+                  aria-invalid={errors.spec?.[i]?.key ? true : undefined}
+                  {...register(`spec.${i}.key`)}
+                />
+                {errors.spec?.[i]?.key?.message && (
+                  <p role="alert" className="mt-1 text-meta text-danger">
+                    {errors.spec[i].key.message}
+                  </p>
+                )}
+              </div>
+              <div>
+                <label htmlFor={f(`spec-${i}-value`)} className="sr-only">
+                  Giá trị thông số {i + 1}
+                </label>
+                <Input id={f(`spec-${i}-value`)} placeholder="Ví dụ: 21,8%" {...register(`spec.${i}.value`)} />
+              </div>
+              <Button variant="ghost" aria-label={`Bỏ thông số ${i + 1}`} onClick={() => spec.remove(i)}>
+                Bỏ
+              </Button>
+            </div>
+          ))}
         </div>
+        <Button variant="ghost" size="sm" className="mt-2" onClick={() => spec.append({ key: '', value: '' })}>
+          Thêm thông số
+        </Button>
       </fieldset>
 
       <datalist id={f('types')}>
@@ -340,18 +348,16 @@ function ProductForm({ product, suggestions, onDone }: Pick<ProductFormDialogPro
       </datalist>
 
       {errors.root?.message && (
-        <p role="alert" className="rounded-xl bg-error-container px-space-sm py-space-xs text-label-md text-on-error-container">
+        <p role="alert" className="mt-4 border-l-2 border-danger pl-3 text-body text-danger">
           {errors.root.message}
         </p>
       )}
 
-      <DialogFooter className="justify-end">
-        <DialogClose asChild>
-          <Button variant="ghost" size="md">
-            Hủy
-          </Button>
-        </DialogClose>
-        <Button type="submit" size="md" iconLeft="save" disabled={isSubmitting}>
+      <DialogFooter className="sticky bottom-0 -mx-6 -mb-6 border-t border-line bg-canvas px-6 py-4">
+        <Button variant="ghost" disabled={isSubmitting} onClick={onDone}>
+          Huỷ
+        </Button>
+        <Button type="submit" variant="primary" disabled={isSubmitting}>
           {isSubmitting ? 'Đang lưu…' : isEdit ? 'Lưu thay đổi' : 'Thêm sản phẩm'}
         </Button>
       </DialogFooter>
@@ -359,13 +365,25 @@ function ProductForm({ product, suggestions, onDone }: Pick<ProductFormDialogPro
   )
 }
 
+/* Dialog rộng hơn mặc định vì form có hai cột; cao quá màn hình thì cuộn bên trong dialog. */
 export function ProductFormDialog({ open, onOpenChange, product, suggestions }: ProductFormDialogProps) {
+  const [busy, setBusy] = useState(false)
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent size="lg">
-        {/* key: mở lại dialog cho sản phẩm khác thì form khởi tạo lại từ đầu */}
-        {open && <ProductForm key={product?.id ?? 'new'} product={product} suggestions={suggestions} onDone={() => onOpenChange(false)} />}
-      </DialogContent>
-    </Dialog>
+    <ModalDialog
+      open={open}
+      onOpenChange={onOpenChange}
+      dismissible={!busy}
+      aria-label={product?.id ? 'Sửa sản phẩm' : 'Thêm sản phẩm'}
+      className="max-h-[calc(100dvh-2rem)] max-w-2xl overflow-y-auto"
+    >
+      {/* key: mở lại dialog cho sản phẩm khác thì form khởi tạo lại từ đầu */}
+      <ProductForm
+        key={product?.id ?? 'new'}
+        product={product}
+        suggestions={suggestions}
+        onDone={() => onOpenChange(false)}
+        onBusyChange={setBusy}
+      />
+    </ModalDialog>
   )
 }

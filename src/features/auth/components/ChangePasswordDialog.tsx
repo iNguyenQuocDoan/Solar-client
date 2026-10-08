@@ -1,23 +1,15 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { useNavigate } from 'react-router'
+import { useEffect, useId, useState } from 'react'
+import { useForm, type UseFormRegisterReturn } from 'react-hook-form'
 import { toast } from 'sonner'
 import { z } from 'zod'
-import { PasswordInput } from '@/features/auth/components/AuthInput'
-import { PasswordRules } from '@/features/auth/components/PasswordRules'
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/common/stitch-ui/Dialog'
-import { Icon } from '@/components/common/stitch-ui/Icon'
-import { ROUTES } from '@/routes/paths'
+import { Button } from '@/components/common/ui/button'
+import { DialogFooter, DialogTitle, ModalDialog } from '@/components/common/ui/dialog'
+import { Field, Input } from '@/components/common/ui/field'
 import { useChangePasswordMutation } from '@/features/auth/hooks/useAuthMutations'
 import { errorMessage, isApiError } from '@/services/api/errors'
-import { useAuth } from '@/context/AuthProvider'
-import { changePasswordContent, isStrongPassword } from '@/data/auth'
+import { changePasswordContent, isStrongPassword, passwordRules, registerContent } from '@/data/auth'
+import { cx } from '@/utils/cx'
 
 const schema = z
   .object({
@@ -38,155 +30,124 @@ export type ChangePasswordDialogProps = {
 }
 
 /*
- * Dialog đổi mật khẩu, mở từ khối user ở Sidebar.
- * ChangePasswordRequest trong swagger = { currentPassword, newPassword };
- * ô "xác nhận" chỉ validate phía client.
+ * Dialog đổi mật khẩu, mở từ khối tài khoản ở rail (bộ portal kit, cùng kiểu với các hộp thoại khác).
+ * <dialog> gốc nên tự là modal và trả focus về nút đã mở nó khi đóng.
+ * ChangePasswordRequest trong swagger = { currentPassword, newPassword }; ô "xác nhận" chỉ validate phía client.
  */
 export function ChangePasswordDialog({ open, onOpenChange }: ChangePasswordDialogProps) {
-  const navigate = useNavigate()
-  const { clearSession } = useAuth()
+  // Đang gửi thì không cho đóng (Esc): form báo trạng thái lên đây vì mutation nằm trong form.
+  const [busy, setBusy] = useState(false)
+  return (
+    <ModalDialog open={open} onOpenChange={onOpenChange} dismissible={!busy} aria-label={changePasswordContent.title} className="max-w-lg">
+      <ChangePasswordForm onDone={() => onOpenChange(false)} onBusyChange={setBusy} />
+    </ModalDialog>
+  )
+}
+
+/* Form gắn trong dialog chỉ khi đang mở (ModalDialog gỡ children lúc đóng), nên mỗi lần mở là form trống. */
+function ChangePasswordForm({ onDone, onBusyChange }: { onDone: () => void; onBusyChange: (busy: boolean) => void }) {
+  const id = useId()
   const changeMutation = useChangePasswordMutation()
   const [formError, setFormError] = useState<string | null>(null)
-
   const {
     register,
     handleSubmit,
     watch,
     setError,
-    reset,
     formState: { errors },
   } = useForm<ChangePasswordValues>({
     resolver: zodResolver(schema),
     defaultValues: { currentPassword: '', newPassword: '', confirm: '' },
   })
-
   const newPassword = watch('newPassword')
   const submitting = changeMutation.isPending
-
-  const close = (next: boolean) => {
-    if (submitting) return
-    if (!next) {
-      reset()
-      setFormError(null)
-    }
-    onOpenChange(next)
-  }
+  useEffect(() => {
+    onBusyChange(submitting)
+    return () => onBusyChange(false)
+  }, [submitting, onBusyChange])
 
   const onSubmit = handleSubmit(async (values) => {
     if (submitting) return
     setFormError(null)
     try {
-      await changeMutation.mutateAsync({
-        currentPassword: values.currentPassword,
-        newPassword: values.newPassword,
-      })
+      await changeMutation.mutateAsync({ currentPassword: values.currentPassword, newPassword: values.newPassword })
       toast.success(changePasswordContent.success)
-      reset()
-      onOpenChange(false)
+      onDone()
     } catch (error) {
-      // Backend thu hồi phiên sau khi đổi mật khẩu → 401 → đăng xuất và về /login.
-      if (isApiError(error) && error.status === 401) {
-        toast.success(changePasswordContent.successRelogin)
-        clearSession()
-        onOpenChange(false)
-        navigate(ROUTES.LOGIN, { replace: true })
-        return
-      }
-      if (isApiError(error) && error.fieldErrors.currentPassword) {
-        setError('currentPassword', { type: 'server', message: error.fieldErrors.currentPassword })
+      // 401 ở đây là phiên đã hết (client.ts đã thử refresh và bật hộp "hết phiên"): mật khẩu CHƯA đổi.
+      // Sai mật khẩu hiện tại là 400 AUTH_CURRENT_PASSWORD_INVALID (dò 08/10/2026), báo ngay dưới ô đó.
+      if (isApiError(error) && (error.fieldErrors.currentPassword || error.code === 'AUTH_CURRENT_PASSWORD_INVALID')) {
+        setError('currentPassword', { type: 'server', message: error.fieldErrors.currentPassword ?? error.message })
         return
       }
       setFormError(errorMessage(error))
     }
   })
 
+  const f = (name: string) => `${id}-${name}`
   return (
-    <Dialog open={open} onOpenChange={close}>
-      <DialogContent size="md" aria-describedby={undefined}>
-        <DialogHeader>
-          <DialogTitle>{changePasswordContent.title}</DialogTitle>
-        </DialogHeader>
+    <form onSubmit={onSubmit} noValidate>
+      <DialogTitle>{changePasswordContent.title}</DialogTitle>
+      <div className="mt-6 space-y-4">
+        <PasswordField id={f('current')} label={changePasswordContent.currentLabel} autoComplete="current-password" error={errors.currentPassword?.message} field={register('currentPassword')} />
+        <PasswordField id={f('new')} label={changePasswordContent.newLabel} autoComplete="new-password" error={errors.newPassword?.message} field={register('newPassword')} />
+        <PasswordField id={f('confirm')} label={changePasswordContent.confirmLabel} autoComplete="new-password" error={errors.confirm?.message} field={register('confirm')} />
+        <div>
+          <p className="text-meta text-fg-2">{registerContent.rulesTitle}</p>
+          <ul className="mt-1 grid gap-1 text-meta sm:grid-cols-2">
+            {passwordRules.map((rule) => {
+              const passed = rule.test(newPassword)
+              return (
+                <li key={rule.id} className={cx('flex items-center gap-2', passed ? 'text-fg' : 'text-fg-2')}>
+                  <span aria-hidden className={cx('size-2 shrink-0 rounded-full', passed ? 'bg-ok' : 'bg-line-2')} />
+                  {rule.label}
+                  <span className="sr-only">{passed ? '(đã đạt)' : '(chưa đạt)'}</span>
+                </li>
+              )
+            })}
+          </ul>
+        </div>
+      </div>
+      {formError && (
+        <p role="alert" className="mt-4 border-l-2 border-danger pl-3 text-body text-danger">
+          {formError}
+        </p>
+      )}
+      <DialogFooter>
+        <Button variant="ghost" disabled={submitting} onClick={onDone}>
+          {changePasswordContent.cancel}
+        </Button>
+        <Button type="submit" variant="primary" disabled={submitting}>
+          {submitting ? changePasswordContent.submitting : changePasswordContent.submit}
+        </Button>
+      </DialogFooter>
+    </form>
+  )
+}
 
-        {formError && (
-          <div
-            role="alert"
-            className="flex items-start gap-2 rounded-lg bg-error-container p-space-sm text-on-error-container"
-          >
-            <Icon name="error" className="mt-0.5 shrink-0 text-[20px] text-error" />
-            <span className="text-body-sm">{formError}</span>
-          </div>
-        )}
-
-        <form className="flex flex-col gap-space-sm" onSubmit={onSubmit} noValidate>
-          <div className="flex flex-col gap-1">
-            <label htmlFor="cp-current" className="text-label-lg text-on-surface">
-              {changePasswordContent.currentLabel}
-            </label>
-            <PasswordInput
-              id="cp-current"
-              size="md"
-              autoComplete="current-password"
-              placeholder={changePasswordContent.placeholder}
-              {...register('currentPassword')}
-            />
-            {errors.currentPassword && (
-              <span className="text-body-sm text-error">{errors.currentPassword.message}</span>
-            )}
-          </div>
-
-          <div className="flex flex-col gap-1">
-            <label htmlFor="cp-new" className="text-label-lg text-on-surface">
-              {changePasswordContent.newLabel}
-            </label>
-            <PasswordInput
-              id="cp-new"
-              size="md"
-              autoComplete="new-password"
-              placeholder={changePasswordContent.placeholder}
-              {...register('newPassword')}
-            />
-            {errors.newPassword && <span className="text-body-sm text-error">{errors.newPassword.message}</span>}
-          </div>
-
-          <div className="flex flex-col gap-1">
-            <label htmlFor="cp-confirm" className="text-label-lg text-on-surface">
-              {changePasswordContent.confirmLabel}
-            </label>
-            <PasswordInput
-              id="cp-confirm"
-              size="md"
-              autoComplete="new-password"
-              placeholder={changePasswordContent.placeholder}
-              {...register('confirm')}
-            />
-            {errors.confirm && <span className="text-body-sm text-error">{errors.confirm.message}</span>}
-          </div>
-
-          <PasswordRules value={newPassword} />
-
-          <div className="mt-1 flex items-center justify-end gap-space-sm">
-            <button
-              type="button"
-              onClick={() => close(false)}
-              disabled={submitting}
-              className="h-11 rounded-xl bg-surface-container px-4 text-label-lg text-on-surface transition-colors hover:bg-surface-container-high disabled:opacity-60"
-            >
-              {changePasswordContent.cancel}
-            </button>
-            <button
-              type="submit"
-              disabled={submitting}
-              className="flex h-11 items-center justify-center gap-2 rounded-xl bg-primary px-5 text-label-lg text-on-primary shadow-sm transition-all hover:bg-primary-container disabled:cursor-not-allowed disabled:opacity-70"
-            >
-              <Icon
-                name={submitting ? 'progress_activity' : 'lock_reset'}
-                className={submitting ? 'animate-spin text-[18px]' : 'text-[18px]'}
-              />
-              {submitting ? changePasswordContent.submitting : changePasswordContent.submit}
-            </button>
-          </div>
-        </form>
-      </DialogContent>
-    </Dialog>
+/* Ô mật khẩu của portal kit với nút chữ Hiện / Ẩn (không dùng icon, cùng kiểu với rail). */
+function PasswordField({
+  id,
+  label,
+  autoComplete,
+  error,
+  field,
+}: {
+  id: string
+  label: string
+  autoComplete: string
+  error?: string
+  field: UseFormRegisterReturn
+}) {
+  const [shown, setShown] = useState(false)
+  return (
+    <Field label={label} htmlFor={id} error={error}>
+      <div className="flex gap-2">
+        <Input id={id} type={shown ? 'text' : 'password'} autoComplete={autoComplete} aria-invalid={error ? true : undefined} {...field} />
+        <Button variant="ghost" className="mx-0 shrink-0" aria-pressed={shown} aria-label={shown ? `Ẩn ${label.toLowerCase()}` : `Hiện ${label.toLowerCase()}`} onClick={() => setShown((v) => !v)}>
+          {shown ? 'Ẩn' : 'Hiện'}
+        </Button>
+      </div>
+    </Field>
   )
 }

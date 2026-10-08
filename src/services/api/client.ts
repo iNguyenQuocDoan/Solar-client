@@ -13,6 +13,10 @@ import type { AuthTokensResponse } from '@/types/res/authRes'
  *   lỗi thì ném ApiError.
  * - 401: gọi /auth/refresh theo kiểu single-flight (nhiều request cùng 401 chỉ refresh 1 lần,
  *   các request còn lại xếp hàng chờ rồi retry). Refresh hỏng → xoá phiên + bắn "session-expired".
+ *   Chỉ lỗi của chính lần refresh mới tính là hết phiên; request gửi lại mà lỗi (400, 409, 5xx…) thì
+ *   trả nguyên lỗi đó cho màn hình.
+ * - Backend thu hồi MỌI phiên khi một refresh token đã dùng bị gửi lại, nên refresh giữa các tab được
+ *   xếp hàng bằng Web Locks và luôn đọc refresh token mới nhất ngay trước khi gửi.
  */
 
 /** Sự kiện phát trên window khi phiên không còn cứu được. */
@@ -29,9 +33,14 @@ export const apiClient = axios.create({
   headers: { 'Content-Type': 'application/json' },
 })
 
-/** Đường dẫn không gắn token và không thử refresh khi 401. */
+/**
+ * Đường dẫn không gắn token và không thử refresh khi 401.
+ * /auth/logout chỉ cần refresh token trong body (dò 08/10/2026: trả 200 cả khi không có Bearer); để nó
+ * đi qua refresh-rồi-gửi-lại sẽ gửi lại đúng refresh token vừa bị đổi, tức là "dùng lại" token.
+ */
 const PUBLIC_PATHS = [
   '/auth/login',
+  '/auth/logout',
   '/auth/register',
   '/auth/refresh',
   '/auth/verify-email',
@@ -93,12 +102,29 @@ async function requestNewAccessToken(): Promise<string> {
   return tokens.accessToken
 }
 
+const REFRESH_LOCK = 'smart-solar.refresh'
+
+/*
+ * Xếp hàng refresh giữa các tab cùng trình duyệt (cùng chung refresh token trong localStorage): tab sau
+ * chờ tab trước đổi xong rồi mới đọc token, nên không bao giờ gửi một token đã bị đổi. Trình duyệt không có
+ * Web Locks thì chạy thẳng như cũ.
+ */
+function withRefreshLock<T>(run: () => Promise<T>): Promise<T> {
+  if (typeof navigator === 'undefined' || !navigator.locks) return run()
+  return navigator.locks.request(REFRESH_LOCK, run)
+}
+
 /** Single-flight: mọi lời gọi trong lúc đang refresh đều dùng chung 1 promise. */
 export function refreshAccessToken(): Promise<string> {
-  refreshInFlight ??= requestNewAccessToken().finally(() => {
+  refreshInFlight ??= withRefreshLock(requestNewAccessToken).finally(() => {
     refreshInFlight = null
   })
   return refreshInFlight
+}
+
+/** Chờ lần refresh đang chạy (nếu có) xong, bỏ qua kết quả; dùng trước khi đọc refresh token để đăng xuất. */
+export async function waitForRefresh() {
+  await refreshInFlight?.catch(() => undefined)
 }
 
 /* --------------------------------------------------------------- response */
@@ -139,17 +165,19 @@ apiClient.interceptors.response.use(
       status === 401 && config && !config._retried && !isPublicPath(config.url) && getRefreshToken() !== null
     if (canRetry) {
       config._retried = true
+      let token: string
       try {
-        const token = await refreshAccessToken()
-        const headers = AxiosHeaders.from(config.headers)
-        headers.set('Authorization', `Bearer ${token}`)
-        config.headers = headers
-        return await apiClient.request(config)
+        token = await refreshAccessToken()
       } catch {
         clearTokens()
         emitSessionExpired()
         throw toApiError(status, data)
       }
+      const headers = AxiosHeaders.from(config.headers)
+      headers.set('Authorization', `Bearer ${token}`)
+      config.headers = headers
+      // Lỗi của lần gửi lại đi qua chính interceptor này (đã _retried) và tới màn hình nguyên vẹn.
+      return apiClient.request(config)
     }
 
     throw toApiError(status, data)

@@ -54,14 +54,30 @@ export function surfaceTypeLabel(value: number | null | undefined) {
   return SURFACE_TYPES.find((t) => t.value === value)?.label ?? (value == null ? '—' : `Loại ${value}`)
 }
 
-/* Chỉ "Chờ nhận" cần chú ý nên mới có màu; các trạng thái còn lại là chữ thường. */
+/*
+  Màu theo việc còn phải làm (Badge): "Chờ nhận" cần người nhận nên tô nền cảnh báo; đã nhận / đang xem xét
+  là đang xử lý (chấm xanh dương); đã hẹn là đúng tiến độ (chấm xanh lá); xong hoặc huỷ thì chấm xám.
+*/
 const STATUS_META: Record<SurveyRequestStatus, { label: string; tone: Tone }> = {
   1: { label: 'Chờ nhận', tone: 'warn' },
-  2: { label: 'Đã nhận', tone: 'ok' },
-  3: { label: 'Đang xem xét', tone: 'ok' },
+  2: { label: 'Đã nhận', tone: 'info' },
+  3: { label: 'Đang xem xét', tone: 'info' },
   4: { label: 'Đã hẹn khảo sát', tone: 'ok' },
   5: { label: 'Hoàn tất', tone: 'neutral' },
   6: { label: 'Đã huỷ', tone: 'neutral' },
+}
+
+/**
+ * Có toạ độ dùng được không. (0, 0) nằm giữa vịnh Guinea: đó là giá trị mặc định khi khách bỏ trống,
+ * không phải vị trí thật (dữ liệu thật 08/10/2026 có một yêu cầu như vậy).
+ */
+export function hasCoordinates(latitude: number | null | undefined, longitude: number | null | undefined) {
+  return latitude != null && longitude != null && !(latitude === 0 && longitude === 0)
+}
+
+/** Đã nhận nhưng chưa hẹn ngày khảo sát: việc tiếp theo của sales là gọi khách. */
+export function needsScheduling(status: number | null | undefined) {
+  return status === 2 || status === 3
 }
 
 export function surveyStatusMeta(status: number | null | undefined): { label: string; tone: Tone } {

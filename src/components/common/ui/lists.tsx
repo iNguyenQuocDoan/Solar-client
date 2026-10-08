@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { cx } from "@/utils/cx";
 
 export type ActivityItem = {
-  time: string;
+  time: ReactNode;
   title: ReactNode;
   body?: ReactNode;
   by?: string;

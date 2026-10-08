@@ -11,7 +11,7 @@ import { ROUTES } from '@/routes/paths'
 import { useForgotPasswordMutation } from '@/features/auth/hooks/useAuthMutations'
 import { forgotContent } from '@/data/auth'
 
-const schema = z.object({ email: z.email('Email không hợp lệ') })
+const schema = z.object({ email: z.email({ error: (issue) => (issue.input ? 'Email không hợp lệ' : 'Vui lòng nhập email') }) })
 type ForgotValues = z.infer<typeof schema>
 
 /** /forgot-password – sub-card "Quên mật khẩu?" của auth_portal. */

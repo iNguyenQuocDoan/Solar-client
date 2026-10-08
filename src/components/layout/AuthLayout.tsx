@@ -20,7 +20,8 @@ import { authImages, authLayoutContent } from '@/data/auth'
  */
 export function AuthLayout() {
   const { pathname } = useLocation()
-  const image = pathname === ROUTES.REGISTER ? authImages.register : authImages.login
+  // Ảnh đăng nhập in sẵn chữ "Chào mừng trở lại": trang 403 dùng ảnh đăng ký (lời chào chung) cho khỏi lạc giọng.
+  const image = pathname === ROUTES.REGISTER || pathname === ROUTES.FORBIDDEN ? authImages.register : authImages.login
 
   return (
     <main className="min-h-svh w-full bg-surface font-vn lg:grid lg:h-svh lg:grid-cols-12">

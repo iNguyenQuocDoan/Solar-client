@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { Link, useLocation, useNavigate } from 'react-router'
+import { Link, Navigate, useLocation, useNavigate } from 'react-router'
 import { toast } from 'sonner'
 import { z } from 'zod'
 import { AuthCard, RequiredMark } from '@/features/auth/components/AuthCard'
@@ -16,7 +16,7 @@ import { cn } from '@/utils/cn'
 import { loginContent } from '@/data/auth'
 
 const schema = z.object({
-  email: z.email('Email không hợp lệ'),
+  email: z.email({ error: (issue) => (issue.input ? 'Email không hợp lệ' : 'Vui lòng nhập email') }),
   password: z.string().min(1, 'Vui lòng nhập mật khẩu'),
   remember: z.boolean(),
 })
@@ -27,9 +27,11 @@ type LoginValues = z.infer<typeof schema>
 export function LoginPage() {
   const navigate = useNavigate()
   const location = useLocation()
-  const { signIn, expireSession } = useAuth()
+  const { user, status, signIn, expireSession } = useAuth()
   const [formError, setFormError] = useState<string | null>(null)
   const [submitting, setSubmitting] = useState(false)
+  // Đang đăng nhập bằng form này: để chính doSignIn điều hướng (về trang `from`), đừng để chốt "đã đăng nhập" bên dưới chen vào.
+  const signingIn = useRef(false)
 
   const {
     register,
@@ -50,6 +52,7 @@ export function LoginPage() {
     if (submitting) return
     setSubmitting(true)
     setFormError(null)
+    signingIn.current = true
     try {
       const user = await signIn(email, password, remember)
       toast.success(loginContent.toastSuccess)
@@ -57,8 +60,10 @@ export function LoginPage() {
       // `from` có thể là trang của tài khoản vừa đăng xuất (vai trò khác) → chỉ dùng khi thuộc portal của vai trò này.
       const home = homePathForRole(user.role)
       const from = (location.state as { from?: string } | null)?.from
-      navigate(from?.startsWith(home) ? from : home, { replace: true })
+      const inPortal = from !== undefined && (from === home || from.startsWith(`${home}/`) || from.startsWith(`${home}?`))
+      navigate(inPortal ? from : home, { replace: true })
     } catch (error) {
+      signingIn.current = false
       setFormError(errorMessage(error, loginContent.errorMessage))
     } finally {
       setSubmitting(false)
@@ -66,6 +71,9 @@ export function LoginPage() {
   }
 
   const onSubmit = handleSubmit((values) => doSignIn(values.email, values.password, values.remember))
+
+  // Đã đăng nhập sẵn (mở /login từ landing, hay gõ tay) thì vào thẳng trang làm việc thay vì hiện form.
+  if (status === 'ready' && user && !signingIn.current) return <Navigate to={homePathForRole(user.role)} replace />
 
   return (
     <AuthCard>

@@ -65,9 +65,11 @@ export function EmptyState({
 }
 
 export function ErrorState({
+  title = "Không tải được trang này.",
   message,
   onRetry,
 }: {
+  title?: string;
   message?: string;
   onRetry?: () => void;
 }) {
@@ -77,7 +79,7 @@ export function ErrorState({
       className="border-l-2 border-danger pl-4"
     >
       <p className="text-meta font-medium text-danger">
-        Không tải được trang này.
+        {title}
       </p>
       {message && <p className="mt-1 text-meta text-fg-2">{message}</p>}
       {onRetry && (

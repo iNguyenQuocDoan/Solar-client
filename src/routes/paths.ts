@@ -1,7 +1,7 @@
 export const ROUTES = {
   /*
-    Portals built on src/components/common/ui, one per signed-in role
-    (customer, sales -> ops, technician -> field, manager -> manage). / is the public landing page.
+    Một portal cho mỗi vai trò, cùng shell portal kit: customer, sales -> ops, admin -> ADMIN,
+    technician -> TECH (field chuyển về TECH), manager -> manage. / là landing công khai.
   */
   customer: {
     home: '/customer',
@@ -24,6 +24,8 @@ export const ROUTES = {
     consultations: '/ops/consultations',
     customers: '/ops/customers',
     surveys: '/ops/surveys',
+    /** Tab "Của tôi" có đường dẫn riêng để mục menu đánh dấu đúng; đường tĩnh nên không đụng :id. */
+    surveysMine: '/ops/surveys/mine',
     survey: '/ops/surveys/:id',
     products: '/ops/products',
     product: '/ops/products/:id',
@@ -45,6 +47,8 @@ export const ROUTES = {
   },
   manage: {
     home: '/manage',
+    products: '/manage/products',
+    product: '/manage/products/:id',
     projects: '/manage/projects',
     project: '/manage/projects/:id',
     approvals: '/manage/approvals',
@@ -85,6 +89,9 @@ export const ROUTES = {
   },
   TECH: {
     DASHBOARD: '/tech',
+    /** Danh mục sản phẩm (GET /api/products): màn có dữ liệu thật duy nhất của kỹ thuật viên lúc này. */
+    PRODUCTS: '/tech/products',
+    PRODUCT: '/tech/products/:id',
     TASKS: '/tech/tasks',
     SURVEYS: '/tech/surveys',
     INSTALLATIONS: '/tech/installations',

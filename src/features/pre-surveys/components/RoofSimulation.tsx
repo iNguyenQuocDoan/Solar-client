@@ -1,4 +1,4 @@
-import { lazy, Suspense, useMemo, useState } from 'react'
+import { Component, lazy, Suspense, useMemo, useState, type ReactNode } from 'react'
 import { Button } from '@/components/common/ui/button'
 import { Field, Select } from '@/components/common/ui/field'
 import { Notice } from '@/components/common/ui/lists'
@@ -7,7 +7,7 @@ import { Facts } from '@/features/pre-surveys/components/Facts'
 import { directionLabel } from '@/features/pre-surveys/components/preSurveyDisplay'
 import { ROOF_ASPECT, computeRoofLayout } from '@/features/pre-surveys/components/roofLayout'
 import type { RoofView } from '@/features/pre-surveys/components/RoofScene'
-import { SOLAR_PANEL_TYPE, formatPower, isProductActive } from '@/features/products/components/productDisplay'
+import { SOLAR_PANEL_QUERY, formatPower, isProductActive } from '@/features/products/components/productDisplay'
 import { useProductsQuery } from '@/features/products/hooks/useProducts'
 import type { ProductResponse } from '@/types/res/adminProductsRes'
 
@@ -30,12 +30,28 @@ function canSimulate(p: ProductResponse) {
   )
 }
 
+/* three r186 chỉ tạo context WebGL2, nên máy chỉ có WebGL1 cũng coi như không vẽ được. */
 function supportsWebGL() {
   try {
-    const canvas = document.createElement('canvas')
-    return Boolean(canvas.getContext('webgl2') ?? canvas.getContext('webgl'))
+    return Boolean(document.createElement('canvas').getContext('webgl2'))
   } catch {
     return false
+  }
+}
+
+const NO_3D = 'Không vẽ được mô phỏng 3D trên trình duyệt này. Số liệu bên dưới vẫn đúng.'
+
+/*
+  Lỗi khi tạo renderer hoặc tải chunk three.js (sau khi deploy bản mới) chỉ được thay khung 3D bằng thông báo,
+  không được lan lên error boundary gốc: ở wizard, mất cả trang là mất luôn số liệu khách đang nhập dở.
+*/
+class SceneBoundary extends Component<{ children: ReactNode }, { failed: boolean }> {
+  state = { failed: false }
+  static getDerivedStateFromError() {
+    return { failed: true }
+  }
+  render() {
+    return this.state.failed ? <Notice tone="warn">{NO_3D}</Notice> : this.props.children
   }
 }
 
@@ -61,20 +77,32 @@ export function RoofSimulation({
   hasObstruction?: boolean | null
 }) {
   // Lọc loại ở backend (không phân biệt hoa thường); 100 là PageSize tối đa backend nhận.
-  const catalog = useProductsQuery({ ProductType: SOLAR_PANEL_TYPE, PageSize: 100, SortBy: 'ratedPowerW', SortDirection: 'desc' })
+  const catalog = useProductsQuery(SOLAR_PANEL_QUERY)
   const panels = useMemo(() => (catalog.data?.items ?? []).filter(canSimulate), [catalog.data])
   const [panelId, setPanelId] = useState('')
   const [view, setView] = useState<RoofView>('angle')
   const [webgl] = useState(supportsWebGL)
 
   const panel = panels.find((p) => p.id === panelId) ?? panels[0] ?? null
-  const layout = computeRoofLayout(
-    { totalAreaM2: totalAreaM2 ?? Number.NaN, usableAreaM2: usableAreaM2 ?? Number.NaN, tiltDegree: tiltDegree ?? 0 },
-    panel && { widthMm: panel.widthMm!, heightMm: panel.heightMm!, ratedPowerW: panel.ratedPowerW! },
+  // Nhớ theo số đầu vào: layout mới mỗi lần render sẽ dựng lại texture tấm pin và khối nhà trong RoofScene.
+  const panelW = panel?.widthMm
+  const panelH = panel?.heightMm
+  const panelP = panel?.ratedPowerW
+  const layout = useMemo(
+    () =>
+      computeRoofLayout(
+        { totalAreaM2: totalAreaM2 ?? Number.NaN, usableAreaM2: usableAreaM2 ?? Number.NaN, tiltDegree: tiltDegree ?? 0 },
+        panelW && panelH && panelP ? { widthMm: panelW, heightMm: panelH, ratedPowerW: panelP } : null,
+      ),
+    [totalAreaM2, usableAreaM2, tiltDegree, panelW, panelH, panelP],
   )
 
   if (!layout) {
-    return (
+    // Nói đúng lý do không dựng được mái, thay vì vẽ một mái sai trông như đúng.
+    const areaOk = (totalAreaM2 ?? 0) > 0 && (usableAreaM2 ?? 0) > 0 && usableAreaM2! <= totalAreaM2!
+    return areaOk ? (
+      <EmptyState title="Độ dốc mái phải từ 0 đến 90 độ" description="Sửa ô độ dốc mái ở trên để xem mô phỏng." />
+    ) : (
       <EmptyState
         title="Nhập diện tích để xem mô phỏng"
         description="Mô phỏng dựng theo tổng diện tích và diện tích dùng được; diện tích dùng được không lớn hơn tổng."
@@ -84,20 +112,25 @@ export function RoofSimulation({
 
   const facing = azimuthDegree ?? 180
   const roofSize = `${num.format(layout.roof.length)} × ${num.format(layout.roof.slope)} m`
+  const arrangement = `${num.format(layout.columns)} cột × ${num.format(layout.rows)} hàng, tấm đặt ${layout.orientation === 'landscape' ? 'nằm' : 'đứng'}`
+  // Phần diện tích dùng được mà mặt tấm phủ; phần còn lại là khe giữa các tấm và mép thừa.
+  const coverage = usableAreaM2 ? (layout.count * layout.panel.along * layout.panel.down * 100) / usableAreaM2 : 0
   const summary = panel
-    ? `Mái ${roofSize}, quay về hướng ${directionLabel(facing)}, xếp được ${layout.count} tấm, tổng ${num.format(layout.kWp)} kWp.`
+    ? `Mái ${roofSize}, quay về hướng ${directionLabel(facing)}, lắp được ${layout.count} tấm (${arrangement}), tổng ${num.format(layout.kWp)} kWp.`
     : `Mái ${roofSize}, quay về hướng ${directionLabel(facing)}. Chưa có tấm pin để xếp.`
 
   return (
     <div className="space-y-4">
       {webgl ? (
         <div role="img" aria-label={`Mô phỏng 3D. ${summary}`} className="aspect-[4/3] w-full overflow-hidden rounded-container border border-line bg-surface-2">
-          <Suspense fallback={<Skeleton className="size-full rounded-none" />}>
-            <RoofScene layout={layout} azimuthDegree={facing} view={view} />
-          </Suspense>
+          <SceneBoundary>
+            <Suspense fallback={<Skeleton className="size-full rounded-none" />}>
+              <RoofScene layout={layout} azimuthDegree={facing} view={view} />
+            </Suspense>
+          </SceneBoundary>
         </div>
       ) : (
-        <Notice tone="warn">Trình duyệt này không hỗ trợ WebGL nên không vẽ được mô phỏng 3D. Số liệu bên dưới vẫn đúng.</Notice>
+        <Notice tone="warn">{NO_3D}</Notice>
       )}
 
       {webgl && (
@@ -107,7 +140,7 @@ export function RoofSimulation({
               {v.label}
             </Button>
           ))}
-          <span className="text-meta text-fg-3">Kéo để xoay, cuộn để phóng to.</span>
+          <span className="text-meta text-fg-3">Kéo để xoay; phóng to bằng Ctrl + lăn chuột hoặc chụm hai ngón.</span>
         </div>
       )}
 
@@ -131,9 +164,12 @@ export function RoofSimulation({
 
       <Facts
         items={[
-          { k: 'Số tấm xếp được', v: panel ? num.format(layout.count) : '—' },
+          { k: 'Số tấm lắp được', v: panel ? num.format(layout.count) : '—' },
           { k: 'Tổng công suất', v: panel ? `${num.format(layout.kWp)} kWp` : '—' },
+          { k: 'Cách xếp', v: panel ? arrangement : '—' },
+          { k: 'Tấm phủ diện tích dùng được', v: panel ? `${num.format(coverage)}%` : '—' },
           { k: 'Mái giả định', v: roofSize },
+          { k: 'Độ dốc', v: tiltDegree == null ? 'Chưa nhập, tạm vẽ mái bằng' : `${num.format(tiltDegree)}°` },
           { k: 'Hướng mái', v: azimuthDegree == null ? 'Chưa chọn, tạm vẽ hướng Nam' : directionLabel(azimuthDegree) },
         ]}
       />

@@ -1,5 +1,5 @@
 import { Canvas, useThree } from '@react-three/fiber'
-import { useEffect, useLayoutEffect, useMemo, useRef } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { PANEL_GAP_M, type RoofLayout } from '@/features/pre-surveys/components/roofLayout'
@@ -15,13 +15,13 @@ export type RoofView = 'angle' | 'top' | 'front'
 
 /** Chiều cao tường phía thấp, chỉ để minh hoạ. */
 const WALL_HEIGHT = 4
-/** Quá số này thì vẽ cả vùng tấm thành một mặt phẳng, tránh treo máy với tấm quá nhỏ. */
-const MAX_INSTANCES = 5000
 const COLORS = {
   wall: '#d5d9cf',
   roof: '#9fa79c',
   usable: '#0d5c3a',
   panel: '#1f2b40',
+  frame: '#c4cad2',
+  cell: '#33435f',
   ground: '#e3e7de',
   letter: '#2f3a2c',
 }
@@ -54,46 +54,80 @@ function Building({ layout }: { layout: RoofLayout }) {
   )
 }
 
-function Panels({ layout }: { layout: RoofLayout }) {
-  const ref = useRef<THREE.InstancedMesh>(null)
-  const { columns, rows, panel, count } = layout
-  const spanX = columns * panel.along + Math.max(columns - 1, 0) * PANEL_GAP_M
-  const spanZ = rows * panel.down + Math.max(rows - 1, 0) * PANEL_GAP_M
-  const instanced = count > 0 && count <= MAX_INSTANCES
+/** Khung nhôm của tấm pin thật, khoảng 35 mm; vẽ sáng để mắt thấy ranh giới giữa các tấm. */
+const PANEL_FRAME_M = 0.035
+/** Tấm nhỏ bất thường (vài cm) thì khung không được lấn hết mặt kính: tối đa 4% cạnh ngắn của tấm. */
+const FRAME_MAX_SHARE = 0.04
 
-  useLayoutEffect(() => {
-    const mesh = ref.current
-    if (!mesh || !instanced) return
-    const matrix = new THREE.Matrix4()
-    let i = 0
-    for (let r = 0; r < rows; r++) {
-      for (let c = 0; c < columns; c++) {
-        matrix.makeTranslation(
-          -spanX / 2 + panel.along / 2 + c * (panel.along + PANEL_GAP_M),
-          0.17,
-          -spanZ / 2 + panel.down / 2 + r * (panel.down + PANEL_GAP_M),
-        )
-        mesh.setMatrixAt(i++, matrix)
-      }
+/*
+  Một ô của lưới = một tấm + một khe 2 cm. Vẽ ô đó lên canvas (khe màu mái, khung nhôm sáng, mặt kính tối,
+  vân cell) rồi lặp đúng cột × hàng lần trên một mặt phẳng: thấy rõ từng tấm và khe dù có hàng chục nghìn
+  tấm, mà vẫn chỉ một mesh. Nét khe/khung tối thiểu 1px để không biến mất khi tấm rất nhỏ.
+*/
+function panelGridTexture(layout: RoofLayout, maxAnisotropy: number) {
+  const { along, down } = layout.panel
+  const pitchX = along + PANEL_GAP_M
+  const pitchZ = down + PANEL_GAP_M
+  const LONG = 256
+  const w = pitchX >= pitchZ ? LONG : Math.max(16, Math.round((LONG * pitchX) / pitchZ))
+  const h = pitchZ >= pitchX ? LONG : Math.max(16, Math.round((LONG * pitchZ) / pitchX))
+  const px = (meters: number, pitch: number, size: number) => Math.max(1, Math.round((meters / pitch) * size))
+  const gapX = px(PANEL_GAP_M / 2, pitchX, w)
+  const gapY = px(PANEL_GAP_M / 2, pitchZ, h)
+  const frame = Math.min(PANEL_FRAME_M, FRAME_MAX_SHARE * Math.min(along, down))
+  const glassX = gapX + px(frame, pitchX, w)
+  const glassY = gapY + px(frame, pitchZ, h)
+
+  const canvas = document.createElement('canvas')
+  canvas.width = w
+  canvas.height = h
+  const ctx = canvas.getContext('2d')!
+  ctx.fillStyle = COLORS.roof
+  ctx.fillRect(0, 0, w, h)
+  ctx.fillStyle = COLORS.frame
+  ctx.fillRect(gapX, gapY, w - 2 * gapX, h - 2 * gapY)
+  const gw = w - 2 * glassX
+  const gh = h - 2 * glassY
+  if (gw > 0 && gh > 0) {
+    ctx.fillStyle = COLORS.panel
+    ctx.fillRect(glassX, glassY, gw, gh)
+    // Vân cell 6 × 10 theo cạnh dài của tấm, như tấm 60 cell phổ biến.
+    const [cellsX, cellsY] = along <= down ? [6, 10] : [10, 6]
+    ctx.strokeStyle = COLORS.cell
+    ctx.lineWidth = 1
+    ctx.beginPath()
+    for (let i = 1; i < cellsX; i++) {
+      const x = Math.round(glassX + (gw * i) / cellsX) + 0.5
+      ctx.moveTo(x, glassY)
+      ctx.lineTo(x, glassY + gh)
     }
-    mesh.instanceMatrix.needsUpdate = true
-  }, [instanced, rows, columns, panel, spanX, spanZ])
-
-  if (count === 0) return null
-  if (!instanced) {
-    return (
-      <mesh position={[0, 0.17, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-        <planeGeometry args={[spanX, spanZ]} />
-        <meshStandardMaterial color={COLORS.panel} />
-      </mesh>
-    )
+    for (let j = 1; j < cellsY; j++) {
+      const y = Math.round(glassY + (gh * j) / cellsY) + 0.5
+      ctx.moveTo(glassX, y)
+      ctx.lineTo(glassX + gw, y)
+    }
+    ctx.stroke()
   }
+
+  const texture = new THREE.CanvasTexture(canvas)
+  texture.colorSpace = THREE.SRGBColorSpace
+  texture.wrapS = THREE.RepeatWrapping
+  texture.wrapT = THREE.RepeatWrapping
+  texture.repeat.set(layout.columns, layout.rows)
+  texture.anisotropy = maxAnisotropy
+  return texture
+}
+
+function Panels({ layout }: { layout: RoofLayout }) {
+  const maxAnisotropy = useThree((s) => s.gl.capabilities.getMaxAnisotropy())
+  const texture = useMemo(() => (layout.count > 0 ? panelGridTexture(layout, maxAnisotropy) : null), [layout, maxAnisotropy])
+  useEffect(() => () => texture?.dispose(), [texture])
+  if (!texture) return null
   return (
-    // key theo số tấm: InstancedMesh cố định số bản sao lúc tạo.
-    <instancedMesh key={count} ref={ref} args={[undefined, undefined, count]}>
-      <boxGeometry args={[panel.along, 0.04, panel.down]} />
-      <meshStandardMaterial color={COLORS.panel} metalness={0.3} roughness={0.45} />
-    </instancedMesh>
+    <mesh position={[0, 0.2, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+      <planeGeometry args={[layout.columns * (layout.panel.along + PANEL_GAP_M), layout.rows * (layout.panel.down + PANEL_GAP_M)]} />
+      <meshStandardMaterial map={texture} metalness={0.2} roughness={0.55} />
+    </mesh>
   )
 }
 
@@ -156,7 +190,7 @@ function Ground({ radius, letterRadius }: { radius: number; letterRadius: number
 }
 
 /* Điều khiển xoay/phóng to của three.js (không dùng drei) + đặt camera theo góc nhìn đã chọn. */
-function Rig({ view, distance, facing }: { view: RoofView; distance: number; facing: THREE.Vector3 }) {
+function Rig({ view, distance, facing, targetY }: { view: RoofView; distance: number; facing: THREE.Vector3; targetY: number }) {
   const camera = useThree((s) => s.camera)
   const dom = useThree((s) => s.gl.domElement)
   const invalidate = useThree((s) => s.invalidate)
@@ -166,12 +200,27 @@ function Rig({ view, distance, facing }: { view: RoofView; distance: number; fac
   useEffect(() => {
     const controls = new OrbitControls(camera, dom)
     controls.maxPolarAngle = Math.PI / 2 - 0.05
-    controls.minDistance = distance * 0.25
+    // Cho tiến sát tới 2 m để soi từng tấm và khe 2 cm, kể cả với tấm rất nhỏ.
+    controls.minDistance = 2
     controls.maxDistance = distance * 3
+    /*
+      Khung 3D cao gần bằng màn hình nên không được nuốt thao tác cuộn trang:
+      - chuột: lăn thường thì cuộn trang, Ctrl/Cmd + lăn (cả chụm hai ngón trên touchpad, vốn gửi ctrlKey) mới phóng to;
+      - cảm ứng: vuốt dọc để trình duyệt cuộn trang (touch-action: pan-y), kéo ngang để xoay, hai ngón để phóng to.
+      Listener capture chạy trước listener wheel của OrbitControls trên cùng phần tử.
+    */
+    controls.enableZoom = false
+    const onWheel = (e: WheelEvent) => {
+      controls.enableZoom = e.ctrlKey || e.metaKey
+    }
+    dom.addEventListener('wheel', onWheel, { capture: true, passive: true })
+    // Qua controls.domElement (biến của effect), không gán thẳng vào giá trị lấy từ useThree.
+    if (controls.domElement) controls.domElement.style.touchAction = 'pan-y'
     const onChange = () => invalidate()
     controls.addEventListener('change', onChange)
     controlsRef.current = controls
     return () => {
+      dom.removeEventListener('wheel', onWheel, { capture: true })
       controls.removeEventListener('change', onChange)
       controls.dispose()
       controlsRef.current = null
@@ -184,10 +233,12 @@ function Rig({ view, distance, facing }: { view: RoofView; distance: number; fac
     if (view === 'top') camera.position.set(0, distance * 1.5, 0.01)
     else if (view === 'front') camera.position.copy(facing.clone().multiplyScalar(distance * 1.1).setY(distance * 0.35))
     else camera.position.copy(facing.clone().multiplyScalar(distance * 0.8).add(new THREE.Vector3(-facing.z, 0, facing.x).multiplyScalar(distance * 0.55)).setY(distance * 0.75))
-    controls.target.set(0, WALL_HEIGHT / 2, 0)
+    // Xoay quanh tâm mặt mái (không phải giữa thân nhà): phóng to hết cỡ thì camera tiến về phía tấm pin
+    // thay vì chui vào trong khối nhà.
+    controls.target.set(0, targetY, 0)
     controls.update()
     invalidate()
-  }, [view, distance, facing, camera, invalidate])
+  }, [view, distance, facing, targetY, camera, invalidate])
 
   return null
 }
@@ -208,7 +259,7 @@ export function RoofScene({ layout, azimuthDegree, view }: { layout: RoofLayout;
         <Roof layout={layout} />
       </group>
       <Ground radius={distance * 0.9} letterRadius={Math.max(layout.roof.length, layout.roof.slope) * 0.62 + 3} />
-      <Rig view={view} distance={distance} facing={facing} />
+      <Rig view={view} distance={distance} facing={facing} targetY={WALL_HEIGHT + rise(layout) / 2} />
     </Canvas>
   )
 }

@@ -1,6 +1,8 @@
+import { Count } from '@/components/common/ui/badge'
 import { cx } from '@/utils/cx'
 
-export type Chip<T extends string> = { value: T; label: string; count?: number }
+/** `attention`: số đếm là việc đang chờ người xem, tô màu nhấn (xem Count). */
+export type Chip<T extends string> = { value: T; label: string; count?: number; attention?: boolean }
 
 /* Filters are tabs on a rule, not pills. They scroll sideways instead of wrapping, so the rule stays one line.
    The rule is an inset hairline (not a border) so the active tab's 2px line can sit exactly on it inside the scroller. */
@@ -29,12 +31,12 @@ export function FilterChips<T extends string>({
             aria-selected={active}
             onClick={() => onChange(c.value)}
             className={cx(
-              'inline-flex h-11 shrink-0 items-baseline gap-2 border-b-2 text-body whitespace-nowrap focus-visible:outline-offset-[-2px] lg:h-10',
+              'inline-flex h-11 shrink-0 items-center gap-2 border-b-2 text-body whitespace-nowrap focus-visible:outline-offset-[-2px] lg:h-10',
               active ? 'border-fg font-semibold text-fg' : 'border-transparent text-fg-2 hover:text-fg',
             )}
           >
             {c.label}
-            {c.count !== undefined && <span className="tnum text-meta text-fg-3">{c.count}</span>}
+            {c.count !== undefined && <Count value={c.count} attention={c.attention && c.count > 0} />}
           </button>
         )
       })}

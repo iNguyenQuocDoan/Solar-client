@@ -6,11 +6,14 @@ import { ActivityList } from '@/components/common/ui/lists'
 import { PageHeader } from '@/components/common/ui/page-header'
 import { Panel, PanelBody, PanelHeader } from '@/components/common/ui/panel'
 import { QueryBoundary } from '@/components/common/ui/query-boundary'
+import { usePageCrumb } from '@/components/layout/page-crumb'
 import { Stat, StatRow } from '@/components/common/ui/stat'
 import {
   directionLabel,
   formatAddress,
   formatDateTime,
+  hasCoordinates,
+  needsScheduling,
   shortCode,
   surfaceTypeLabel,
   surveyStatusMeta,
@@ -18,7 +21,6 @@ import {
 import { Facts } from '@/features/pre-surveys/components/Facts'
 import { RoofSimulation } from '@/features/pre-surveys/components/RoofSimulation'
 import { useSurveyRequestQuery } from '@/features/pre-surveys/hooks/useSurveyRequests'
-import { ROUTES } from '@/routes/paths'
 import type { SurveyRequestDetail } from '@/types/res/surveyRequestsRes'
 
 const link = 'text-accent-fg hover:underline'
@@ -26,7 +28,7 @@ const num = new Intl.NumberFormat('vi-VN', { maximumFractionDigits: 1 })
 
 /** Có toạ độ thì ghim đúng điểm, không thì tìm theo địa chỉ. */
 function mapUrl(r: SurveyRequestDetail) {
-  if (r.latitude != null && r.longitude != null) return `https://www.google.com/maps?q=${r.latitude},${r.longitude}`
+  if (hasCoordinates(r.latitude, r.longitude)) return `https://www.google.com/maps?q=${r.latitude},${r.longitude}`
   const address = formatAddress(r)
   return address === '—' ? null : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`
 }
@@ -39,19 +41,21 @@ function mapUrl(r: SurveyRequestDetail) {
 export function OpsSurveyRequestPage() {
   const { id } = useParams()
   const query = useSurveyRequestQuery(id)
+  usePageCrumb(query.data ? query.data.propertyName || 'Công trình chưa đặt tên' : null)
 
   return (
     <QueryBoundary query={query}>
       {(r) => {
         const status = surveyStatusMeta(r.status)
         const map = mapUrl(r)
+        const unscheduled = !r.scheduledAt && needsScheduling(r.status)
         return (
           <>
             <PageHeader
-              back={{ to: ROUTES.ops.surveys, label: 'Yêu cầu khảo sát' }}
               meta={
                 <>
                   <Badge tone={status.tone}>{status.label}</Badge>
+                  {unscheduled && <Badge tone="warn">Chưa hẹn ngày khảo sát</Badge>}
                   <span className="tnum">Mã {shortCode(r.surveyRequestId)}</span>
                 </>
               }
@@ -98,7 +102,7 @@ export function OpsSurveyRequestPage() {
                         { k: 'Vật cản', v: r.hasObstruction == null ? '—' : r.hasObstruction ? 'Có' : 'Không' },
                         { k: 'Bề mặt', v: surfaceTypeLabel(r.installationSurfaceType) },
                         { k: 'Vật liệu', v: r.surfaceMaterial || '—' },
-                        ...(r.latitude != null && r.longitude != null
+                        ...(hasCoordinates(r.latitude, r.longitude)
                           ? [
                               {
                                 k: 'Toạ độ',
@@ -170,7 +174,7 @@ export function OpsSurveyRequestPage() {
                         { time: formatDateTime(r.submittedAt), title: 'Khách gửi yêu cầu' },
                         ...(r.assignedAt ? [{ time: formatDateTime(r.assignedAt), title: 'Bạn nhận yêu cầu' }] : []),
                         {
-                          time: r.scheduledAt ? formatDateTime(r.scheduledAt) : 'Chưa hẹn',
+                          time: r.scheduledAt ? formatDateTime(r.scheduledAt) : unscheduled ? <Badge tone="warn">Chưa hẹn</Badge> : '—',
                           title: 'Khảo sát tại công trình',
                           body: r.salesNote ?? undefined,
                         },
