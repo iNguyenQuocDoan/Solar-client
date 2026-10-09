@@ -52,6 +52,11 @@ Rút ra từ 4 lượt audit giao diện; áp cho CẢ HAI bộ component.
      `danger-fill` + `on-danger`; chữ đỏ dùng `danger`.
    - `warn` (vàng): lưu ý không đòi làm ngay (dữ liệu chưa làm mới được, không vẽ được 3D, sản phẩm đã ngừng bán).
    - `ok` đang hoạt động / đúng tiến độ; `info` đang xử lý, thông tin cần đọc; `neutral` đã xong / không hoạt động.
+   - Màu vật thể / dữ liệu (09/10/2026): `pv-glass` + `pv-frame` vẽ tấm pin trên mặt bằng 2D (màu vật liệu, không mang nghĩa
+     trạng thái; 3D dùng hex cùng tông vì three.js không đọc token); `chart-1` là cột biểu đồ một chuỗi (đo bằng validator của
+     skill dataviz ≥ 3:1 trên canvas ở cả hai chế độ). Chữ trên biểu đồ vẫn dùng token chữ (`fg-2`, `fg-3`), không dùng màu cột.
+   - `scrim`: lớp phủ sau hộp thoại / drawer / hộp hết phiên, luôn làm tối trang (bg-fg/40 cũ làm SÁNG trang ở chế độ tối vì `fg`
+     gần trắng – kiểm thử 09/10/2026).
    - Bề mặt: `rail` (vùng điều hướng ngả xanh nhạt), `surface-2` (cột phụ `PanelAside`, khối quy tắc), lớp phủ
      `hover` / `pressed` (tính từ màu chữ, đúng trên mọi nền). Mọi cặp chữ/nền đạt ≥ 4,5:1 ở cả hai chế độ, kể cả chữ
      trên lớp phủ rê chuột (đo bằng script, 08/10/2026).
@@ -165,7 +170,7 @@ src/
     req/                       # request DTO theo tag swagger: authReq.ts, …
     res/                       # response DTO: apiRes.ts (ApiResponse<T>, ApiErrorBody), authRes.ts, …
   config/                      # portals.ts (menu của mọi portal), roles.ts, demoAccounts.ts
-  hooks/                       # useMockQuery, useTheme
+  hooks/                       # useMockQuery, useTheme, useElementWidth (bề rộng khung cho SVG vẽ bằng pixel)
   utils/                       # cn, cx, format, img, jwt
 public/placeholders/           # thay cho ảnh lh3.googleusercontent.com
 ```
@@ -179,9 +184,10 @@ Quy tắc đặt file (tái cấu trúc 29/09/2026):
   Một trách nhiệm chỉ ở một nơi.
 - DTO nằm ở `src/types/`: request trong `types/req/<nghiệp vụ>Req.ts`, response trong
   `types/res/<nghiệp vụ>Res.ts`. Các file này sinh từ swagger (không tự đoán field, không sửa tay);
-  service và hook import kiểu từ đây. Ngoại lệ: swagger của tag Customers, PreSurveys, SurveyRequests chỉ khai
-  "200 OK" nên `customersRes.ts`, `preSurveysRes.ts`, `surveyRequestsRes.ts` viết tay theo contract backend
-  (không có header tự sinh nên `gen:api` không xoá); backend khai response thì `gen:api` ghi đè.
+  service và hook import kiểu từ đây. Ngoại lệ: swagger của tag Customers, PreSurveys, SurveyRequests, PreSurveySurface,
+  Simulations chỉ khai "200 OK" nên `customersRes.ts`, `preSurveysRes.ts`, `surveyRequestsRes.ts`, `preSurveySurfaceRes.ts`,
+  `simulationsRes.ts` viết tay theo contract backend (đối chiếu response thật 09/10/2026; không có header tự sinh nên
+  `gen:api` không xoá); backend khai response thì `gen:api` ghi đè.
 - Nghiệp vụ chưa có endpoint đọc dữ liệu từ `data/*.ts` và bị ẩn khỏi menu/route (mục dưới). Khi backend có
   endpoint: thêm `types/req|res/<nghiệp vụ>*.ts`, rồi `services/` + `hooks/` vào feature đó, bỏ file trong `data/`,
   rồi mở lại route + mục menu.
@@ -191,16 +197,40 @@ Quy tắc đặt file (tái cấu trúc 29/09/2026):
 Menu và route chỉ có màn đổ dữ liệu thật từ backend; màn mock giữ code trong `pages/<portal>/` nhưng không có route,
 đường dẫn cũ trong portal rơi vào route `*` và chuyển về trang chủ portal. Đang hiện:
 
-- `/customer` → `/customer/assessment`: đánh giá sơ bộ (hồ sơ → địa điểm → nháp → gửi), `features/pre-surveys`.
-- `/ops` → `/ops/surveys` + `/ops/surveys/:id`: yêu cầu khảo sát chờ nhận / của tôi / chi tiết.
+- `/customer` → `/customer/assessment`: đánh giá sơ bộ 5 bước (hồ sơ → địa điểm → mặt lắp → mô phỏng → xem lại và gửi),
+  `features/pre-surveys`.
+- `/ops` → `/ops/surveys` + `/ops/surveys/:id`: yêu cầu khảo sát chờ nhận / của tôi / chi tiết (kèm mô phỏng khách đã chọn).
 - `/customer/products(/:id)`, `/ops/products(/:id)`: catalog sản phẩm (GET /api/products) bản portal kit, `pages/catalog-page.tsx`.
 
-Mô phỏng 3D bố trí tấm pin (`features/pre-surveys/components/RoofSimulation.tsx`) ở bước số liệu + xem lại của
-wizard và trang chi tiết yêu cầu của sales. Tính toán ở `roofLayout.ts` (hàm thuần; mái giả định một mặt dốc,
-hình chữ nhật 3:2 vì backend chỉ có diện tích), tấm pin lấy từ catalog `ProductType=SOLAR_PANEL` (cần đủ
-`ratedPowerW`, `widthMm`, `heightMm`). Phần vẽ `RoofScene.tsx` dùng `three` + `@react-three/fiber` (OrbitControls của
-three, không dùng drei), nạp bằng `React.lazy` để three.js chỉ tải khi mở màn có mô phỏng. Không lưu được thiết kế:
-backend chưa có API.
+**Mặt lắp + mô phỏng do backend tính** (BE nhánh `feature/presurvey-flow`, commit 833ff3c, nối 09/10/2026; tài liệu tích hợp
+của BE: `Solar-Client-dnl/fe.md`). Người dùng chốt 09/10/2026: số liệu khai tự tính từ mặt lắp, bỏ mô phỏng FE giả định 3:2
+(`roofLayout.ts`, `RoofScene.tsx`, `RoofSimulation.tsx` đã xoá), cho gửi khi chưa chạy mô phỏng (chỉ nhắc), editor 2D lấy ô
+nhập làm nguồn chính + kéo thả vật cản.
+- Bước mặt lắp (`SurfaceEditor.tsx`, form + luật kiểm tra ở `surfaceForm.ts` bám `UpdatePreSurveySurfaceCommandValidator`):
+  rộng × dài theo dốc (mét, đo trên mặt nghiêng), độ dốc, hướng (la bàn `CompassPicker`), tối đa 50 vật cản chữ nhật. Quy ước
+  của BE: gốc (0, 0) góc trên-trái = mép cao, X theo chiều rộng, Y xuôi dốc, (xM, yM) là góc trên-trái của vật cản. Hình
+  `SurfacePlan.tsx` (SVG vẽ bằng pixel qua `hooks/useElementWidth.ts`) dùng chung cho editor (chọn, kéo thả, phím mũi tên
+  0,1 m / Shift 1 m) và kết quả (tấm pin, vùng lùi mép, vùng cách vật cản). Tổng diện tích = rộng × dài, dùng được = trừ diện
+  tích hợp của vật cản, "có vật cản" = có ≥ 1 vật cản; khách tick "Tự khai diện tích" để sửa hai ô diện tích.
+- Lưu mặt lắp (`saveSurface` ở `assessment-page.tsx`): lần đầu POST /pre-surveys (số liệu khai + độ dốc + hướng) rồi PUT
+  .../surface; các lần sau chỉ ghi phần đổi (`surfaceDiffers`, `declaredDiffers`). **Độ dốc / hướng của mặt lắp dùng chung cột
+  với form cũ** (PUT /pre-surveys/{id} ghi đè, đổi giá trị là mọi mô phỏng thành "cũ"), nên PUT surface trước rồi mới PUT số
+  liệu khai với đúng độ dốc / hướng đó. `expectedRevision` là revision của bản form đang sửa; 409 PRE_SURVEY_CONCURRENTLY_MODIFIED
+  → khách chọn "Tải bản mới nhất" hoặc "Lưu đè", không tự ghi đè.
+- Backend không có API liệt kê bản nháp của khách: id bản nháp + địa điểm nhớ ở `assessmentDraft.ts` (localStorage theo tài
+  khoản); mở lại trang thì GET .../surface rồi làm tiếp ở bước mặt lắp / mô phỏng; 403/404/đã gửi thì bỏ nháp.
+- Bước mô phỏng (`SimulationWorkspace.tsx`, form ở `simulationForm.ts` bám `CreateSimulationCommandValidator`): tấm pin
+  `SOLAR_PANEL` đang bán đủ công suất + kích thước, Áp mái (FLUSH) / Khung nghiêng (RACK: góc + hướng riêng), khoảng cách mm
+  (để trống = mặc định của BE), tổn hao %. POST gửi `expectedGeometryVersion`; 201 tạo mới / 200 dùng lại; giới hạn 10 lần /
+  phút / người (429 + Retry-After, mã lỗi `AUTH_TOO_MANY_REQUESTS`) → nút đếm ngược. BE tự chọn lần tạo / dùng lại gần nhất làm
+  "Mô phỏng chính" (không có API chọn lại); `isStale` = tính theo mặt lắp cũ.
+- Kết quả (`SimulationResult.tsx`, dùng chung khách hàng / sales, nạp qua `SimulationViewer.tsx`): số tấm, kWp, kWh/năm
+  (null là "chưa có dữ liệu", không bao giờ 0), mặt bằng 2D / 3D, `EnergyChart.tsx` (cột một chuỗi theo skill dataviz, tooltip +
+  phím mũi tên + bảng số liệu), cảnh báo kỹ thuật và giới hạn dịch theo mã ở `simulationDisplay.ts` (mã lạ in câu gốc của BE).
+  3D `SimulationScene.tsx` dựng thẳng từ toạ độ BE (E/N/U, trục Z lên, `camera.up = (0,0,1)`, tấm pin là một `InstancedMesh`
+  hộp đơn vị mặt trước ở z = 0), `three` + `@react-three/fiber` nạp bằng `React.lazy`. Lịch sử các lần chạy: `SimulationHistory.tsx`.
+- Sales (`pages/ops/survey-request-page.tsx`): `selectedSimulation` của yêu cầu + các lần chạy khác, chỉ đọc (BE trả 403 nếu
+  sales POST); yêu cầu gửi khi chưa có mô phỏng thì hiện "Khách chưa chạy mô phỏng".
 - `/admin` → `/admin/products`: quản lý sản phẩm (`pages/admin/products-page.tsx`, bộ portal kit; tấm pin thiếu
   công suất/kích thước được tô cảnh báo vì mô phỏng không dùng được). Backend ẩn sản phẩm INACTIVE khỏi GET danh sách
   và GET chi tiết với mọi vai trò (dò 08/10/2026), nên: tạo mới luôn ACTIVE; "Ngừng bán" hỏi xác nhận, có "Hoàn tác";
@@ -386,6 +416,8 @@ Auth gọi backend .NET thật, KHÔNG còn mock. Nguồn sự thật là `docs/
   Proxy `/api` trỏ `API_PROXY_TARGET` (mặc định `http://localhost:8080`). Máy có dịch vụ khác giữ 8080 (vd. PEMHTTPD đi kèm
   bộ cài PostgreSQL) thì chạy API ở cổng khác: `API_HOST_PORT=8081 docker compose -f docker-compose.pull.yml up -d` trong thư mục
   backend, rồi `API_PROXY_TARGET=http://localhost:8081 npm run dev -- --port 3000`.
+  Ở dev, sửa file không phải module trong dự án (CLAUDE.md, `docs/…`) làm Vite / Tailwind tải lại CẢ trang (log `page reload`),
+  mất dữ liệu đang nhập dở trong wizard và tốn một lần refresh token: đừng sửa tài liệu trong lúc đang test một luồng dài.
 - `npm run build` – `tsc -b && vite build`; phải pass trước khi coi một màn là xong
 - `npm run typecheck` – `tsc -b` (nhanh hơn build, dùng khi lặp)
 - `npm run gen:api` – sinh lại `src/types/req` và `src/types/res` từ `docs/api/swagger.json`
