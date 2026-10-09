@@ -1,14 +1,15 @@
-import { Fragment } from 'react'
+import { Fragment, useState } from 'react'
 import { useParams } from 'react-router'
 import { Badge } from '@/components/common/ui/badge'
-import { buttonClass } from '@/components/common/ui/button'
-import { ActivityList } from '@/components/common/ui/lists'
+import { Button, buttonClass } from '@/components/common/ui/button'
+import { ActivityList, Notice } from '@/components/common/ui/lists'
 import { PageHeader } from '@/components/common/ui/page-header'
 import { Icon } from '@/components/common/stitch-ui/Icon'
 import { Panel, PanelAside, PanelBody, PanelHeader } from '@/components/common/ui/panel'
 import { QueryBoundary } from '@/components/common/ui/query-boundary'
 import { usePageCrumb } from '@/components/layout/page-crumb'
 import { Stat, StatRow } from '@/components/common/ui/stat'
+import { EmptyState } from '@/components/common/ui/states'
 import {
   directionLabel,
   formatAddress,
@@ -20,7 +21,10 @@ import {
   surveyStatusMeta,
 } from '@/features/pre-surveys/components/preSurveyDisplay'
 import { Facts } from '@/features/pre-surveys/components/Facts'
-import { RoofSimulation } from '@/features/pre-surveys/components/RoofSimulation'
+import { formatKwh, formatOne, mountingLabel } from '@/features/pre-surveys/components/simulationDisplay'
+import { SimulationHistory } from '@/features/pre-surveys/components/SimulationHistory'
+import { SimulationViewer } from '@/features/pre-surveys/components/SimulationViewer'
+import { useSimulationsQuery } from '@/features/pre-surveys/hooks/useSimulations'
 import { useSurveyRequestQuery } from '@/features/pre-surveys/hooks/useSurveyRequests'
 import type { SurveyRequestDetail } from '@/types/res/surveyRequestsRes'
 
@@ -38,6 +42,64 @@ function mapUrl(r: SurveyRequestDetail) {
   if (hasCoordinates(r.latitude, r.longitude)) return `https://www.google.com/maps?q=${r.latitude},${r.longitude}`
   const address = formatAddress(r)
   return address === '—' ? null : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`
+}
+
+/*
+  Mô phỏng khách đã chọn khi gửi (selectedSimulation) + các lần chạy khác của bản đánh giá, chỉ đọc: sales được xem
+  nhưng không tạo mô phỏng (backend trả 403). Yêu cầu gửi khi chưa chạy mô phỏng thì nói rõ, không dựng mô phỏng giả định.
+*/
+function SimulationPanel({ request }: { request: SurveyRequestDetail }) {
+  const selected = request.selectedSimulation
+  const list = useSimulationsQuery(request.preSurveyId)
+  const [viewId, setViewId] = useState<string | null>(null)
+  const viewing = viewId ?? selected?.simulationId ?? null
+  const others = list.data ?? []
+  return (
+    <>
+      <Panel>
+        <PanelHeader
+          title="Mô phỏng khách đã chọn"
+          description={
+            selected
+              ? `${mountingLabel(selected.mountingType)}, ${selected.productName}: ${selected.panelCount} tấm, ${formatOne(selected.installedCapacityKwp)} kWp${
+                  selected.annualEnergyKwh != null ? `, ${formatKwh(selected.annualEnergyKwh)} kWh/năm` : ''
+                }.`
+              : undefined
+          }
+        />
+        <PanelBody className="space-y-4">
+          {selected && viewing !== selected.simulationId && (
+            // Đang xem một lần chạy khác: tiêu đề và câu tóm tắt ở trên vẫn nói về lần khách chọn, nên phải nói rõ ngay đây.
+            <Notice tone="info" title="Đang xem một lần chạy khác của khách">
+              Đây không phải mô phỏng khách chọn khi gửi.
+              <span className="mt-3 flex">
+                <Button size="sm" onClick={() => setViewId(null)}>
+                  Xem mô phỏng khách chọn
+                </Button>
+              </span>
+            </Notice>
+          )}
+          {viewing ? (
+            <SimulationViewer
+              preSurveyId={request.preSurveyId}
+              simulationId={viewing}
+              staleNote="Khách đã sửa mặt lắp sau lần chạy này; số liệu có thể không khớp mặt lắp cuối cùng."
+            />
+          ) : (
+            <EmptyState title="Khách chưa chạy mô phỏng" description="Bản đánh giá được gửi khi chưa có mô phỏng; dùng số liệu khách khai ở trên khi gọi khách." />
+          )}
+        </PanelBody>
+      </Panel>
+      {others.length > 1 && (
+        <Panel>
+          <PanelHeader title="Các lần chạy của khách" description="Bấm một lần chạy để xem; lần khách chọn gắn nhãn Mô phỏng chính." />
+          <PanelBody>
+            <SimulationHistory items={others} viewingId={viewing} onView={setViewId} />
+          </PanelBody>
+        </Panel>
+      )}
+    </>
+  )
 }
 
 /*
@@ -129,18 +191,7 @@ export function OpsSurveyRequestPage() {
                     />
                   </PanelBody>
                 </Panel>
-                <Panel>
-                  <PanelHeader title="Mô phỏng bố trí" description="Dựng từ số liệu khách khai. Đổi loại tấm để tư vấn khi gọi khách." />
-                  <PanelBody>
-                    <RoofSimulation
-                      totalAreaM2={r.totalAreaM2}
-                      usableAreaM2={r.usableAreaM2}
-                      tiltDegree={r.tiltDegree}
-                      azimuthDegree={r.azimuthDegree}
-                      hasObstruction={r.hasObstruction}
-                    />
-                  </PanelBody>
-                </Panel>
+                <SimulationPanel request={r} />
               </div>
 
               <PanelAside aria-label="Khách hàng và tiến độ">

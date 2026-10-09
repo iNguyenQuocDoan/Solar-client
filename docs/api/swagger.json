@@ -799,6 +799,69 @@
         }
       }
     },
+    "/api/pre-surveys/{preSurveyId}/surface": {
+      "get": {
+        "tags": [
+          "PreSurveySurface"
+        ],
+        "parameters": [
+          {
+            "name": "preSurveyId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "PreSurveySurface"
+        ],
+        "parameters": [
+          {
+            "name": "preSurveyId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatePreSurveySurfaceRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatePreSurveySurfaceRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatePreSurveySurfaceRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/products": {
       "get": {
         "tags": [
@@ -956,6 +1019,101 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "/api/pre-surveys/{preSurveyId}/simulations": {
+      "post": {
+        "tags": [
+          "Simulations"
+        ],
+        "parameters": [
+          {
+            "name": "preSurveyId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateSimulationRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateSimulationRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateSimulationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Simulations"
+        ],
+        "parameters": [
+          {
+            "name": "preSurveyId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/pre-surveys/{preSurveyId}/simulations/{simulationId}": {
+      "get": {
+        "tags": [
+          "Simulations"
+        ],
+        "parameters": [
+          {
+            "name": "preSurveyId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "simulationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
           }
         }
       }
@@ -1299,6 +1457,43 @@
         },
         "additionalProperties": false
       },
+      "CreateSimulationRequest": {
+        "type": "object",
+        "properties": {
+          "expectedGeometryVersion": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "productId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "mountingType": {
+            "type": "string",
+            "nullable": true
+          },
+          "panelTiltDegree": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "panelAzimuthDegree": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "installation": {
+            "$ref": "#/components/schemas/InstallationSpacingRequest"
+          },
+          "systemLossPercent": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "CustomerType": {
         "enum": [
           1,
@@ -1341,6 +1536,37 @@
           },
           "error": {
             "$ref": "#/components/schemas/ApiError"
+          }
+        },
+        "additionalProperties": false
+      },
+      "InstallationSpacingRequest": {
+        "type": "object",
+        "properties": {
+          "panelGapMm": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "rowGapMm": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "edgeSetbackMm": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "obstacleClearanceMm": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "rackLowEdgeClearanceMm": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -1740,6 +1966,41 @@
         },
         "additionalProperties": false
       },
+      "SurfaceObstacleRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "xM": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "yM": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "widthM": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "lengthM": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "heightM": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "UpdatePreSurveyRequest": {
         "type": "object",
         "properties": {
@@ -1765,6 +2026,44 @@
           },
           "hasObstruction": {
             "type": "boolean",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "UpdatePreSurveySurfaceRequest": {
+        "type": "object",
+        "properties": {
+          "expectedRevision": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "surfaceLengthM": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "surfaceWidthM": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "surfaceTiltDegree": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "surfaceAzimuthDegree": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "obstacles": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SurfaceObstacleRequest"
+            },
             "nullable": true
           }
         },
@@ -1890,7 +2189,7 @@
   },
   "security": [
     {
-      "Bearer": []
+      "Bearer": [ ]
     }
   ]
 }

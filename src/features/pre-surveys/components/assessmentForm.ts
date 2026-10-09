@@ -1,11 +1,10 @@
 import { z } from 'zod'
 import type { ApiError } from '@/services/api/errors'
 import type { CreateCustomerProfileRequest, CreatePropertySiteRequest } from '@/types/req/customersReq'
-import type { UpdatePreSurveyRequest } from '@/types/req/preSurveysReq'
 
 /*
- * Form của màn đánh giá sơ bộ. Ô nhập giữ dạng chuỗi; schema của từng bước vừa kiểm tra
- * vừa đổi sang body đúng kiểu request trong swagger, nên trang chỉ việc gửi `data`.
+ * Form hồ sơ và địa điểm của màn đánh giá sơ bộ (mặt lắp ở surfaceForm.ts). Ô nhập giữ dạng chuỗi; schema của từng
+ * bước vừa kiểm tra vừa đổi sang body đúng kiểu request trong swagger, nên trang chỉ việc gửi `data`.
  */
 
 export type ProfileForm = {
@@ -28,14 +27,6 @@ export type SiteForm = {
   note: string
 }
 
-export type SurfaceForm = {
-  totalAreaM2: string
-  usableAreaM2: string
-  tiltDegree: string
-  azimuthDegree: string
-  hasObstruction: '' | 'yes' | 'no'
-}
-
 export const EMPTY_PROFILE: ProfileForm = { customerType: '2', companyName: '', taxCode: '', note: '' }
 
 export const EMPTY_SITE: SiteForm = {
@@ -51,9 +42,23 @@ export const EMPTY_SITE: SiteForm = {
   note: '',
 }
 
-export const EMPTY_SURFACE: SurfaceForm = { totalAreaM2: '', usableAreaM2: '', tiltDegree: '', azimuthDegree: '', hasObstruction: '' }
-
 export type FormErrors<F> = Partial<Record<keyof F, string>>
+
+/** Địa điểm đã lưu (body đã gửi, nhớ trong bản nháp) → form, để mở lại trang không phải nhập lại và không tạo địa điểm trùng. */
+export function siteToForm(site: CreatePropertySiteRequest): SiteForm {
+  return {
+    name: site.name ?? '',
+    province: site.province ?? '',
+    district: site.district ?? '',
+    ward: site.ward ?? '',
+    streetLine: site.streetLine ?? '',
+    latitude: site.latitude == null ? '' : String(site.latitude),
+    longitude: site.longitude == null ? '' : String(site.longitude),
+    installationSurfaceType: String(site.installationSurfaceType ?? 1),
+    surfaceMaterial: site.surfaceMaterial ?? '',
+    note: site.note ?? '',
+  }
+}
 
 /* ------------------------------------------------------------------ helpers */
 
@@ -104,7 +109,7 @@ function issue<F>(ctx: z.RefinementCtx, path: keyof F, message: string | null) {
 /*
   Luật kiểm tra bám đúng backend, không thêm luật riêng (dò validator ngày 05/10/2026):
   - địa điểm: chỉ Name và Province bắt buộc; Latitude -90..90, Longitude -180..180.
-  - bản nháp: TotalAreaM2 > 0, UsableAreaM2 <= TotalAreaM2, TiltDegree 0..90, AzimuthDegree 0..360.
+  - mặt lắp và số liệu khai: xem surfaceForm.ts (bám UpdatePreSurveySurfaceCommandValidator).
   - hồ sơ: swagger cho mọi trường để trống (chưa dò được validator vì tài khoản test đã có hồ sơ).
 */
 
@@ -150,62 +155,6 @@ export const siteSchema = z
       note: text(f.note),
     }),
   )
-
-/* Trần 1.000.000 m² (100 ha) chỉ để chặn số vô nghĩa; mái nhà xưởng lớn nhất cũng chỉ vài chục nghìn m². */
-const AREA: Range = { label: 'diện tích', unit: 'm²', min: 0, max: 1_000_000, minExclusive: true, parse: toArea }
-const TOTAL_AREA: Range = { ...AREA, label: 'tổng diện tích' }
-const USABLE_AREA: Range = { ...AREA, label: 'diện tích dùng được' }
-const TILT: Range = { label: 'độ dốc mái', unit: 'độ', min: 0, max: 90 }
-const AZIMUTH: Range = { label: 'góc phương vị', unit: 'độ', min: 0, max: 360 }
-
-/**
- * Lỗi phạm vi của một ô số ở bước số liệu, kiểm tra ngay khi gõ để không phải đợi bấm "Tiếp tục"
- * mới biết sai. Không xét bắt buộc (đang gõ dở) và không xét liên ô (dùng được ≤ tổng): hai việc đó
- * để schema lo lúc gửi. Câu báo lỗi trùng với schema vì cùng dùng numberIssue và cùng khoảng.
- */
-export function liveSurfaceIssue(field: keyof SurfaceForm, value: string): string | null {
-  if (field === 'totalAreaM2') return numberIssue(value, TOTAL_AREA, false)
-  if (field === 'usableAreaM2') return numberIssue(value, USABLE_AREA, false)
-  if (field === 'tiltDegree') return numberIssue(value, TILT, false)
-  return null
-}
-
-/**
- * Lưu nháp cho phép bỏ trống (backend nhận null); đi tiếp sang bước gửi thì phải đủ cả 5 ô,
- * vì backend từ chối gửi bản thiếu số liệu (PRE_SURVEY_INCOMPLETE).
- */
-export function surfaceSchema(required: boolean) {
-  return z
-    .object({
-      totalAreaM2: z.string(),
-      usableAreaM2: z.string(),
-      tiltDegree: z.string(),
-      azimuthDegree: z.string(),
-      hasObstruction: z.enum(['', 'yes', 'no']),
-    })
-    .superRefine((f, ctx) => {
-      issue<SurfaceForm>(ctx, 'totalAreaM2', numberIssue(f.totalAreaM2, TOTAL_AREA, required))
-      issue<SurfaceForm>(ctx, 'usableAreaM2', numberIssue(f.usableAreaM2, USABLE_AREA, required))
-      issue<SurfaceForm>(ctx, 'tiltDegree', numberIssue(f.tiltDegree, TILT, required))
-      // Hướng chọn trên la bàn nên chỉ có thể thiếu, không thể sai định dạng.
-      if (required && !f.azimuthDegree.trim()) issue<SurfaceForm>(ctx, 'azimuthDegree', 'Chọn hướng mặt mái.')
-      else issue<SurfaceForm>(ctx, 'azimuthDegree', numberIssue(f.azimuthDegree, AZIMUTH, false))
-      if (required && !f.hasObstruction) issue<SurfaceForm>(ctx, 'hasObstruction', 'Cho biết mặt lắp có vật cản hay không.')
-      const total = toArea(f.totalAreaM2)
-      const usable = toArea(f.usableAreaM2)
-      if (total !== null && usable !== null && usable > total)
-        issue<SurfaceForm>(ctx, 'usableAreaM2', 'Diện tích dùng được không lớn hơn tổng diện tích.')
-    })
-    .transform(
-      (f): UpdatePreSurveyRequest => ({
-        totalAreaM2: toArea(f.totalAreaM2),
-        usableAreaM2: toArea(f.usableAreaM2),
-        tiltDegree: toNumber(f.tiltDegree),
-        azimuthDegree: toNumber(f.azimuthDegree),
-        hasObstruction: f.hasObstruction === '' ? null : f.hasObstruction === 'yes',
-      }),
-    )
-}
 
 /* ------------------------------------------------------------------ chạy schema, gắn lỗi */
 

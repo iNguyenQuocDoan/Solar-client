@@ -23,6 +23,8 @@ export class ApiError extends Error {
   readonly fieldErrors: FieldErrors
   readonly traceId: string | null
   readonly details: unknown
+  /** Số giây phải chờ theo header Retry-After (429); null khi server không gửi. */
+  readonly retryAfter: number | null
 
   constructor(init: {
     status: number
@@ -31,6 +33,7 @@ export class ApiError extends Error {
     fieldErrors?: FieldErrors
     traceId?: string | null
     details?: unknown
+    retryAfter?: number | null
   }) {
     super(init.message)
     this.name = 'ApiError'
@@ -39,6 +42,7 @@ export class ApiError extends Error {
     this.fieldErrors = init.fieldErrors ?? {}
     this.traceId = init.traceId ?? null
     this.details = init.details
+    this.retryAfter = init.retryAfter ?? null
   }
 
   get hasFieldErrors() {
@@ -79,6 +83,21 @@ const ERROR_MESSAGES: Record<string, string> = {
   SURVEY_REQUEST_UNAVAILABLE: 'Yêu cầu này đã có người nhận hoặc không còn chờ xử lý.',
   SURVEY_REQUEST_NOT_FOUND: 'Không tìm thấy yêu cầu khảo sát.',
   SURVEY_REQUEST_NOT_ASSIGNED: 'Yêu cầu này không do bạn phụ trách nên không xem được chi tiết.',
+  // Mặt lắp + mô phỏng (PreSurveyErrorCodes, SimulationErrorCodes trong image 09/10/2026, dò ngày 09/10/2026)
+  PRE_SURVEY_CONCURRENTLY_MODIFIED: 'Bản đánh giá vừa được sửa ở nơi khác (tab hoặc máy khác). Tải lại bản mới nhất rồi lưu lại.',
+  SIMULATION_VALIDATION_FAILED: 'Cấu hình mô phỏng chưa hợp lệ. Kiểm tra lại các ô được đánh dấu.',
+  SURFACE_NOT_DEFINED: 'Chưa lưu mặt lắp. Lưu kích thước mặt lắp rồi chạy mô phỏng.',
+  PRODUCT_NOT_FOUND: 'Tấm pin này không còn bán. Chọn tấm pin khác.',
+  PRODUCT_NOT_SOLAR_PANEL: 'Sản phẩm đã chọn không phải tấm pin. Chọn tấm pin khác.',
+  PRODUCT_SPEC_INCOMPLETE: 'Tấm pin này thiếu công suất hoặc kích thước nên chưa mô phỏng được. Chọn tấm pin khác.',
+  INSTALLATION_BELOW_DOCUMENTED_MINIMUM: 'Khoảng cách đã nhập nhỏ hơn mức tối thiểu trong tài liệu của nhà sản xuất. Tăng khoảng cách rồi chạy lại.',
+  INSTALLATION_PARAMETER_REQUIRED: 'Thiếu một khoảng cách lắp đặt bắt buộc. Nhập đủ các ô khoảng cách rồi chạy lại.',
+  PANEL_FACES_INTO_SURFACE: 'Với góc và hướng này, mặt tấm pin sẽ quay vào mặt mái. Đổi hướng tấm hoặc giảm góc nghiêng.',
+  PANEL_ORIENTATION_UNSUPPORTED: 'Bản mô phỏng chưa hỗ trợ góc và hướng tấm pin này. Thử góc nghiêng hoặc hướng khác.',
+  SIMULATION_LAYOUT_LIMIT_EXCEEDED: 'Bố trí vượt 5.000 tấm, giới hạn của bản mô phỏng sơ bộ. Thu nhỏ mặt lắp hoặc chọn tấm pin lớn hơn.',
+  SIMULATION_SOURCE_CHANGED: 'Mặt lắp vừa thay đổi sau lần tải trước. Đã tải lại mặt lắp, hãy chạy mô phỏng lại.',
+  SIMULATION_NOT_FOUND: 'Không tìm thấy lần mô phỏng này.',
+  SIMULATION_ACCESS_DENIED: 'Bạn không có quyền xem mô phỏng của bản đánh giá này.',
   // Mã chung của backend (dò GET bằng từng vai trò ngày 08/10/2026)
   AUTH_FORBIDDEN: 'Tài khoản của bạn không có quyền xem nội dung này.',
   RESOURCE_NOT_FOUND: 'Không tìm thấy dữ liệu yêu cầu. Kiểm tra lại đường dẫn.',
@@ -169,8 +188,17 @@ export function parseFieldErrors(details: unknown): FieldErrors {
   return {}
 }
 
+/** Header Retry-After dạng số giây (backend gửi "60"); dạng ngày giờ HTTP cũng đổi về số giây còn lại. */
+export function parseRetryAfter(value: unknown): number | null {
+  if (typeof value !== 'string' || !value.trim()) return null
+  const seconds = Number(value)
+  if (Number.isFinite(seconds)) return Math.max(0, Math.ceil(seconds))
+  const at = Date.parse(value)
+  return Number.isNaN(at) ? null : Math.max(0, Math.ceil((at - Date.now()) / 1000))
+}
+
 /** Dựng ApiError từ payload lỗi của server (đã có wrapper hoặc chỉ có ApiError). */
-export function toApiError(status: number, body: unknown): ApiError {
+export function toApiError(status: number, body: unknown, retryAfter: number | null = null): ApiError {
   let raw: ApiErrorBody | null = null
   let traceId: string | null = null
 
@@ -196,6 +224,7 @@ export function toApiError(status: number, body: unknown): ApiError {
     fieldErrors,
     traceId,
     details: raw?.details,
+    retryAfter,
   })
 }
 

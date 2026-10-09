@@ -1,5 +1,5 @@
 import axios, { AxiosError, AxiosHeaders, type AxiosRequestConfig, type InternalAxiosRequestConfig } from 'axios'
-import { ApiError, messageForStatus, toApiError } from '@/services/api/errors'
+import { ApiError, messageForStatus, parseRetryAfter, toApiError } from '@/services/api/errors'
 import { clearTokens, getAccessToken, getRefreshToken, saveTokens } from '@/services/api/tokens'
 import type { RefreshTokenRequest } from '@/types/req/authReq'
 import type { ApiResponse } from '@/types/res/apiRes'
@@ -158,7 +158,7 @@ apiClient.interceptors.response.use(
       throw new ApiError({ status: 0, message: messageForStatus(0) })
     }
 
-    const { status, data } = axiosError.response
+    const { status, data, headers } = axiosError.response
 
     // Không có refreshToken = khách chưa đăng nhập: trả 401 cho màn hình tự xử lý, không bật "hết phiên".
     const canRetry =
@@ -180,7 +180,8 @@ apiClient.interceptors.response.use(
       return apiClient.request(config)
     }
 
-    throw toApiError(status, data)
+    // 429 kèm Retry-After (giới hạn tạo mô phỏng 10 lần/phút): màn hình đếm ngược thay vì đoán thời gian chờ.
+    throw toApiError(status, data, parseRetryAfter(headers?.['retry-after']))
   },
 )
 

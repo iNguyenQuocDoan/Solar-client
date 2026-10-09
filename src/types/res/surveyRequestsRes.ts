@@ -65,6 +65,24 @@ export type SurveyRequestDetail = {
   assignedAt: string | null
   scheduledAt: string | null
   salesNote: string | null
+  /** Lần mô phỏng khách chọn khi gửi (image 09/10/2026); null với yêu cầu gửi khi chưa chạy mô phỏng. */
+  selectedSimulation: SelectedSimulationSummary | null
+}
+
+/** Tóm tắt mô phỏng khách chọn; bản đầy đủ đọc ở GET /api/pre-surveys/{preSurveyId}/simulations/{simulationId}. */
+export type SelectedSimulationSummary = {
+  simulationId: string
+  status: string
+  energyStatus: string
+  isStale: boolean
+  mountingType: string
+  productSku: string
+  productName: string
+  panelCount: number
+  installedCapacityKwp: number
+  annualEnergyKwh: number | null
+  /** Format: date-time */
+  createdAt: string
 }
 
 export type ClaimSurveyRequestResponse = {

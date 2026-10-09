@@ -69,6 +69,14 @@
 
   --ring: oklch(55% 0.12 160);
   --shadow-pop: 0 4px 16px -4px oklch(30% 0.03 155 / 0.18), 0 1px 2px oklch(30% 0.03 155 / 0.08);
+
+  /* Màu vật liệu của tấm pin trên mặt bằng 2D (mặt kính, khung nhôm): vẽ vật thể thật, không mang nghĩa trạng thái. */
+  --pv-glass: oklch(31% 0.045 262);
+  --pv-frame: oklch(84% 0.01 250);
+  /* Cột biểu đồ một chuỗi (sản lượng theo tháng): cùng hue thương hiệu, đo bằng validator dataviz ≥ 3:1 trên canvas. */
+  --chart-1: oklch(55% 0.11 160);
+  /* Lớp phủ sau hộp thoại / drawer: luôn làm tối trang. bg-fg/40 cũ làm SÁNG trang ở chế độ tối (fg gần trắng). */
+  --scrim: oklch(20% 0.012 130 / 0.4);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -108,6 +116,11 @@
 
     --ring: oklch(66% 0.11 160);
     --shadow-pop: 0 8px 24px -6px oklch(0% 0 0 / 0.6), 0 1px 2px oklch(0% 0 0 / 0.4);
+
+    --pv-glass: oklch(40% 0.06 262);
+    --pv-frame: oklch(72% 0.012 250);
+    --chart-1: oklch(60% 0.11 160);
+    --scrim: oklch(0% 0 0 / 0.6);
   }
 }
 
@@ -147,6 +160,11 @@
 
   --ring: oklch(66% 0.11 160);
   --shadow-pop: 0 8px 24px -6px oklch(0% 0 0 / 0.6), 0 1px 2px oklch(0% 0 0 / 0.4);
+
+  --pv-glass: oklch(40% 0.06 262);
+  --pv-frame: oklch(72% 0.012 250);
+  --chart-1: oklch(60% 0.11 160);
+  --scrim: oklch(0% 0 0 / 0.6);
 }
 
 @theme inline {
@@ -181,6 +199,10 @@
   --color-info: var(--info);
   --color-info-soft: var(--info-soft);
   --color-ring: var(--ring);
+  --color-pv-glass: var(--pv-glass);
+  --color-pv-frame: var(--pv-frame);
+  --color-chart-1: var(--chart-1);
+  --color-scrim: var(--scrim);
   /* Lớp phủ trung tính khi rê chuột / nhấn: tính từ màu chữ nên đúng trên canvas, rail, panel và cả dark mode. */
   --color-hover: oklch(from var(--fg) l c h / 0.06);
   --color-pressed: oklch(from var(--fg) l c h / 0.1);

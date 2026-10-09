@@ -214,7 +214,7 @@ function Rail({
   const { pathname } = useLocation()
   return (
     <>
-      {open && <div className="fixed inset-0 z-30 bg-fg/40 lg:hidden" aria-hidden onClick={onClose} />}
+      {open && <div className="fixed inset-0 z-30 bg-scrim lg:hidden" aria-hidden onClick={onClose} />}
       {/*
         Ba phần: đầu (thương hiệu), menu (flex-1, tự cuộn), chân (thu gọn + tài khoản, không dính đè). Nhóm Tài khoản mở
         hết trên màn thấp chỉ làm menu ngắn lại và cuộn được, không phủ lên mục menu. Cả rail chỉ cuộn khi màn quá thấp.

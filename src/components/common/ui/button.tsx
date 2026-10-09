@@ -1,4 +1,4 @@
-import type { ButtonHTMLAttributes, ReactNode } from 'react'
+import type { ButtonHTMLAttributes, ReactNode, Ref } from 'react'
 import { Link, type LinkProps } from 'react-router'
 import { Icon } from '@/components/common/stitch-ui/Icon'
 import { WithTooltip } from '@/components/common/ui/tooltip'
@@ -72,6 +72,8 @@ type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   size?: Size
   icon?: ReactNode | string
   bleed?: boolean
+  /** React 19: ref là prop thường, đi qua `...rest` xuống <button> (vd. trả focus về nút sau khi xoá một dòng). */
+  ref?: Ref<HTMLButtonElement>
 }
 
 export function Button({ variant = 'secondary', size = 'md', icon, bleed, className, children, type = 'button', ...rest }: ButtonProps) {

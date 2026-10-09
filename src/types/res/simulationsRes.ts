@@ -1,0 +1,288 @@
+/*
+ * VIẾT TAY – swagger chỉ khai "200 OK" cho tag Simulations, không có schema response.
+ * Tên kiểu và field lấy đúng theo SmartSolar.Modules.SolarSimulation (Models/SimulationDocuments.cs,
+ * Energy/EnergyContracts.cs) của image 09/10/2026 (commit 833ff3c), đã đối chiếu response thật.
+ * Chuỗi mã (status, source, reason, code…) để kiểu string: giá trị đã biết liệt kê ở simulationDisplay.ts,
+ * giá trị lạ thì giao diện in nguyên văn. Khi backend khai response trong swagger, `npm run gen:api` sẽ ghi đè file này.
+ */
+
+/** Điểm trong hệ thế giới, mét: e = Đông, n = Bắc, u = lên; gốc là gốc mặt lắp (góc trên-trái). */
+export type WorldPoint = { e: number; n: number; u: number }
+
+/** Quaternion theo thứ tự thành phần của Three.js. */
+export type Quaternion = { x: number; y: number; z: number; w: number }
+
+export type ProductSnapshot = {
+  id: string
+  sku: string
+  name: string
+  brand: string
+  model: string | null
+  ratedPowerW: number
+  widthMm: number
+  heightMm: number
+}
+
+export type ObstacleSnapshot = {
+  name: string
+  xM: number
+  yM: number
+  widthM: number
+  lengthM: number
+  heightM: number | null
+  /** 4 góc chân vật cản trên mặt lắp, hệ thế giới. */
+  baseCornersWorld: WorldPoint[]
+}
+
+export type SurfaceSnapshot = {
+  lengthM: number
+  widthM: number
+  tiltDegree: number
+  azimuthDegree: number
+  latitude: number | null
+  longitude: number | null
+  obstacles: ObstacleSnapshot[]
+}
+
+export type MountingInfo = {
+  /** "FLUSH" | "RACK" */
+  type: string
+  panelTiltDegree: number
+  panelAzimuthDegree: number
+  pvgisAspectDegree: number
+}
+
+export type InstallationValue = {
+  valueMm: number
+  /** MANUFACTURER_DOCUMENTED_MINIMUM, MANUFACTURER_DOCUMENTED, SITE_SPECIFIED, PRELIMINARY_DEFAULT, COMPUTED_SHADE_ESTIMATE, NOT_APPLICABLE */
+  source: string
+  documentedMinimumMm: number | null
+  documentRef: string | null
+  documentSection: string | null
+  documentUrl: string | null
+}
+
+export type InstallationInfo = {
+  units: string
+  panelGapMm: InstallationValue
+  rowGapMm: InstallationValue
+  edgeSetbackMm: InstallationValue
+  obstacleClearanceMm: InstallationValue
+  rackLowEdgeClearanceMm: InstallationValue
+  moduleThicknessMm: InstallationValue
+  shadeEstimateRowGapMm: number | null
+  shadingWindow: string
+  /** ABSENT | VALID | INVALID */
+  productInstallationSpecStatus: string
+  productInstallationSpecErrors: string[]
+  note: string
+}
+
+export type ComputedAreas = {
+  grossSurfaceAreaM2: number
+  obstacleOccupiedAreaM2: number
+  availableSurfaceAreaM2: number
+  installableAreaM2: number
+  panelCoveredAreaM2: number
+  totalModuleAreaM2: number
+  note: string
+}
+
+/** Hình chiếu tấm pin trên mặt lắp, mét, hệ toạ độ mặt lắp; xoay từ +X về +Y. */
+export type PanelFootprint = {
+  centerXM: number
+  centerYM: number
+  widthM: number
+  depthM: number
+  rotationDegree: number
+}
+
+export type PanelPlacement = {
+  index: number
+  footprint: PanelFootprint
+  /** widthM theo cạnh ngang của tấm, lengthM theo chiều dốc của tấm, thicknessM là độ dày. */
+  physical: { widthM: number; lengthM: number; thicknessM: number }
+  frontCenter: { xM: number; yM: number; heightAboveSurfaceM: number }
+  /** Tâm mặt trước của tấm (hệ thế giới). */
+  worldCenter: WorldPoint
+  worldRotation: Quaternion
+  lowEdgeClearanceM: number
+  highEdgeHeightM: number
+}
+
+export type FrameInfo = {
+  localFrame: string
+  worldFrame: string
+  azimuth: string
+  /** Trục của tấm: x ngang theo bề rộng, y ngược dốc, z pháp tuyến mặt trước; mặt trước ở z = 0, độ dày về -z. */
+  panelFrame: string
+  note: string
+  /** Gốc, +X, +X+Y, +Y của mặt lắp trong hệ thế giới. */
+  surfaceCornersWorld: WorldPoint[]
+  surfaceXAxisWorld: WorldPoint
+  surfaceYAxisWorld: WorldPoint
+  surfaceNormalWorld: WorldPoint
+  panelRotation: Quaternion
+}
+
+export type LayoutDetails = {
+  method: string
+  /** LANDSCAPE | PORTRAIT; null khi không xếp được tấm nào. */
+  orientation: string | null
+  rowRotationDegree: number
+  footprintWidthM: number | null
+  footprintDepthM: number | null
+  footprintIsConservativeBoundingBox: boolean
+  /** PANEL_LARGER_THAN_INSTALLABLE_REGION, SETBACK_CONSUMES_SURFACE, OBSTACLES_BLOCK_ALL_POSITIONS */
+  noPanelsReason: string | null
+  placements: PanelPlacement[]
+  frame: FrameInfo
+}
+
+export type LayoutInfo = {
+  panelCount: number
+  installedCapacityKwp: number
+  computedAreas: ComputedAreas
+  details: LayoutDetails
+}
+
+export type MonthlyPvEnergy = {
+  /** 1..12 */
+  month: number
+  energyKwh: number
+  stdDevKwh: number | null
+  inPlaneIrradiationKwhPerM2: number | null
+}
+
+export type ProviderFailure = { code: string; message: string }
+
+export type PvProviderMetadata = {
+  provider: string
+  providerVersion: string
+  radiationDatabase: string | null
+  meteoDatabase: string | null
+  yearMin: number | null
+  yearMax: number | null
+  horizonDatabase: string | null
+  mountingPlace: string
+  technology: string
+  useHorizon: boolean
+  peakPowerKwp: number
+  systemLossPercent: number
+  angleSentDegree: number
+  aspectSentDegree: number
+  retrievedAt: string
+}
+
+export type EnergyScenario = {
+  /** PRIMARY_CONSERVATIVE_REFERENCE | COMPARISON | PRIMARY */
+  role: string
+  /** "building" | "free" (PVGIS) */
+  mountingPlace: string
+  status: string
+  failure: ProviderFailure | null
+  annualEnergyKwh: number | null
+  annualStdDevKwh: number | null
+  specificYieldKwhPerKwpYear: number | null
+  monthly: MonthlyPvEnergy[]
+  provider: PvProviderMetadata | null
+}
+
+export type EnergyInfo = {
+  /** SUCCEEDED | NOT_APPLICABLE | UNAVAILABLE | FAILED */
+  status: string
+  /** NO_PANELS | LOCATION_MISSING … */
+  reason: string | null
+  estimateType: string
+  /** null khi chưa ước tính được – hiển thị "chưa có dữ liệu", không phải 0. */
+  annualEnergyKwh: number | null
+  specificYieldKwhPerKwpYear: number | null
+  monthly: MonthlyPvEnergy[]
+  primaryMountingPlace: string | null
+  scenarios: EnergyScenario[]
+  assumptions: string[]
+  disclaimer: string
+}
+
+export type ClimateMonth = {
+  month: number
+  daysInMonthUsed: number
+  irradiationKwhPerM2PerDay: number | null
+  irradiationKwhPerM2: number | null
+  temperatureC: number | null
+  precipitationMmPerDay: number | null
+  precipitationMm: number | null
+}
+
+export type ClimateContext = {
+  monthly: ClimateMonth[]
+  annualIrradiationKwhPerM2: number | null
+  annualPrecipitationMm: number | null
+  annualMeanTemperatureC: number | null
+  metadata: {
+    provider: string
+    apiVersion: string | null
+    startYear: number
+    endYear: number
+    community: string
+    sources: string[]
+    requestedLatitude: number
+    requestedLongitude: number
+    parameterUnits: Record<string, string>
+    retrievedAt: string
+  }
+}
+
+export type ClimateInfo = {
+  /** SUCCEEDED | UNAVAILABLE | FAILED */
+  status: string
+  reason: string | null
+  failure: ProviderFailure | null
+  context: ClimateContext | null
+  disclaimer: string
+}
+
+export type SimulationWarning = { code: string; message: string }
+
+/** POST /api/pre-surveys/{id}/simulations (201 tạo mới, 200 dùng lại) và GET …/simulations/{simulationId}. */
+export type SimulationDetail = {
+  simulationId: string
+  preSurveyId: string
+  /** COMPLETED | PARTIALLY_COMPLETED – cả hai đều là kết quả đã lưu; xem riêng energy.status, climate.status. */
+  status: string
+  /** Tính theo hình học cũ (geometryVersion đã đổi). */
+  isStale: boolean
+  isSelected: boolean
+  preSurveyGeometryVersion: number
+  algorithmVersion: string
+  createdAt: string
+  engineeringReviewRequired: boolean
+  product: ProductSnapshot
+  surface: SurfaceSnapshot
+  mounting: MountingInfo
+  installation: InstallationInfo
+  layout: LayoutInfo
+  energy: EnergyInfo
+  climate: ClimateInfo
+  warnings: SimulationWarning[]
+  limitations: string[]
+}
+
+/** GET /api/pre-surveys/{id}/simulations – mảng, mới nhất trước, chưa phân trang. */
+export type SimulationListItem = {
+  simulationId: string
+  status: string
+  energyStatus: string
+  climateStatus: string
+  isStale: boolean
+  isSelected: boolean
+  preSurveyGeometryVersion: number
+  mountingType: string
+  productId: string
+  productSku: string
+  productName: string
+  panelCount: number
+  installedCapacityKwp: number
+  annualEnergyKwh: number | null
+  createdAt: string
+}

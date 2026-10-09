@@ -97,10 +97,6 @@ export function formatArea(value: number | null | undefined) {
   return value == null ? '—' : `${decimal.format(value)} m²`
 }
 
-export function formatDegree(value: number | null | undefined) {
-  return value == null ? '—' : `${decimal.format(value)}°`
-}
-
 export function formatDateTime(iso: string | null | undefined) {
   if (!iso) return '—'
   const date = new Date(iso)

@@ -2,9 +2,10 @@ import { useState, type ReactNode } from 'react'
 import { Icon } from '@/components/common/stitch-ui/Icon'
 import { Field, Input, Radio, Textarea } from '@/components/common/ui/field'
 import { COMPASS_GRID, CUSTOMER_TYPES, SURFACE_TYPES } from '@/features/pre-surveys/components/preSurveyDisplay'
-import type { FormErrors, ProfileForm, SiteForm, SurfaceForm } from '@/features/pre-surveys/components/assessmentForm'
+import type { FormErrors, ProfileForm, SiteForm } from '@/features/pre-surveys/components/assessmentForm'
 
-/* Ba nhóm ô nhập của màn đánh giá sơ bộ. Trang giữ state; component chỉ vẽ và báo thay đổi. */
+/* Ô nhập của hai bước đầu màn đánh giá sơ bộ (hồ sơ, địa điểm) + la bàn và ô có đơn vị dùng ở bước mặt lắp, mô phỏng.
+   Trang giữ state; component chỉ vẽ và báo thay đổi. */
 
 type FieldsProps<F> = {
   value: F
@@ -12,7 +13,10 @@ type FieldsProps<F> = {
   onChange: (patch: Partial<F>) => void
 }
 
-/* Toạ độ không bắt buộc và ít khách biết: gập lại, chỉ mở sẵn khi đã có giá trị hoặc đang báo lỗi. */
+/*
+  Toạ độ không bắt buộc và ít khách biết: gập lại, chỉ mở sẵn khi đã có giá trị hoặc đang báo lỗi. Thiếu toạ độ thì
+  backend vẫn xếp tấm được nhưng không ước tính sản lượng (PVGIS) và khí hậu (NASA POWER), nên chữ mở nói rõ điều đó.
+*/
 function CoordinateFields({ value, errors, onChange }: FieldsProps<SiteForm>) {
   const [open, setOpen] = useState(() => Boolean(value.latitude || value.longitude))
   const hasError = Boolean(errors.latitude || errors.longitude)
@@ -22,7 +26,7 @@ function CoordinateFields({ value, errors, onChange }: FieldsProps<SiteForm>) {
       {/* `tap` là inline-flex nên mất mũi tên mặc định của summary: icon mở / thu cùng chữ đổi theo trạng thái thay cho mũi tên. */}
       <summary className="tap w-fit cursor-pointer gap-1 text-body font-medium text-accent-fg underline-offset-4 hover:underline">
         <Icon name={shown ? 'expand_less' : 'add_location_alt'} className="text-[20px]" />
-        {shown ? 'Ẩn toạ độ' : 'Thêm toạ độ (không bắt buộc)'}
+        {shown ? 'Ẩn toạ độ' : 'Thêm toạ độ (cần để ước tính sản lượng điện)'}
       </summary>
       <div className="mt-4 grid gap-4 sm:grid-cols-2">
         <Field label="Vĩ độ" htmlFor="latitude" hint="Trên Google Maps, nhấn giữ vào công trình để thấy toạ độ, ví dụ 10.9036." error={errors.latitude}>
@@ -49,14 +53,31 @@ function CoordinateFields({ value, errors, onChange }: FieldsProps<SiteForm>) {
 }
 
 /*
-  Hướng mái chọn trên la bàn 3×3 thay vì gõ góc phương vị: khách hiểu "mái quay về hướng Nam"
+  Hướng chọn trên la bàn 3×3 thay vì gõ góc phương vị: khách hiểu "mái quay về hướng Nam"
   chứ không hiểu "180°". Radio thật (ẩn) giữ đúng hành vi bàn phím: Tab vào nhóm, mũi tên đổi hướng.
+  Dùng cho hướng mặt mái (bước mặt lắp) và hướng tấm pin của khung nghiêng (bước mô phỏng): `name` phải khác nhau.
 */
-function CompassPicker({ value, error, onChange }: { value: string; error?: string; onChange: (degree: string) => void }) {
+export function CompassPicker({
+  value,
+  error,
+  onChange,
+  name = 'azimuth',
+  legend = 'Mặt mái quay về hướng nào?',
+  hint = 'Hướng mặt mái nhìn ra (phía mép thấp). Mái bằng thì chọn Nam.',
+  className = 'sm:col-span-2',
+}: {
+  value: string
+  error?: string
+  onChange: (degree: string) => void
+  name?: string
+  legend?: string
+  hint?: string
+  className?: string
+}) {
   return (
-    <fieldset className="sm:col-span-2">
-      <legend className="text-body font-medium text-fg">Mặt mái quay về hướng nào?</legend>
-      <p className="mt-1 mb-3 text-meta text-fg-3">Hướng mặt mái lớn nhất nhìn ra. Mái bằng thì chọn Nam.</p>
+    <fieldset className={className}>
+      <legend className="text-body font-medium text-fg">{legend}</legend>
+      <p className="mt-1 mb-3 text-meta text-fg-3">{hint}</p>
       <div className="grid max-w-sm grid-cols-3 gap-2">
         {COMPASS_GRID.map((cell, i) =>
           cell === null ? (
@@ -74,7 +95,7 @@ function CompassPicker({ value, error, onChange }: { value: string; error?: stri
             >
               <input
                 type="radio"
-                name="azimuth"
+                name={name}
                 className="sr-only"
                 value={String(cell.degree)}
                 checked={value !== '' && Number(value) === cell.degree}
@@ -95,7 +116,7 @@ function CompassPicker({ value, error, onChange }: { value: string; error?: stri
   )
 }
 
-function WithUnit({ unit, children }: { unit: string; children: ReactNode }) {
+export function WithUnit({ unit, children }: { unit: string; children: ReactNode }) {
   return (
     <div className="flex items-center gap-2">
       {children}
@@ -210,74 +231,6 @@ export function SiteFields({ value, errors, onChange }: FieldsProps<SiteForm>) {
       <Field label="Ghi chú" htmlFor="siteNote" hint="Không bắt buộc. Ví dụ: giờ vào được công trình." className="sm:col-span-2" error={errors.note}>
         <Textarea id="siteNote" rows={3} value={value.note} onChange={(e) => onChange({ note: e.target.value })} />
       </Field>
-    </div>
-  )
-}
-
-/** `onBlur`: rời ô số thì kiểm tra phạm vi ngay (xem changeSurface / blurSurface ở assessment-page). */
-export function SurfaceFields({
-  value,
-  errors,
-  onChange,
-  onBlur,
-}: FieldsProps<SurfaceForm> & { onBlur?: (field: 'totalAreaM2' | 'usableAreaM2' | 'tiltDegree') => void }) {
-  return (
-    <div className="grid gap-4 sm:grid-cols-2">
-      <Field label="Tổng diện tích" htmlFor="totalArea" error={errors.totalAreaM2}>
-        <WithUnit unit="m²">
-          <Input
-            id="totalArea"
-            inputMode="decimal"
-            value={value.totalAreaM2}
-            onChange={(e) => onChange({ totalAreaM2: e.target.value })}
-            onBlur={() => onBlur?.('totalAreaM2')}
-            aria-invalid={Boolean(errors.totalAreaM2)}
-          />
-        </WithUnit>
-      </Field>
-      <Field label="Diện tích dùng được" htmlFor="usableArea" hint="Trừ lối đi, ống khói, bồn nước, chỗ bị che." error={errors.usableAreaM2}>
-        <WithUnit unit="m²">
-          <Input
-            id="usableArea"
-            inputMode="decimal"
-            value={value.usableAreaM2}
-            onChange={(e) => onChange({ usableAreaM2: e.target.value })}
-            onBlur={() => onBlur?.('usableAreaM2')}
-            aria-invalid={Boolean(errors.usableAreaM2)}
-          />
-        </WithUnit>
-      </Field>
-      <Field label="Độ dốc mái" htmlFor="tilt" hint="Mái bằng là 0°. Không chắc thì ước lượng, kỹ sư sẽ đo lại khi khảo sát." error={errors.tiltDegree}>
-        <WithUnit unit="độ">
-          <Input
-            id="tilt"
-            inputMode="decimal"
-            value={value.tiltDegree}
-            onChange={(e) => onChange({ tiltDegree: e.target.value })}
-            onBlur={() => onBlur?.('tiltDegree')}
-            aria-invalid={Boolean(errors.tiltDegree)}
-          />
-        </WithUnit>
-      </Field>
-      <CompassPicker value={value.azimuthDegree} error={errors.azimuthDegree} onChange={(azimuthDegree) => onChange({ azimuthDegree })} />
-      <fieldset className="sm:col-span-2">
-        <legend className="mb-2 text-body font-medium text-fg">Mặt lắp có vật cản che nắng không?</legend>
-        <div className="flex flex-wrap gap-x-8 gap-y-3">
-          <Radio name="hasObstruction" checked={value.hasObstruction === 'no'} onChange={() => onChange({ hasObstruction: 'no' })} label="Không" />
-          <Radio
-            name="hasObstruction"
-            checked={value.hasObstruction === 'yes'}
-            onChange={() => onChange({ hasObstruction: 'yes' })}
-            label="Có"
-            description="Cây, toà nhà bên cạnh, bồn nước, cột thu lôi…"
-          />
-        </div>
-        {errors.hasObstruction && (
-          <p className="mt-2 text-meta text-danger" role="alert">
-            {errors.hasObstruction}
-          </p>
-        )}
-      </fieldset>
     </div>
   )
 }
