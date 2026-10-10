@@ -2,6 +2,22 @@
 @import '@fontsource-variable/schibsted-grotesk';
 @import './landing.css';
 
+/*
+  `dark:` theo đúng giao diện đang dùng như các token màu bên dưới: data-theme trên <html>, không đặt thì theo hệ thống.
+  Mặc định của Tailwind v4 chỉ đọc prefers-color-scheme, nên máy để chế độ tối mà khách chọn "Sáng" thì `dark:bg-fg` vẫn
+  chạy và đặt logo lên màu chữ của chế độ sáng (gần đen) – logo thành khối đen (người dùng báo 10/10/2026).
+*/
+@custom-variant dark {
+  &:where([data-theme='dark'], [data-theme='dark'] *) {
+    @slot;
+  }
+  @media (prefers-color-scheme: dark) {
+    &:where(:root:not([data-theme='light']), :root:not([data-theme='light']) *) {
+      @slot;
+    }
+  }
+}
+
 /* =====================================================================
    Portal kit (src/components/common/ui): customer, sales & operations, field, management.
    ===================================================================== */

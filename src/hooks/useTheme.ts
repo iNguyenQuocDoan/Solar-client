@@ -10,7 +10,8 @@ export const THEME_OPTIONS: { value: Theme; label: string; icon: string }[] = [
   { value: "dark", label: "Tối", icon: "dark_mode" },
 ];
 
-function read(): Theme {
+/** Lựa chọn đã lưu; chưa chọn (hoặc trình duyệt chặn storage) thì theo hệ thống. */
+export function savedTheme(): Theme {
   try {
     const v = localStorage.getItem(KEY);
     return v === "light" || v === "dark" ? v : "system";
@@ -26,7 +27,7 @@ export function applyTheme(theme: Theme) {
 }
 
 export function useTheme(): [Theme, (t: Theme) => void] {
-  const [theme, setThemeState] = useState<Theme>(read);
+  const [theme, setThemeState] = useState<Theme>(savedTheme);
 
   useEffect(() => {
     applyTheme(theme);
