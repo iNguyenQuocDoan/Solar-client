@@ -408,3 +408,12 @@ export function declaredDiffers(server: PreSurveySurfaceView, body: UpdatePreSur
     !same(server.surfaceAzimuthDegree, body.azimuthDegree)
   )
 }
+
+/**
+ * Form mặt lắp có thay đổi chưa lưu lên server không: chưa có bản lưu thì là đã nhập gì đó; có rồi thì khác bản lưu (cả số
+ * liệu khai). Dùng để nhắc ở bước mô phỏng / xem lại khi khách quay về sửa rồi đi tiếp bằng nút Forward của trình duyệt.
+ */
+export function surfaceChanged(form: SurfaceForm, server: PreSurveySurfaceView | undefined) {
+  if (!server?.surfaceDefined) return Boolean(form.widthM.trim() || form.lengthM.trim() || form.obstacles.length > 0)
+  return surfaceDiffers(server, toSurfaceRequest(form, server.revision)) || declaredDiffers(server, toDeclaredRequest(form))
+}

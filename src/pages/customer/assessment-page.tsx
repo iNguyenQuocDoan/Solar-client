@@ -1,5 +1,6 @@
 import { useIsMutating, useQueryClient } from '@tanstack/react-query'
 import { useEffect, useRef, useState, type FormEvent } from 'react'
+import { useSearchParams } from 'react-router'
 import { toast } from 'sonner'
 import { Icon } from '@/components/common/stitch-ui/Icon'
 import { ActionBar } from '@/components/common/ui/action-bar'
@@ -14,7 +15,15 @@ import { WizardSteps, type WizardStep } from '@/components/common/ui/wizard-step
 import { usePageCrumb } from '@/components/layout/page-crumb'
 import { useAuth } from '@/context/AuthProvider'
 import { ProfileFields, SiteFields } from '@/features/pre-surveys/components/AssessmentFields'
-import { clearDraft, readDraft, writeDraft, type AssessmentDraft } from '@/features/pre-surveys/components/assessmentDraft'
+import {
+  clearDraft,
+  clearWork,
+  readDraft,
+  readWork,
+  writeDraft,
+  writeWork,
+  type AssessmentDraft,
+} from '@/features/pre-surveys/components/assessmentDraft'
 import {
   EMPTY_PROFILE,
   EMPTY_SITE,
@@ -45,6 +54,7 @@ import {
   declaredDiffers,
   meterText,
   serverSurfaceErrors,
+  surfaceChanged,
   surfaceDiffers,
   surfaceToForm,
   toDeclaredRequest,
@@ -94,6 +104,9 @@ const SITE = 1
 const SURFACE = 2
 const SIMULATION = 3
 const REVIEW = 4
+/** Bước trên địa chỉ trang (?buoc=mat-lap) để nút Back / Forward của trình duyệt đi giữa các bước. */
+const STEP_PARAM = 'buoc'
+const STEP_SLUGS = ['ho-so', 'dia-diem', 'mat-lap', 'mo-phong', 'xem-lai']
 
 const FIX_FIELDS = 'Sửa các ô được đánh dấu để tiếp tục.'
 
@@ -126,20 +139,68 @@ export function AssessmentPage() {
 
   const [saved, setSavedState] = useState<AssessmentDraft>(() => readDraft(account))
   const [profileDone, setProfileDone] = useState(() => readFlag(flagKey))
-  // Đã có địa điểm (kể cả chưa có bản nháp) thì làm tiếp ở bước mặt lắp; form địa điểm nạp lại từ bản đã lưu.
-  const [step, setStep] = useState(() => (saved.preSurveyId || saved.siteId ? SURFACE : readFlag(flagKey) ? SITE : 0))
-  const [profile, setProfile] = useState<ProfileForm>(EMPTY_PROFILE)
-  const [site, setSite] = useState<SiteForm>(() => (saved.site ? siteToForm(saved.site) : EMPTY_SITE))
-  const [surface, setSurface] = useState<SurfaceForm>(EMPTY_SURFACE_FORM)
-  const [simForm, setSimForm] = useState<SimulationForm>(EMPTY_SIMULATION_FORM)
+  /*
+    Bản đang làm dở trên máy (assessmentDraft.ts, người dùng 10/10/2026: "không giữ lại giá trị của form nếu back qua back
+    lại"): mở lại trang thì nạp lại mọi ô chưa gửi và về đúng bước. Mặt lắp trên máy chỉ dùng khi nó thuộc đúng bản nháp
+    đang mở (hoặc cả hai chưa có bản nháp); khác thì lấy từ server.
+  */
+  const [work] = useState(() => readWork(account))
+  const workSurface = work && work.preSurveyId === saved.preSurveyId ? work : null
+  const [profile, setProfile] = useState<ProfileForm>(() => work?.profile ?? EMPTY_PROFILE)
+  const [site, setSite] = useState<SiteForm>(() => work?.site ?? (saved.site ? siteToForm(saved.site) : EMPTY_SITE))
+  const [surface, setSurface] = useState<SurfaceForm>(() => workSurface?.surface ?? EMPTY_SURFACE_FORM)
+  const [simForm, setSimForm] = useState<SimulationForm>(() => work?.simForm ?? EMPTY_SIMULATION_FORM)
   const [viewId, setViewId] = useState<string | null>(null)
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [formError, setFormError] = useState<string | null>(null)
   const [conflict, setConflict] = useState(false)
   const [requestId, setRequestId] = useState<string | null>(null)
   /** revision của bản mặt lắp mà form đang sửa (expectedRevision khi lưu); null khi form chưa nạp từ server. */
-  const [baseRevision, setBaseRevision] = useState<number | null>(null)
+  const [baseRevision, setBaseRevision] = useState<number | null>(() => workSurface?.baseRevision ?? null)
   const dialogRef = useRef<HTMLDialogElement>(null)
+  const surfaceQuery = useSurfaceQuery(saved.preSurveyId)
+  const loaded = surfaceQuery.data
+
+  /*
+    Bước đọc từ địa chỉ trang (?buoc=…): mỗi lần khách chuyển bước là một mục lịch sử, nên nút Back / Forward của trình duyệt
+    đi giữa các bước thay vì rời trang. Không có trên địa chỉ (mở từ menu) thì về bước đang làm dở đã nhớ; vẫn không có thì
+    đoán như cũ (đã có địa điểm thì làm tiếp ở mặt lắp). Không cho đi quá bước đã mở được: chưa có địa điểm thì tối đa bước
+    địa điểm, chưa lưu mặt lắp thì tối đa bước mặt lắp.
+  */
+  const [searchParams, setSearchParams] = useSearchParams()
+  const [initialStep] = useState(() => work?.step ?? (saved.preSurveyId || saved.siteId ? SURFACE : readFlag(flagKey) ? SITE : 0))
+  /** Mở trang đã có bước cụ thể (trên địa chỉ hoặc bản trên máy): mở lại bản nháp thì không tự nhảy sang bước mô phỏng. */
+  const [explicitStep] = useState(() => searchParams.has(STEP_PARAM) || work !== null)
+  /** Bước của lần vẽ trước: địa chỉ mất ?buoc (bấm lại "Đánh giá sơ bộ" trên menu) thì giữ nguyên bước đang làm. */
+  const lastStep = useRef<number | null>(null)
+  const urlStep = STEP_SLUGS.indexOf(searchParams.get(STEP_PARAM) ?? '')
+  const firstStep = profileDone ? SITE : 0
+  const maxStep = !saved.siteId && !saved.preSurveyId ? firstStep : saved.preSurveyId && loaded?.surfaceDefined ? REVIEW : SURFACE
+  const step = Math.min(maxStep, Math.max(firstStep, urlStep >= 0 ? urlStep : (lastStep.current ?? initialStep)))
+  /** Đổi bước lặng lẽ (replace, không cuộn): mở lại bản nháp, bỏ bản nháp, lỗi buộc quay về một bước. */
+  const silentMove = useRef(false)
+  function moveTo(target: number, { replace = false } = {}) {
+    // Chỉ đánh dấu "lặng lẽ" khi bước thật sự đổi; không thì cờ còn sót và nuốt lần Back / Forward kế tiếp.
+    silentMove.current = replace && target !== step
+    setSearchParams(
+      (prev) => {
+        const next = new URLSearchParams(prev)
+        next.set(STEP_PARAM, STEP_SLUGS[target]!)
+        return next
+      },
+      { replace },
+    )
+  }
+  // Hàm mới nhất cho effect mở lại bản nháp (effect không chạy lại chỉ vì hàm đổi tham chiếu).
+  const moveRef = useRef(moveTo)
+  useEffect(() => {
+    moveRef.current = moveTo
+    lastStep.current = step
+  })
+  // Địa chỉ chưa có ?buoc (mở từ menu): ghi bước hiện tại vào (replace) để Back từ bước sau quay về đúng bước này.
+  useEffect(() => {
+    if (!searchParams.has(STEP_PARAM)) moveRef.current(lastStep.current ?? step, { replace: true })
+  }, [searchParams, step])
 
   const createProfile = useCreateCustomerProfileMutation()
   const createSite = useCreatePropertySiteMutation()
@@ -147,7 +208,6 @@ export function AssessmentPage() {
   const updatePreSurvey = useUpdatePreSurveyMutation()
   const saveSurfaceMutation = useSaveSurfaceMutation()
   const submitPreSurvey = useSubmitPreSurveyMutation()
-  const surfaceQuery = useSurfaceQuery(saved.preSurveyId)
   const wards = useHcmWardsQuery()
   const simulations = useSimulationsQuery(step >= SIMULATION ? saved.preSurveyId : null)
   const [savingSurface, setSavingSurface] = useState(false)
@@ -166,8 +226,9 @@ export function AssessmentPage() {
     gõ. Bản nháp không còn dùng được (404, không thuộc tài khoản, đã gửi ở tab khác) thì bỏ và bắt đầu bản mới; lỗi mạng
     thì giữ bản nháp và cho thử lại.
   */
-  const loaded = surfaceQuery.data
   const [hydratedFor, setHydratedFor] = useState<string | null>(null)
+  /** Id bản nháp mà mặt lắp trên máy thuộc về: lần mở lại đầu tiên giữ bản trên máy, không nạp đè từ server. */
+  const restoreLocal = useRef(workSurface?.preSurveyId ?? null)
   const [resumeError, setResumeError] = useState<string | null>(null)
   const [resumeAttempt, setResumeAttempt] = useState(0)
   useEffect(() => {
@@ -176,9 +237,10 @@ export function AssessmentPage() {
     let cancelled = false
     const dropDraft = (message: string) => {
       clearDraft(account)
+      clearWork(account)
       setSavedState({ profile: saved.profile })
       setHydratedFor(null)
-      setStep(readFlag(flagKey) ? SITE : 0)
+      moveRef.current(readFlag(flagKey) ? SITE : 0, { replace: true })
       toast(message)
     }
     queryClient.fetchQuery({ queryKey: preSurveyKeys.surface(id), queryFn: () => getSurface(id) }).then(
@@ -187,18 +249,25 @@ export function AssessmentPage() {
         if (view.status !== 'DRAFT') return dropDraft('Bản đánh giá trước đã được gửi. Bắt đầu một bản mới.')
         setHydratedFor(id)
         setResumeError(null)
-        setBaseRevision(view.revision)
-        if (view.surfaceDefined) setSurface(surfaceToForm(view))
-        else
-          // Lần lưu mặt lắp đầu tiên chưa xong: bản nháp vẫn có độ dốc, hướng (gửi lúc tạo) – nạp lại để khách không nhập lại.
-          setSurface((f) => ({
-            ...f,
-            tiltDegree: view.surfaceTiltDegree == null ? f.tiltDegree : meterText(view.surfaceTiltDegree),
-            azimuthDegree: view.surfaceAzimuthDegree == null ? f.azimuthDegree : String(view.surfaceAzimuthDegree),
-          }))
+        if (restoreLocal.current === id) {
+          // Mặt lắp đang sửa dở trên máy cho đúng bản nháp này: giữ bản trên máy (đã nạp lúc mở trang). Server đã đổi sau đó
+          // (sửa ở máy / tab khác) thì báo xung đột ngay để khách chọn tải bản mới hay lưu đè, như khi lưu bị 409.
+          restoreLocal.current = null
+          if (workSurface?.baseRevision != null && workSurface.baseRevision !== view.revision) setConflict(true)
+        } else {
+          setBaseRevision(view.revision)
+          if (view.surfaceDefined) setSurface(surfaceToForm(view))
+          else
+            // Lần lưu mặt lắp đầu tiên chưa xong: bản nháp vẫn có độ dốc, hướng (gửi lúc tạo) – nạp lại để khách không nhập lại.
+            setSurface((f) => ({
+              ...f,
+              tiltDegree: view.surfaceTiltDegree == null ? f.tiltDegree : meterText(view.surfaceTiltDegree),
+              azimuthDegree: view.surfaceAzimuthDegree == null ? f.azimuthDegree : String(view.surfaceAzimuthDegree),
+            }))
+        }
         setViewId(view.selectedSimulationId)
-        // Mới mở trang (bước mặt lắp) và mặt lắp đã lưu: làm tiếp ở bước mô phỏng.
-        setStep((s) => (s === SURFACE && view.surfaceDefined ? SIMULATION : s))
+        // Mở trang không chỉ định bước (lần đầu trên máy này) mà mặt lắp đã lưu: làm tiếp ở bước mô phỏng.
+        if (!explicitStep && view.surfaceDefined) moveRef.current(SIMULATION, { replace: true })
       },
       (error: unknown) => {
         if (cancelled) return
@@ -209,11 +278,10 @@ export function AssessmentPage() {
     return () => {
       cancelled = true
     }
-  }, [account, flagKey, hydratedFor, queryClient, resumeAttempt, saved.preSurveyId, saved.profile])
+  }, [account, explicitStep, flagKey, hydratedFor, queryClient, resumeAttempt, saved.preSurveyId, saved.profile, workSurface])
 
   // Thanh định vị ghi bước đang làm: "Cổng khách hàng / Đánh giá sơ bộ / Mặt lắp".
   usePageCrumb(STEP_LABELS[step])
-  const firstStep = profileDone ? SITE : 0
 
   function editor<F>(setter: (fn: (f: F) => F) => void) {
     return (patch: Partial<F>) => {
@@ -234,19 +302,22 @@ export function AssessmentPage() {
     setErrors({})
     setFormError(null)
     setConflict(false)
-    focusStepOnChange.current = true
-    setStep(target)
+    moveTo(target)
   }
 
   /*
-    Đổi bước do khách bấm (Tiếp tục, Quay lại, bấm bước đã xong, nút Sửa): đưa trang về đầu bước mới thay vì đứng ở cuối
-    trang của bước cũ, và đưa focus về tiêu đề (ẩn) của bước để bàn phím / trình đọc màn hình bắt đầu từ đầu bước.
+    Đổi bước do khách (Tiếp tục, Quay lại, bấm bước đã xong, nút Sửa, Back / Forward của trình duyệt): đưa trang về đầu bước
+    mới thay vì đứng ở cuối trang của bước cũ, và đưa focus về tiêu đề (ẩn) của bước để bàn phím / trình đọc màn hình bắt
+    đầu từ đầu bước. Đổi bước lặng lẽ (mở lại bản nháp…) và lần vẽ đầu thì không.
   */
   const stepHeadingRef = useRef<HTMLHeadingElement>(null)
-  const focusStepOnChange = useRef(false)
+  const shownStep = useRef(step)
   useEffect(() => {
-    if (!focusStepOnChange.current) return
-    focusStepOnChange.current = false
+    if (shownStep.current === step) return
+    shownStep.current = step
+    const silent = silentMove.current
+    silentMove.current = false
+    if (silent) return
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' })
     stepHeadingRef.current?.focus({ preventScroll: true })
@@ -306,7 +377,7 @@ export function AssessmentPage() {
         // Cờ trong localStorage sai (ví dụ đổi máy chủ): quay lại khai hồ sơ.
         writeFlag(flagKey, false)
         setProfileDone(false)
-        setStep(0)
+        moveTo(0, { replace: true })
       }
       fail(error, site)
     }
@@ -427,6 +498,7 @@ export function AssessmentPage() {
     try {
       const { surveyRequestId } = await submitPreSurvey.mutateAsync(saved.preSurveyId)
       clearDraft(account)
+      clearWork(account)
       setRequestId(surveyRequestId)
       dialogRef.current?.showModal()
     } catch (error) {
@@ -434,11 +506,12 @@ export function AssessmentPage() {
       // (không có mã yêu cầu trong phản hồi lỗi nên hộp thoại bỏ dòng mã).
       if (isApiError(error) && error.code === 'PRE_SURVEY_ALREADY_SUBMITTED') {
         clearDraft(account)
+        clearWork(account)
         setRequestId('')
         dialogRef.current?.showModal()
         return
       }
-      if (isApiError(error) && error.code === 'PRE_SURVEY_INCOMPLETE') setStep(SURFACE)
+      if (isApiError(error) && error.code === 'PRE_SURVEY_INCOMPLETE') moveTo(SURFACE, { replace: true })
       fail(error)
     }
   }
@@ -472,6 +545,14 @@ export function AssessmentPage() {
 
   const submitted = requestId !== null
   const waitingDraft = Boolean(saved.preSurveyId) && hydratedFor !== saved.preSurveyId
+  // Ghi bản đang làm mỗi lần đổi (sau khi đã mở xong bản nháp, kẻo ghi form rỗng đè lên bản trên máy); gửi xong thì thôi.
+  useEffect(() => {
+    if (waitingDraft || submitted) return
+    writeWork(account, { step, profile, site, surface, simForm, preSurveyId: saved.preSurveyId, baseRevision })
+  }, [account, baseRevision, profile, saved.preSurveyId, simForm, site, step, submitted, surface, waitingDraft])
+  // Mặt lắp sửa rồi chưa lưu (đi tiếp bằng nút Forward, hoặc bản trên máy khác bản trên server): mô phỏng / xem lại vẫn dùng
+  // bản đã lưu, nên nhắc ở các bước sau.
+  const surfaceUnsaved = surfaceChanged(surface, loaded)
   const selectedRun = simulations.data?.find((s) => s.isSelected) ?? null
   /** Tóm tắt dưới bước đã xong: khách nhìn lại được đã khai gì mà không phải mở lại từng bước. */
   const stepSummaries: (string | undefined)[] = [
@@ -520,7 +601,8 @@ export function AssessmentPage() {
       </Notice>
       {saved.preSurveyId && !submitted && (
         <Notice tone="ok">
-          Bản nháp <span className="tnum font-medium text-fg">{shortCode(saved.preSurveyId)}</span> đã lưu trên hệ thống; tải lại trang vẫn làm tiếp được.
+          Bản nháp <span className="tnum font-medium text-fg">{shortCode(saved.preSurveyId)}</span> đã lưu trên hệ thống. Phần đang nhập dở được giữ
+          trên máy này, rời trang hay tải lại vẫn còn.
         </Notice>
       )}
     </>
@@ -552,6 +634,14 @@ export function AssessmentPage() {
 
       <div className={cx('grid gap-6', !wide && 'lg:grid-cols-3')}>
         <form id="assessment-step" noValidate onSubmit={next} className={cx('min-w-0 space-y-4', !wide && 'lg:col-span-2')}>
+          {(step === SIMULATION || step === REVIEW) && loaded?.surfaceDefined && surfaceUnsaved && (
+            <Notice tone="warn" title="Mặt lắp có thay đổi chưa lưu">
+              Mô phỏng và phần xem lại đang dùng mặt lắp đã lưu trước đó. Thay đổi vẫn được giữ trên máy này.{' '}
+              <button type="button" className="tap ui-link font-medium" onClick={() => goTo(SURFACE)}>
+                Về bước mặt lắp để lưu
+              </button>
+            </Notice>
+          )}
           {step === 0 && (
             <Panel>
               <PanelHeader title="Thông tin khách hàng" description="Khai một lần cho tài khoản này." />
@@ -745,6 +835,8 @@ export function AssessmentPage() {
             Lưu nháp
           </Button>
         )}
+        {/* Nói rõ trạng thái lưu: thay đổi luôn giữ trên máy, lên hệ thống khi bấm Lưu nháp / Tiếp tục. */}
+        {step === SURFACE && surfaceUnsaved && !busy && <span className="text-meta text-fg-2">Chưa lưu lên hệ thống, vẫn giữ trên máy này</span>}
         <div className="flex w-full flex-wrap items-center gap-3 sm:ml-auto sm:w-auto">
           {formError && (
             <span className="flex items-center gap-1.5 text-body font-medium text-danger" role="alert">
