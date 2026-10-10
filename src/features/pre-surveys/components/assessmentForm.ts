@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { HCM_PROVINCE } from '@/features/pre-surveys/services/provinceService'
 import type { ApiError } from '@/services/api/errors'
 import type { CreateCustomerProfileRequest, CreatePropertySiteRequest } from '@/types/req/customersReq'
 
@@ -14,6 +15,11 @@ export type ProfileForm = {
   note: string
 }
 
+/*
+  Địa chỉ 2 cấp theo đơn vị hành chính từ 01/07/2025 (người dùng chốt 10/10/2026): tỉnh cố định là TP.HCM vì dự án chỉ
+  nhận công trình ở đó, phường/xã chọn trong danh sách của API provinces.open-api.vn. Không còn ô quận/huyện; `district`
+  chỉ giữ để mở lại địa điểm cũ (khai tự do trước ngày đó) mà không bị coi là đã sửa.
+*/
 export type SiteForm = {
   name: string
   province: string
@@ -31,7 +37,7 @@ export const EMPTY_PROFILE: ProfileForm = { customerType: '2', companyName: '', 
 
 export const EMPTY_SITE: SiteForm = {
   name: '',
-  province: '',
+  province: HCM_PROVINCE.name,
   district: '',
   ward: '',
   streetLine: '',
@@ -127,9 +133,9 @@ export const profileSchema = z
 export const siteSchema = z
   .object({
     name: z.string().trim().min(1, 'Đặt tên cho địa điểm, ví dụ "Nhà xưởng Bình Dương".'),
-    province: z.string().trim().min(1, 'Nhập tỉnh hoặc thành phố.'),
+    province: z.string(),
     district: z.string(),
-    ward: z.string(),
+    ward: z.string().trim().min(1, 'Chọn phường, xã.'),
     streetLine: z.string(),
     latitude: z.string(),
     longitude: z.string(),
@@ -144,8 +150,8 @@ export const siteSchema = z
   .transform(
     (f): CreatePropertySiteRequest => ({
       name: text(f.name),
-      province: text(f.province),
-      district: text(f.district),
+      province: HCM_PROVINCE.name,
+      district: null,
       ward: text(f.ward),
       streetLine: text(f.streetLine),
       latitude: toNumber(f.latitude),

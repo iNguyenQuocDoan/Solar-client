@@ -1,16 +1,20 @@
-import { useMemo, useRef, useState } from 'react'
-import { Button, IconButton } from '@/components/common/ui/button'
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
+import { toast } from 'sonner'
 import { Checkbox, Field, Input } from '@/components/common/ui/field'
 import { Panel, PanelBody, PanelHeader } from '@/components/common/ui/panel'
 import { EmptyState } from '@/components/common/ui/states'
 import { CompassPicker, WithUnit } from '@/features/pre-surveys/components/AssessmentFields'
 import { Facts } from '@/features/pre-surveys/components/Facts'
+import { ObstaclePanel } from '@/features/pre-surveys/components/ObstaclePanel'
 import { directionLabel } from '@/features/pre-surveys/components/preSurveyDisplay'
 import { formatM2 } from '@/features/pre-surveys/components/simulationDisplay'
 import { SurfacePlan } from '@/features/pre-surveys/components/SurfacePlan'
 import {
   SURFACE_LIMITS,
   autoDeclared,
+  duplicateObstacle,
+  hasObstacleError,
+  liveObstacleErrors,
   meterText,
   newObstacle,
   num,
@@ -20,31 +24,37 @@ import {
   type SurfaceErrors,
   type SurfaceForm,
 } from '@/features/pre-surveys/components/surfaceForm'
-import { cx } from '@/utils/cx'
 
 /*
   Bước "Mặt lắp" của đánh giá sơ bộ: kích thước, độ dốc, hướng, vật cản. Ô nhập là nguồn chính; trên hình chọn và kéo
   thả vật cản (người dùng chốt 09/10/2026). Số liệu khai (tổng, dùng được, có vật cản) tự tính từ mặt lắp, khách vẫn
   sửa được hai ô diện tích. Trang giữ state; `onChange` nhận form mới và các khoá lỗi cần xoá.
+  Bố cục (người dùng 10/10/2026: hình phải to và nằm giữa): kích thước + hướng chiếm 2/3 hàng đầu, cạnh cột phụ của trang
+  (`aside`); hình mặt lắp và số liệu khai rộng hết trang. Thứ tự DOM là thứ tự trên điện thoại (cột phụ xuống cuối), từ lg
+  cột phụ mới được đặt lên hàng đầu.
+  Vật cản (người dùng chọn 10/10/2026): hình bên trái, cột sửa `ObstaclePanel` bên phải (danh sách + ô của một vật cản đang
+  chọn), nên vừa sửa số vừa thấy hình. Điện thoại: hình ở trên, cột sửa ở dưới.
 */
 
 type Props = {
   value: SurfaceForm
   errors: SurfaceErrors
   onChange: (next: SurfaceForm, touched: string[]) => void
+  /** Cột phụ của trang (ghi chú), đặt cạnh khối kích thước. */
+  aside?: ReactNode
 }
 
-const OBSTACLE_FIELDS: { field: Exclude<ObstacleField, 'name'>; label: string; hint?: string }[] = [
-  { field: 'xM', label: 'Cách mép trái' },
-  { field: 'yM', label: 'Cách mép cao' },
-  { field: 'widthM', label: 'Bề ngang' },
-  { field: 'lengthM', label: 'Bề dọc' },
-  { field: 'heightM', label: 'Cao', hint: 'Không bắt buộc' },
-]
-
-export function SurfaceEditor({ value, errors, onChange }: Props) {
+export function SurfaceEditor({ value, errors, onChange, aside }: Props) {
   const [selected, setSelected] = useState<number | null>(null)
+  /** Vật cản vừa thêm / nhân bản: ô tên của nó được focus một lần. */
+  const [focusKey, setFocusKey] = useState<string | null>(null)
+  const clearFocusKey = useCallback(() => setFocusKey(null), [])
   const addRef = useRef<HTMLButtonElement>(null)
+  // "Hoàn tác" trong toast chạy sau nhiều lần vẽ lại: phải ghi vào form và hàm xoá lỗi MỚI NHẤT, không phải bản lúc xoá.
+  const latest = useRef({ value, onChange, errors })
+  useEffect(() => {
+    latest.current = { value, onChange, errors }
+  })
   const width = num(value.widthM)
   const length = num(value.lengthM)
   const size =
@@ -73,26 +83,48 @@ export function SurfaceEditor({ value, errors, onChange }: Props) {
     onChange({ ...value, obstacles }, Object.keys(patch).map((f) => obstacleErrorKey(index, f as ObstacleField)))
   }
 
-  function addObstacle() {
-    onChange({ ...value, obstacles: [...value.obstacles, newObstacle(value)] }, ['obstacles'])
+  /** Thêm vào CUỐI danh sách (cả khi nhân bản) để số thứ tự các vật cản đang có trên hình không đổi. */
+  function appendObstacle(obstacle: ObstacleForm) {
+    onChange({ ...value, obstacles: [...value.obstacles, obstacle] }, ['obstacles'])
     setSelected(value.obstacles.length)
+    setFocusKey(obstacle.key)
   }
 
+  /** Lỗi gắn theo chỉ số: thêm / bớt ở giữa làm lệch chỉ số các vật cản sau, nên xoá hết lỗi vật cản. */
+  const obstacleErrorKeys = (all: SurfaceErrors) => Object.keys(all).filter((k) => k.startsWith('obstacles'))
+
   function removeObstacle(index: number) {
-    // Lỗi gắn theo chỉ số: xoá một vật cản làm lệch chỉ số các vật cản sau, nên xoá hết lỗi vật cản.
-    const touched = Object.keys(errors).filter((k) => k.startsWith('obstacles'))
-    onChange({ ...value, obstacles: value.obstacles.filter((_, i) => i !== index) }, touched)
-    setSelected(null)
-    // Nút xoá vừa bấm biến mất cùng dòng: đưa focus về nút thêm thay vì để rơi về <body>.
+    const removed = value.obstacles[index]!
+    const remaining = value.obstacles.filter((_, i) => i !== index)
+    onChange({ ...value, obstacles: remaining }, obstacleErrorKeys(errors))
+    setSelected(remaining.length > 0 ? Math.min(index, remaining.length - 1) : null)
+    // Nút xoá biến mất cùng ô sửa: đưa focus về nút thêm thay vì để rơi về <body>.
     addRef.current?.focus()
+    toast(`Đã xoá ${removed.name.trim() || `vật cản ${index + 1}`}.`, {
+      action: {
+        label: 'Hoàn tác',
+        onClick: () => {
+          const now = latest.current
+          const obstacles = [...now.value.obstacles]
+          const at = Math.min(index, obstacles.length)
+          obstacles.splice(at, 0, removed)
+          now.onChange({ ...now.value, obstacles }, obstacleErrorKeys(now.errors))
+          setSelected(at)
+        },
+      },
+    })
   }
 
   const obstacleCount = value.obstacles.length
-  const full = obstacleCount >= SURFACE_LIMITS.maxObstacles
+  // Chưa chọn gì mà có vật cản báo lỗi (vừa bấm Tiếp tục): mở sẵn vật cản lỗi đầu tiên để thấy ô cần sửa.
+  // Lỗi số của vật cản báo ngay khi gõ; lỗi từ lần bấm Tiếp tục (page) đè lên nếu cùng ô.
+  const obstacleErrors = useMemo(() => ({ ...liveObstacleErrors(value), ...errors }), [value, errors])
+  const firstBroken = value.obstacles.findIndex((_, i) => hasObstacleError(errors, i))
+  const current = selected !== null && selected < obstacleCount ? selected : firstBroken >= 0 ? firstBroken : null
 
   return (
-    <div className="space-y-6">
-      <Panel>
+    <div className="grid gap-6 lg:grid-cols-3">
+      <Panel className="min-w-0 lg:col-span-2">
         <PanelHeader
           title="Kích thước và hướng"
           description="Đo trên mặt mái (theo mặt nghiêng). Mái có nhiều mặt thì nhập mặt lớn nhất định lắp."
@@ -140,107 +172,52 @@ export function SurfaceEditor({ value, errors, onChange }: Props) {
         </PanelBody>
       </Panel>
 
-      <Panel>
+      <Panel className="min-w-0 lg:col-span-3">
         <PanelHeader
           title="Vật cản trên mặt lắp"
           description="Bồn nước, ống thông gió, cửa mái, cục nóng máy lạnh, lối đi… Không có thì bỏ qua."
-          action={
-            <Button ref={addRef} size="sm" icon="add" onClick={addObstacle} disabled={full}>
-              Thêm vật cản
-            </Button>
-          }
         />
-        <PanelBody className="space-y-4">
-          {size ? (
-            <SurfacePlan
-              widthM={size.width}
-              lengthM={size.length}
-              obstacles={planObstacles}
-              selected={selected}
-              onSelect={setSelected}
-              onMove={(i, xM, yM) => setObstacle(i, { xM: meterText(xM), yM: meterText(yM) })}
-              label={`Mặt bằng mặt lắp ${meterText(size.width)} × ${meterText(size.length)} m, ${obstacleCount} vật cản.`}
-            />
-          ) : (
-            <EmptyState title="Nhập chiều rộng và chiều dài để vẽ mặt lắp" description="Hình vẽ giúp đặt vật cản đúng chỗ trên mái." />
-          )}
-          {size && value.azimuthDegree && (
-            <p className="text-meta text-fg-3">
-              Hình vẽ nhìn từ trên xuống theo mặt mái: mép trên là mép cao, mái dốc xuống phía dưới hình và quay về hướng{' '}
-              {directionLabel(Number(value.azimuthDegree))}.
-            </p>
-          )}
-
-          {errors.obstacles && (
-            <p className="text-meta text-danger" role="alert">
-              {errors.obstacles}
-            </p>
-          )}
-
-          {obstacleCount > 0 && (
-            <ol className="divide-y divide-line">
-              {value.obstacles.map((o, i) => {
-                const isSelected = selected === i
-                const id = (field: string) => `obstacle-${o.key}-${field}`
-                return (
-                  <li
-                    key={o.key}
-                    className={cx(
-                      // Lấn 12px mỗi bên như dòng bảng, để nền "đang chọn" không cắt sát chữ.
-                      '-mx-3 rounded-container px-3 py-4',
-                      isSelected && 'bg-accent-soft',
-                    )}
-                    onFocusCapture={() => setSelected(i)}
-                  >
-                    {/* Hai hàng: tên + nút xoá, rồi 5 ô số. Một hàng 7 ô ở 1280px bẻ nhãn thành 2 dòng và các ô lệch nhau. */}
-                    <fieldset className="space-y-3">
-                      <legend className="sr-only">Vật cản {i + 1}</legend>
-                      <div className="flex items-end gap-3">
-                        <Field label={`Tên vật cản ${i + 1}`} htmlFor={id('name')} error={errors[obstacleErrorKey(i, 'name')]} className="min-w-0 flex-1">
-                          <Input
-                            id={id('name')}
-                            value={o.name}
-                            maxLength={SURFACE_LIMITS.maxNameLength}
-                            onChange={(e) => setObstacle(i, { name: e.target.value })}
-                            aria-invalid={Boolean(errors[obstacleErrorKey(i, 'name')])}
-                          />
-                        </Field>
-                        <IconButton
-                          icon="delete"
-                          variant="danger-quiet"
-                          label={`Xoá vật cản ${o.name.trim() || i + 1}`}
-                          tooltip="Xoá"
-                          onClick={() => removeObstacle(i)}
-                          className={errors[obstacleErrorKey(i, 'name')] ? 'mb-7' : undefined}
-                        />
-                      </div>
-                      <div className="grid grid-cols-2 gap-x-4 gap-y-3 sm:grid-cols-3 lg:grid-cols-5">
-                        {OBSTACLE_FIELDS.map(({ field, label, hint }) => {
-                          const error = errors[obstacleErrorKey(i, field)]
-                          return (
-                            <Field key={field} label={`${label} (m)`} htmlFor={id(field)} hint={hint} error={error}>
-                              <Input
-                                id={id(field)}
-                                inputMode="decimal"
-                                value={o[field]}
-                                onChange={(e) => setObstacle(i, { [field]: e.target.value })}
-                                aria-invalid={Boolean(error)}
-                              />
-                            </Field>
-                          )
-                        })}
-                      </div>
-                    </fieldset>
-                  </li>
-                )
-              })}
-            </ol>
-          )}
-          {full && <p className="text-meta text-fg-3">Đã đủ {SURFACE_LIMITS.maxObstacles} vật cản, mức tối đa của một mặt lắp.</p>}
+        <PanelBody className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-start">
+          <div className="min-w-0">
+            {size ? (
+              <SurfacePlan
+                widthM={size.width}
+                lengthM={size.length}
+                obstacles={planObstacles}
+                selected={current}
+                onSelect={setSelected}
+                onMove={(i, xM, yM) => setObstacle(i, { xM: meterText(xM), yM: meterText(yM) })}
+                label={`Mặt bằng mặt lắp ${meterText(size.width)} × ${meterText(size.length)} m, ${obstacleCount} vật cản.`}
+                caption={
+                  value.azimuthDegree && (
+                    <p className="text-meta text-fg-3">
+                      Hình vẽ nhìn từ trên xuống theo mặt mái: mép trên là mép cao, mái dốc xuống phía dưới hình và quay về hướng{' '}
+                      {directionLabel(Number(value.azimuthDegree))}.
+                    </p>
+                  )
+                }
+              />
+            ) : (
+              <EmptyState title="Nhập chiều rộng và chiều dài để vẽ mặt lắp" description="Hình vẽ giúp đặt vật cản đúng chỗ trên mái." />
+            )}
+          </div>
+          <ObstaclePanel
+            obstacles={value.obstacles}
+            errors={obstacleErrors}
+            selected={current}
+            onSelect={setSelected}
+            onAdd={() => appendObstacle(newObstacle(value))}
+            onDuplicate={(i) => appendObstacle(duplicateObstacle(value, i))}
+            onRemove={removeObstacle}
+            onChange={setObstacle}
+            focusKey={focusKey}
+            onFocused={clearFocusKey}
+            addRef={addRef}
+          />
         </PanelBody>
       </Panel>
 
-      <Panel>
+      <Panel className="min-w-0 lg:col-span-3">
         <PanelHeader title="Số liệu khai báo" description="Tính từ mặt lắp ở trên; dùng để chuyên viên đối chiếu khi khảo sát." />
         <PanelBody className="space-y-4">
           <Facts
@@ -292,6 +269,8 @@ export function SurfaceEditor({ value, errors, onChange }: Props) {
           )}
         </PanelBody>
       </Panel>
+
+      {aside && <div className="min-w-0 space-y-4 self-start lg:col-start-3 lg:row-start-1">{aside}</div>}
     </div>
   )
 }

@@ -6,7 +6,7 @@ import { Stat, StatRow } from '@/components/common/ui/stat'
 import { Skeleton } from '@/components/common/ui/states'
 import { EnergyChart } from '@/features/pre-surveys/components/EnergyChart'
 import { Facts } from '@/features/pre-surveys/components/Facts'
-import { directionLabel, formatRelative } from '@/features/pre-surveys/components/preSurveyDisplay'
+import { directionLabel, formatCoordinates, formatRelative, isInHcm, mapsUrl } from '@/features/pre-surveys/components/preSurveyDisplay'
 import type { SceneView } from '@/features/pre-surveys/components/SimulationScene'
 import {
   CLIMATE_DISCLAIMER,
@@ -21,7 +21,6 @@ import {
   formatM2,
   formatMm,
   formatOne,
-  formatTwo,
   installationSourceLabel,
   limitationText,
   mountingLabel,
@@ -125,6 +124,9 @@ export function SimulationResult({ detail, staleNote }: { detail: SimulationDeta
   const primary = scenarios.find((s) => s.mountingPlace === energy.primaryMountingPlace)
   const comparison = scenarios.find((s) => s !== primary)
   const climateContext = climate.status === 'SUCCEEDED' ? climate.context : null
+  const located = surface.latitude != null && surface.longitude != null
+  // Khách hàng lẫn sales đều cần biết: khí hậu, sản lượng dưới đây tính tại toạ độ đó, không phải công trình ở TP.HCM.
+  const outsideHcm = located && !isInHcm(surface.latitude!, surface.longitude!)
   const summary = `Lắp được ${layout.panelCount} tấm, tổng ${formatOne(layout.installedCapacityKwp)} kWp${
     energy.annualEnergyKwh != null ? `, ước tính ${formatKwh(energy.annualEnergyKwh)} kWh mỗi năm` : ''
   }.`
@@ -161,6 +163,12 @@ export function SimulationResult({ detail, staleNote }: { detail: SimulationDeta
           {noPanelsText(layout.details.noPanelsReason)} Thử tấm pin nhỏ hơn, giảm khoảng lùi mép hoặc khoảng cách quanh vật cản.
         </Notice>
       )}
+      {outsideHcm && (
+        <Notice tone="warn" title="Toạ độ địa điểm nằm ngoài TP.HCM">
+          Khí hậu và sản lượng dưới đây tính tại <span className="tnum">{formatCoordinates(surface.latitude!, surface.longitude!)}</span>, không phải
+          công trình. Sửa toạ độ của địa điểm rồi chạy lại mô phỏng.
+        </Notice>
+      )}
       {layout.panelCount > 0 && energy.annualEnergyKwh == null && <Notice tone="warn">{energyMissingText(energy)}</Notice>}
 
       <Section title="Bố trí tấm pin">
@@ -169,30 +177,41 @@ export function SimulationResult({ detail, staleNote }: { detail: SimulationDeta
           {view === '3d' && webgl && <Segmented label="Góc nhìn 3D" options={ANGLES} value={angle} onChange={setAngle} />}
         </div>
         {view === 'plan' ? (
-          <>
-            <SurfacePlan
-              widthM={surface.widthM}
-              lengthM={surface.lengthM}
-              obstacles={surface.obstacles}
-              panels={panels}
-              setbackM={installation.edgeSetbackMm.valueMm / 1000}
-              clearanceM={installation.obstacleClearanceMm.valueMm / 1000}
-              label={`Mặt bằng bố trí. ${summary}`}
-            />
-            <p className="text-meta text-fg-3">
-              Mép trên là mép cao của mái, mái quay về hướng {directionLabel(surface.azimuthDegree)}. Nét đứt: vùng lùi mép{' '}
-              {formatMm(installation.edgeSetbackMm.valueMm)}
-              {surface.obstacles.length > 0 && ` và khoảng cách quanh vật cản ${formatMm(installation.obstacleClearanceMm.valueMm)}`}.
-            </p>
-          </>
+          <SurfacePlan
+            widthM={surface.widthM}
+            lengthM={surface.lengthM}
+            obstacles={surface.obstacles}
+            panels={panels}
+            setbackM={installation.edgeSetbackMm.valueMm / 1000}
+            clearanceM={installation.obstacleClearanceMm.valueMm / 1000}
+            label={`Mặt bằng bố trí. ${summary}`}
+            caption={
+              <p className="text-meta text-fg-3">
+                Mép trên là mép cao của mái, mái quay về hướng {directionLabel(surface.azimuthDegree)}. Nét đứt: vùng lùi mép{' '}
+                {formatMm(installation.edgeSetbackMm.valueMm)}
+                {surface.obstacles.length > 0 && ` và khoảng cách quanh vật cản ${formatMm(installation.obstacleClearanceMm.valueMm)}`}.
+              </p>
+            }
+          />
         ) : webgl ? (
           <>
-            <div role="img" aria-label={`Mô phỏng 3D. ${summary}`} className="aspect-[4/3] w-full overflow-hidden rounded-container border border-line bg-surface-2">
-              <SceneBoundary>
-                <Suspense fallback={<Skeleton className="size-full rounded-none" />}>
-                  <SimulationScene detail={detail} view={angle} />
-                </Suspense>
-              </SceneBoundary>
+            {/*
+              Khung 4:3 theo bề rộng. Khung rộng từ 60rem (kết quả rộng hết trang ở bước mô phỏng của khách) thì 4:3 cao hơn
+              màn hình: giữ rộng hết, cao vừa phần khung nhìn còn thấy (trừ thanh trên + thanh thao tác), như mặt bằng 2D.
+              Đo theo bề rộng khung (container query) chứ không theo màn hình, nên ở cột 2/3 của trang sales vẫn là 4:3.
+            */}
+            <div className="@container">
+              <div
+                role="img"
+                aria-label={`Mô phỏng 3D. ${summary}`}
+                className="aspect-4/3 w-full overflow-hidden rounded-container border border-line bg-surface-2 @min-[60rem]:aspect-auto @min-[60rem]:h-[clamp(20rem,calc(100svh-10rem),45rem)]"
+              >
+                <SceneBoundary>
+                  <Suspense fallback={<Skeleton className="size-full rounded-none" />}>
+                    <SimulationScene detail={detail} view={angle} />
+                  </Suspense>
+                </SceneBoundary>
+              </div>
             </div>
             <p className="text-meta text-fg-3">Kéo để xoay; phóng to bằng Ctrl + lăn chuột hoặc chụm hai ngón. Nhà và tường chỉ để minh hoạ.</p>
           </>
@@ -261,6 +280,15 @@ export function SimulationResult({ detail, staleNote }: { detail: SimulationDeta
         </More>
 
         <More title="Khí hậu tại địa điểm">
+          {located && (
+            <p className="text-body text-fg-2">
+              Tại toạ độ <span className="tnum font-medium text-fg">{formatCoordinates(surface.latitude!, surface.longitude!)}</span> của địa điểm.{' '}
+              <a className="tap ui-link font-medium" href={mapsUrl(surface.latitude!, surface.longitude!)} target="_blank" rel="noreferrer">
+                Xem trên bản đồ
+                <span className="sr-only"> (mở tab mới)</span>
+              </a>
+            </p>
+          )}
           {climateContext ? (
             <>
               <Facts
@@ -297,7 +325,8 @@ export function SimulationResult({ detail, staleNote }: { detail: SimulationDeta
               </div>
               <p className="text-meta text-fg-3">
                 NASA POWER, trung bình các năm {climateContext.metadata.startYear} đến {climateContext.metadata.endYear} tại toạ độ{' '}
-                {formatTwo(climateContext.metadata.requestedLatitude)}, {formatTwo(climateContext.metadata.requestedLongitude)}. {CLIMATE_DISCLAIMER}
+                {formatCoordinates(climateContext.metadata.requestedLatitude, climateContext.metadata.requestedLongitude)} (làm tròn 0.01°).{' '}
+                {CLIMATE_DISCLAIMER}
               </p>
             </>
           ) : (

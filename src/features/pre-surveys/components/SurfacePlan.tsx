@@ -1,7 +1,8 @@
-import { useId, useRef, useState, type KeyboardEvent, type PointerEvent } from 'react'
+import { useId, useRef, useState, type KeyboardEvent, type PointerEvent, type ReactNode } from 'react'
 import { NUDGE_M, round3 } from '@/features/pre-surveys/components/surfaceForm'
 import { formatTwo } from '@/features/pre-surveys/components/simulationDisplay'
 import { useElementWidth } from '@/hooks/useElementWidth'
+import { useViewportHeight } from '@/hooks/useViewportHeight'
 import { cx } from '@/utils/cx'
 
 /*
@@ -10,13 +11,22 @@ import { cx } from '@/utils/cx'
   ResizeObserver – để chữ luôn 13px và kéo thả đổi đúng ra mét.
   Dùng ở hai nơi: editor mặt lắp (chọn, kéo thả, phím mũi tên dịch vật cản) và kết quả mô phỏng (thêm tấm pin, vùng
   lùi mép, vùng cách quanh vật cản). Màu theo token: tấm pin dùng màu vật liệu --pv-glass / --pv-frame.
+  Cỡ hình (người dùng 10/10/2026: hình phải to và nằm giữa): phóng hết chỗ có như "vừa khung" của phần mềm vẽ – rộng
+  bằng khung, cao tới phần khung nhìn còn thấy giữa thanh trên và thanh thao tác dính, nên cuộn tới là thấy trọn mặt lắp.
+  Không còn trần px/m: mặt lắp nhỏ cũng vẽ to, lưới tự thưa ra, kích thước thật đọc ở nhãn mét. Hình căn giữa khung,
+  chú thích nằm ngay dưới hình.
 */
 
 export type PlanObstacle = { name: string; xM: number; yM: number; widthM: number; lengthM: number }
 export type PlanPanel = { centerXM: number; centerYM: number; widthM: number; depthM: number; rotationDegree: number }
 
 const MARGIN = { top: 28, right: 12, bottom: 28, left: 36 }
-const MAX_PX_PER_M = 80
+/** Phần khung nhìn không dành cho hình: thanh trên (64px), thanh thao tác của wizard (~66px), nhãn trên + dưới hình (56px), khoảng thở. */
+const RESERVED_HEIGHT = 200
+/** Màn thấp (laptop phóng to trình duyệt) vẫn giữ hình đủ lớn để kéo vật cản. */
+const MIN_PLOT_HEIGHT = 280
+/** Chú thích dưới hình rộng bằng hình nhưng không hẹp hơn mức này, kẻo mỗi dòng chỉ vài chữ. */
+const CAPTION_MIN_WIDTH = 320
 /** Khoảng lưới chọn sao cho hai vạch cách nhau tối thiểu ~32px. */
 const GRID_STEPS = [0.5, 1, 2, 5, 10, 20, 50]
 
@@ -34,7 +44,7 @@ export function SurfacePlan({
   onSelect,
   onMove,
   label,
-  maxHeight = 420,
+  caption,
   className,
 }: {
   widthM: number
@@ -51,18 +61,20 @@ export function SurfacePlan({
   onMove?: (index: number, xM: number, yM: number) => void
   /** Mô tả cho trình đọc màn hình. */
   label: string
-  maxHeight?: number
+  /** Chú thích hiện ngay dưới hình (sau câu hướng dẫn kéo thả của editor). */
+  caption?: ReactNode
   className?: string
 }) {
   const [boxRef, boxWidth] = useElementWidth<HTMLDivElement>()
+  const viewportHeight = useViewportHeight()
   const hatchId = useId()
   const hintId = useId()
   const drag = useRef<{ index: number; pointerX: number; pointerY: number; xM: number; yM: number } | null>(null)
   const interactive = Boolean(onMove)
 
   const plotMaxW = Math.max(0, boxWidth - MARGIN.left - MARGIN.right)
-  // Trần 80 px/m: mặt lắp vài mét không bị phóng to bằng cả khung như mái hàng chục mét (người xem so được độ lớn).
-  const scale = widthM > 0 && lengthM > 0 ? Math.min(plotMaxW / widthM, maxHeight / lengthM, MAX_PX_PER_M) : 0
+  const plotMaxH = Math.max(MIN_PLOT_HEIGHT, viewportHeight - RESERVED_HEIGHT)
+  const scale = widthM > 0 && lengthM > 0 ? Math.min(plotMaxW / widthM, plotMaxH / lengthM) : 0
   const plotW = widthM * scale
   const plotH = lengthM * scale
   const left = MARGIN.left + (plotMaxW - plotW) / 2
@@ -70,6 +82,15 @@ export function SurfacePlan({
   const px = (xM: number) => left + xM * scale
   const py = (yM: number) => top + yM * scale
   const grid = GRID_STEPS.find((s) => s * scale >= 32) ?? GRID_STEPS.at(-1)!
+  /*
+    Chú thích: hình chiếm hết bề rộng thì chú thích theo lề nội dung như đoạn văn thường; hình hẹp hơn khung (vướng chiều
+    cao nên căn giữa) thì chú thích rộng bằng hình và nằm ngay dưới hình, không trôi về mép trái khung.
+  */
+  const captionWidth = Math.min(boxWidth, Math.max(plotW, CAPTION_MIN_WIDTH))
+  const captionStyle =
+    scale > 0 && plotW < plotMaxW - 1
+      ? { marginLeft: clamp(left + plotW / 2 - captionWidth / 2, 0, boxWidth - captionWidth), width: captionWidth }
+      : undefined
 
   /** Vị trí mới vừa dịch bằng bàn phím, đọc cho trình đọc màn hình (kéo chuột thì người dùng thấy ô nhập đổi theo). */
   const [announcement, setAnnouncement] = useState('')
@@ -213,10 +234,17 @@ export function SurfacePlan({
             const isSelected = selected === i
             // Vật cản tràn ra ngoài mặt lắp (đang nhập dở hoặc sai số): viền đỏ trùng với lỗi ở ô nhập.
             const outside = o.xM < 0 || o.yM < 0 || round3(o.xM + o.widthM) > widthM || round3(o.yM + o.lengthM) > lengthM
-            const x = px(o.xM)
-            const y = py(o.yM)
-            const w = o.widthM * scale
-            const h = o.lengthM * scale
+            // Chỉ vẽ phần nằm trong mặt lắp: gõ cỡ 1000000 m thì hình không đè ra ngoài nhãn, khung (người test 10/10/2026 thấy
+            // "tràn"); nằm hẳn ngoài mặt lắp thì không vẽ, danh sách vật cản vẫn báo lỗi.
+            const x0 = Math.max(0, o.xM)
+            const y0 = Math.max(0, o.yM)
+            const x1 = Math.min(widthM, o.xM + o.widthM)
+            const y1 = Math.min(lengthM, o.yM + o.lengthM)
+            if (x1 <= x0 || y1 <= y0) return null
+            const x = px(x0)
+            const y = py(y0)
+            const w = (x1 - x0) * scale
+            const h = (y1 - y0) * scale
             const c = clearanceM ?? 0
             return (
               <g key={i}>
@@ -257,18 +285,20 @@ export function SurfacePlan({
                   onKeyDown={interactive ? (e) => onKeyDown(e, i) : undefined}
                 />
                 {w > 56 && h > 22 ? (
+                  // Số thứ tự (trùng số ở danh sách vật cản) rồi tên, cắt bớt theo bề ngang ô.
                   <text
                     x={x + 6}
                     y={y + 16}
-                    className={cx('pointer-events-none text-meta', isSelected ? 'fill-accent-fg font-semibold' : 'fill-fg')}
+                    className={cx('pointer-events-none text-meta', isSelected ? 'fill-accent-fg' : 'fill-fg')}
                     paintOrder="stroke"
                     stroke="var(--surface-2)"
                     strokeWidth="3"
                   >
-                    {truncate(o.name, Math.floor((w - 12) / 7))}
+                    <tspan className="font-semibold">{i + 1}</tspan>
+                    {o.name && ` ${truncate(o.name, Math.floor((w - 12) / 7) - String(i + 1).length - 1)}`}
                   </text>
                 ) : (
-                  // Không đủ chỗ ghi tên: ghi số thứ tự, khớp với "Vật cản N" ở danh sách bên dưới.
+                  // Không đủ chỗ ghi tên: chỉ ghi số thứ tự.
                   w > 14 &&
                   h > 14 && (
                     <text
@@ -295,10 +325,15 @@ export function SurfacePlan({
           {announcement}
         </p>
       )}
-      {interactive && (
-        <p id={hintId} className="mt-2 text-meta text-fg-3">
-          Kéo vật cản để đổi vị trí, hoặc chọn rồi dùng phím mũi tên (giữ Shift để dịch 1 m).
-        </p>
+      {(interactive || caption) && (
+        <div className="mt-2 space-y-1 text-pretty" style={captionStyle}>
+          {interactive && (
+            <p id={hintId} className="text-meta text-fg-3">
+              Kéo vật cản để đổi vị trí, hoặc chọn rồi dùng phím mũi tên (giữ Shift để dịch 1&nbsp;m).
+            </p>
+          )}
+          {caption}
+        </div>
       )}
     </div>
   )

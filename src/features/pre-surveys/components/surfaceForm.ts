@@ -177,6 +177,40 @@ export function newObstacle(form: SurfaceForm): ObstacleForm {
   }
 }
 
+/**
+ * Bản sao của vật cản thứ `index` (cùng tên, cỡ, chiều cao) cho mái có nhiều vật cản giống nhau (dãy cục nóng máy lạnh,
+ * ống thông gió): đặt ngay bên phải, cách 0,5 m; hết chỗ thì xuống dưới; vẫn hết thì chồng lên chỗ cũ để khách kéo đi.
+ */
+export function duplicateObstacle(form: SurfaceForm, index: number): ObstacleForm {
+  const o = form.obstacles[index]!
+  const width = num(form.widthM) ?? 0
+  const length = num(form.lengthM) ?? 0
+  const x = num(o.xM) ?? 0
+  const y = num(o.yM) ?? 0
+  const w = num(o.widthM) ?? 0
+  const l = num(o.lengthM) ?? 0
+  const gap = 0.5
+  let nx = x
+  let ny = y
+  if (round3(x + 2 * w + gap) <= width) nx = x + w + gap
+  else if (round3(y + 2 * l + gap) <= length) ny = y + l + gap
+  return { ...o, key: newObstacleKey(), xM: meterText(nx), yM: meterText(ny) }
+}
+
+/** Gợi ý ở ô tên vật cản (vẫn gõ tên khác được): những thứ hay gặp trên mái nhà xưởng. */
+export const OBSTACLE_NAME_SUGGESTIONS = [
+  'Bồn nước',
+  'Cục nóng máy lạnh',
+  'Ống thông gió',
+  'Quạt hút mái',
+  'Cửa mái lấy sáng',
+  'Giếng trời',
+  'Ống khói',
+  'Cột thu lôi',
+  'Lối đi kỹ thuật',
+  'Máng xối',
+]
+
 /* ------------------------------------------------------------------ kiểm tra (bám đúng UpdatePreSurveySurfaceCommandValidator) */
 
 export type ObstacleField = 'name' | 'xM' | 'yM' | 'widthM' | 'lengthM' | 'heightM'
@@ -184,6 +218,25 @@ export type ObstacleField = 'name' | 'xM' | 'yM' | 'widthM' | 'lengthM' | 'heigh
 export type SurfaceErrors = Record<string, string>
 
 export const obstacleErrorKey = (index: number, field: ObstacleField) => `obstacles.${index}.${field}`
+
+const OBSTACLE_FIELDS: ObstacleField[] = ['name', 'xM', 'yM', 'widthM', 'lengthM', 'heightM']
+
+/**
+ * Lỗi của các ô SỐ của vật cản để báo ngay khi gõ (số quá lớn, vật cản to hơn / tràn khỏi mặt lắp), không đợi bấm Tiếp tục
+ * (người test 10/10/2026 gõ 1000000 thấy hình "tràn" mà không biết vì sao). Ô đang trống thì chưa báo "Nhập …" để khách xoá đi
+ * gõ lại không bị nháy đỏ; tên vật cản vẫn chỉ kiểm khi bấm Tiếp tục.
+ */
+export function liveObstacleErrors(form: SurfaceForm): SurfaceErrors {
+  const live: SurfaceErrors = {}
+  for (const [key, message] of Object.entries(validateSurface(form))) {
+    const m = /^obstacles\.(\d+)\.(xM|yM|widthM|lengthM|heightM)$/.exec(key)
+    if (m && form.obstacles[Number(m[1])]?.[m[2] as ObstacleField].trim()) live[key] = message
+  }
+  return live
+}
+
+/** Vật cản thứ `index` có ô nào đang báo lỗi không (dấu lỗi ở danh sách vật cản). */
+export const hasObstacleError = (errors: SurfaceErrors, index: number) => OBSTACLE_FIELDS.some((f) => errors[obstacleErrorKey(index, f)])
 
 function rangeIssue(
   value: string,
@@ -225,13 +278,16 @@ export function validateSurface(form: SurfaceForm): SurfaceErrors {
     add(key('widthM'), rangeIssue(o.widthM, 'bề ngang (m)', 0, SURFACE_LIMITS.maxSideM, { minExclusive: true }))
     add(key('lengthM'), rangeIssue(o.lengthM, 'bề dọc (m)', 0, SURFACE_LIMITS.maxSideM, { minExclusive: true }))
     add(key('heightM'), rangeIssue(o.heightM, 'chiều cao (m)', 0, SURFACE_LIMITS.maxObstacleHeightM, { required: false }))
-    // Vật cản phải nằm trọn trong mặt lắp; chạm mép được.
+    // Vật cản phải nằm trọn trong mặt lắp; chạm mép được. To hơn cả mặt lắp thì báo ở ô cỡ (dời vị trí không cứu được, và
+    // kéo trên hình theo chiều đó đứng im – người test 10/10/2026 tưởng kéo dọc bị hỏng); còn lại báo ở ô vị trí.
     const x = num(o.xM)
     const y = num(o.yM)
     const w = num(o.widthM)
     const l = num(o.lengthM)
-    if (width && x !== null && w !== null && round3(x + w) > width) add(key('xM'), 'Vật cản tràn ra ngoài chiều rộng mặt lắp.')
-    if (length && y !== null && l !== null && round3(y + l) > length) add(key('yM'), 'Vật cản tràn ra ngoài chiều dài mặt lắp.')
+    if (width && w !== null && w > width) add(key('widthM'), `Bề ngang lớn hơn chiều rộng mặt lắp (${meterText(width)} m).`)
+    else if (width && x !== null && w !== null && round3(x + w) > width) add(key('xM'), 'Vật cản tràn ra ngoài chiều rộng mặt lắp.')
+    if (length && l !== null && l > length) add(key('lengthM'), `Bề dọc lớn hơn chiều dài mặt lắp (${meterText(length)} m).`)
+    else if (length && y !== null && l !== null && round3(y + l) > length) add(key('yM'), 'Vật cản tràn ra ngoài chiều dài mặt lắp.')
   })
 
   // Số khai tự tính phải đạt luật của backend (UsableAreaM2 > 0): vật cản phủ kín mặt lắp thì dùng được = 0 → bị từ chối.

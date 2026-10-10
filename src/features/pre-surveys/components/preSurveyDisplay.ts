@@ -75,6 +75,33 @@ export function hasCoordinates(latitude: number | null | undefined, longitude: n
   return latitude != null && longitude != null && !(latitude === 0 && longitude === 0)
 }
 
+/*
+  Dự án chỉ nhận công trình ở TP.HCM (người dùng 10/10/2026). Khung toạ độ thô của TP.HCM sau sáp nhập 01/07/2025 (gồm
+  Bình Dương, Bà Rịa – Vũng Tàu cũ): đất liền và đặc khu Côn Đảo. Chỉ để cảnh báo toạ độ nhập nhầm (đảo hai số, sai dấu,
+  lệch hẳn nơi khác: một bản nháp thật ra khí hậu Nam Cực), không thay được ranh giới hành chính.
+*/
+const HCM_BOXES = [
+  { latMin: 10.3, latMax: 11.6, lonMin: 106.3, lonMax: 107.65 },
+  { latMin: 8.5, latMax: 8.9, lonMin: 106.4, lonMax: 106.8 },
+]
+
+export function isInHcm(latitude: number, longitude: number) {
+  return HCM_BOXES.some((b) => latitude >= b.latMin && latitude <= b.latMax && longitude >= b.lonMin && longitude <= b.lonMax)
+}
+
+/** Câu hướng dẫn khi toạ độ nằm ngoài TP.HCM: số viết kiểu Google Maps (dấu chấm) như khách chép vào ô. */
+export const HCM_COORDINATE_HINT = 'vĩ độ (số đầu) khoảng 10.3 đến 11.6, kinh độ (số sau) khoảng 106.3 đến 107.6'
+
+/** Toạ độ viết như Google Maps ("10.9036, 106.7686"): kiểu số Việt "10,9, 106,7" đọc nhầm dấu phẩy ngăn cách. */
+export function formatCoordinates(latitude: number, longitude: number) {
+  const part = (v: number) => String(Number(v.toFixed(5)))
+  return `${part(latitude)}, ${part(longitude)}`
+}
+
+export function mapsUrl(latitude: number, longitude: number) {
+  return `https://www.google.com/maps?q=${latitude},${longitude}`
+}
+
 /** Đã nhận nhưng chưa hẹn ngày khảo sát: việc tiếp theo của sales là gọi khách. */
 export function needsScheduling(status: number | null | undefined) {
   return status === 2 || status === 3

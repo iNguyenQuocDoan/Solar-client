@@ -1,6 +1,6 @@
 import { Fragment, useState } from 'react'
 import { useParams } from 'react-router'
-import { Badge } from '@/components/common/ui/badge'
+import { Badge, Count } from '@/components/common/ui/badge'
 import { Button, buttonClass } from '@/components/common/ui/button'
 import { ActivityList, Notice } from '@/components/common/ui/lists'
 import { PageHeader } from '@/components/common/ui/page-header'
@@ -92,7 +92,14 @@ function SimulationPanel({ request }: { request: SurveyRequestDetail }) {
       </Panel>
       {others.length > 1 && (
         <Panel>
-          <PanelHeader title="Các lần chạy của khách" description="Bấm một lần chạy để xem; lần khách chọn gắn nhãn Mô phỏng chính." />
+          <PanelHeader
+            title={
+              <span className="flex items-center gap-2">
+                Các lần chạy của khách <Count value={others.length} />
+              </span>
+            }
+            description="Bấm một lần chạy để xem; lần khách chọn gắn nhãn Mô phỏng chính."
+          />
           <PanelBody>
             <SimulationHistory items={others} viewingId={viewing} onView={setViewId} />
           </PanelBody>
@@ -194,7 +201,14 @@ export function OpsSurveyRequestPage() {
                 <SimulationPanel request={r} />
               </div>
 
-              <PanelAside aria-label="Khách hàng và tiến độ">
+              {/*
+                Dính theo khi cuộn (lg): phần mô phỏng ở cột trái dài hơn cột phụ nhiều, không dính thì cạnh mặt bằng / 3D là
+                một khoảng trống và hình trông lệch trái (người dùng 10/10/2026). Cao hơn khung nhìn thì cuộn trong khung.
+              */}
+              <PanelAside
+                aria-label="Khách hàng và tiến độ"
+                className="lg:sticky lg:top-16 lg:max-h-[calc(100dvh-5rem)] lg:overflow-y-auto lg:scrollbar-thin"
+              >
                 <Panel>
                   <PanelHeader title="Khách hàng" />
                   <PanelBody>

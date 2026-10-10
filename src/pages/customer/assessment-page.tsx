@@ -3,13 +3,14 @@ import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { toast } from 'sonner'
 import { Icon } from '@/components/common/stitch-ui/Icon'
 import { ActionBar } from '@/components/common/ui/action-bar'
+import { Count } from '@/components/common/ui/badge'
 import { Button } from '@/components/common/ui/button'
 import { Dialog, DialogFooter, DialogTitle } from '@/components/common/ui/dialog'
 import { KeyValueList, Notice } from '@/components/common/ui/lists'
 import { PageHeader } from '@/components/common/ui/page-header'
 import { Panel, PanelBody, PanelHeader } from '@/components/common/ui/panel'
 import { EmptyState, ErrorState, PageSkeleton } from '@/components/common/ui/states'
-import { Stepper, type Step } from '@/components/common/ui/stepper'
+import { WizardSteps, type WizardStep } from '@/components/common/ui/wizard-steps'
 import { usePageCrumb } from '@/components/layout/page-crumb'
 import { useAuth } from '@/context/AuthProvider'
 import { ProfileFields, SiteFields } from '@/features/pre-surveys/components/AssessmentFields'
@@ -62,9 +63,11 @@ import {
   useSurfaceQuery,
   useUpdatePreSurveyMutation,
 } from '@/features/pre-surveys/hooks/usePreSurveys'
+import { useHcmWardsQuery } from '@/features/pre-surveys/hooks/useHcmWards'
 import { CREATE_SIMULATION_KEY, useSimulationsQuery } from '@/features/pre-surveys/hooks/useSimulations'
 import { getSurface } from '@/features/pre-surveys/services/preSurveyService'
 import { errorMessage, isApiError } from '@/services/api/errors'
+import { cx } from '@/utils/cx'
 
 /*
  * Đánh giá sơ bộ: hồ sơ khách hàng → địa điểm → mặt lắp (kích thước, hướng, vật cản) → mô phỏng → xem lại và gửi.
@@ -79,6 +82,14 @@ import { errorMessage, isApiError } from '@/services/api/errors'
  */
 
 const STEP_LABELS = ['Thông tin khách hàng', 'Địa điểm lắp đặt', 'Mặt lắp', 'Mô phỏng', 'Xem lại và gửi']
+/** Một câu dưới tiêu đề trang: bước này để làm gì (người dùng 10/10/2026: các bước phải rõ, thân thiện). */
+const STEP_HINTS = [
+  'Cho biết bạn lắp đặt cho cá nhân hay doanh nghiệp. Chỉ khai một lần cho tài khoản này.',
+  'Công trình ở đâu và tấm pin sẽ lắp trên bề mặt nào.',
+  'Đo mặt mái định lắp, chọn hướng mái và đánh dấu các vật cản trên mái.',
+  'Chọn tấm pin và kiểu lắp để xem xếp được bao nhiêu tấm và ước tính sản lượng điện.',
+  'Kiểm tra lại thông tin rồi gửi để chuyên viên liên hệ hẹn ngày khảo sát.',
+]
 const SITE = 1
 const SURFACE = 2
 const SIMULATION = 3
@@ -137,6 +148,7 @@ export function AssessmentPage() {
   const saveSurfaceMutation = useSaveSurfaceMutation()
   const submitPreSurvey = useSubmitPreSurveyMutation()
   const surfaceQuery = useSurfaceQuery(saved.preSurveyId)
+  const wards = useHcmWardsQuery()
   const simulations = useSimulationsQuery(step >= SIMULATION ? saved.preSurveyId : null)
   const [savingSurface, setSavingSurface] = useState(false)
   // Đang chạy mô phỏng (có thể tới ~30 giây) cũng là bận: rời bước / gửi lúc này thì lần chạy bị 409 và mất (rà code 09/10/2026).
@@ -202,10 +214,6 @@ export function AssessmentPage() {
   // Thanh định vị ghi bước đang làm: "Cổng khách hàng / Đánh giá sơ bộ / Mặt lắp".
   usePageCrumb(STEP_LABELS[step])
   const firstStep = profileDone ? SITE : 0
-  const steps: Step[] = STEP_LABELS.map((label, i) => ({
-    label,
-    state: i < step || (i === 0 && profileDone) ? 'done' : i === step ? 'active' : 'upcoming',
-  }))
 
   function editor<F>(setter: (fn: (f: F) => F) => void) {
     return (patch: Partial<F>) => {
@@ -226,8 +234,23 @@ export function AssessmentPage() {
     setErrors({})
     setFormError(null)
     setConflict(false)
+    focusStepOnChange.current = true
     setStep(target)
   }
+
+  /*
+    Đổi bước do khách bấm (Tiếp tục, Quay lại, bấm bước đã xong, nút Sửa): đưa trang về đầu bước mới thay vì đứng ở cuối
+    trang của bước cũ, và đưa focus về tiêu đề (ẩn) của bước để bàn phím / trình đọc màn hình bắt đầu từ đầu bước.
+  */
+  const stepHeadingRef = useRef<HTMLHeadingElement>(null)
+  const focusStepOnChange = useRef(false)
+  useEffect(() => {
+    if (!focusStepOnChange.current) return
+    focusStepOnChange.current = false
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' })
+    stepHeadingRef.current?.focus({ preventScroll: true })
+  }, [step])
 
   function showErrors(found: Record<string, string | undefined>) {
     setErrors(Object.fromEntries(Object.entries(found).filter((e): e is [string, string] => Boolean(e[1]))))
@@ -261,8 +284,14 @@ export function AssessmentPage() {
   }
 
   async function saveSite() {
+    // Không sửa gì ở địa điểm đã lưu: đi tiếp, kể cả địa điểm cũ khai tự do trước khi có danh sách phường/xã 2 cấp
+    // (kiểm tra lại sẽ bắt chọn phường mới và tạo bản nháp mới chỉ vì khách bấm Quay lại rồi Tiếp tục).
+    if (saved.siteId && saved.site && same(site, siteToForm(saved.site))) return goTo(SURFACE)
     const result = check(siteSchema, site)
-    if (result.errors) return showErrors(result.errors as FormErrors<SiteForm>)
+    const wardNames = wards.data?.map((w) => w.name)
+    // Danh sách không tải được thì nhận chữ khách gõ (đã báo ở ô); có danh sách thì phải đúng một phường, xã trong đó.
+    const wardIssue = wardNames && site.ward.trim() && !wardNames.includes(site.ward.trim()) ? 'Chọn phường, xã trong danh sách.' : undefined
+    if (result.errors || wardIssue) return showErrors({ ...result.errors, ...(wardIssue ? { ward: wardIssue } : {}) })
     if (saved.siteId && same(saved.site, result.data)) return goTo(SURFACE)
     try {
       const { propertySiteId } = await createSite.mutateAsync(result.data)
@@ -444,6 +473,58 @@ export function AssessmentPage() {
   const submitted = requestId !== null
   const waitingDraft = Boolean(saved.preSurveyId) && hydratedFor !== saved.preSurveyId
   const selectedRun = simulations.data?.find((s) => s.isSelected) ?? null
+  /** Tóm tắt dưới bước đã xong: khách nhìn lại được đã khai gì mà không phải mở lại từng bước. */
+  const stepSummaries: (string | undefined)[] = [
+    saved.profile ? [customerTypeLabel(saved.profile.customerType), saved.profile.companyName].filter(Boolean).join(', ') : 'Đã có hồ sơ',
+    saved.site ? [saved.site.name, saved.site.ward].filter(Boolean).join(', ') : undefined,
+    loaded?.surfaceDefined
+      ? `${formatTwo(loaded.surfaceWidthM)} × ${formatTwo(loaded.surfaceLengthM)} m, ${loaded.obstacles.length > 0 ? `${loaded.obstacles.length} vật cản` : 'không có vật cản'}`
+      : undefined,
+    selectedRun ? `${selectedRun.panelCount} tấm, ${formatOne(selectedRun.installedCapacityKwp)} kWp` : 'Chưa chạy mô phỏng',
+    undefined,
+  ]
+  const steps: WizardStep[] = STEP_LABELS.map((label, i) => {
+    const state = i < step || (i === 0 && profileDone) ? 'done' : i === step ? 'active' : 'upcoming'
+    return {
+      label,
+      state,
+      summary: state === 'done' ? stepSummaries[i] : undefined,
+      // Bấm bước đã xong để quay lại; hồ sơ khách hàng tạo một lần, không sửa được nên không bấm.
+      onSelect: state === 'done' && i >= firstStep && !busy && !submitted ? () => goTo(i) : undefined,
+    }
+  })
+  /*
+    Bước có hình vẽ (mặt lắp, mô phỏng) rộng hết trang và tự đặt cột phụ cạnh khối nhập liệu ở hàng đầu, để hình to và nằm
+    giữa trang (người dùng 10/10/2026). Các bước còn lại giữ form 2/3 + cột phụ 1/3.
+  */
+  const wide = step === SURFACE || (step === SIMULATION && Boolean(saved.preSurveyId && loaded?.surfaceDefined))
+  const aside = (
+    <>
+      {step === SIMULATION && simulations.data && simulations.data.length > 0 && (
+        <Panel>
+          <PanelHeader
+            title={
+              <span className="flex items-center gap-2">
+                Các lần chạy <Count value={simulations.data.length} />
+              </span>
+            }
+          />
+          <PanelBody>
+            <SimulationHistory items={simulations.data} viewingId={viewId ?? loaded?.selectedSimulationId ?? null} onView={setViewId} />
+          </PanelBody>
+        </Panel>
+      )}
+      <Notice tone="info" title="Sau khi gửi">
+        Yêu cầu chuyển tới bộ phận kinh doanh. Chuyên viên nhận yêu cầu sẽ liên hệ để hẹn ngày khảo sát tại công trình
+        và kiểm tra lại các số đo bạn khai.
+      </Notice>
+      {saved.preSurveyId && !submitted && (
+        <Notice tone="ok">
+          Bản nháp <span className="tnum font-medium text-fg">{shortCode(saved.preSurveyId)}</span> đã lưu trên hệ thống; tải lại trang vẫn làm tiếp được.
+        </Notice>
+      )}
+    </>
+  )
 
   if (waitingDraft) {
     return resumeError ? (
@@ -462,16 +543,15 @@ export function AssessmentPage() {
 
   return (
     <>
-      <PageHeader title="Đánh giá sơ bộ" meta={<span>Bước {step + 1}/5</span>} />
+      <PageHeader title="Đánh giá sơ bộ" description={STEP_HINTS[step]} />
 
-      <Panel className="mb-6 border-t-0! pt-0!">
-        <PanelBody>
-          <Stepper steps={steps} />
-        </PanelBody>
-      </Panel>
+      <WizardSteps steps={steps} label="Các bước đánh giá sơ bộ" className="mb-8" />
+      <h2 ref={stepHeadingRef} tabIndex={-1} className="sr-only">
+        Bước {step + 1}/{STEP_LABELS.length}: {STEP_LABELS[step]}
+      </h2>
 
-      <div className="grid gap-6 lg:grid-cols-3">
-        <form id="assessment-step" noValidate onSubmit={next} className="min-w-0 space-y-4 lg:col-span-2">
+      <div className={cx('grid gap-6', !wide && 'lg:grid-cols-3')}>
+        <form id="assessment-step" noValidate onSubmit={next} className={cx('min-w-0 space-y-4', !wide && 'lg:col-span-2')}>
           {step === 0 && (
             <Panel>
               <PanelHeader title="Thông tin khách hàng" description="Khai một lần cho tài khoản này." />
@@ -518,6 +598,7 @@ export function AssessmentPage() {
                   setSurface(nextForm)
                   clearErrors(touched)
                 }}
+                aside={aside}
               />
             </>
           )}
@@ -540,6 +621,7 @@ export function AssessmentPage() {
               onEditSurface={() => goTo(SURFACE)}
               onEditSite={() => goTo(SITE)}
               onDraftClosed={restartDraft}
+              aside={aside}
             />
           )}
 
@@ -651,25 +733,7 @@ export function AssessmentPage() {
           )}
         </form>
 
-        <div className="min-w-0 space-y-4 self-start">
-          {step === SIMULATION && simulations.data && simulations.data.length > 0 && (
-            <Panel>
-              <PanelHeader title="Các lần chạy" />
-              <PanelBody>
-                <SimulationHistory items={simulations.data} viewingId={viewId ?? loaded?.selectedSimulationId ?? null} onView={setViewId} />
-              </PanelBody>
-            </Panel>
-          )}
-          <Notice tone="info" title="Sau khi gửi">
-            Yêu cầu chuyển tới bộ phận kinh doanh. Chuyên viên nhận yêu cầu sẽ liên hệ để hẹn ngày khảo sát tại công trình
-            và kiểm tra lại các số đo bạn khai.
-          </Notice>
-          {saved.preSurveyId && !submitted && (
-            <Notice tone="ok">
-              Bản nháp <span className="tnum font-medium text-fg">{shortCode(saved.preSurveyId)}</span> đã lưu trên hệ thống; tải lại trang vẫn làm tiếp được.
-            </Notice>
-          )}
-        </div>
+        {!wide && <div className="min-w-0 space-y-4 self-start">{aside}</div>}
       </div>
 
       <ActionBar>
@@ -695,7 +759,7 @@ export function AssessmentPage() {
             className="w-full sm:w-auto"
             disabled={busy || submitted || (step === SIMULATION && !loaded?.surfaceDefined)}
           >
-            {runningSimulation ? 'Đang chạy mô phỏng…' : busy ? 'Đang lưu…' : step === REVIEW ? 'Gửi yêu cầu khảo sát' : 'Tiếp tục'}
+            {runningSimulation ? 'Đang chạy mô phỏng…' : busy ? 'Đang lưu…' : step === REVIEW ? 'Gửi yêu cầu khảo sát' : `Tiếp tục: ${STEP_LABELS[step + 1]}`}
           </Button>
         </div>
       </ActionBar>

@@ -35,18 +35,41 @@ export const EMPTY_SIMULATION_FORM: SimulationForm = {
 }
 
 /** Mặc định sơ bộ của backend (appsettings SolarSimulation.PreliminaryDefaults) – chỉ để gợi ý trong ô, không gửi đi. */
-export const SPACING_FIELDS: { field: SpacingField; label: string; hint: (mounting: MountingType) => string; max: number; rackOnly?: boolean }[] = [
-  { field: 'panelGapMm', label: 'Khe giữa hai tấm', hint: () => 'Để trống: 20 mm.', max: 5000 },
+/*
+  Ô để trống thì backend dùng giá trị mặc định (kết quả ghi rõ nguồn "mặc định"). Số mặc định hiện mờ ngay trong ô
+  (`placeholder`) để khách thấy để trống là bao nhiêu – người test 10/10/2026: "chỗ để trống là mặc định 20 mm hả, không biết".
+  Không điền sẵn số vào ô: điền sẵn thì gửi lên thành số khách nhập, mất nguồn "mặc định" trong kết quả.
+*/
+export const SPACING_FIELDS: {
+  field: SpacingField
+  label: string
+  hint: (mounting: MountingType) => string
+  placeholder: (mounting: MountingType) => string
+  max: number
+  rackOnly?: boolean
+}[] = [
+  { field: 'panelGapMm', label: 'Khe giữa hai tấm', hint: () => 'Mặc định 20 mm.', placeholder: () => '20', max: 5000 },
   {
     field: 'rowGapMm',
     label: 'Khoảng cách giữa hai hàng',
-    hint: (m) => (m === 'RACK' ? 'Để trống: tính theo bóng nắng (không có toạ độ thì 1.000 mm).' : 'Để trống: 20 mm.'),
+    hint: (m) => (m === 'RACK' ? 'Mặc định tự tính theo bóng nắng (không có toạ độ thì 1.000 mm).' : 'Mặc định 20 mm.'),
+    placeholder: (m) => (m === 'RACK' ? 'Tự tính' : '20'),
     max: 5000,
   },
-  { field: 'edgeSetbackMm', label: 'Lùi vào từ mép mái', hint: () => 'Để trống: 300 mm.', max: 5000 },
-  { field: 'obstacleClearanceMm', label: 'Cách vật cản', hint: () => 'Để trống: 300 mm.', max: 5000 },
-  { field: 'rackLowEdgeClearanceMm', label: 'Mép thấp khung cách mái', hint: () => 'Để trống: 200 mm.', max: 3000, rackOnly: true },
+  { field: 'edgeSetbackMm', label: 'Lùi vào từ mép mái', hint: () => 'Mặc định 300 mm.', placeholder: () => '300', max: 5000 },
+  { field: 'obstacleClearanceMm', label: 'Cách vật cản', hint: () => 'Mặc định 300 mm.', placeholder: () => '300', max: 5000 },
+  {
+    field: 'rackLowEdgeClearanceMm',
+    label: 'Mép thấp khung cách mái',
+    hint: () => 'Mặc định 200 mm.',
+    placeholder: () => '200',
+    max: 3000,
+    rackOnly: true,
+  },
 ]
+
+/** Tổn hao hệ thống để trống: 14% (mặc định của PVGIS). */
+export const DEFAULT_SYSTEM_LOSS_PERCENT = '14'
 
 export type SimulationErrors = Partial<Record<keyof SimulationForm, string>>
 

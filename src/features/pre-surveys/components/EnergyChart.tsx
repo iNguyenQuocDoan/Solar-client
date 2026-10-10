@@ -13,7 +13,8 @@ import type { MonthlyPvEnergy } from '@/types/res/simulationsRes'
 */
 
 const MARGIN = { top: 24, right: 8, bottom: 28, left: 52 }
-const PLOT_HEIGHT = 180
+/** Cao vùng vẽ theo bề rộng (≈ 1/5), trong khoảng 180–240px: kết quả rộng hết trang thì biểu đồ không thành một dải mỏng. */
+const PLOT_HEIGHT = { min: 180, max: 240, ratio: 0.2 }
 const BAR_MAX = 24
 const RADIUS = 4
 
@@ -46,9 +47,10 @@ export function EnergyChart({ monthly }: { monthly: MonthlyPvEnergy[] }) {
   const peak = months.reduce((best, m, i) => (m.energyKwh > months[best]!.energyKwh ? i : best), 0)
 
   const plotW = Math.max(0, width - MARGIN.left - MARGIN.right)
+  const plotH = Math.round(Math.min(PLOT_HEIGHT.max, Math.max(PLOT_HEIGHT.min, width * PLOT_HEIGHT.ratio)))
   const band = plotW / months.length
   const barW = Math.min(BAR_MAX, band * 0.6)
-  const y = (v: number) => MARGIN.top + PLOT_HEIGHT - (v / top) * PLOT_HEIGHT
+  const y = (v: number) => MARGIN.top + plotH - (v / top) * plotH
   const cx = (i: number) => MARGIN.left + band * i + band / 2
   const shortLabels = band < 30
 
@@ -69,7 +71,7 @@ export function EnergyChart({ monthly }: { monthly: MonthlyPvEnergy[] }) {
         {width > 0 && (
           <svg
             width={width}
-            height={MARGIN.top + PLOT_HEIGHT + MARGIN.bottom}
+            height={MARGIN.top + plotH + MARGIN.bottom}
             role="group"
             aria-label="Biểu đồ sản lượng điện theo tháng, kWh"
             aria-describedby={hintId}
@@ -93,9 +95,9 @@ export function EnergyChart({ monthly }: { monthly: MonthlyPvEnergy[] }) {
                 const h = Math.max(0, y(0) - y(m.energyKwh))
                 return (
                   <g key={m.month}>
-                    {active === i && <rect x={cx(i) - band / 2} y={MARGIN.top} width={band} height={PLOT_HEIGHT} className="fill-hover" />}
+                    {active === i && <rect x={cx(i) - band / 2} y={MARGIN.top} width={band} height={plotH} className="fill-hover" />}
                     <path d={columnPath(cx(i) - barW / 2, y(m.energyKwh), barW, h)} className="fill-chart-1" />
-                    <text x={cx(i)} y={MARGIN.top + PLOT_HEIGHT + 18} textAnchor="middle" className={active === i ? 'fill-fg text-meta font-semibold' : 'fill-fg-3 text-meta'}>
+                    <text x={cx(i)} y={MARGIN.top + plotH + 18} textAnchor="middle" className={active === i ? 'fill-fg text-meta font-semibold' : 'fill-fg-3 text-meta'}>
                       {shortLabels ? m.month : MONTHS[m.month - 1]}
                     </text>
                     {i === peak && active !== i && (
@@ -108,7 +110,7 @@ export function EnergyChart({ monthly }: { monthly: MonthlyPvEnergy[] }) {
                       x={cx(i) - band / 2}
                       y={MARGIN.top}
                       width={band}
-                      height={PLOT_HEIGHT}
+                      height={plotH}
                       fill="transparent"
                       onPointerEnter={() => setActive(i)}
                       onPointerDown={() => setActive(i)}

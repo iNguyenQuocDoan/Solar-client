@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { Icon } from '@/components/common/stitch-ui/Icon'
 import { Button } from '@/components/common/ui/button'
 import { Field, Input, Select } from '@/components/common/ui/field'
@@ -7,9 +7,10 @@ import { Panel, PanelBody, PanelHeader } from '@/components/common/ui/panel'
 import { Segmented } from '@/components/common/ui/segmented'
 import { EmptyState, Skeleton } from '@/components/common/ui/states'
 import { CompassPicker, WithUnit } from '@/features/pre-surveys/components/AssessmentFields'
-import { directionLabel } from '@/features/pre-surveys/components/preSurveyDisplay'
+import { HCM_COORDINATE_HINT, directionLabel, formatCoordinates, isInHcm, mapsUrl } from '@/features/pre-surveys/components/preSurveyDisplay'
 import { MOUNTING_TYPES, formatKwh, formatOne, formatTwo, type MountingType } from '@/features/pre-surveys/components/simulationDisplay'
 import {
+  DEFAULT_SYSTEM_LOSS_PERCENT,
   SPACING_FIELDS,
   canSimulate,
   serverSimulationErrors,
@@ -30,7 +31,10 @@ import { cx } from '@/utils/cx'
   Bước "Mô phỏng" của khách hàng: chọn tấm pin + kiểu lắp (+ khoảng cách nếu muốn) rồi để backend xếp tấm trên mặt lắp
   đã lưu và ước tính sản lượng (PVGIS, NASA POWER). Mỗi lần chạy được lưu; backend tự lấy lần tạo / dùng lại gần nhất làm
   mô phỏng chính. Chạy cùng cấu hình trên cùng mặt lắp thì backend trả lại kết quả cũ (200) thay vì tính lại.
-  Trang giữ form và lần đang xem (để giữ qua lại giữa các bước); danh sách các lần chạy nằm ở cột phụ của trang.
+  Trang giữ form và lần đang xem (để giữ qua lại giữa các bước); danh sách các lần chạy nằm ở cột phụ của trang (`aside`).
+  Bố cục (người dùng 10/10/2026: hình phải to và nằm giữa): cấu hình chiếm 2/3 hàng đầu cạnh cột phụ, kết quả (mặt bằng,
+  3D, biểu đồ) rộng hết trang ở dưới. Thứ tự DOM là thứ tự trên điện thoại (cột phụ xuống cuối như trước), từ lg cột phụ
+  mới được đặt lên hàng đầu.
 */
 
 type Props = {
@@ -44,6 +48,8 @@ type Props = {
   onEditSite: () => void
   /** Bản nháp đã được gửi ở nơi khác (409 PRE_SURVEY_NOT_EDITABLE): trang bỏ id bản nháp và cho tạo bản mới. */
   onDraftClosed: () => void
+  /** Cột phụ của trang (các lần chạy, ghi chú), đặt cạnh khối cấu hình. */
+  aside?: ReactNode
 }
 
 const FIX_FIELDS = 'Sửa các ô được đánh dấu rồi chạy lại.'
@@ -53,7 +59,7 @@ const SPACING_KEYS = [...SPACING_FIELDS.map((f) => f.field), 'systemLossPercent'
 /** Giới hạn tạo mô phỏng của backend: 10 lần / phút; server không gửi Retry-After thì chờ đủ một phút. */
 const DEFAULT_RETRY_SECONDS = 60
 
-export function SimulationWorkspace({ preSurveyId, surface, form, onFormChange, viewId, onView, onEditSurface, onEditSite, onDraftClosed }: Props) {
+export function SimulationWorkspace({ preSurveyId, surface, form, onFormChange, viewId, onView, onEditSurface, onEditSite, onDraftClosed, aside }: Props) {
   const catalog = useProductsQuery(SOLAR_PANEL_QUERY)
   const panels = useMemo(() => (catalog.data?.items ?? []).filter(canSimulate), [catalog.data])
   const create = useCreateSimulationMutation()
@@ -94,6 +100,8 @@ export function SimulationWorkspace({ preSurveyId, surface, form, onFormChange, 
 
   const rack = form.mountingType === 'RACK'
   const hasLocation = surface.latitude != null && surface.longitude != null
+  // Toạ độ nằm ngoài TP.HCM thì khí hậu, sản lượng tính ở nơi khác (một bản nháp thật ra khí hậu Nam Cực): báo trước khi chạy.
+  const outsideHcm = surface.latitude != null && surface.longitude != null && !isInHcm(surface.latitude, surface.longitude)
 
   function patch(next: Partial<SimulationForm>) {
     onFormChange({ ...form, ...next })
@@ -152,9 +160,10 @@ export function SimulationWorkspace({ preSurveyId, surface, form, onFormChange, 
   const mountingHint = MOUNTING_TYPES.find((m) => m.value === form.mountingType)?.hint
 
   return (
-    <div className="space-y-6">
+    <div className="grid gap-6 lg:grid-cols-3">
       <Panel
         raised
+        className="min-w-0 lg:col-span-2"
         // Ô cấu hình nằm trong <form> của wizard: Enter mặc định gửi form (nhảy sang bước xem lại). Ở đây Enter = chạy mô phỏng.
         onKeyDown={(e) => {
           if (e.key === 'Enter' && e.target instanceof HTMLInputElement) {
@@ -174,7 +183,32 @@ export function SimulationWorkspace({ preSurveyId, surface, form, onFormChange, 
             <button type="button" className="tap ui-link font-medium" onClick={onEditSurface}>
               Sửa mặt lắp
             </button>
+            {surface.latitude != null && surface.longitude != null && !outsideHcm && (
+              <span className="block">
+                Toạ độ <span className="tnum">{formatCoordinates(surface.latitude, surface.longitude)}</span>.{' '}
+                <a className="tap ui-link font-medium" href={mapsUrl(surface.latitude, surface.longitude)} target="_blank" rel="noreferrer">
+                  Xem trên bản đồ
+                  <span className="sr-only"> (mở tab mới)</span>
+                </a>
+              </span>
+            )}
           </p>
+
+          {outsideHcm && surface.latitude != null && surface.longitude != null && (
+            <Notice tone="warn" title="Toạ độ địa điểm nằm ngoài TP.HCM">
+              Khí hậu và sản lượng sẽ tính tại <span className="tnum">{formatCoordinates(surface.latitude, surface.longitude)}</span>, không phải
+              công trình của bạn. Toạ độ ở TP.HCM có {HCM_COORDINATE_HINT}.
+              <span className="mt-2 flex flex-wrap gap-x-4 gap-y-1">
+                <button type="button" className="tap ui-link font-medium" onClick={onEditSite}>
+                  Sửa toạ độ ở bước Địa điểm
+                </button>
+                <a className="tap ui-link font-medium" href={mapsUrl(surface.latitude, surface.longitude)} target="_blank" rel="noreferrer">
+                  Xem trên bản đồ
+                  <span className="sr-only"> (mở tab mới)</span>
+                </a>
+              </span>
+            </Notice>
+          )}
 
           {!hasLocation && (
             <Notice tone="warn" title="Địa điểm chưa có toạ độ">
@@ -255,7 +289,9 @@ export function SimulationWorkspace({ preSurveyId, surface, form, onFormChange, 
             <summary className="tap w-fit cursor-pointer text-body font-medium text-accent-fg underline-offset-4 hover:underline">
               Khoảng cách lắp đặt và tổn hao (không bắt buộc)
             </summary>
-            <p className="mt-2 text-meta text-fg-3">Đơn vị mm (20 mm = 2 cm). Để trống thì dùng mặc định; kết quả ghi rõ giá trị đã dùng và nguồn của nó.</p>
+            <p className="mt-2 text-meta text-fg-3">
+              Không chắc thì để trống: hệ thống dùng số mặc định đang hiện mờ trong ô, kết quả ghi rõ giá trị đã dùng. Đơn vị mm (20 mm = 2 cm).
+            </p>
             <div className="mt-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
               {SPACING_FIELDS.filter((s) => rack || !s.rackOnly).map((s) => (
                 <Field key={s.field} label={s.label} htmlFor={`sim-${s.field}`} hint={s.hint(form.mountingType)} error={errors[s.field]}>
@@ -263,6 +299,7 @@ export function SimulationWorkspace({ preSurveyId, surface, form, onFormChange, 
                     <Input
                       id={`sim-${s.field}`}
                       inputMode="decimal"
+                      placeholder={s.placeholder(form.mountingType)}
                       value={form[s.field]}
                       onChange={(e) => patch({ [s.field]: e.target.value })}
                       aria-invalid={Boolean(errors[s.field])}
@@ -270,11 +307,12 @@ export function SimulationWorkspace({ preSurveyId, surface, form, onFormChange, 
                   </WithUnit>
                 </Field>
               ))}
-              <Field label="Tổn hao hệ thống" htmlFor="simLoss" hint="Để trống: 14% (mặc định của PVGIS)." error={errors.systemLossPercent}>
+              <Field label="Tổn hao hệ thống" htmlFor="simLoss" hint={`Mặc định ${DEFAULT_SYSTEM_LOSS_PERCENT}% (theo PVGIS).`} error={errors.systemLossPercent}>
                 <WithUnit unit="%">
                   <Input
                     id="simLoss"
                     inputMode="decimal"
+                    placeholder={DEFAULT_SYSTEM_LOSS_PERCENT}
                     value={form.systemLossPercent}
                     onChange={(e) => patch({ systemLossPercent: e.target.value })}
                     aria-invalid={Boolean(errors.systemLossPercent)}
@@ -303,7 +341,7 @@ export function SimulationWorkspace({ preSurveyId, surface, form, onFormChange, 
         </PanelBody>
       </Panel>
 
-      <div ref={resultRef} className="scroll-mt-20">
+      <div ref={resultRef} className="min-w-0 scroll-mt-20 lg:col-span-3 lg:row-start-2">
         <Panel>
           <PanelHeader title="Kết quả mô phỏng" />
           <PanelBody className="space-y-4">
@@ -330,6 +368,8 @@ export function SimulationWorkspace({ preSurveyId, surface, form, onFormChange, 
           </PanelBody>
         </Panel>
       </div>
+
+      {aside && <div className="min-w-0 space-y-4 self-start lg:col-start-3 lg:row-start-1">{aside}</div>}
     </div>
   )
 }

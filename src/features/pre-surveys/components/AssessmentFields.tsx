@@ -1,8 +1,20 @@
-import { useState, type ReactNode } from 'react'
+import { useMemo, useState, type ReactNode } from 'react'
 import { Icon } from '@/components/common/stitch-ui/Icon'
+import { Button } from '@/components/common/ui/button'
+import { Combobox } from '@/components/common/ui/combobox'
 import { Field, Input, Radio, Textarea } from '@/components/common/ui/field'
-import { COMPASS_GRID, CUSTOMER_TYPES, SURFACE_TYPES } from '@/features/pre-surveys/components/preSurveyDisplay'
-import type { FormErrors, ProfileForm, SiteForm } from '@/features/pre-surveys/components/assessmentForm'
+import { Notice } from '@/components/common/ui/lists'
+import {
+  COMPASS_GRID,
+  CUSTOMER_TYPES,
+  HCM_COORDINATE_HINT,
+  SURFACE_TYPES,
+  isInHcm,
+  mapsUrl,
+} from '@/features/pre-surveys/components/preSurveyDisplay'
+import { toNumber, type FormErrors, type ProfileForm, type SiteForm } from '@/features/pre-surveys/components/assessmentForm'
+import { useHcmWardsQuery } from '@/features/pre-surveys/hooks/useHcmWards'
+import { HCM_PROVINCE } from '@/features/pre-surveys/services/provinceService'
 
 /* Ô nhập của hai bước đầu màn đánh giá sơ bộ (hồ sơ, địa điểm) + la bàn và ô có đơn vị dùng ở bước mặt lắp, mô phỏng.
    Trang giữ state; component chỉ vẽ và báo thay đổi. */
@@ -21,6 +33,11 @@ function CoordinateFields({ value, errors, onChange }: FieldsProps<SiteForm>) {
   const [open, setOpen] = useState(() => Boolean(value.latitude || value.longitude))
   const hasError = Boolean(errors.latitude || errors.longitude)
   const shown = open || hasError
+  // Cảnh báo (vẫn cho lưu, người dùng chốt 10/10/2026) khi cả hai số hợp lệ mà nằm ngoài TP.HCM: gõ ngược hai số, sai dấu…
+  const lat = toNumber(value.latitude)
+  const lon = toNumber(value.longitude)
+  const outside =
+    lat !== null && lon !== null && Number.isFinite(lat) && Number.isFinite(lon) && Math.abs(lat) <= 90 && Math.abs(lon) <= 180 && !isInHcm(lat, lon)
   return (
     <details className="sm:col-span-2" open={shown} onToggle={(e) => setOpen(e.currentTarget.open)}>
       {/* `tap` là inline-flex nên mất mũi tên mặc định của summary: icon mở / thu cùng chữ đổi theo trạng thái thay cho mũi tên. */}
@@ -47,6 +64,15 @@ function CoordinateFields({ value, errors, onChange }: FieldsProps<SiteForm>) {
             aria-invalid={Boolean(errors.longitude)}
           />
         </Field>
+        {outside && (
+          <Notice tone="warn" className="sm:col-span-2">
+            Toạ độ này nằm ngoài TP.HCM, nơi Smart Solar đang nhận công trình. Kiểm tra lại: {HCM_COORDINATE_HINT}.{' '}
+            <a className="ui-link font-medium" href={mapsUrl(lat, lon)} target="_blank" rel="noreferrer">
+              Xem trên bản đồ
+              <span className="sr-only"> (mở tab mới)</span>
+            </a>
+          </Notice>
+        )}
       </div>
     </details>
   )
@@ -173,6 +199,41 @@ export function ProfileFields({ value, errors, onChange }: FieldsProps<ProfileFo
   )
 }
 
+/*
+  Phường, xã của TP.HCM (2 cấp từ 01/07/2025) chọn trong danh sách tải từ provinces.open-api.vn, gõ không dấu vẫn tìm
+  được. Không tải được danh sách thì vẫn gõ tay được (khách không bị chặn ở bước này) và có nút thử lại.
+*/
+function WardField({ value, error, onChange }: { value: string; error?: string; onChange: (ward: string) => void }) {
+  const wards = useHcmWardsQuery()
+  const names = useMemo(() => (wards.data ?? []).map((w) => w.name), [wards.data])
+  const hint = wards.isPending
+    ? 'Đang tải danh sách phường, xã…'
+    : wards.isError
+      ? undefined
+      : 'Gõ tên để tìm, không cần dấu. Từ 01/07/2025 TP.HCM không còn cấp quận, huyện.'
+  return (
+    <Field label="Phường, xã" htmlFor="ward" hint={hint} error={error}>
+      <Combobox
+        id="ward"
+        value={value}
+        onChange={onChange}
+        options={names}
+        listLabel="Phường, xã của TP.HCM"
+        emptyText={wards.isPending ? 'Đang tải danh sách…' : 'Không có phường, xã nào khớp.'}
+        invalid={Boolean(error)}
+      />
+      {wards.isError && !error && (
+        <span className="flex flex-wrap items-center gap-x-3 gap-y-1 text-meta text-fg-2">
+          Không tải được danh sách phường, xã; vẫn gõ tay được.
+          <Button size="sm" variant="ghost" bleed={false} icon="refresh" onClick={() => void wards.refetch()}>
+            Thử lại
+          </Button>
+        </span>
+      )}
+    </Field>
+  )
+}
+
 export function SiteFields({ value, errors, onChange }: FieldsProps<SiteForm>) {
   return (
     <div className="grid gap-4 sm:grid-cols-2">
@@ -188,20 +249,10 @@ export function SiteFields({ value, errors, onChange }: FieldsProps<SiteForm>) {
           aria-invalid={Boolean(errors.streetLine)}
         />
       </Field>
-      <Field label="Phường, xã" htmlFor="ward" hint="Không bắt buộc." error={errors.ward}>
-        <Input id="ward" value={value.ward} onChange={(e) => onChange({ ward: e.target.value })} aria-invalid={Boolean(errors.ward)} />
-      </Field>
-      <Field label="Quận, huyện" htmlFor="district" hint="Không bắt buộc." error={errors.district}>
-        <Input id="district" value={value.district} onChange={(e) => onChange({ district: e.target.value })} aria-invalid={Boolean(errors.district)} />
-      </Field>
-      <Field label="Tỉnh, thành phố" htmlFor="province" error={errors.province}>
-        <Input
-          id="province"
-          autoComplete="address-level1"
-          value={value.province}
-          onChange={(e) => onChange({ province: e.target.value })}
-          aria-invalid={Boolean(errors.province)}
-        />
+      <WardField value={value.ward} error={errors.ward} onChange={(ward) => onChange({ ward })} />
+      <Field label="Tỉnh, thành phố" htmlFor="province" hint="Hiện chỉ nhận công trình tại TP.HCM.">
+        {/* Giá trị cố định: ô chỉ đọc nền xám (`!` vì cx không gộp class, màu nền / chữ của ô nhập thường sẽ giành nhau). */}
+        <Input id="province" value={HCM_PROVINCE.name} readOnly className="bg-surface-2! text-fg-2!" />
       </Field>
       <CoordinateFields value={value} errors={errors} onChange={onChange} />
       <fieldset className="sm:col-span-2">
