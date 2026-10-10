@@ -248,6 +248,13 @@ nhập làm nguồn chính + kéo thả vật cản.
   → khách chọn "Tải bản mới nhất" hoặc "Lưu đè", không tự ghi đè.
 - Backend không có API liệt kê bản nháp của khách: id bản nháp + địa điểm nhớ ở `assessmentDraft.ts` (localStorage theo tài
   khoản); mở lại trang thì GET .../surface rồi làm tiếp ở bước mặt lắp / mô phỏng; 403/404/đã gửi thì bỏ nháp.
+- Giữ dữ liệu khi rời trang (người dùng 10/10/2026: "không giữ lại giá trị của form nếu back qua back lại", chọn giữ trên trình
+  duyệt thay vì tự lưu lên server): bước nằm trên địa chỉ (`?buoc=ho-so|dia-diem|mat-lap|mo-phong|xem-lai`, mỗi lần chuyển bước
+  là một mục lịch sử nên Back / Forward của trình duyệt đi giữa các bước; không cho vượt bước chưa mở được). Mọi ô chưa gửi +
+  bước đang làm ghi vào `assessment-work` (localStorage theo tài khoản, `readWork` / `writeWork`) mỗi lần đổi; mở lại trang về
+  đúng bước, mặt lắp trên máy chỉ dùng khi thuộc đúng bản nháp đang mở (server đã đổi revision thì hiện xung đột ngay). Gửi
+  xong / bỏ nháp thì xoá. Mặt lắp khác bản đã lưu: bước mặt lắp ghi "Chưa lưu lên hệ thống", bước mô phỏng / xem lại có khung
+  nhắc (`surfaceChanged`) vì hai bước đó dùng bản đã lưu.
 - Bước mô phỏng (`SimulationWorkspace.tsx`, form ở `simulationForm.ts` bám `CreateSimulationCommandValidator`): tấm pin
   `SOLAR_PANEL` đang bán đủ công suất + kích thước, Áp mái (FLUSH) / Khung nghiêng (RACK: góc + hướng riêng), khoảng cách mm
   (để trống = mặc định của BE; số mặc định hiện mờ trong ô bằng placeholder – không điền sẵn vì gửi số lên sẽ mất nguồn
