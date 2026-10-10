@@ -15,8 +15,12 @@ hai ăn chung một hệ token trong `src/styles/globals.css`:
   shell `components/layout/app-shell.tsx` (từ 08/10/2026, theo yêu cầu "admin phải đồng bộ"); khách hàng `/customer` có khung
   riêng `components/layout/customer-shell.tsx` (cùng ngày, theo yêu cầu "khách hàng phải là giao diện khác"), xem "Layout chung".
   Từ lượt màu 08/10/2026 portal kit cũng dùng icon Material Symbols (qua `Icon` của bộ Stitch) và có thêm `IconButton`,
-  `SearchInput`, `Segmented` (`segmented.tsx`), `PanelAside`, `WithTooltip` (`tooltip.tsx`). Nhật ký audit `UI_AUDIT.md` chỉ giữ
-  ở máy, không có trên git.
+  `SearchInput`, `Segmented` (`segmented.tsx`), `PanelAside`, `WithTooltip` (`tooltip.tsx`). Từ 10/10/2026 có `Combobox`
+  (`combobox.tsx`): ô nhập kèm danh sách cho danh sách dài, lọc không phân biệt dấu ("ben thanh" ra "Phường Bến Thành"), giá
+  trị vẫn là chuỗi; dùng cho phường/xã và gợi ý tên vật cản. `WizardSteps` (`wizard-steps.tsx`): thanh bước của form nhiều
+  bước (vòng số + đường nối, bước xong có ✓ + tóm tắt và bấm được để quay lại; điện thoại là khối gọn "Bước 3/5: …" + thanh
+  tiến độ + "Tiếp theo: …"), khác `Stepper` (dải tiến độ hành trình, chỉ để xem). Nhật ký audit `UI_AUDIT.md` chỉ giữ ở máy,
+  không có trên git.
 - `src/components/common/stitch-ui` (file PascalCase, token `surface/on-surface/primary…`,
   Material Symbols): trang công khai/xác thực, hộp thoại hết phiên, `/styleguide` (chỉ chạy ở dev) và các màn
   mock đã ẩn của admin/kỹ thuật viên. Shell Stitch (`AppShell`, `Sidebar`, `TopHeader`) và `config/nav.ts` đã xoá.
@@ -63,6 +67,10 @@ Rút ra từ 4 lượt audit giao diện; áp cho CẢ HAI bộ component.
    - Chế độ tối KHÔNG dùng xanh bạc hà sáng trên nền đen (khuôn "giao diện AI"): `accent` tối là xanh đậm 50% với chữ
      trắng như chế độ sáng; chữ màu thương hiệu (link) luôn dùng `accent-fg`, không bao giờ `text-accent` hay
      `text-primary` (hai token đó là màu nền nút, ở chế độ tối không đủ tương phản làm chữ).
+   - Biến thể `dark:` của Tailwind theo đúng giao diện đang dùng như token (`@custom-variant dark` đầu `globals.css`:
+     `data-theme`, không đặt thì theo hệ thống). Mặc định Tailwind chỉ đọc `prefers-color-scheme`: máy để tối mà chọn "Sáng"
+     thì `dark:bg-fg` vẫn chạy và logo thành khối đen (người dùng báo 10/10/2026). Đừng viết `@media (prefers-color-scheme)` riêng.
+     Giao diện đã lưu được áp ngay trong `main.tsx` trước khi vẽ (menu Giao diện của khách chỉ gắn khi mở bảng tài khoản).
 5. **Nhãn trạng thái**: `Badge` – mọi trạng thái là nhãn nền nhạt cùng hình dạng (bán kính 6px), màu theo vai trò ở
    mục 4; `icon` chỉ cho thông báo cần làm ngay ở đầu trang. `Count` – số đếm cạnh mục menu/tab: `attention` = việc đang
    chờ người xem, nền đỏ như số thông báo; còn lại nền xám. Việc cần làm ngay hiện thành Badge đỏ có icon ở mô tả đầu
@@ -170,7 +178,8 @@ src/
     req/                       # request DTO theo tag swagger: authReq.ts, …
     res/                       # response DTO: apiRes.ts (ApiResponse<T>, ApiErrorBody), authRes.ts, …
   config/                      # portals.ts (menu của mọi portal), roles.ts, demoAccounts.ts
-  hooks/                       # useMockQuery, useTheme, useElementWidth (bề rộng khung cho SVG vẽ bằng pixel)
+  hooks/                       # useMockQuery, useTheme, useElementWidth (bề rộng khung cho SVG vẽ bằng pixel),
+                               # useViewportHeight (chiều cao khung nhìn cho hình vẽ cao vừa màn hình)
   utils/                       # cn, cx, format, img, jwt
 public/placeholders/           # thay cho ảnh lh3.googleusercontent.com
 ```
@@ -187,7 +196,8 @@ Quy tắc đặt file (tái cấu trúc 29/09/2026):
   service và hook import kiểu từ đây. Ngoại lệ: swagger của tag Customers, PreSurveys, SurveyRequests, PreSurveySurface,
   Simulations chỉ khai "200 OK" nên `customersRes.ts`, `preSurveysRes.ts`, `surveyRequestsRes.ts`, `preSurveySurfaceRes.ts`,
   `simulationsRes.ts` viết tay theo contract backend (đối chiếu response thật 09/10/2026; không có header tự sinh nên
-  `gen:api` không xoá); backend khai response thì `gen:api` ghi đè.
+  `gen:api` không xoá); backend khai response thì `gen:api` ghi đè. `provincesRes.ts` cũng viết tay: kiểu của API công khai
+  provinces.open-api.vn (không thuộc swagger).
 - Nghiệp vụ chưa có endpoint đọc dữ liệu từ `data/*.ts` và bị ẩn khỏi menu/route (mục dưới). Khi backend có
   endpoint: thêm `types/req|res/<nghiệp vụ>*.ts`, rồi `services/` + `hooks/` vào feature đó, bỏ file trong `data/`,
   rồi mở lại route + mục menu.
@@ -198,7 +208,9 @@ Menu và route chỉ có màn đổ dữ liệu thật từ backend; màn mock g
 đường dẫn cũ trong portal rơi vào route `*` và chuyển về trang chủ portal. Đang hiện:
 
 - `/customer` → `/customer/assessment`: đánh giá sơ bộ 5 bước (hồ sơ → địa điểm → mặt lắp → mô phỏng → xem lại và gửi),
-  `features/pre-surveys`.
+  `features/pre-surveys`. Các bước (người dùng 10/10/2026 chọn): `WizardSteps` có tóm tắt từng bước đã xong và bấm để quay
+  lại (trừ hồ sơ – không sửa được); tiêu đề trang kèm một câu hướng dẫn của bước (`STEP_HINTS`); nút chính ghi tên bước sau
+  ("Tiếp tục: Mặt lắp"); đổi bước do khách bấm thì cuộn về đầu trang và focus tiêu đề ẩn "Bước N/5: …" của bước.
 - `/ops` → `/ops/surveys` + `/ops/surveys/:id`: yêu cầu khảo sát chờ nhận / của tôi / chi tiết (kèm mô phỏng khách đã chọn).
 - `/customer/products(/:id)`, `/ops/products(/:id)`: catalog sản phẩm (GET /api/products) bản portal kit, `pages/catalog-page.tsx`.
 
@@ -212,6 +224,23 @@ nhập làm nguồn chính + kéo thả vật cản.
   `SurfacePlan.tsx` (SVG vẽ bằng pixel qua `hooks/useElementWidth.ts`) dùng chung cho editor (chọn, kéo thả, phím mũi tên
   0,1 m / Shift 1 m) và kết quả (tấm pin, vùng lùi mép, vùng cách vật cản). Tổng diện tích = rộng × dài, dùng được = trừ diện
   tích hợp của vật cản, "có vật cản" = có ≥ 1 vật cản; khách tick "Tự khai diện tích" để sửa hai ô diện tích.
+  Nhập vật cản (người dùng chọn 10/10/2026 "hình + cột sửa bên phải", vì bản cũ lặp 7 nhãn mỗi vật cản và xa hình nên "rối"):
+  hình bên trái, `ObstaclePanel.tsx` bên phải (lg) gồm danh sách gọn (số thứ tự trùng số trên hình, tên, cỡ, dấu lỗi; cuộn
+  trong khung) và ô sửa của MỘT vật cản đang chọn (chọn ở danh sách hay bấm trên hình). Thêm / nhân bản luôn thêm vào cuối
+  để số trên hình không đổi, focus ô tên; tên có gợi ý (`OBSTACLE_NAME_SUGGESTIONS`); xoá có "Hoàn tác" trong toast (ghi vào
+  form mới nhất qua ref); chưa chọn gì mà có lỗi thì ô sửa mở vật cản lỗi đầu tiên. Điện thoại: hình trên, cột sửa dưới.
+  Ô số của vật cản báo lỗi ngay khi gõ (`liveObstacleErrors`, ô trống chưa báo); vật cản to hơn mặt lắp báo ở ô cỡ ("Bề dọc lớn
+  hơn chiều dài mặt lắp") – theo chiều đó kéo trên hình đứng im là đúng; hình chỉ vẽ phần vật cản nằm trong mặt lắp (người test
+  10/10/2026: gõ 1000000 thì hình "tràn", kéo dọc "không được").
+- Địa điểm (`SiteFields` ở `AssessmentFields.tsx`): dự án chỉ nhận công trình ở TP.HCM (người dùng 10/10/2026). Địa chỉ 2 cấp
+  theo đơn vị hành chính từ 01/07/2025 (người dùng chốt): tỉnh cố định "Thành phố Hồ Chí Minh" (ô chỉ đọc), phường/xã bắt buộc,
+  chọn bằng `Combobox` từ API công khai provinces.open-api.vn v2 (`/api/v2/p/79?depth=2`, 168 phường/xã/đặc khu, gồm Bình
+  Dương và Bà Rịa – Vũng Tàu cũ) – backend không có API địa giới nên FE gọi thẳng bằng fetch (`services/provinceService.ts`,
+  `hooks/useHcmWards.ts`, tải một lần mỗi phiên); không còn ô quận/huyện (`district` gửi null). API lỗi thì vẫn gõ tay được
+  + nút thử lại. Địa điểm đã lưu mà không sửa gì thì đi tiếp, không kiểm tra lại (địa chỉ cũ khai tự do trước ngày đó không
+  bị bắt chọn lại và tạo bản nháp mới). Toạ độ nằm ngoài khung TP.HCM (`isInHcm` ở `preSurveyDisplay.ts`) thì cảnh báo vàng,
+  vẫn cho lưu (người dùng chốt), lặp lại ở bước mô phỏng và kết quả; mục khí hậu ghi toạ độ + link bản đồ. Lý do: một bản
+  nháp thật nhập sai toạ độ ra khí hậu Nam Cực (−49 °C) và mọi lần chạy "chưa có sản lượng".
 - Lưu mặt lắp (`saveSurface` ở `assessment-page.tsx`): lần đầu POST /pre-surveys (số liệu khai + độ dốc + hướng) rồi PUT
   .../surface; các lần sau chỉ ghi phần đổi (`surfaceDiffers`, `declaredDiffers`). **Độ dốc / hướng của mặt lắp dùng chung cột
   với form cũ** (PUT /pre-surveys/{id} ghi đè, đổi giá trị là mọi mô phỏng thành "cũ"), nên PUT surface trước rồi mới PUT số
@@ -221,16 +250,28 @@ nhập làm nguồn chính + kéo thả vật cản.
   khoản); mở lại trang thì GET .../surface rồi làm tiếp ở bước mặt lắp / mô phỏng; 403/404/đã gửi thì bỏ nháp.
 - Bước mô phỏng (`SimulationWorkspace.tsx`, form ở `simulationForm.ts` bám `CreateSimulationCommandValidator`): tấm pin
   `SOLAR_PANEL` đang bán đủ công suất + kích thước, Áp mái (FLUSH) / Khung nghiêng (RACK: góc + hướng riêng), khoảng cách mm
-  (để trống = mặc định của BE), tổn hao %. POST gửi `expectedGeometryVersion`; 201 tạo mới / 200 dùng lại; giới hạn 10 lần /
+  (để trống = mặc định của BE; số mặc định hiện mờ trong ô bằng placeholder – không điền sẵn vì gửi số lên sẽ mất nguồn
+  "mặc định" trong kết quả), tổn hao %. POST gửi `expectedGeometryVersion`; 201 tạo mới / 200 dùng lại; giới hạn 10 lần /
   phút / người (429 + Retry-After, mã lỗi `AUTH_TOO_MANY_REQUESTS`) → nút đếm ngược. BE tự chọn lần tạo / dùng lại gần nhất làm
   "Mô phỏng chính" (không có API chọn lại); `isStale` = tính theo mặt lắp cũ.
 - Kết quả (`SimulationResult.tsx`, dùng chung khách hàng / sales, nạp qua `SimulationViewer.tsx`): số tấm, kWp, kWh/năm
   (null là "chưa có dữ liệu", không bao giờ 0), mặt bằng 2D / 3D, `EnergyChart.tsx` (cột một chuỗi theo skill dataviz, tooltip +
   phím mũi tên + bảng số liệu), cảnh báo kỹ thuật và giới hạn dịch theo mã ở `simulationDisplay.ts` (mã lạ in câu gốc của BE).
   3D `SimulationScene.tsx` dựng thẳng từ toạ độ BE (E/N/U, trục Z lên, `camera.up = (0,0,1)`, tấm pin là một `InstancedMesh`
-  hộp đơn vị mặt trước ở z = 0), `three` + `@react-three/fiber` nạp bằng `React.lazy`. Lịch sử các lần chạy: `SimulationHistory.tsx`.
+  hộp đơn vị mặt trước ở z = 0), `three` + `@react-three/fiber` nạp bằng `React.lazy`. Lịch sử các lần chạy: `SimulationHistory.tsx`
+  (cao khoảng ba dòng rưỡi rồi cuộn trong khung, lần đang xem luôn cuộn tới; tiêu đề có số lần chạy – người dùng 10/10/2026).
 - Sales (`pages/ops/survey-request-page.tsx`): `selectedSimulation` của yêu cầu + các lần chạy khác, chỉ đọc (BE trả 403 nếu
   sales POST); yêu cầu gửi khi chưa có mô phỏng thì hiện "Khách chưa chạy mô phỏng".
+- **Hình vẽ to và nằm giữa** (người dùng 10/10/2026: "những chỗ cần phải to và nằm ở giữa thì lại là một mẩu"):
+  - Bước mặt lắp và mô phỏng rộng hết trang: khối nhập liệu (kích thước + hướng / cấu hình mô phỏng) chiếm 2/3 hàng đầu cạnh
+    cột phụ của trang (truyền qua prop `aside`), hình vẽ và kết quả rộng hết ở dưới (ở bước mặt lắp, khối vật cản chia hình +
+    cột sửa, xem mục trên). Thứ tự DOM là thứ tự trên điện thoại (cột phụ xuống cuối), từ lg cột phụ mới được đặt lên hàng đầu
+    (`lg:col-start-3 lg:row-start-1`). Bước hồ sơ, địa điểm, xem lại giữ form 2/3 + cột phụ 1/3.
+  - `SurfacePlan` phóng vừa khung như "vừa khung" của phần mềm vẽ: rộng bằng khung, cao tới phần khung nhìn còn thấy
+    (`useViewportHeight` trừ 200px cho thanh trên, thanh thao tác và nhãn), không còn trần 420px / 80 px/m; hình căn giữa,
+    chú thích (`caption`) nằm ngay dưới hình. Khung 3D 4:3, khung rộng từ 60rem (container query) thì cao vừa khung nhìn.
+  - Trang sales giữ cột 2/3 (cột phụ khách hàng + tiến độ cao hơn phần số liệu, đưa mô phỏng xuống rộng hết trang sẽ để lại
+    khoảng trống lớn); cột phụ dính khi cuộn để cạnh mặt bằng / 3D không trống.
 - `/admin` → `/admin/products`: quản lý sản phẩm (`pages/admin/products-page.tsx`, bộ portal kit; tấm pin thiếu
   công suất/kích thước được tô cảnh báo vì mô phỏng không dùng được). Backend ẩn sản phẩm INACTIVE khỏi GET danh sách
   và GET chi tiết với mọi vai trò (dò 08/10/2026), nên: tạo mới luôn ACTIVE; "Ngừng bán" hỏi xác nhận, có "Hoàn tác";
