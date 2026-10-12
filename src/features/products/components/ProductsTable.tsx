@@ -1,51 +1,49 @@
+import { Link } from 'react-router'
 import { Badge } from '@/components/common/ui/badge'
-import { Button, IconButton } from '@/components/common/ui/button'
 import { Table, Td, Th, Tr } from '@/components/common/ui/table'
-import { WithTooltip } from '@/components/common/ui/tooltip'
-import { formatPower, formatSize, isProductActive, panelSpecGaps, productStatusMeta, productTypeLabel } from '@/features/products/components/productDisplay'
+import { ProductActions } from '@/features/products/components/ProductActions'
+import { formatPower, panelSpecGaps, productStatusMeta, productTypeLabel } from '@/features/products/components/productDisplay'
 import type { ProductResponse } from '@/types/res/adminProductsRes'
 import { formatMoney } from '@/utils/format'
 
 /*
-  Bảng sản phẩm của /admin/products (bộ portal kit, cùng kiểu với danh mục của khách hàng và sales).
-  Dưới lg mỗi dòng xếp thành khối nhãn/giá trị nên không phải cuộn ngang.
-  Tấm pin thiếu công suất hoặc kích thước được tô cảnh báo ngay trong ô: mô phỏng bố trí không dùng được tấm đó.
+  Danh sách sản phẩm của /admin/products. Người dùng 12/10/2026: "phải là 1 list khi ấn vào thì mới hiển thị chi tiết" –
+  mỗi dòng chỉ giữ thứ để nhận ra và so nhanh (ảnh, tên, SKU, loại, hãng, công suất, giá, trạng thái); model, kích thước,
+  nhóm hàng, thông số nằm ở trang chi tiết /admin/products/:id. Rồi "tại sao lại không để cái nút này ở ngoài luôn cho
+  tiện": Sửa / Ngừng bán / Xoá có cả trên từng dòng (ProductActions compact) lẫn ở trang chi tiết.
+  Cả dòng bấm được như danh mục của các portal khác (link tên phủ cả dòng bằng ::after, rê chuột thì tên xanh + gạch chân),
+  trừ cụm nút nằm trên lớp phủ; bàn phím Tab tới đúng link tên rồi tới từng nút. Tấm pin thiếu công suất / kích thước báo đỏ
+  ngay trên dòng: mô phỏng bố trí không dùng được tấm đó cho tới khi sửa.
+  Bảy cột nên xếp khối dưới xl (1280px): ở 1024px, rail 208px chỉ còn ~770px, chia cột thì tên bị bóp còn vài chữ mỗi dòng.
+  Khi xếp khối bỏ hai ô Loại / Hãng (hãng hiện dưới tên) để mỗi sản phẩm vẫn gọn như một dòng danh sách.
 */
-
-export type ProductsTableProps = {
+export function ProductsTable({
+  products,
+  detailPath,
+  busyIds,
+  onEdit,
+  onHide,
+  onDelete,
+}: {
   products: ProductResponse[]
-  onEdit: (product: ProductResponse) => void
-  onToggleStatus: (product: ProductResponse) => void
-  onDelete: (product: ProductResponse) => void
+  detailPath: (id: string) => string
   /** id các sản phẩm đang chờ đổi trạng thái, để khoá thao tác của đúng những dòng đó */
   busyIds?: ReadonlySet<string>
-}
-
-/*
-  Thao tác cuối dòng, xếp theo mức dùng và nhẹ hơn dữ liệu: Sửa là nút có viền và có chữ (hay dùng nhất); Ngừng bán là
-  nút kín đáo với icon "ẩn khỏi danh mục" (đúng việc nó làm), chữ ẩn khi chia cột còn hẹp (xl đến wide) thì có tooltip;
-  Xoá tách sau một vạch ngăn, xám khi nghỉ và đỏ khi rê chuột / focus (danger-quiet), nên cả cột không thành dải đỏ, và
-  luôn qua hộp thoại xác nhận nút đỏ đặc. Không nút nào là nút đặc: một trang chỉ có một nút đặc (Thêm sản phẩm).
-  Bảng xếp khối đến xl (stack="xl"): ở 1024px chia cột thì tên sản phẩm bị bóp còn vài chữ mỗi dòng.
-*/
-export function ProductsTable({ products, onEdit, onToggleStatus, onDelete, busyIds }: ProductsTableProps) {
+  onEdit: (product: ProductResponse) => void
+  onHide: (product: ProductResponse) => void
+  onDelete: (product: ProductResponse) => void
+}) {
   return (
     <Table stack="xl">
       <thead>
         <tr>
           <Th>Sản phẩm</Th>
-          <Th className="hidden md:table-cell">Loại / nhóm</Th>
-          {/*
-            Từ xl đến 2xl (1536px): hãng / model thành dòng phụ của ô Sản phẩm, kích thước thành dòng phụ dưới công suất,
-            để cột tên sản phẩm còn ~300–400px và cụm thao tác không đẩy bảng tràn ngang. Từ 2xl mỗi thứ một cột.
-            Dưới xl bảng xếp khối và mọi cột hiện thành cặp nhãn / giá trị.
-          */}
-          <Th className="hidden 2xl:table-cell">Hãng / model</Th>
+          <Th className="hidden md:table-cell">Loại</Th>
+          <Th className="hidden md:table-cell">Hãng</Th>
           <Th className="text-right">Công suất</Th>
-          <Th className="hidden text-right 2xl:table-cell">Kích thước</Th>
           <Th className="text-right">Đơn giá</Th>
           <Th>Trạng thái</Th>
-          <Th className="text-right">
+          <Th>
             <span className="sr-only">Thao tác</span>
           </Th>
         </tr>
@@ -54,13 +52,11 @@ export function ProductsTable({ products, onEdit, onToggleStatus, onDelete, busy
         {products.map((p) => {
           const status = productStatusMeta(p.status)
           const gaps = panelSpecGaps(p)
-          const active = isProductActive(p.status)
-          const busy = Boolean(p.id && busyIds?.has(p.id))
           return (
-            <Tr key={p.id ?? p.sku}>
+            <Tr key={p.id ?? p.sku} className="group relative cursor-pointer [&>td]:align-middle">
               <Td label="Sản phẩm">
                 <div className="flex items-center gap-3">
-                  <div className="size-10 shrink-0 overflow-hidden rounded-control bg-surface-2">
+                  <div className="size-12 shrink-0 overflow-hidden rounded-control bg-surface-2">
                     {p.imageUrl && (
                       <img
                         // key theo link: sửa link ảnh thì ảnh mới được tải lại dù link cũ từng lỗi.
@@ -77,39 +73,32 @@ export function ProductsTable({ products, onEdit, onToggleStatus, onDelete, busy
                     )}
                   </div>
                   <div className="min-w-0">
-                    <p className="font-medium text-fg">{p.name || '—'}</p>
+                    <Link
+                      to={detailPath(p.id ?? '')}
+                      className="font-medium text-fg underline-offset-4 after:absolute after:inset-0 group-hover:text-accent-fg group-hover:underline"
+                    >
+                      {p.name || 'Sản phẩm chưa đặt tên'}
+                    </Link>
                     <p className="tnum text-meta text-fg-3">{p.sku}</p>
-                    {(p.brand || p.model) && (
-                      <p className="hidden text-meta text-fg-3 xl:block 2xl:hidden">{[p.brand, p.model].filter(Boolean).join(', ')}</p>
-                    )}
+                    {/* Dưới xl bảng xếp khối và bỏ hai ô Loại / Hãng cho gọn danh sách: hãng hiện dưới tên. */}
+                    {p.brand && <p className="text-meta text-fg-3 xl:hidden">{p.brand}</p>}
                   </div>
                 </div>
               </Td>
-              <Td label="Loại / nhóm" className="hidden md:table-cell">
+              <Td label="Loại" className="max-xl:hidden!">
                 {productTypeLabel(p.productType) ?? '—'}
-                {/* Mã loại vẫn hiện cho admin: bộ lọc, form và backend dùng đúng mã này. */}
-                <p className="text-meta text-fg-3">
-                  {[productTypeLabel(p.productType) !== p.productType ? p.productType : null, p.category].filter(Boolean).join(', ')}
-                </p>
               </Td>
-              <Td label="Hãng / model" className="hidden 2xl:table-cell">
+              <Td label="Hãng" className="max-xl:hidden!">
                 {p.brand || '—'}
-                {p.model && <p className="text-meta text-fg-3">{p.model}</p>}
               </Td>
               <Td label="Công suất" className="tnum text-right whitespace-nowrap">
-                {gaps.power ? <Badge tone="danger">Thiếu công suất</Badge> : (formatPower(p.ratedPowerW) ?? '—')}
-                {(gaps.size || formatSize(p)) && (
-                  <div className="mt-1 hidden text-meta text-fg-3 xl:block 2xl:hidden">
-                    <span className="sr-only">Kích thước </span>
-                    {gaps.size ? <Badge tone="danger">Thiếu kích thước</Badge> : formatSize(p)}
-                  </div>
-                )}
-              </Td>
-              <Td label="Kích thước" className="tnum hidden text-right whitespace-nowrap 2xl:table-cell">
-                {gaps.size ? <Badge tone="danger">Thiếu kích thước</Badge> : (formatSize(p) ?? '—')}
+                {/* Một cụm: ở dạng xếp khối (dưới lg) mỗi phần tử con của ô là một dòng lưới riêng. */}
+                <span className="inline-flex flex-col items-end gap-1">
+                  {gaps.power ? <Badge tone="danger">Thiếu công suất</Badge> : (formatPower(p.ratedPowerW) ?? '—')}
+                  {gaps.size && <Badge tone="danger">Thiếu kích thước</Badge>}
+                </span>
               </Td>
               <Td label="Đơn giá" className="tnum text-right whitespace-nowrap">
-                {/* Một cụm: ở dạng xếp khối (dưới lg) mỗi phần tử con của ô là một dòng lưới riêng. */}
                 <span>
                   {formatMoney(p.unitPrice, p.currency)}
                   {p.unit && <span className="text-fg-3"> / {p.unit}</span>}
@@ -118,40 +107,17 @@ export function ProductsTable({ products, onEdit, onToggleStatus, onDelete, busy
               <Td label="Trạng thái" className="whitespace-nowrap">
                 <Badge tone={status.tone}>{status.label}</Badge>
               </Td>
-              <Td label="Thao tác" className="text-right whitespace-nowrap">
-                {/* Không dùng lề âm: ô cuối sát mép bảng, lấn ra là bảng sinh thanh cuộn ngang. */}
-                <div className="inline-flex items-center gap-1">
-                  <Button size="sm" icon="edit" aria-label={`Sửa ${p.name ?? ''}`} onClick={() => onEdit(p)}>
-                    Sửa
-                  </Button>
-                  <WithTooltip label={busy ? 'Đang đổi…' : active ? 'Ngừng bán (ẩn khỏi danh mục)' : 'Mở bán lại'}>
-                    {(tip) => (
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        bleed={false}
-                        icon={active ? 'visibility_off' : 'visibility'}
-                        aria-label={`${active ? 'Ngừng bán' : 'Mở bán lại'} ${p.name ?? ''}`}
-                        disabled={busy}
-                        onClick={() => onToggleStatus(p)}
-                        {...tip}
-                      >
-                        {/* Chữ chỉ ẩn khi chia cột mà bảng còn hẹp (xl đến wide); xếp khối (dưới xl) và từ wide đều đủ chỗ. */}
-                        <span className="xl:max-wide:sr-only">{busy ? 'Đang đổi…' : active ? 'Ngừng bán' : 'Mở bán lại'}</span>
-                      </Button>
-                    )}
-                  </WithTooltip>
-                  <span aria-hidden className="mx-1 h-5 w-px bg-line" />
-                  <IconButton
-                    size="sm"
-                    variant="danger-quiet"
-                    icon="delete"
-                    label={`Xoá ${p.name ?? ''}`}
-                    tooltip="Xoá sản phẩm"
-                    disabled={busy}
-                    onClick={() => onDelete(p)}
-                  />
-                </div>
+              {/* Không nhãn: khi xếp khối ô trải hết bề ngang nên ba nút nằm một hàng (360px: ~270px cho cụm nút). */}
+              <Td className="whitespace-nowrap">
+                <ProductActions
+                  compact
+                  product={p}
+                  busy={Boolean(p.id && busyIds?.has(p.id))}
+                  className="xl:justify-end"
+                  onEdit={() => onEdit(p)}
+                  onHide={() => onHide(p)}
+                  onDelete={() => onDelete(p)}
+                />
               </Td>
             </Tr>
           )

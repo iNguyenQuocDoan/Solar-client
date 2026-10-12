@@ -3,7 +3,7 @@ import { toast } from 'sonner'
 import { Icon } from '@/components/common/stitch-ui/Icon'
 import { Button } from '@/components/common/ui/button'
 import { DialogFooter, DialogTitle, ModalDialog } from '@/components/common/ui/dialog'
-import { Field, Input } from '@/components/common/ui/field'
+import { DateField, Field, Input, TimeSelect } from '@/components/common/ui/field'
 import { EmptyState, ErrorState, Skeleton } from '@/components/common/ui/states'
 import { ConflictList } from '@/features/scheduling/components/ConflictList'
 import { conflictsOf } from '@/features/scheduling/components/schedulingDisplay'
@@ -19,12 +19,20 @@ import type { UnavailablePeriodView } from '@/types/res/adminTechniciansRes'
 const REASON_MAX = 500
 const MAX_DAYS = 366
 
-/** Ô datetime-local ("2026-10-20T08:00") hiểu là giờ Việt Nam. */
+/** "2026-10-20T08:00" hiểu là giờ Việt Nam. */
 const toVnIso = (local: string) => `${local}:00+07:00`
 
+/*
+  Mỗi mốc là ô ngày (13/10/2026) + ô giờ 24 giờ, thay cho ô datetime-local hiện theo ngôn ngữ trình duyệt
+  ("10/13/2026, 01:00 PM" ở bản tiếng Anh – 12/10/2026). Giờ mặc định 08:00 → 17:00 là một ngày làm việc.
+*/
 function AddPeriodForm({ technicianUserId }: { technicianUserId: string }) {
-  const [from, setFrom] = useState('')
-  const [to, setTo] = useState('')
+  const [fromDate, setFromDate] = useState('')
+  const [fromTime, setFromTime] = useState('08:00')
+  const [toDate, setToDate] = useState('')
+  const [toTime, setToTime] = useState('17:00')
+  const from = fromDate ? `${fromDate}T${fromTime}` : ''
+  const to = toDate ? `${toDate}T${toTime}` : ''
   const [reason, setReason] = useState('')
   const [issue, setIssue] = useState<string | null>(null)
   const [failure, setFailure] = useState<unknown>(null)
@@ -42,8 +50,8 @@ function AddPeriodForm({ technicianUserId }: { technicianUserId: string }) {
     try {
       await add.mutateAsync({ id: technicianUserId, body: { startsAt: toVnIso(from), endsAt: toVnIso(to), reason: reason.trim() || null } })
       toast.success('Đã thêm lịch nghỉ.')
-      setFrom('')
-      setTo('')
+      setFromDate('')
+      setToDate('')
       setReason('')
     } catch (error) {
       setFailure(error)
@@ -56,10 +64,16 @@ function AddPeriodForm({ technicianUserId }: { technicianUserId: string }) {
     <form noValidate onSubmit={submit} className="space-y-4">
       <div className="grid gap-4 sm:grid-cols-2">
         <Field label="Từ" htmlFor="leave-from" required>
-          <Input id="leave-from" type="datetime-local" step={1800} value={from} onChange={(e) => setFrom(e.target.value)} />
+          <div className="flex gap-2">
+            <DateField id="leave-from" className="min-w-0 flex-1" value={fromDate} onChange={setFromDate} />
+            <TimeSelect aria-label="Giờ bắt đầu" className="w-28" value={fromTime} onChange={setFromTime} />
+          </div>
         </Field>
         <Field label="Đến" htmlFor="leave-to" required>
-          <Input id="leave-to" type="datetime-local" step={1800} min={from || undefined} value={to} onChange={(e) => setTo(e.target.value)} />
+          <div className="flex gap-2">
+            <DateField id="leave-to" className="min-w-0 flex-1" min={fromDate || undefined} value={toDate} onChange={setToDate} />
+            <TimeSelect aria-label="Giờ kết thúc" className="w-28" value={toTime} onChange={setToTime} />
+          </div>
         </Field>
       </div>
       <Field label="Lý do" htmlFor="leave-reason" hint={`Không bắt buộc, tối đa ${REASON_MAX} ký tự.`}>
@@ -67,7 +81,7 @@ function AddPeriodForm({ technicianUserId }: { technicianUserId: string }) {
       </Field>
       <ConflictList conflicts={conflicts} />
       <div className="flex flex-wrap items-center gap-3">
-        <Button type="submit" icon="add" disabled={add.isPending}>
+        <Button type="submit" variant="soft" icon="add" disabled={add.isPending}>
           {add.isPending ? 'Đang thêm…' : 'Thêm lịch nghỉ'}
         </Button>
         {message && (
@@ -126,7 +140,7 @@ export function UnavailablePeriods({ technicianUserId }: { technicianUserId: str
                     </p>
                     {p.reason && <p className="text-meta text-fg-2">{p.reason}</p>}
                   </div>
-                  <Button size="sm" variant="danger-quiet" icon="delete" onClick={() => setRemoving(p)}>
+                  <Button size="sm" variant="danger" icon="delete" onClick={() => setRemoving(p)}>
                     Bỏ
                   </Button>
                 </li>

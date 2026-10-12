@@ -7,16 +7,36 @@ import { PageHeader } from '@/components/common/ui/page-header'
 import { Panel, PanelBody, PanelHeader } from '@/components/common/ui/panel'
 import { QueryBoundary } from '@/components/common/ui/query-boundary'
 import { usePageCrumb } from '@/components/layout/page-crumb'
-import { formatPower, formatSize, formatWarranty, isProductActive, productTypeLabel, specEntries } from '@/features/products/components/productDisplay'
+import {
+  formatPower,
+  formatSize,
+  formatWarranty,
+  isProductActive,
+  productStatusMeta,
+  productTypeLabel,
+  specEntries,
+} from '@/features/products/components/productDisplay'
 import { useProductQuery } from '@/features/products/hooks/useProducts'
 import { ROUTES } from '@/routes/paths'
+import type { ProductResponse } from '@/types/res/adminProductsRes'
 import { formatMoney } from '@/utils/format'
 
 /*
-  Chi tiết một sản phẩm trong các portal (khách hàng, kinh doanh, kỹ thuật viên, quản lý), đọc GET /api/products/{id}.
-  Đường quay lại danh mục nằm ở thanh định vị của shell, nên trang không có link "quay lại" riêng.
+  Chi tiết một sản phẩm trong mọi portal (khách hàng, kinh doanh, kỹ thuật viên, quản lý, và quản trị với các nút Sửa /
+  Ngừng bán / Xoá), đọc GET /api/products/{id}. Đường quay lại danh mục nằm ở thanh định vị của shell, nên trang không có
+  link "quay lại" riêng.
+  `action` là nút ở đầu trang, có thể dựng theo sản phẩm vừa tải; `notice` là thông báo ngay dưới đầu trang; `admin` hiện
+  thêm trạng thái và mã loại (bộ lọc, form và backend dùng đúng mã này).
 */
-function CatalogProductPage({ action }: { action?: ReactNode }) {
+export function CatalogProductPage({
+  action,
+  notice,
+  admin = false,
+}: {
+  action?: ReactNode | ((product: ProductResponse) => ReactNode)
+  notice?: (product: ProductResponse) => ReactNode
+  admin?: boolean
+}) {
   const { id } = useParams()
   const query = useProductQuery(id)
   usePageCrumb(query.data?.name)
@@ -27,7 +47,12 @@ function CatalogProductPage({ action }: { action?: ReactNode }) {
         const facts = [
           { k: 'Hãng', v: p.brand },
           { k: 'Model', v: p.model },
-          { k: 'Loại', v: productTypeLabel(p.productType) ?? '—' },
+          {
+            k: 'Loại',
+            v: admin && p.productType && productTypeLabel(p.productType) !== p.productType
+              ? `${productTypeLabel(p.productType)} (${p.productType})`
+              : (productTypeLabel(p.productType) ?? '—'),
+          },
           { k: 'Nhóm hàng', v: p.category },
           { k: 'SKU', v: p.sku },
           { k: 'Công suất định mức', v: formatPower(p.ratedPowerW) },
@@ -35,13 +60,15 @@ function CatalogProductPage({ action }: { action?: ReactNode }) {
           { k: 'Bảo hành', v: formatWarranty(p.warrantyMonth) },
         ].filter((f) => f.v)
         const specs = specEntries(p.spec)
+        const status = productStatusMeta(p.status)
         return (
           <>
             <PageHeader
               meta={
                 <>
+                  {admin && <Badge tone={status.tone}>{status.label}</Badge>}
                   <span>{[p.brand, productTypeLabel(p.productType)].filter(Boolean).join(', ')}</span>
-                  {!isProductActive(p.status) && <Badge tone="warn">Đã ngừng bán</Badge>}
+                  {!admin && !isProductActive(p.status) && <Badge tone="warn">Đã ngừng bán</Badge>}
                 </>
               }
               title={p.name}
@@ -51,8 +78,9 @@ function CatalogProductPage({ action }: { action?: ReactNode }) {
                   {p.unit && <span> / {p.unit}</span>}. Giá tham khảo, chưa gồm lắp đặt.
                 </>
               }
-              actions={action}
+              actions={typeof action === 'function' ? action(p) : action}
             />
+            {notice?.(p)}
 
             <div className="grid gap-6 lg:grid-cols-2">
               <div className="aspect-[4/3] overflow-hidden rounded-container bg-surface-2">

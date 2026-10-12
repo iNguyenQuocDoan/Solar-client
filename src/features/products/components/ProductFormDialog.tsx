@@ -330,13 +330,13 @@ function ProductForm({
                 </label>
                 <Input id={f(`spec-${i}-value`)} placeholder="Ví dụ: 21,8%" {...register(`spec.${i}.value`)} />
               </div>
-              <Button variant="ghost" bleed={false} icon="close" aria-label={`Bỏ thông số ${i + 1}`} onClick={() => spec.remove(i)}>
+              <Button variant="danger" icon="close" aria-label={`Bỏ thông số ${i + 1}`} onClick={() => spec.remove(i)}>
                 Bỏ
               </Button>
             </div>
           ))}
         </div>
-        <Button variant="ghost" size="sm" icon="add" className="mt-2" onClick={() => spec.append({ key: '', value: '' })}>
+        <Button variant="soft" size="sm" icon="add" className="mt-2" onClick={() => spec.append({ key: '', value: '' })}>
           Thêm thông số
         </Button>
       </fieldset>
@@ -354,7 +354,9 @@ function ProductForm({
         </div>
       )}
 
-      <DialogFooter className="sticky bottom-0 -mx-6 -mb-6 border-t border-line bg-canvas px-6 py-4">
+      {/* -bottom-6: phần tử dính trong khung cuộn có đệm 24px dừng ở mép trong lớp đệm, để hở một khe cho nội dung lộ ra dưới
+          thanh nút; kéo xuống đúng bằng lớp đệm để thanh nút sát đáy hộp thoại. */}
+      <DialogFooter className="sticky -bottom-6 -mx-6 -mb-6 border-t border-line bg-canvas px-6 py-4">
         <Button variant="ghost" disabled={isSubmitting} onClick={onDone}>
           Huỷ
         </Button>

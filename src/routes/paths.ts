@@ -88,6 +88,8 @@ export const ROUTES = {
     TECHNICIAN: '/admin/technicians/:id',
     ROLES: '/admin/roles',
     PRODUCTS: '/admin/products',
+    /** Chi tiết một sản phẩm + Sửa / Ngừng bán / Xoá (12/10/2026: danh sách chỉ để chọn, bấm vào mới ra chi tiết). */
+    PRODUCT: '/admin/products/:id',
     SERVICES: '/admin/services',
     CATEGORIES: '/admin/categories',
     KNOWLEDGE_BASE: '/admin/knowledge-base',

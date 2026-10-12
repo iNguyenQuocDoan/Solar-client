@@ -72,7 +72,7 @@ export function ObstaclePanel({ obstacles, errors, selected, onSelect, onAdd, on
     <div className="min-w-0 space-y-3 rounded-container border border-line p-4">
       <div className="flex items-center justify-between gap-3">
         <p className="text-body font-semibold text-fg">{obstacles.length > 0 ? `${obstacles.length} vật cản` : 'Chưa có vật cản'}</p>
-        <Button ref={addRef} size="sm" icon="add" onClick={onAdd} disabled={full}>
+        <Button ref={addRef} size="sm" variant="soft" icon="add" onClick={onAdd} disabled={full}>
           Thêm vật cản
         </Button>
       </div>
@@ -209,7 +209,7 @@ function ObstacleInspector({
             />
           </div>
           <IconButton icon="content_copy" label={`Nhân bản ${label}`} tooltip="Nhân bản" onClick={onDuplicate} disabled={full} />
-          <IconButton icon="delete" variant="danger-quiet" label={`Xoá ${label}`} tooltip="Xoá" onClick={onRemove} />
+          <IconButton icon="delete" variant="danger" label={`Xoá ${label}`} tooltip="Xoá" onClick={onRemove} />
         </div>
       </Field>
       <div className="grid grid-cols-2 gap-x-3 gap-y-4">

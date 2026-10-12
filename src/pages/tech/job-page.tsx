@@ -96,7 +96,7 @@ export function TechJobPage() {
               actions={
                 <>
                   {job.customer.phone && (
-                    <a className={buttonClass('secondary')} href={`tel:${job.customer.phone}`}>
+                    <a className={buttonClass('soft')} href={`tel:${job.customer.phone}`}>
                       <Icon name="call" className="-ml-0.5 text-[20px]" />
                       Gọi khách
                     </a>

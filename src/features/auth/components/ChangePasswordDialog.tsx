@@ -152,7 +152,6 @@ function PasswordField({
         <Input id={id} type={shown ? 'text' : 'password'} autoComplete={autoComplete} aria-invalid={error ? true : undefined} {...field} />
         <Button
           variant="ghost"
-          bleed={false}
           icon={shown ? 'visibility_off' : 'visibility'}
           className="shrink-0"
           aria-pressed={shown}

@@ -26,7 +26,7 @@ export function CatalogTable({ products, detailPath }: { products: ProductRespon
       </thead>
       <tbody>
         {products.map((p) => (
-          <Tr key={p.id} className="group relative cursor-pointer">
+          <Tr key={p.id} className="group relative cursor-pointer [&>td]:align-middle">
             <Td label="Sản phẩm">
               <div className="flex items-center gap-3">
                 <div className="size-12 shrink-0 overflow-hidden rounded-control bg-surface-2">

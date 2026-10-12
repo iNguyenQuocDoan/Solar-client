@@ -80,10 +80,11 @@ export const PORTALS: Record<PortalKey, Portal> = {
     home: ROUTES.ADMIN.DASHBOARD,
     groups: [
       {
+        /* Sản phẩm đứng đầu menu (người dùng 12/10/2026: "đẩy cái sản phẩm lên cao"); trang mở đầu của admin vẫn là Tài khoản. */
         items: [
+          { label: 'Sản phẩm', to: ROUTES.ADMIN.PRODUCTS, icon: 'solar_power' },
           { label: 'Tài khoản', to: ROUTES.ADMIN.USERS, icon: 'manage_accounts' },
           { label: 'Kỹ thuật viên', to: ROUTES.ADMIN.TECHNICIANS, icon: 'engineering' },
-          { label: 'Sản phẩm', to: ROUTES.ADMIN.PRODUCTS, icon: 'solar_power' },
         ],
       },
     ],

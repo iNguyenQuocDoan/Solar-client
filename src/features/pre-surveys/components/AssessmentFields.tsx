@@ -224,7 +224,7 @@ function WardField({ value, error, onChange }: { value: string; error?: string; 
       {wards.isError && !error && (
         <span className="flex flex-wrap items-center gap-x-3 gap-y-1 text-meta text-fg-2">
           Không tải được danh sách phường, xã; vẫn gõ tay được.
-          <Button size="sm" variant="ghost" bleed={false} icon="refresh" onClick={() => void wards.refetch()}>
+          <Button size="sm" variant="ghost" icon="refresh" onClick={() => void wards.refetch()}>
             Thử lại
           </Button>
         </span>

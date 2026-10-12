@@ -1,8 +1,6 @@
 import { useMemo, useRef, useState } from 'react'
-import { toast } from 'sonner'
 import { Badge } from '@/components/common/ui/badge'
 import { Button } from '@/components/common/ui/button'
-import { DialogFooter, DialogTitle, ModalDialog } from '@/components/common/ui/dialog'
 import { SearchInput, Select } from '@/components/common/ui/field'
 import { FilterBar } from '@/components/common/ui/filter-bar'
 import { PageHeader } from '@/components/common/ui/page-header'
@@ -10,40 +8,32 @@ import { Pagination } from '@/components/common/ui/pagination'
 import { EmptyState, ErrorState, Skeleton } from '@/components/common/ui/states'
 import { formatDateTime } from '@/features/pre-surveys/components/preSurveyDisplay'
 import { DeleteProductDialog } from '@/features/products/components/DeleteProductDialog'
+import { HideProductDialog } from '@/features/products/components/ProductActions'
 import { ProductFormDialog } from '@/features/products/components/ProductFormDialog'
 import { ProductsTable } from '@/features/products/components/ProductsTable'
-import {
-  PRODUCT_SORT_OPTIONS,
-  SOLAR_PANEL_QUERY,
-  SOLAR_PANEL_TYPE,
-  isProductActive,
-  panelSpecGaps,
-  parseSort,
-  productTypeLabel,
-} from '@/features/products/components/productDisplay'
-import { readHiddenProducts, writeHiddenProducts, type HiddenProduct } from '@/features/products/hiddenProducts'
-import { useChangeProductStatusMutation, useProductsQuery } from '@/features/products/hooks/useProducts'
+import { PRODUCT_SORT_OPTIONS, SOLAR_PANEL_QUERY, panelSpecGaps, parseSort, productTypeLabel } from '@/features/products/components/productDisplay'
+import { useHiddenProducts } from '@/features/products/hiddenProducts'
+import { useProductOptions } from '@/features/products/hooks/useProductOptions'
+import { useProductStatusActions } from '@/features/products/hooks/useProductStatusActions'
+import { useProductsQuery } from '@/features/products/hooks/useProducts'
 import { useDebouncedValue } from '@/hooks/useDebouncedValue'
-import { errorMessage, isApiError } from '@/services/api/errors'
+import { ROUTES, withId } from '@/routes/paths'
+import { errorMessage } from '@/services/api/errors'
 import type { ProductResponse } from '@/types/res/adminProductsRes'
 import { cx } from '@/utils/cx'
 
 /*
-  Quản lý sản phẩm (bộ portal kit, cùng kiểu với danh mục của khách hàng và sales): đọc GET /api/products
-  (lọc, sắp xếp, phân trang phía server), thêm / sửa / xoá / đổi trạng thái qua /api/admin/products.
-  Swagger không có API danh sách riêng cho admin nên dùng chung GET /api/products, và API đó không trả sản phẩm
-  ngừng bán (xem hiddenProducts.ts): danh sách ở đây chỉ có sản phẩm đang bán.
+  Quản lý sản phẩm (bộ portal kit): danh sách đọc GET /api/products (lọc, sắp xếp, phân trang phía server), bấm một dòng
+  mở trang chi tiết /admin/products/:id. Sửa / Ngừng bán / Xoá có ngay trên từng dòng và ở trang chi tiết (12/10/2026);
+  cuối trang là mục "Đã ngừng bán" để mở bán lại.
+  Swagger không có API danh sách riêng cho admin nên dùng chung GET /api/products, và API đó không trả sản phẩm ngừng bán
+  (xem hiddenProducts.ts): danh sách ở đây chỉ có sản phẩm đang bán.
 */
 
 const PAGE_SIZE = 20
-/** Toàn bộ danh mục (100 là PageSize tối đa backend nhận) để lấy các loại và hãng đang có cho bộ lọc và form. */
-const ALL_PRODUCTS = { PageSize: 100, SortBy: 'name', SortDirection: 'asc' } as const
 
 type Filter = { search: string; productType: string; brand: string; sort: string }
 const defaultFilter: Filter = { search: '', productType: '', brand: '', sort: PRODUCT_SORT_OPTIONS[0]!.value }
-
-const unique = (values: (string | null | undefined)[]) =>
-  [...new Set(values.map((v) => v?.trim()).filter((v): v is string => Boolean(v)))].sort((a, b) => a.localeCompare(b, 'vi'))
 
 export function AdminProductsPage() {
   const [filter, setFilter] = useState<Filter>(defaultFilter)
@@ -51,13 +41,11 @@ export function AdminProductsPage() {
   const [form, setForm] = useState<{ open: boolean; product: ProductResponse | null }>({ open: false, product: null })
   const [deleting, setDeleting] = useState<ProductResponse | null>(null)
   const [hiding, setHiding] = useState<ProductResponse | null>(null)
-  // Sản phẩm đã ngừng bán từ trình duyệt này (backend không còn trả về chúng), xem hiddenProducts.ts.
-  const [hidden, setHidden] = useState<HiddenProduct[]>(readHiddenProducts)
-  // Một mutation dùng chung cho ngừng bán / mở bán / hoàn tác, nên tự giữ các id đang chờ thay vì dựa vào isPending.
-  const [pendingIds, setPendingIds] = useState<ReadonlySet<string>>(new Set())
+  const hidden = useHiddenProducts()
+  const { hide, reopen, pendingIds } = useProductStatusActions()
   const listRef = useRef<HTMLElement>(null)
   const hiddenHeadingRef = useRef<HTMLHeadingElement>(null)
-  // Chỗ nhận focus khi hộp thoại (xoá / ngừng bán) đóng xong; null = để trình duyệt trả focus như bình thường.
+  // Chỗ nhận focus khi hộp thoại (xoá / ngừng bán) đóng xong, vì dòng chứa nút vừa bấm biến khỏi bảng.
   const focusAfterDialog = useRef<HTMLElement | null>(null)
   const restoreFocus = () => {
     focusAfterDialog.current?.focus()
@@ -73,8 +61,7 @@ export function AdminProductsPage() {
     PageSize: PAGE_SIZE,
     ...parseSort(filter.sort),
   })
-  const statusMutation = useChangeProductStatusMutation()
-  const all = useProductsQuery(ALL_PRODUCTS)
+  const options = useProductOptions()
   // Cảnh báo ở đầu trang tính trên toàn bộ tấm pin, không chỉ trang đang xem (cùng cache với mô phỏng 3D).
   const panels = useProductsQuery(SOLAR_PANEL_QUERY)
   const incompletePanels = (panels.data?.items ?? []).filter((p) => {
@@ -93,84 +80,12 @@ export function AdminProductsPage() {
   // trả 200 với danh sách rỗng, nên tự lùi về trang cuối còn dữ liệu. Có điều kiện nên không lặp vô hạn.
   if (query.data && !query.isFetching && !query.isPlaceholderData && page > Math.max(1, pages)) setPage(Math.max(1, pages))
 
-  // Bộ lọc và gợi ý cho form lấy từ toàn bộ danh mục; luôn kèm SOLAR_PANEL vì backend kiểm tra riêng mã này.
-  const options = useMemo(() => {
-    const items = all.data?.items ?? []
-    return {
-      productTypes: unique([SOLAR_PANEL_TYPE, ...items.map((p) => p.productType)]),
-      brands: unique(items.map((p) => p.brand)),
-      categories: unique(items.map((p) => p.category)),
-    }
-  }, [all.data])
-
   const updateFilter = (patch: Partial<Filter>) => {
     setFilter((prev) => ({ ...prev, ...patch }))
     setPage(1)
   }
   const clearFilters = () => updateFilter({ search: '', productType: '', brand: '' })
 
-  const markPending = (id: string, on: boolean) =>
-    setPendingIds((prev) => {
-      const next = new Set(prev)
-      if (on) next.add(id)
-      else next.delete(id)
-      return next
-    })
-
-  // Cập nhật state và storage cùng lúc, dựa trên giá trị mới nhất (nút "Hoàn tác" trong toast giữ closure cũ).
-  const updateHidden = (change: (list: HiddenProduct[]) => HiddenProduct[]) =>
-    setHidden((prev) => {
-      const next = change(prev)
-      writeHiddenProducts(next)
-      return next
-    })
-
-  /* Dòng vừa thao tác biến khỏi bảng: chuyển focus tới chỗ còn đó, không để rơi về đầu trang. */
-  const focusLater = (target: { current: HTMLElement | null }) => requestAnimationFrame(() => target.current?.focus())
-
-  const reopen = async (entry: HiddenProduct) => {
-    markPending(entry.id, true)
-    try {
-      await statusMutation.mutateAsync({ id: entry.id, body: { status: 'ACTIVE' } })
-      updateHidden((list) => list.filter((h) => h.id !== entry.id))
-      toast.success(`Đã mở bán lại ${entry.name}`)
-      focusLater(listRef)
-    } catch (error) {
-      // 404: sản phẩm đã bị xoá hẳn, không còn gì để mở bán.
-      if (isApiError(error) && error.status === 404) updateHidden((list) => list.filter((h) => h.id !== entry.id))
-      toast.error(errorMessage(error))
-    } finally {
-      markPending(entry.id, false)
-    }
-  }
-
-  const hide = async (product: ProductResponse) => {
-    if (!product.id) return
-    const entry: HiddenProduct = { id: product.id, name: product.name ?? '', sku: product.sku ?? '', hiddenAt: new Date().toISOString() }
-    // Ghi nhớ TRƯỚC khi gọi API: nếu tải lại trang lúc đang chờ, sản phẩm đã ẩn vẫn còn trong danh sách để mở bán lại.
-    updateHidden((list) => [entry, ...list.filter((h) => h.id !== entry.id)])
-    markPending(entry.id, true)
-    try {
-      await statusMutation.mutateAsync({ id: entry.id, body: { status: 'INACTIVE' } })
-      focusAfterDialog.current = hiddenHeadingRef.current
-      setHiding(null)
-      toast.success(`Đã ngừng bán ${entry.name}`, { action: { label: 'Hoàn tác', onClick: () => void reopen(entry) } })
-    } catch (error) {
-      // 4xx: chắc chắn chưa đổi trạng thái thì bỏ ghi nhớ; lỗi mạng/5xx thì có thể đã đổi, giữ lại để còn mở bán lại.
-      if (isApiError(error) && error.status >= 400 && error.status < 500) updateHidden((list) => list.filter((h) => h.id !== entry.id))
-      toast.error(errorMessage(error))
-    } finally {
-      markPending(entry.id, false)
-    }
-  }
-
-  /* Danh sách chỉ có sản phẩm đang bán (backend ẩn sản phẩm ngừng bán), nên thao tác trong bảng là ngừng bán. */
-  const toggleStatus = (product: ProductResponse) => {
-    if (isProductActive(product.status)) setHiding(product)
-    else if (product.id) void reopen({ id: product.id, name: product.name ?? '', sku: product.sku ?? '', hiddenAt: '' })
-  }
-
-  const hidingBusy = Boolean(hiding?.id && pendingIds.has(hiding.id))
   const from = (page - 1) * PAGE_SIZE + 1
   const to = from + products.length - 1
 
@@ -241,7 +156,7 @@ export function AdminProductsPage() {
           </Select>
         </label>
         {isFiltering && (
-          <Button variant="ghost" bleed={false} icon="filter_alt_off" onClick={clearFilters}>
+          <Button variant="ghost" icon="filter_alt_off" onClick={clearFilters}>
             Xoá bộ lọc
           </Button>
         )}
@@ -272,9 +187,10 @@ export function AdminProductsPage() {
           <div className={cx(query.isFetching && 'opacity-70')}>
             <ProductsTable
               products={products}
+              detailPath={(id) => withId(ROUTES.ADMIN.PRODUCT, id)}
               busyIds={pendingIds}
               onEdit={(product) => setForm({ open: true, product })}
-              onToggleStatus={toggleStatus}
+              onHide={setHiding}
               onDelete={setDeleting}
             />
           </div>
@@ -308,7 +224,17 @@ export function AdminProductsPage() {
                     {h.hiddenAt && `, ngừng bán lúc ${formatDateTime(h.hiddenAt)}`}
                   </p>
                 </div>
-                <Button size="sm" variant="soft" disabled={pendingIds.has(h.id)} onClick={() => void reopen(h)}>
+                <Button
+                  size="sm"
+                  variant="soft"
+                  disabled={pendingIds.has(h.id)}
+                  onClick={() =>
+                    void reopen(h).then((ok) => {
+                      // Dòng vừa mở bán biến khỏi mục này: đưa focus về danh sách thay vì rơi về đầu trang.
+                      if (ok) requestAnimationFrame(() => listRef.current?.focus())
+                    })
+                  }
+                >
                   {pendingIds.has(h.id) ? 'Đang mở bán…' : 'Mở bán lại'}
                 </Button>
               </li>
@@ -331,27 +257,20 @@ export function AdminProductsPage() {
         }}
         onAfterClose={restoreFocus}
       />
-      <ModalDialog
-        open={Boolean(hiding)}
-        onOpenChange={(open) => !open && setHiding(null)}
-        dismissible={!hidingBusy}
+      <HideProductDialog
+        product={hiding}
+        busy={Boolean(hiding?.id && pendingIds.has(hiding.id))}
+        onClose={() => setHiding(null)}
         onAfterClose={restoreFocus}
-        aria-label="Ngừng bán sản phẩm"
-      >
-        <DialogTitle>Ngừng bán {hiding?.name}?</DialogTitle>
-        <p className="mt-2 text-body text-fg-2">
-          Sản phẩm ngừng bán bị ẩn khỏi mọi danh mục, kể cả bảng này (backend không trả về). Sau khi ngừng bán, sản phẩm
-          nằm trong mục &quot;Đã ngừng bán&quot; ở cuối trang trên trình duyệt này để mở bán lại khi cần.
-        </p>
-        <DialogFooter>
-          <Button variant="ghost" disabled={hidingBusy} onClick={() => setHiding(null)}>
-            Huỷ
-          </Button>
-          <Button variant="danger" disabled={hidingBusy} onClick={() => hiding && void hide(hiding)}>
-            {hidingBusy ? 'Đang ngừng bán…' : 'Ngừng bán'}
-          </Button>
-        </DialogFooter>
-      </ModalDialog>
+        onConfirm={(product) =>
+          void hide(product).then((ok) => {
+            if (!ok) return
+            // Dòng vừa ngừng bán chuyển xuống mục "Đã ngừng bán": đưa focus tới đó.
+            focusAfterDialog.current = hiddenHeadingRef.current
+            setHiding(null)
+          })
+        }
+      />
     </>
   )
 }

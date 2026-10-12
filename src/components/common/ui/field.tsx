@@ -70,6 +70,68 @@ export function Input({ className, size = 'md', ...rest }: Omit<InputHTMLAttribu
   return <input className={cx(control, width(className), heights[size], 'px-3', className)} {...rest} />
 }
 
+/*
+  Ô chọn ngày luôn hiện kiểu Việt Nam (13/10/2026). Ô date gốc hiện theo ngôn ngữ của trình duyệt (bản tiếng Anh ra
+  10/13/2026, lệch với tiêu đề "Thứ Ba, 13/10/2026" ngay cạnh – người dùng báo 12/10/2026). Ô gốc vẫn nằm trên cùng, trong
+  suốt và phủ cả ô: bấm vào đâu cũng mở lịch của trình duyệt (showPicker, kèm nút lịch kéo phủ cả ô cho Chrome / Edge), Tab và
+  gõ phím như cũ, trình đọc màn hình đọc ô gốc. Chữ hiện là lớp bên dưới, nhận viền focus / rê chuột qua `peer`.
+*/
+export function DateField({
+  id,
+  value,
+  onChange,
+  label,
+  min,
+  max,
+  className,
+  size = 'md',
+}: {
+  /** Gắn với nhãn của `Field` (htmlFor); không có nhãn hiện thì truyền `label` để đọc cho trình đọc màn hình. */
+  id?: string
+  /** YYYY-MM-DD */
+  value: string
+  onChange: (value: string) => void
+  label?: string
+  min?: string
+  max?: string
+  className?: string
+  size?: ControlSize
+}) {
+  const [y, m, d] = value.split('-')
+  return (
+    <span className={cx('relative block', width(className), className)}>
+      <input
+        id={id}
+        type="date"
+        aria-label={label}
+        min={min}
+        max={max}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        onClick={(e) => {
+          try {
+            e.currentTarget.showPicker()
+          } catch {
+            /* Trình duyệt chưa có showPicker hoặc lịch đang mở: để ô gốc tự xử lý. */
+          }
+        }}
+        className="peer absolute inset-0 z-10 size-full cursor-pointer opacity-0 [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:inset-0 [&::-webkit-calendar-picker-indicator]:size-full [&::-webkit-calendar-picker-indicator]:cursor-pointer"
+      />
+      <span
+        aria-hidden
+        className={cx(
+          shape,
+          'flex items-center justify-between gap-2 border-line-2 bg-canvas px-3 text-fg peer-hover:border-fg-3 peer-focus-visible:border-accent peer-focus-visible:outline-1 peer-focus-visible:outline-accent',
+          heights[size],
+        )}
+      >
+        <span className="tnum">{value ? `${d}/${m}/${y}` : 'Chọn ngày'}</span>
+        <Icon name="calendar_month" className="text-[20px] text-fg-3" />
+      </span>
+    </span>
+  )
+}
+
 /* Ô tìm kiếm: icon kính lúp ở đầu ô để nhận ra ngay là ô tìm, không chỉ dựa vào chữ gợi ý. */
 export function SearchInput({ className, size = 'md', ...rest }: Omit<InputHTMLAttributes<HTMLInputElement>, 'size' | 'type'> & { size?: ControlSize }) {
   return (
@@ -96,6 +158,50 @@ export function Select({
     <select className={cx(active ? controlActive : control, width(className), heights[size], 'cursor-pointer px-3 pr-8', className)} {...rest}>
       {children}
     </select>
+  )
+}
+
+const minutesOf = (time: string) => Number(time.slice(0, 2)) * 60 + Number(time.slice(3, 5))
+const timeOf = (minutes: number) => `${String(Math.floor(minutes / 60)).padStart(2, '0')}:${String(minutes % 60).padStart(2, '0')}`
+
+/*
+  Ô chọn giờ kiểu 24 giờ (13:00), mỗi `step` phút từ `from` tới `to`. Ô time gốc hiện theo ngôn ngữ trình duyệt (bản tiếng
+  Anh ra "01:00 PM", lệch với "13:00–17:00" in ngay cạnh – 12/10/2026). Giá trị đang có mà lệch lưới (vd. 08:10 lưu từ nơi
+  khác) vẫn được thêm vào danh sách để không bị đổi ngầm. `emptyLabel`: thêm lựa chọn rỗng (vd. "Theo mặc định").
+*/
+export function TimeSelect({
+  value,
+  onChange,
+  from = '00:00',
+  to = '23:30',
+  step = 30,
+  emptyLabel,
+  ...rest
+}: Omit<SelectHTMLAttributes<HTMLSelectElement>, 'value' | 'onChange' | 'size'> & {
+  /** HH:mm (HH:mm:ss cũng đọc được) */
+  value: string
+  onChange: (value: string) => void
+  from?: string
+  to?: string
+  step?: number
+  emptyLabel?: string
+  size?: ControlSize
+  active?: boolean
+}) {
+  const current = value.slice(0, 5)
+  const times: string[] = []
+  for (let m = minutesOf(from); m <= minutesOf(to); m += step) times.push(timeOf(m))
+  if (current && !times.includes(current)) times.push(current)
+  times.sort()
+  return (
+    <Select value={current} onChange={(e) => onChange(e.target.value)} {...rest}>
+      {emptyLabel !== undefined && <option value="">{emptyLabel}</option>}
+      {times.map((t) => (
+        <option key={t} value={t}>
+          {t}
+        </option>
+      ))}
+    </Select>
   )
 }
 

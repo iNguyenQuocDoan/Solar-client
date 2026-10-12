@@ -77,10 +77,10 @@ function AppointmentPanel({
         action={
           a.canCustomerChange ? (
             <>
-              <Button size="sm" icon="edit_calendar" onClick={onReschedule}>
+              <Button size="sm" variant="soft" icon="edit_calendar" onClick={onReschedule}>
                 Đổi giờ
               </Button>
-              <Button size="sm" variant="danger-quiet" icon="event_busy" onClick={onCancel}>
+              <Button size="sm" variant="danger" icon="event_busy" onClick={onCancel}>
                 Huỷ lịch
               </Button>
             </>

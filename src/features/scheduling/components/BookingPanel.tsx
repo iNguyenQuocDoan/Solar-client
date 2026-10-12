@@ -116,7 +116,7 @@ export function BookingPanel({
           </span>
         )}
         {onCancel && (
-          <Button variant="ghost" bleed={false} disabled={busy} onClick={onCancel}>
+          <Button variant="ghost" disabled={busy} onClick={onCancel}>
             Thôi
           </Button>
         )}

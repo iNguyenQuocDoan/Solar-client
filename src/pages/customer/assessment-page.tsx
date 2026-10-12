@@ -686,7 +686,7 @@ export function AssessmentPage() {
                     <Button size="sm" icon="refresh" onClick={reloadSurface} disabled={busy}>
                       Tải bản mới nhất
                     </Button>
-                    <Button size="sm" variant="ghost" bleed={false} onClick={() => void saveSurface({ overwrite: true })} disabled={busy}>
+                    <Button size="sm" variant="warn" onClick={() => void saveSurface({ overwrite: true })} disabled={busy}>
                       Lưu đè bằng bản đang sửa
                     </Button>
                   </span>
@@ -749,7 +749,7 @@ export function AssessmentPage() {
                 <PanelHeader
                   title="Địa điểm lắp đặt"
                   action={
-                    <Button size="sm" icon="edit" disabled={submitted} onClick={() => goTo(SITE)}>
+                    <Button size="sm" variant="soft" icon="edit" disabled={submitted} onClick={() => goTo(SITE)}>
                       Sửa
                     </Button>
                   }
@@ -778,7 +778,7 @@ export function AssessmentPage() {
                   <PanelHeader
                     title="Mặt lắp"
                     action={
-                      <Button size="sm" icon="edit" disabled={submitted} onClick={() => goTo(SURFACE)}>
+                      <Button size="sm" variant="soft" icon="edit" disabled={submitted} onClick={() => goTo(SURFACE)}>
                         Sửa
                       </Button>
                     }
@@ -842,7 +842,7 @@ export function AssessmentPage() {
           Quay lại
         </Button>
         {step === SURFACE && (
-          <Button variant="ghost" bleed={false} icon="save" onClick={saveDraft} disabled={busy}>
+          <Button variant="ghost" icon="save" onClick={saveDraft} disabled={busy}>
             Lưu nháp
           </Button>
         )}

@@ -101,7 +101,7 @@ export function RolesPanel({ user, readOnly }: { user: AdminUserDetail; readOnly
         {work && <ActiveWork work={work} />}
         {!readOnly && (
           <div className="flex flex-wrap items-center gap-3">
-            <Button disabled={!changed || roles.length === 0 || save.isPending} onClick={() => void submit()}>
+            <Button variant="soft" disabled={!changed || roles.length === 0 || save.isPending} onClick={() => void submit()}>
               {save.isPending ? 'Đang lưu…' : 'Lưu vai trò'}
             </Button>
             {roles.length === 0 && <span className="text-meta text-danger">Chọn ít nhất một vai trò.</span>}
@@ -115,7 +115,8 @@ export function RolesPanel({ user, readOnly }: { user: AdminUserDetail; readOnly
 
 /* ---------------------------------------------------------------- trạng thái */
 
-type StatusAction = { status: 'ACTIVE' | 'SUSPENDED' | 'DISABLED'; label: string; title: string; text: string; danger: boolean }
+/** `tone`: màu nút theo việc nó làm – Tạm khoá (hoàn tác được) vàng, Vô hiệu hoá đỏ, Mở khoá / Kích hoạt lại xanh. */
+type StatusAction = { status: 'ACTIVE' | 'SUSPENDED' | 'DISABLED'; label: string; title: string; text: string; tone: 'soft' | 'warn' | 'danger' }
 
 /* Chuyển được: ACTIVE → SUSPENDED / DISABLED; SUSPENDED → ACTIVE / DISABLED; DISABLED → ACTIVE (cần email đã xác minh). */
 function actionsFor(user: AdminUserDetail): StatusAction[] {
@@ -124,21 +125,21 @@ function actionsFor(user: AdminUserDetail): StatusAction[] {
     label: 'Tạm khoá',
     title: 'Tạm khoá tài khoản?',
     text: 'Người dùng bị đăng xuất ngay và không đăng nhập được cho tới khi mở khoá.',
-    danger: true,
+    tone: 'warn',
   }
   const disable: StatusAction = {
     status: 'DISABLED',
     label: 'Vô hiệu hoá',
     title: 'Vô hiệu hoá tài khoản?',
     text: 'Người dùng bị đăng xuất ngay và không đăng nhập được. Kích hoạt lại được khi cần.',
-    danger: true,
+    tone: 'danger',
   }
   const activate = (label: string): StatusAction => ({
     status: 'ACTIVE',
     label,
     title: `${label} tài khoản?`,
     text: 'Người dùng đăng nhập lại được ngay.',
-    danger: false,
+    tone: 'soft',
   })
   switch (user.status) {
     case 'ACTIVE':
@@ -196,7 +197,7 @@ function StatusForm({
         <Button variant="ghost" disabled={change.isPending} onClick={onClose}>
           Huỷ
         </Button>
-        <Button variant={action.danger ? 'danger' : 'primary'} disabled={change.isPending} onClick={() => void confirm()}>
+        <Button variant={action.tone === 'soft' ? 'primary' : action.tone} disabled={change.isPending} onClick={() => void confirm()}>
           {change.isPending ? 'Đang lưu…' : action.label}
         </Button>
       </DialogFooter>
@@ -222,7 +223,7 @@ export function StatusPanel({ user, isSelf }: { user: AdminUserDetail; isSelf: b
         {actions.length > 0 && (
           <div className="flex flex-wrap gap-3">
             {actions.map((a) => (
-              <Button key={a.status} size="sm" variant={a.danger ? 'danger' : 'secondary'} onClick={() => setAction(a)}>
+              <Button key={a.status} size="sm" variant={a.tone} onClick={() => setAction(a)}>
                 {a.label}
               </Button>
             ))}
@@ -274,7 +275,7 @@ export function RecoveryPanel({ user }: { user: AdminUserDetail }) {
         }
       />
       <PanelBody className="space-y-3">
-        <Button size="sm" icon="mail" disabled={blocked || send.isPending} onClick={() => void submit()}>
+        <Button size="sm" variant="soft" icon="mail" disabled={blocked || send.isPending} onClick={() => void submit()}>
           {send.isPending ? 'Đang gửi…' : user.hasPassword ? 'Gửi link đặt lại mật khẩu' : 'Gửi link đặt mật khẩu'}
         </Button>
         {blocked && !user.deletedAt && <p className="text-meta text-fg-2">Tài khoản đang tạm khoá hoặc vô hiệu: kích hoạt lại trước khi gửi link.</p>}

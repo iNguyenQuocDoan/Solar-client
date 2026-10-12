@@ -1,8 +1,7 @@
 import type { UseQueryResult } from '@tanstack/react-query'
-import { Link } from 'react-router'
 import { Badge } from '@/components/common/ui/badge'
-import { Button, IconButton } from '@/components/common/ui/button'
-import { Input } from '@/components/common/ui/field'
+import { Button, ButtonLink, IconButton } from '@/components/common/ui/button'
+import { DateField } from '@/components/common/ui/field'
 import { Notice } from '@/components/common/ui/lists'
 import { Stat, StatRow } from '@/components/common/ui/stat'
 import { EmptyState, ErrorState, Skeleton } from '@/components/common/ui/states'
@@ -30,21 +29,18 @@ import type { ScheduleAppointmentView, TechnicianScheduleView } from '@/types/re
   Dùng cho kỹ thuật viên (lịch của mình) và quản trị / quản lý (lịch của một kỹ thuật viên).
 */
 
+/* Ngày trước / ô ngày (hiện 13/10/2026 dù trình duyệt tiếng gì) / ngày sau / Hôm nay. "Hôm nay" luôn có chỗ, chỉ tắt khi đang
+   xem hôm nay, để cụm nút không nhảy khi đổi ngày. */
 export function DayNav({ date, onChange, label = 'Ngày' }: { date: string; onChange: (date: string) => void; label?: string }) {
   const today = todayVn()
   return (
     <div className="flex flex-wrap items-center gap-2">
       <IconButton icon="chevron_left" label="Ngày trước" variant="secondary" onClick={() => onChange(addDays(date, -1))} />
-      <label className="w-44">
-        <span className="sr-only">{label}</span>
-        <Input type="date" value={date} onChange={(e) => e.target.value && onChange(e.target.value)} />
-      </label>
+      <DateField className="w-40" label={label} value={date} onChange={(value) => value && onChange(value)} />
       <IconButton icon="chevron_right" label="Ngày sau" variant="secondary" onClick={() => onChange(addDays(date, 1))} />
-      {date !== today && (
-        <Button variant="ghost" bleed={false} onClick={() => onChange(today)}>
-          Hôm nay
-        </Button>
-      )}
+      <Button disabled={date === today} onClick={() => onChange(today)}>
+        Hôm nay
+      </Button>
     </div>
   )
 }
@@ -64,22 +60,15 @@ function Leg({ item }: { item: ScheduleAppointmentView }) {
   )
 }
 
+/* Mỗi lịch một khối có viền (giờ | công trình, trạng thái, đường đi | nút xem), để các lịch trong ngày tách rõ nhau. */
 function AppointmentItem({ item, linkTo, viewer }: { item: ScheduleAppointmentView; linkTo?: string; viewer: 'technician' | 'staff' }) {
   const status = appointmentStatusMeta(item.status, viewer)
   return (
-    <li className="grid gap-x-6 gap-y-2 py-4 first:pt-0 last:pb-0 sm:grid-cols-[7rem_minmax(0,1fr)]">
+    <li className="grid gap-x-6 gap-y-3 rounded-container border border-line bg-canvas p-4 sm:grid-cols-[7rem_minmax(0,1fr)_auto] sm:items-start">
       <p className="tnum text-title font-semibold text-fg">{formatTimeRange(item.startsAt, item.endsAt)}</p>
       <div className="min-w-0 space-y-2">
         <div className="flex flex-wrap items-center gap-2">
-          <h3 className="text-body font-semibold text-fg">
-            {linkTo ? (
-              <Link to={linkTo} className="ui-link">
-                {item.propertyName}
-              </Link>
-            ) : (
-              item.propertyName
-            )}
-          </h3>
+          <h3 className="text-body font-semibold text-fg">{item.propertyName}</h3>
           <Badge tone={status.tone}>{status.label}</Badge>
           {item.potentialConflict && (
             <Badge tone="danger" icon="warning">
@@ -89,6 +78,11 @@ function AppointmentItem({ item, linkTo, viewer }: { item: ScheduleAppointmentVi
         </div>
         <Leg item={item} />
       </div>
+      {linkTo && (
+        <ButtonLink to={linkTo} size="sm" variant="soft" className="justify-self-start">
+          Xem chi tiết
+        </ButtonLink>
+      )}
     </li>
   )
 }
@@ -120,7 +114,7 @@ export function ScheduleDay({
   return (
     <section aria-label={`Lịch ${relativeDay(date)}`} aria-busy={query.isFetching} className="space-y-6">
       {s.appointmentCount > 0 && (
-        <StatRow>
+        <StatRow framed>
           <Stat label="Lịch trong ngày" value={s.appointmentCount} />
           <Stat label="Quãng đường đã kiểm tra" value={formatDistance(s.estimatedTravelDistanceMeters)} />
           <Stat label="Thời gian đi" value={formatDuration(s.estimatedTravelSeconds)} note={`cộng ${s.safetyBufferMinutesTotal} phút dự phòng`} />
@@ -148,7 +142,7 @@ export function ScheduleDay({
       {s.appointments.length === 0 ? (
         <EmptyState title={emptyText} />
       ) : (
-        <ol className="divide-y divide-line">
+        <ol className="space-y-3">
           {s.appointments.map((item) => (
             <AppointmentItem key={item.appointmentId} item={item} viewer={viewer} linkTo={linkFor?.(item.appointmentId)} />
           ))}

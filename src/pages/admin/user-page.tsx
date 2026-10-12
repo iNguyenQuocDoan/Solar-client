@@ -80,7 +80,7 @@ export function AdminUserPage() {
               description={user.email}
               actions={
                 deleted ? undefined : (
-                  <Button icon="edit" onClick={() => setEditing(true)}>
+                  <Button variant="soft" icon="edit" onClick={() => setEditing(true)}>
                     Sửa thông tin
                   </Button>
                 )

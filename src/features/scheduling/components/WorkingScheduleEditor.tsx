@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { toast } from 'sonner'
 import { Icon } from '@/components/common/stitch-ui/Icon'
 import { Button, IconButton } from '@/components/common/ui/button'
-import { Checkbox, Input } from '@/components/common/ui/field'
+import { Checkbox, TimeSelect } from '@/components/common/ui/field'
 import { Segmented } from '@/components/common/ui/segmented'
 import { ErrorState, Skeleton } from '@/components/common/ui/states'
 import { ConflictList } from '@/features/scheduling/components/ConflictList'
@@ -105,12 +105,10 @@ function WeekForm({ initial, technicianUserId, onSaved }: { initial: Week; techn
                         <span className="sr-only">
                           {d.label}, khoảng {i + 1}, bắt đầu
                         </span>
-                        <Input
-                          type="time"
-                          step={1800}
-                          className="w-32"
+                        <TimeSelect
+                          className="w-28"
                           value={p.start}
-                          onChange={(e) => update(d.value, periods.map((q, j) => (j === i ? { ...q, start: e.target.value } : q)))}
+                          onChange={(start) => update(d.value, periods.map((q, j) => (j === i ? { ...q, start } : q)))}
                         />
                       </label>
                       <span aria-hidden className="text-fg-3">
@@ -120,17 +118,15 @@ function WeekForm({ initial, technicianUserId, onSaved }: { initial: Week; techn
                         <span className="sr-only">
                           {d.label}, khoảng {i + 1}, kết thúc
                         </span>
-                        <Input
-                          type="time"
-                          step={1800}
-                          className="w-32"
+                        <TimeSelect
+                          className="w-28"
                           value={p.end}
-                          onChange={(e) => update(d.value, periods.map((q, j) => (j === i ? { ...q, end: e.target.value } : q)))}
+                          onChange={(end) => update(d.value, periods.map((q, j) => (j === i ? { ...q, end } : q)))}
                         />
                       </label>
                       <IconButton
                         icon="delete"
-                        variant="danger-quiet"
+                        variant="danger"
                         label={`Bỏ khoảng ${p.start}–${p.end} của ${d.label}`}
                         tooltip="Bỏ khoảng này"
                         onClick={() => update(d.value, periods.filter((_, j) => j !== i))}
@@ -139,7 +135,7 @@ function WeekForm({ initial, technicianUserId, onSaved }: { initial: Week; techn
                   ))}
                   <Button
                     size="sm"
-                    variant="ghost"
+                    variant="soft"
                     icon="add"
                     onClick={() => update(d.value, [...periods, { start: periods.at(-1)?.end ?? '13:00', end: '17:00' }])}
                   >

@@ -5,7 +5,7 @@ import { Icon } from '@/components/common/stitch-ui/Icon'
 import { Badge } from '@/components/common/ui/badge'
 import { Button } from '@/components/common/ui/button'
 import { DialogFooter, DialogTitle, ModalDialog } from '@/components/common/ui/dialog'
-import { Field, Input, Select, Textarea } from '@/components/common/ui/field'
+import { DateField, Field, Select, Textarea } from '@/components/common/ui/field'
 import { Notice } from '@/components/common/ui/lists'
 import { Panel, PanelBody, PanelFooter, PanelHeader } from '@/components/common/ui/panel'
 import { ErrorState, Skeleton } from '@/components/common/ui/states'
@@ -130,7 +130,7 @@ function AssignPanel({ request, appointment, onReschedule }: { request: SurveyRe
         title="Phân công kỹ thuật viên"
         description={`Khách đã đặt ${formatAppointment(appointment.startsAt, appointment.endsAt)}. Hệ thống đang giữ chỗ cho ${appointment.reservedTechnicianName}; đổi người nếu cần.`}
         action={
-          <Button size="sm" icon="edit_calendar" onClick={onReschedule}>
+          <Button size="sm" variant="soft" icon="edit_calendar" onClick={onReschedule}>
             Đổi giờ
           </Button>
         }
@@ -312,13 +312,12 @@ function RescheduleDialog({
       <div className="mt-4 max-h-[60dvh] space-y-4 overflow-y-auto scrollbar-thin">
         <div className="flex flex-wrap items-end gap-3">
           <Field label="Ngày" htmlFor="reschedule-date" className="w-full sm:w-48">
-            <Input
+            <DateField
               id="reschedule-date"
-              type="date"
               min={today}
               max={addDays(today, BOOKING_HORIZON_DAYS - 1)}
               value={date}
-              onChange={(e) => e.target.value && edit({ date: e.target.value })}
+              onChange={(value) => value && edit({ date: value })}
             />
           </Field>
           <Field label="Giờ bắt đầu" htmlFor="reschedule-time" className="w-full sm:w-36">
@@ -330,7 +329,7 @@ function RescheduleDialog({
               ))}
             </Select>
           </Field>
-          <Button onClick={() => setChecked(startsAt)} disabled={checked === startsAt}>
+          <Button variant="soft" onClick={() => setChecked(startsAt)} disabled={checked === startsAt}>
             Xem kỹ thuật viên rảnh
           </Button>
         </div>
@@ -393,10 +392,10 @@ function ScheduledPanel({
         action={
           upcoming ? (
             <>
-              <Button size="sm" icon="edit_calendar" onClick={onReschedule}>
+              <Button size="sm" variant="soft" icon="edit_calendar" onClick={onReschedule}>
                 Đổi giờ
               </Button>
-              <Button size="sm" icon="swap_horiz" onClick={onReassign}>
+              <Button size="sm" variant="soft" icon="swap_horiz" onClick={onReassign}>
                 Đổi kỹ thuật viên
               </Button>
             </>

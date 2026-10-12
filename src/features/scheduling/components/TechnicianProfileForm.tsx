@@ -2,7 +2,7 @@ import { useState, type FormEvent } from 'react'
 import { toast } from 'sonner'
 import { Icon } from '@/components/common/stitch-ui/Icon'
 import { Button } from '@/components/common/ui/button'
-import { Checkbox, Field, Input } from '@/components/common/ui/field'
+import { Checkbox, Field, Input, TimeSelect } from '@/components/common/ui/field'
 import { Notice } from '@/components/common/ui/lists'
 import { toNumber } from '@/features/pre-surveys/components/assessmentForm'
 import { isInHcm, mapsUrl } from '@/features/pre-surveys/components/preSurveyDisplay'
@@ -177,16 +177,16 @@ export function TechnicianProfileForm({ technician }: { technician: TechnicianPr
         <Field
           label="Rời nơi xuất phát sớm nhất"
           htmlFor="earliest-departure"
-          hint={technician.earliestBaseDepartureIsDefault ? `Để trống là theo mặc định (${technician.earliestBaseDeparture}).` : 'Để trống là theo mặc định của hệ thống.'}
+          hint='Chọn "Theo mặc định" để dùng giờ chung của hệ thống.'
           error={errors.earliestBaseDeparture}
         >
-          <Input
+          <TimeSelect
             id="earliest-departure"
-            type="time"
-            min="04:00"
-            max="12:00"
+            from="04:00"
+            to="12:00"
+            emptyLabel={technician.earliestBaseDepartureIsDefault ? `Theo mặc định (${technician.earliestBaseDeparture})` : 'Theo mặc định'}
             value={form.earliestBaseDeparture}
-            onChange={(e) => edit({ earliestBaseDeparture: e.target.value })}
+            onChange={(earliestBaseDeparture) => edit({ earliestBaseDeparture })}
             aria-invalid={Boolean(errors.earliestBaseDeparture)}
           />
         </Field>

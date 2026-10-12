@@ -114,7 +114,7 @@ export function AdminUsersPage() {
         </label>
         <Checkbox label="Gồm tài khoản đã xoá" checked={filter.includeDeleted} onChange={(e) => updateFilter({ includeDeleted: e.target.checked })} />
         {isFiltering && (
-          <Button variant="ghost" bleed={false} icon="filter_alt_off" onClick={() => updateFilter(defaultFilter)}>
+          <Button variant="ghost" icon="filter_alt_off" onClick={() => updateFilter(defaultFilter)}>
             Xoá bộ lọc
           </Button>
         )}

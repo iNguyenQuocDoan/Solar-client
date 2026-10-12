@@ -7,8 +7,25 @@ import { cx } from '@/utils/cx'
   the gap does the separating, the figures are not tiles.
   Columns: 2 on phones, 4 on md; pass `md:grid-cols-3` or `xl:grid-cols-6` when the data calls for it.
 */
-export function StatRow({ children, className }: { children: ReactNode; className?: string }) {
-  return <dl className={cx('grid grid-cols-2 content-start gap-x-8 gap-y-6 md:grid-cols-4', className)}>{children}</dl>
+/*
+  `framed`: các số gom trong một khung có viền, mỗi số một ô cách nhau bằng đường kẻ mảnh (nền đường kẻ lộ qua khe 1px).
+  Dùng khi dải số đứng một mình trên trang rộng: không khung thì 4 số rải hết bề ngang, trông rời rạc (lịch theo ngày,
+  người dùng chê 12/10/2026).
+*/
+export function StatRow({ children, className, framed = false }: { children: ReactNode; className?: string; framed?: boolean }) {
+  return (
+    <dl
+      className={cx(
+        'grid grid-cols-2 content-start md:grid-cols-4',
+        framed
+          ? 'gap-px overflow-hidden rounded-container border border-line bg-line *:bg-canvas *:px-4 *:py-3'
+          : 'gap-x-8 gap-y-6',
+        className,
+      )}
+    >
+      {children}
+    </dl>
+  )
 }
 
 /* A figure with its label. Numbers only; a text value belongs in a KeyValueList. */
