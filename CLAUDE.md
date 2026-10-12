@@ -88,12 +88,16 @@ Rút ra từ 4 lượt audit giao diện; áp cho CẢ HAI bộ component.
    tên icon.
 7. **Khoảng cách** theo thang 4/8/12/16/24/32/48/64 (`space-*` của bộ Stitch đã theo thang này).
 8. **Chạm**: control cao tối thiểu 44px dưới `lg`.
-9. **Thứ bậc thao tác** (`Button`): `primary` nút đặc, một nút mỗi màn; `soft` hành động chính của từng dòng / khối
-   (Nhận yêu cầu, Mở yêu cầu, Mở bán lại), nền xanh nhạt + viền; `secondary` nút trắng có viền; `ghost` thao tác kín
-   đáo (`bleed={false}` khi nằm trong cụm nút); `danger` viền đỏ cho phá huỷ hoàn tác được trong hộp thoại (Ngừng bán);
-   `danger-quiet` nút xoá lặp lại trên từng dòng (xám khi nghỉ, đỏ khi rê / focus, đứng sau vạch ngăn) để cột thao tác
-   không thành dải đỏ; `danger-solid` nút đặc đỏ chỉ để xác nhận việc không hoàn tác (Xoá). Cùng một thao tác dùng cùng
-   một kiểu ở mọi màn (vd. "Sửa" luôn là `secondary` sm có icon). Nút chỉ có icon dùng `IconButton` (`label` = aria-label,
+9. **Thứ bậc thao tác** (`Button`). Người dùng 12/10/2026: "những nút chức năng bắt buộc phải là phím ấn kèm theo border"
+   và "các nút chức năng lại không có màu làm khó thao tác" – MỌI nút có viền (hoặc nền đặc) ngay khi nghỉ, không còn nút
+   chỉ có chữ, và màu nói nút làm gì: `primary` nút đặc, một nút mỗi màn; `soft` (xanh nhạt + viền xanh đậm) hành động
+   chính / tích cực của dòng, khối (Sửa, Nhận yêu cầu, Phân công, Đổi giờ, Đổi kỹ thuật viên, Thêm…, Mở bán lại, Gửi link);
+   `secondary` (trắng, viền xám) thao tác trung tính, điều hướng (Tài khoản, Xem bản đồ, Lịch cả ngày, Hôm nay, Quay lại);
+   `ghost` (viền xám, nền trong suốt) thao tác phụ (Huỷ trong hộp thoại, Lưu nháp, Xoá bộ lọc); `warn` (viền + chữ vàng)
+   tạm dừng hoàn tác được (Ngừng bán, Tạm khoá, Lưu đè); `danger` (viền + chữ đỏ) xoá, huỷ (Xoá, Bỏ, Huỷ lịch, Vô hiệu hoá),
+   kể cả nút xoá lặp lại trên từng dòng; `danger-solid` nút đặc đỏ chỉ để xác nhận việc không hoàn tác. Viền đo ≥ 3:1 với
+   nền trang ở cả hai chế độ, chữ ≥ 4,5:1 cả khi rê chuột. Cùng một thao tác dùng cùng một kiểu ở mọi màn (vd. "Sửa" luôn
+   là `soft` có icon). Tab (`FilterChips`) vẫn là tab gạch chân, không phải nút (người dùng chọn giữ, 12/10/2026). Nút chỉ có icon dùng `IconButton` (`label` = aria-label,
    `tooltip` = chữ ngắn khi label dài); tooltip thật dùng `WithTooltip` (`ui/tooltip.tsx`: hiện cả khi focus bàn phím,
    vẽ ra body nên khung cuộn không cắt, tự né mép màn hình), không dùng `title`.
    Link trong nội dung dùng utility `ui-link` (màu thương hiệu + gạch chân). Chọn một trong vài lựa chọn ngang hàng
@@ -285,11 +289,15 @@ nhập làm nguồn chính + kéo thả vật cản.
     chú thích (`caption`) nằm ngay dưới hình. Khung 3D 4:3, khung rộng từ 60rem (container query) thì cao vừa khung nhìn.
   - Trang sales giữ cột 2/3 (cột phụ khách hàng + tiến độ cao hơn phần số liệu, đưa mô phỏng xuống rộng hết trang sẽ để lại
     khoảng trống lớn); cột phụ dính khi cuộn để cạnh mặt bằng / 3D không trống.
-- `/admin` → `/admin/products`: quản lý sản phẩm (`pages/admin/products-page.tsx`, bộ portal kit; tấm pin thiếu
-  công suất/kích thước được tô cảnh báo vì mô phỏng không dùng được). Backend ẩn sản phẩm INACTIVE khỏi GET danh sách
-  và GET chi tiết với mọi vai trò (dò 08/10/2026), nên: tạo mới luôn ACTIVE; "Ngừng bán" hỏi xác nhận, có "Hoàn tác";
-  sản phẩm đã ngừng bán được nhớ trong localStorage (`features/products/hiddenProducts.ts`) để "Mở bán lại" — chỉ trên
-  trình duyệt đã bấm. Khi backend có cách liệt kê sản phẩm ngừng bán thì bỏ cơ chế này.
+- `/admin/products`: danh sách gọn (`pages/admin/products-page.tsx` + `ProductsTable`: ảnh, tên, SKU, loại, hãng, công suất,
+  giá, trạng thái; tấm pin thiếu công suất/kích thước báo đỏ trên dòng vì mô phỏng không dùng được). Bấm dòng mở
+  `/admin/products/:id` (`pages/admin/product-page.tsx`, dùng chung `CatalogProductPage` với `admin`) – người dùng 12/10/2026:
+  "phải là 1 list khi ấn vào thì mới hiển thị chi tiết". Sửa (`soft`), Ngừng bán (`warn`), Xoá (`danger`) có ở cả từng dòng lẫn
+  trang chi tiết (`ProductActions`, `HideProductDialog`) – người dùng hỏi tiếp "tại sao lại không để cái nút này ở ngoài luôn
+  cho tiện". Cụm nút trên dòng nằm trên lớp link phủ dòng (`relative z-10`); bảng 7 cột nên `stack="xl"`. Backend ẩn sản phẩm INACTIVE khỏi GET danh sách và GET chi tiết với mọi vai trò (dò 08/10/2026), nên: tạo
+  mới luôn ACTIVE; "Ngừng bán" hỏi xác nhận, xong thì về danh sách, toast có "Hoàn tác"; sản phẩm đã ngừng bán được nhớ trong
+  localStorage (`features/products/hiddenProducts.ts`, kho dùng chung qua useSyncExternalStore) để "Mở bán lại" ở cuối
+  danh sách — chỉ trên trình duyệt đã bấm. Khi backend có cách liệt kê sản phẩm ngừng bán thì bỏ cơ chế này.
 - `/tech/products(/:id)`, `/manage/products(/:id)`: danh mục sản phẩm thật (GET /api/products, bản portal kit) cho kỹ
   thuật viên và quản lý. Không còn trang giữ chỗ "chưa có chức năng" (08/10/2026); `/field/*` chuyển về `/tech`.
 
@@ -364,8 +372,14 @@ bộ do quản trị cấp; backend vẫn cho mọi vai trò gọi API, đây ch
 Bảng (`Table`): khi chia cột, dòng tô nền khi rê chuột, bảng lấn 12px mỗi bên để nền không cắt sát chữ; dưới lg xếp khối
 nhãn/giá trị (ô là lưới `justify-items: start`, cột nhãn tối đa 12rem). Bảng nhiều cột có cụm thao tác dùng `stack="xl"` (xếp
 khối đến 1280px: ở 1024px chia cột thì tên bị bóp còn vài chữ mỗi dòng) và gộp cột phụ vào dòng phụ của cột chính từ xl đến
-2xl, như bảng sản phẩm admin. Bảng mà cả dòng là một link (danh mục sản phẩm) phủ link tên lên cả dòng bằng `::after`,
-dòng `relative cursor-pointer`; tên giữ màu chữ chính, rê chuột mới xanh + gạch chân.
+2xl. Bảng mà cả dòng là một link (danh mục sản phẩm, danh sách sản phẩm admin) phủ link tên lên cả dòng bằng `::after`,
+dòng `relative cursor-pointer [&>td]:align-middle`; tên giữ màu chữ chính, rê chuột mới xanh + gạch chân; nút trong dòng đặt
+`relative z-10` để nằm trên lớp phủ. Khi xếp khối muốn bỏ bớt ô phụ thì dùng `max-lg:hidden!` / `max-xl:hidden!` (CSS xếp khối
+mặc định hiện lại mọi ô), như Loại / Hãng của danh sách sản phẩm admin.
+Ngày giờ trong form dùng `DateField` (luôn hiện 13/10/2026, ô date gốc trong suốt phủ lên để bấm là mở lịch) và
+`TimeSelect` (danh sách giờ 24 giờ mỗi 30 phút) thay cho `type="date" | "time" | "datetime-local"`, vì ô gốc hiện theo ngôn
+ngữ trình duyệt (bản tiếng Anh ra 10/13/2026, 01:00 PM – người dùng thấy 12/10/2026). Số liệu đứng riêng một dải trên trang
+rộng dùng `StatRow framed` (khung có viền, mỗi số một ô cách nhau bằng đường kẻ).
 Trang chi tiết hoặc wizard đặt mắt xích cuối bằng `usePageCrumb(tên)` (`components/layout/page-crumb.tsx`), không tự làm link "quay lại". Số đếm thật cạnh mục menu truyền qua
 `badges` của layout (`ops-layout`: hàng chờ; `AdminLayout`: tổng sản phẩm). Làm 1 lần trong layout route với `<Outlet/>`,
 KHÔNG copy rail vào từng page; layout còn được vẽ làm khung chờ (`hydrateFallbackElement`) TRƯỚC `RequireRole` nên
@@ -416,7 +430,7 @@ Trang chủ và các màn xác thực KHÔNG dùng `AppShell`/sidebar.
 | `/403`            | `AuthLayout`   | `ForbiddenPage`                                             |
 | `/coming-soon`    | `PublicLayout` | Trang tạm cho Kinh doanh, Quản lý, Khách hàng               |
 | `/products`, `/products/:id` | `PublicLayout` | Danh mục sản phẩm công khai – GET /api/products(/{id}) |
-| `/admin/*`        | `AdminLayout`  | Tài khoản, Kỹ thuật viên, Sản phẩm – bọc `<RequireRole role="admin">` |
+| `/admin/*`        | `AdminLayout`  | Sản phẩm, Tài khoản, Kỹ thuật viên (trang mở đầu: Tài khoản) – bọc `<RequireRole role="admin">` |
 | `/tech/*`         | `TechLayout`   | Việc của tôi, Lịch làm việc, Sản phẩm – bọc `<RequireRole role="technician">` |
 | `/customer/*`     | `CustomerLayout` | Đánh giá sơ bộ, Yêu cầu khảo sát (đặt giờ), Sản phẩm – bọc `<RequireRole role="customer">` |
 | `/ops/*`          | `OpsLayout`      | Yêu cầu khảo sát (nhận, phân công kỹ thuật viên) – bọc `<RequireRole role="sales">` |
