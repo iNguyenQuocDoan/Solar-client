@@ -376,9 +376,10 @@ khối đến 1280px: ở 1024px chia cột thì tên bị bóp còn vài chữ 
 dòng `relative cursor-pointer [&>td]:align-middle`; tên giữ màu chữ chính, rê chuột mới xanh + gạch chân; nút trong dòng đặt
 `relative z-10` để nằm trên lớp phủ. Khi xếp khối muốn bỏ bớt ô phụ thì dùng `max-lg:hidden!` / `max-xl:hidden!` (CSS xếp khối
 mặc định hiện lại mọi ô), như Loại / Hãng của danh sách sản phẩm admin.
-Ngày giờ trong form dùng `DateField` (luôn hiện 13/10/2026, ô date gốc trong suốt phủ lên để bấm là mở lịch) và
-`TimeSelect` (danh sách giờ 24 giờ mỗi 30 phút) thay cho `type="date" | "time" | "datetime-local"`, vì ô gốc hiện theo ngôn
-ngữ trình duyệt (bản tiếng Anh ra 10/13/2026, 01:00 PM – người dùng thấy 12/10/2026). Số liệu đứng riêng một dải trên trang
+Ngày giờ trong form dùng `DateField` (ô chữ gõ ngày/tháng/năm 13/10/2026, đọc lại khi rời ô hoặc Enter; bấm icon lịch là bấm
+vào ô date gốc trong suốt phủ vùng icon, nên trình duyệt mở lịch của nó; nhận aria-invalid / aria-required / disabled như `Input`) và `TimeSelect` (danh sách
+giờ 24 giờ, mặc định mỗi 30 phút) thay cho `type="date" | "time" | "datetime-local"`, vì ô gốc hiện và nhận phím theo ngôn
+ngữ trình duyệt (bản tiếng Anh ra 10/13/2026, 01:00 PM, gõ "15" là sửa tháng – người dùng thấy 12/10/2026, review 13/10). Số liệu đứng riêng một dải trên trang
 rộng dùng `StatRow framed` (khung có viền, mỗi số một ô cách nhau bằng đường kẻ).
 Trang chi tiết hoặc wizard đặt mắt xích cuối bằng `usePageCrumb(tên)` (`components/layout/page-crumb.tsx`), không tự làm link "quay lại". Số đếm thật cạnh mục menu truyền qua
 `badges` của layout (`ops-layout`: hàng chờ; `AdminLayout`: tổng sản phẩm). Làm 1 lần trong layout route với `<Outlet/>`,
