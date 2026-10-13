@@ -14,7 +14,9 @@ import { cx } from '@/utils/cx'
     secondary     thao tác trung tính, điều hướng (Tài khoản, Xem bản đồ, Hôm nay): nền trắng, viền xám
     ghost         thao tác phụ (Huỷ trong hộp thoại, Lưu nháp, Xoá bộ lọc): viền xám, nền trong suốt, chữ xám đậm
     warn          tạm dừng nhưng hoàn tác được (Ngừng bán, Tạm khoá): viền + chữ vàng, rê chuột nền vàng nhạt
-    danger        xoá, huỷ (Xoá, Huỷ lịch, Vô hiệu hoá): viền + chữ đỏ, rê chuột nền đỏ nhạt; luôn mở hộp thoại xác nhận
+    danger        xoá, huỷ (Xoá, Bỏ, Huỷ lịch, Vô hiệu hoá): viền + chữ đỏ, rê chuột nền đỏ nhạt. Xoá dữ liệu đã lưu thì mở
+                  hộp thoại xác nhận; bỏ một dòng trong form chưa lưu (khoảng giờ làm, thông số, vật cản) thì bỏ ngay, vì
+                  bấm Huỷ / không lưu là lấy lại được
     danger-solid  xác nhận thao tác không hoàn tác (Xoá): nút đặc đỏ, chỉ đặt trong hộp thoại xác nhận
   Viền đo ≥ 3:1 với nền trang ở cả hai chế độ (xanh 3,3:1; vàng, đỏ 75% ≥ 3,3:1; xám 3,5:1), chữ ≥ 4,5:1 cả khi rê chuột.
   Mọi nút bo cùng một bán kính (--radius-control, 6px).

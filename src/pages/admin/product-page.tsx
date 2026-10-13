@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate, useParams } from 'react-router'
+import { useLocation, useNavigate, useParams } from 'react-router'
 import { Notice } from '@/components/common/ui/lists'
 import { DeleteProductDialog } from '@/features/products/components/DeleteProductDialog'
 import { HideProductDialog, ProductActions } from '@/features/products/components/ProductActions'
@@ -22,13 +22,16 @@ export function AdminProductPage() {
   const { id } = useParams()
   const navigate = useNavigate()
   const product = useProductQuery(id).data
-  const options = useProductOptions()
-  const { hide, pendingIds } = useProductStatusActions()
   const [editing, setEditing] = useState(false)
+  const options = useProductOptions({ enabled: editing })
+  const { hide, pendingStatus } = useProductStatusActions()
   const [deleting, setDeleting] = useState(false)
   const [hiding, setHiding] = useState(false)
-  const busy = Boolean(id && pendingIds.has(id))
-  const backToList = () => navigate(ROUTES.ADMIN.PRODUCTS, { replace: true })
+  const busy = Boolean(id && pendingStatus.has(id))
+  // Mở từ danh sách thì quay về đúng địa chỉ đó (bộ lọc + trang); mở thẳng bằng link thì về danh sách gốc.
+  const fromList = (useLocation().state as { backTo?: unknown } | null)?.backTo
+  const backTo = typeof fromList === 'string' && fromList.startsWith(ROUTES.ADMIN.PRODUCTS) ? fromList : ROUTES.ADMIN.PRODUCTS
+  const backToList = () => navigate(backTo, { replace: true })
 
   return (
     <>

@@ -51,7 +51,9 @@ function AddPeriodForm({ technicianUserId }: { technicianUserId: string }) {
       await add.mutateAsync({ id: technicianUserId, body: { startsAt: toVnIso(from), endsAt: toVnIso(to), reason: reason.trim() || null } })
       toast.success('Đã thêm lịch nghỉ.')
       setFromDate('')
+      setFromTime('08:00')
       setToDate('')
+      setToTime('17:00')
       setReason('')
     } catch (error) {
       setFailure(error)
@@ -65,13 +67,13 @@ function AddPeriodForm({ technicianUserId }: { technicianUserId: string }) {
       <div className="grid gap-4 sm:grid-cols-2">
         <Field label="Từ" htmlFor="leave-from" required>
           <div className="flex gap-2">
-            <DateField id="leave-from" className="min-w-0 flex-1" value={fromDate} onChange={setFromDate} />
+            <DateField id="leave-from" aria-required className="min-w-0 flex-1" value={fromDate} onChange={setFromDate} />
             <TimeSelect aria-label="Giờ bắt đầu" className="w-28" value={fromTime} onChange={setFromTime} />
           </div>
         </Field>
         <Field label="Đến" htmlFor="leave-to" required>
           <div className="flex gap-2">
-            <DateField id="leave-to" className="min-w-0 flex-1" min={fromDate || undefined} value={toDate} onChange={setToDate} />
+            <DateField id="leave-to" aria-required className="min-w-0 flex-1" min={fromDate || undefined} value={toDate} onChange={setToDate} />
             <TimeSelect aria-label="Giờ kết thúc" className="w-28" value={toTime} onChange={setToTime} />
           </div>
         </Field>

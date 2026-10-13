@@ -3,6 +3,7 @@ import { Badge } from '@/components/common/ui/badge'
 import { Table, Td, Th, Tr } from '@/components/common/ui/table'
 import { ProductActions } from '@/features/products/components/ProductActions'
 import { formatPower, panelSpecGaps, productStatusMeta, productTypeLabel } from '@/features/products/components/productDisplay'
+import type { PendingStatus } from '@/features/products/hooks/useProductStatusActions'
 import type { ProductResponse } from '@/types/res/adminProductsRes'
 import { formatMoney } from '@/utils/format'
 
@@ -20,15 +21,18 @@ import { formatMoney } from '@/utils/format'
 export function ProductsTable({
   products,
   detailPath,
-  busyIds,
+  linkState,
+  pending,
   onEdit,
   onHide,
   onDelete,
 }: {
   products: ProductResponse[]
   detailPath: (id: string) => string
-  /** id các sản phẩm đang chờ đổi trạng thái, để khoá thao tác của đúng những dòng đó */
-  busyIds?: ReadonlySet<string>
+  /** Gửi kèm link tới trang chi tiết (vd. địa chỉ danh sách để quay về đúng bộ lọc). */
+  linkState?: unknown
+  /** sản phẩm đang chờ đổi trạng thái (id → việc đang làm), để khoá thao tác của đúng những dòng đó */
+  pending?: ReadonlyMap<string, PendingStatus>
   onEdit: (product: ProductResponse) => void
   onHide: (product: ProductResponse) => void
   onDelete: (product: ProductResponse) => void
@@ -75,6 +79,7 @@ export function ProductsTable({
                   <div className="min-w-0">
                     <Link
                       to={detailPath(p.id ?? '')}
+                      state={linkState}
                       className="font-medium text-fg underline-offset-4 after:absolute after:inset-0 group-hover:text-accent-fg group-hover:underline"
                     >
                       {p.name || 'Sản phẩm chưa đặt tên'}
@@ -112,7 +117,7 @@ export function ProductsTable({
                 <ProductActions
                   compact
                   product={p}
-                  busy={Boolean(p.id && busyIds?.has(p.id))}
+                  busy={Boolean(p.id && pending?.has(p.id))}
                   className="xl:justify-end"
                   onEdit={() => onEdit(p)}
                   onHide={() => onHide(p)}

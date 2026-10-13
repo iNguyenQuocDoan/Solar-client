@@ -1,4 +1,5 @@
-import { useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useLocation, useSearchParams } from 'react-router'
 import { Badge } from '@/components/common/ui/badge'
 import { Button } from '@/components/common/ui/button'
 import { SearchInput, Select } from '@/components/common/ui/field'
@@ -28,21 +29,28 @@ import { cx } from '@/utils/cx'
   cuối trang là mục "Đã ngừng bán" để mở bán lại.
   Swagger không có API danh sách riêng cho admin nên dùng chung GET /api/products, và API đó không trả sản phẩm ngừng bán
   (xem hiddenProducts.ts): danh sách ở đây chỉ có sản phẩm đang bán.
+  Bộ lọc và trang nằm trên địa chỉ (?q=&loai=&hang=&sapxep=&trang=): từ trang chi tiết bấm Back, hay ngừng bán / xoá xong
+  quay về, danh sách mở lại đúng bộ lọc và trang đang xem. Đổi bộ lọc thay mục lịch sử hiện tại (replace), không chồng thêm.
 */
 
 const PAGE_SIZE = 20
-
-type Filter = { search: string; productType: string; brand: string; sort: string }
-const defaultFilter: Filter = { search: '', productType: '', brand: '', sort: PRODUCT_SORT_OPTIONS[0]!.value }
+const DEFAULT_SORT = PRODUCT_SORT_OPTIONS[0]!.value
 
 export function AdminProductsPage() {
-  const [filter, setFilter] = useState<Filter>(defaultFilter)
-  const [page, setPage] = useState(1)
+  const location = useLocation()
+  const [params, setParams] = useSearchParams()
+  const urlSearch = params.get('q') ?? ''
+  const filter = { productType: params.get('loai') ?? '', brand: params.get('hang') ?? '', sort: params.get('sapxep') ?? DEFAULT_SORT }
+  const page = Math.max(1, Number.parseInt(params.get('trang') ?? '', 10) || 1)
+  // Ô tìm gõ vào state riêng; giá trị đã ngừng gõ mới ghi lên địa chỉ (và mới gọi API).
+  const [searchText, setSearchText] = useState(urlSearch)
+  const search = useDebouncedValue(searchText.trim())
+
   const [form, setForm] = useState<{ open: boolean; product: ProductResponse | null }>({ open: false, product: null })
   const [deleting, setDeleting] = useState<ProductResponse | null>(null)
   const [hiding, setHiding] = useState<ProductResponse | null>(null)
   const hidden = useHiddenProducts()
-  const { hide, reopen, pendingIds } = useProductStatusActions()
+  const { hide, reopen, pendingStatus } = useProductStatusActions()
   const listRef = useRef<HTMLElement>(null)
   const hiddenHeadingRef = useRef<HTMLHeadingElement>(null)
   // Chỗ nhận focus khi hộp thoại (xoá / ngừng bán) đóng xong, vì dòng chứa nút vừa bấm biến khỏi bảng.
@@ -52,9 +60,32 @@ export function AdminProductsPage() {
     focusAfterDialog.current = null
   }
 
-  const search = useDebouncedValue(filter.search.trim())
+  /** Ghi các tham số lên địa chỉ; chuỗi rỗng là bỏ tham số. */
+  const setUrl = useCallback(
+    (patch: Record<string, string>) =>
+      setParams(
+        (prev) => {
+          const next = new URLSearchParams(prev)
+          for (const [key, value] of Object.entries(patch)) {
+            if (value) next.set(key, value)
+            else next.delete(key)
+          }
+          return next
+        },
+        { replace: true },
+      ),
+    [setParams],
+  )
+
+  // Ghi từ khoá lên địa chỉ khi người dùng ngừng gõ. Chờ giá trị trễ bắt kịp ô tìm (search === searchText) để bấm "Xoá bộ
+  // lọc" giữa chừng không bị giá trị trễ cũ ghi đè lại.
+  useEffect(() => {
+    if (search !== searchText.trim() || search === urlSearch) return
+    setUrl({ q: search, trang: '' })
+  }, [search, searchText, urlSearch, setUrl])
+
   const query = useProductsQuery({
-    Search: search,
+    Search: urlSearch,
     ProductType: filter.productType,
     Brand: filter.brand,
     Page: page,
@@ -72,19 +103,24 @@ export function AdminProductsPage() {
   const products = useMemo(() => query.data?.items ?? [], [query.data])
   const total = query.data?.totalItems ?? 0
   const pages = query.data?.totalPages ?? 0
-  const isFiltering = filter.search !== '' || filter.productType !== '' || filter.brand !== ''
+  const isFiltering = searchText.trim() !== '' || filter.productType !== '' || filter.brand !== ''
   // Trang cũ giữ trên màn hình trong lúc tải trang khác; nếu trang cũ trống thì coi như đang tải, đừng báo "chưa có".
   const loading = query.isPending || (query.isPlaceholderData && products.length === 0)
 
-  // Trang hiện tại vượt quá số trang (vừa xoá hoặc ngừng bán dòng cuối, hoặc dữ liệu đổi ở nơi khác): backend vẫn
-  // trả 200 với danh sách rỗng, nên tự lùi về trang cuối còn dữ liệu. Có điều kiện nên không lặp vô hạn.
-  if (query.data && !query.isFetching && !query.isPlaceholderData && page > Math.max(1, pages)) setPage(Math.max(1, pages))
+  // Trang trên địa chỉ vượt quá số trang (vừa xoá hoặc ngừng bán dòng cuối, dữ liệu đổi ở nơi khác, địa chỉ cũ): backend vẫn
+  // trả 200 với danh sách rỗng, nên tự lùi về trang cuối còn dữ liệu.
+  const lastPage = Math.max(1, pages)
+  const overflow = Boolean(query.data && !query.isFetching && !query.isPlaceholderData && page > lastPage)
+  useEffect(() => {
+    if (overflow) setUrl({ trang: lastPage > 1 ? String(lastPage) : '' })
+  }, [overflow, lastPage, setUrl])
 
-  const updateFilter = (patch: Partial<Filter>) => {
-    setFilter((prev) => ({ ...prev, ...patch }))
-    setPage(1)
+  const updateFilter = (patch: { loai?: string; hang?: string; sapxep?: string }) => setUrl({ ...patch, trang: '' })
+  const setPage = (p: number) => setUrl({ trang: p > 1 ? String(p) : '' })
+  const clearFilters = () => {
+    setSearchText('')
+    setUrl({ q: '', loai: '', hang: '', trang: '' })
   }
-  const clearFilters = () => updateFilter({ search: '', productType: '', brand: '' })
 
   const from = (page - 1) * PAGE_SIZE + 1
   const to = from + products.length - 1
@@ -110,12 +146,7 @@ export function AdminProductsPage() {
       <FilterBar>
         <label className="min-w-0 flex-1 basis-64">
           <span className="sr-only">Tìm sản phẩm</span>
-          <SearchInput
-            name="search"
-            placeholder="Tìm theo tên, SKU, hãng"
-            value={filter.search}
-            onChange={(e) => updateFilter({ search: e.target.value })}
-          />
+          <SearchInput name="search" placeholder="Tìm theo tên, SKU, hãng" value={searchText} onChange={(e) => setSearchText(e.target.value)} />
         </label>
         {/* Loại và hãng là danh sách chọn từ dữ liệu thật: backend chỉ lọc khớp đúng cả chuỗi. Đang lọc thì ô tô màu. */}
         <label className="w-full sm:w-52">
@@ -124,7 +155,7 @@ export function AdminProductsPage() {
             name="productType"
             active={filter.productType !== ''}
             value={filter.productType}
-            onChange={(e) => updateFilter({ productType: e.target.value })}
+            onChange={(e) => updateFilter({ loai: e.target.value })}
           >
             <option value="">Tất cả loại</option>
             {options.productTypes.map((type) => (
@@ -136,7 +167,7 @@ export function AdminProductsPage() {
         </label>
         <label className="w-full sm:w-44">
           <span className="sr-only">Hãng</span>
-          <Select name="brand" active={filter.brand !== ''} value={filter.brand} onChange={(e) => updateFilter({ brand: e.target.value })}>
+          <Select name="brand" active={filter.brand !== ''} value={filter.brand} onChange={(e) => updateFilter({ hang: e.target.value })}>
             <option value="">Tất cả hãng</option>
             {options.brands.map((brand) => (
               <option key={brand} value={brand}>
@@ -147,7 +178,11 @@ export function AdminProductsPage() {
         </label>
         <label className="w-full sm:w-56">
           <span className="sr-only">Sắp xếp</span>
-          <Select name="sort" value={filter.sort} onChange={(e) => updateFilter({ sort: e.target.value })}>
+          <Select
+            name="sort"
+            value={filter.sort}
+            onChange={(e) => updateFilter({ sapxep: e.target.value === DEFAULT_SORT ? '' : e.target.value })}
+          >
             {PRODUCT_SORT_OPTIONS.map((option) => (
               <option key={option.value} value={option.value}>
                 {option.label}
@@ -181,14 +216,22 @@ export function AdminProductsPage() {
                   ? 'Sản phẩm đã ngừng bán nằm ở mục bên dưới.'
                   : 'Bấm "Thêm sản phẩm" để tạo sản phẩm đầu tiên.'
             }
-            action={isFiltering ? <Button onClick={clearFilters}>Xoá bộ lọc</Button> : undefined}
+            action={
+              isFiltering ? (
+                <Button variant="ghost" icon="filter_alt_off" onClick={clearFilters}>
+                  Xoá bộ lọc
+                </Button>
+              ) : undefined
+            }
           />
         ) : (
           <div className={cx(query.isFetching && 'opacity-70')}>
             <ProductsTable
               products={products}
               detailPath={(id) => withId(ROUTES.ADMIN.PRODUCT, id)}
-              busyIds={pendingIds}
+              // Trang chi tiết quay về đúng địa chỉ này (bộ lọc + trang) sau khi ngừng bán / xoá.
+              linkState={{ backTo: `${location.pathname}${location.search}` }}
+              pending={pendingStatus}
               onEdit={(product) => setForm({ open: true, product })}
               onHide={setHiding}
               onDelete={setDeleting}
@@ -215,30 +258,34 @@ export function AdminProductsPage() {
             Backend không trả sản phẩm ngừng bán trong danh sách. Đây là các sản phẩm đã ngừng bán từ trình duyệt này.
           </p>
           <ul className="mt-3 divide-y divide-line">
-            {hidden.map((h) => (
-              <li key={h.id} className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2 py-3">
-                <div className="min-w-0">
-                  <p className="font-medium text-fg">{h.name || 'Sản phẩm chưa đặt tên'}</p>
-                  <p className="tnum text-meta text-fg-3">
-                    {h.sku}
-                    {h.hiddenAt && `, ngừng bán lúc ${formatDateTime(h.hiddenAt)}`}
-                  </p>
-                </div>
-                <Button
-                  size="sm"
-                  variant="soft"
-                  disabled={pendingIds.has(h.id)}
-                  onClick={() =>
-                    void reopen(h).then((ok) => {
-                      // Dòng vừa mở bán biến khỏi mục này: đưa focus về danh sách thay vì rơi về đầu trang.
-                      if (ok) requestAnimationFrame(() => listRef.current?.focus())
-                    })
-                  }
-                >
-                  {pendingIds.has(h.id) ? 'Đang mở bán…' : 'Mở bán lại'}
-                </Button>
-              </li>
-            ))}
+            {hidden.map((h) => {
+              // Nhãn theo đúng việc đang chờ: vừa ngừng bán (đang gọi API) thì chưa mở bán lại được.
+              const busy = pendingStatus.get(h.id)
+              return (
+                <li key={h.id} className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2 py-3">
+                  <div className="min-w-0">
+                    <p className="font-medium text-fg">{h.name || 'Sản phẩm chưa đặt tên'}</p>
+                    <p className="tnum text-meta text-fg-3">
+                      {h.sku}
+                      {h.hiddenAt && `, ngừng bán lúc ${formatDateTime(h.hiddenAt)}`}
+                    </p>
+                  </div>
+                  <Button
+                    size="sm"
+                    variant="soft"
+                    disabled={busy !== undefined}
+                    onClick={() =>
+                      void reopen(h).then((ok) => {
+                        // Dòng vừa mở bán biến khỏi mục này: đưa focus về danh sách thay vì rơi về đầu trang.
+                        if (ok) requestAnimationFrame(() => listRef.current?.focus())
+                      })
+                    }
+                  >
+                    {busy === 'hide' ? 'Đang ngừng bán…' : busy === 'reopen' ? 'Đang mở bán…' : 'Mở bán lại'}
+                  </Button>
+                </li>
+              )
+            })}
           </ul>
         </section>
       )}
@@ -259,7 +306,7 @@ export function AdminProductsPage() {
       />
       <HideProductDialog
         product={hiding}
-        busy={Boolean(hiding?.id && pendingIds.has(hiding.id))}
+        busy={Boolean(hiding?.id && pendingStatus.has(hiding.id))}
         onClose={() => setHiding(null)}
         onAfterClose={restoreFocus}
         onConfirm={(product) =>

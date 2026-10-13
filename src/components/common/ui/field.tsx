@@ -1,4 +1,5 @@
 import type { InputHTMLAttributes, ReactNode, SelectHTMLAttributes, TextareaHTMLAttributes } from 'react'
+import { useState } from 'react'
 import { Icon } from '@/components/common/stitch-ui/Icon'
 import { cx } from '@/utils/cx'
 
@@ -70,11 +71,30 @@ export function Input({ className, size = 'md', ...rest }: Omit<InputHTMLAttribu
   return <input className={cx(control, width(className), heights[size], 'px-3', className)} {...rest} />
 }
 
+/** "2026-10-15" → "15/10/2026"; rỗng → rỗng. */
+const toVnDate = (iso: string) => {
+  const [y, m, d] = iso.split('-')
+  return y && m && d ? `${d}/${m}/${y}` : ''
+}
+
+/** "15/10/2026", "5/10/2026", "15-10-2026", "15.10.2026" → "2026-10-15"; ngày không có thật (31/02) → null. */
+function parseVnDate(text: string): string | null {
+  const match = /^(\d{1,2})[/.-](\d{1,2})[/.-](\d{4})$/.exec(text.trim())
+  if (!match) return null
+  const [day, month, year] = [Number(match[1]), Number(match[2]), Number(match[3])]
+  const date = new Date(Date.UTC(year, month - 1, day))
+  if (date.getUTCFullYear() !== year || date.getUTCMonth() !== month - 1 || date.getUTCDate() !== day) return null
+  return `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`
+}
+
 /*
-  Ô chọn ngày luôn hiện kiểu Việt Nam (13/10/2026). Ô date gốc hiện theo ngôn ngữ của trình duyệt (bản tiếng Anh ra
-  10/13/2026, lệch với tiêu đề "Thứ Ba, 13/10/2026" ngay cạnh – người dùng báo 12/10/2026). Ô gốc vẫn nằm trên cùng, trong
-  suốt và phủ cả ô: bấm vào đâu cũng mở lịch của trình duyệt (showPicker, kèm nút lịch kéo phủ cả ô cho Chrome / Edge), Tab và
-  gõ phím như cũ, trình đọc màn hình đọc ô gốc. Chữ hiện là lớp bên dưới, nhận viền focus / rê chuột qua `peer`.
+  Ô ngày kiểu Việt Nam (13/10/2026) dù trình duyệt đặt ngôn ngữ nào: ô date gốc hiện và nhận phím theo ngôn ngữ trình duyệt
+  (bản tiếng Anh ra 10/13/2026 và gõ "15" là sửa tháng – người dùng báo 12/10/2026, review 13/10/2026). Nên ô người dùng
+  thấy là ô chữ thật: gõ ngày/tháng/năm (15/10/2026, 5/10/2026, 15-10-2026), rời ô hoặc Enter thì đọc lại; ngày sai hoặc
+  ngoài min / max thì trả về ngày cũ. Vùng icon lịch bên phải là một ô date gốc trong suốt (nút lịch của nó kéo phủ cả vùng):
+  bấm là bấm thẳng vào ô gốc nên trình duyệt mở lịch chọn của nó. Không gọi showPicker() từ một nút khác: thử 13/10/2026,
+  Chrome không hiện lịch khi ô date không được focus. Ô gốc không nhận Tab (người dùng bàn phím gõ ngày). Các thuộc tính
+  còn lại (aria-invalid, aria-required, required, disabled, aria-describedby, name…) đặt lên ô chữ như `Input`.
 */
 export function DateField({
   id,
@@ -85,7 +105,9 @@ export function DateField({
   max,
   className,
   size = 'md',
-}: {
+  disabled,
+  ...rest
+}: Omit<InputHTMLAttributes<HTMLInputElement>, 'value' | 'onChange' | 'size' | 'type' | 'min' | 'max'> & {
   /** Gắn với nhãn của `Field` (htmlFor); không có nhãn hiện thì truyền `label` để đọc cho trình đọc màn hình. */
   id?: string
   /** YYYY-MM-DD */
@@ -94,40 +116,75 @@ export function DateField({
   label?: string
   min?: string
   max?: string
-  className?: string
   size?: ControlSize
 }) {
-  const [y, m, d] = value.split('-')
+  const [text, setText] = useState(() => toVnDate(value))
+  // Giá trị đổi từ ngoài (nút ngày trước / sau, lịch chọn, form đặt lại): hiện theo giá trị mới.
+  const [shown, setShown] = useState(value)
+  if (value !== shown) {
+    setShown(value)
+    setText(toVnDate(value))
+  }
+
+  const commit = () => {
+    if (text.trim() === '') {
+      if (value) onChange('')
+      // Nơi dùng không nhận ngày rỗng (vd. thanh chọn ngày) thì giữ ngày cũ; nhận thì lần vẽ sau ô thành rỗng.
+      setText(toVnDate(value))
+      return
+    }
+    const iso = parseVnDate(text)
+    if (iso && (!min || iso >= min) && (!max || iso <= max)) {
+      setText(toVnDate(iso))
+      if (iso !== value) onChange(iso)
+    } else setText(toVnDate(value))
+  }
+
   return (
     <span className={cx('relative block', width(className), className)}>
       <input
+        {...rest}
         id={id}
-        type="date"
+        type="text"
+        autoComplete="off"
+        placeholder="dd/mm/yyyy"
+        maxLength={10}
         aria-label={label}
+        disabled={disabled}
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+        onBlur={commit}
+        onKeyDown={(e) => {
+          if (e.key !== 'Enter') return
+          // Không gửi form khi ngày còn chưa đọc xong.
+          e.preventDefault()
+          commit()
+        }}
+        className={cx(control, 'tnum w-full pr-10 pl-3', heights[size])}
+      />
+      <input
+        type="date"
+        tabIndex={-1}
+        aria-label="Chọn ngày trên lịch"
+        disabled={disabled}
         min={min}
         max={max}
         value={value}
-        onChange={(e) => onChange(e.target.value)}
+        onChange={(e) => e.target.value && onChange(e.target.value)}
         onClick={(e) => {
+          // Firefox / Safari: bấm vào ô date là mở lịch; Chrome / Edge đã mở nhờ nút lịch phủ cả vùng. Gọi thêm cho chắc.
           try {
             e.currentTarget.showPicker()
           } catch {
-            /* Trình duyệt chưa có showPicker hoặc lịch đang mở: để ô gốc tự xử lý. */
+            /* Lịch đang mở hoặc trình duyệt chưa có showPicker. */
           }
         }}
-        className="peer absolute inset-0 z-10 size-full cursor-pointer opacity-0 [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:inset-0 [&::-webkit-calendar-picker-indicator]:size-full [&::-webkit-calendar-picker-indicator]:cursor-pointer"
+        className="peer absolute inset-y-0 right-0 w-10 cursor-pointer opacity-0 disabled:pointer-events-none [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:inset-0 [&::-webkit-calendar-picker-indicator]:size-full [&::-webkit-calendar-picker-indicator]:cursor-pointer"
       />
-      <span
-        aria-hidden
-        className={cx(
-          shape,
-          'flex items-center justify-between gap-2 border-line-2 bg-canvas px-3 text-fg peer-hover:border-fg-3 peer-focus-visible:border-accent peer-focus-visible:outline-1 peer-focus-visible:outline-accent',
-          heights[size],
-        )}
-      >
-        <span className="tnum">{value ? `${d}/${m}/${y}` : 'Chọn ngày'}</span>
-        <Icon name="calendar_month" className="text-[20px] text-fg-3" />
-      </span>
+      <Icon
+        name="calendar_month"
+        className="pointer-events-none absolute top-1/2 right-2.5 -translate-y-1/2 text-[20px] text-fg-3 peer-hover:text-fg"
+      />
     </span>
   )
 }

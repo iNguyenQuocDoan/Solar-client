@@ -81,6 +81,8 @@ function AppointmentItem({ item, linkTo, viewer }: { item: ScheduleAppointmentVi
       {linkTo && (
         <ButtonLink to={linkTo} size="sm" variant="soft" className="justify-self-start">
           Xem chi tiết
+          {/* Mỗi lịch một link: tên công trình cho trình đọc màn hình phân biệt được các link trong ngày. */}
+          <span className="sr-only"> {item.propertyName}</span>
         </ButtonLink>
       )}
     </li>

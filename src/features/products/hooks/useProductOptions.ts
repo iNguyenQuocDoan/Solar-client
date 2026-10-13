@@ -10,10 +10,11 @@ const unique = (values: (string | null | undefined)[]) =>
 
 /*
   Bộ lọc của danh sách và gợi ý của form thêm / sửa sản phẩm, lấy từ dữ liệu thật (backend chỉ lọc khớp đúng cả chuỗi).
-  Luôn kèm SOLAR_PANEL vì backend kiểm tra riêng mã này. Danh sách và trang chi tiết dùng chung một cache.
+  Luôn kèm SOLAR_PANEL vì backend kiểm tra riêng mã này. Danh sách và trang chi tiết dùng chung một cache. `enabled`: trang
+  chi tiết chỉ cần gợi ý khi mở hộp thoại Sửa, nên chỉ gọi lúc đó (mỗi lần mở chi tiết khỏi kéo 100 sản phẩm).
 */
-export function useProductOptions() {
-  const all = useProductsQuery(ALL_PRODUCTS)
+export function useProductOptions({ enabled = true }: { enabled?: boolean } = {}) {
+  const all = useProductsQuery(ALL_PRODUCTS, { enabled })
   return useMemo(() => {
     const items = all.data?.items ?? []
     return {

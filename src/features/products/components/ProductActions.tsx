@@ -29,14 +29,18 @@ export function ProductActions({
 }) {
   const size = compact ? 'sm' : 'md'
   const name = product.name ?? ''
+  // Trên dòng danh sách, tên sản phẩm đi kèm nhãn cho trình đọc màn hình bằng chữ ẩn (không dùng aria-label, để nhãn
+  // "Đang ngừng bán…" lúc chờ vẫn được đọc).
+  const forName = compact && name ? <span className="sr-only"> {name}</span> : null
   return (
     <div className={cx('relative z-10 flex flex-wrap items-center gap-2', className)}>
-      <Button size={size} variant="soft" icon="edit" aria-label={compact ? `Sửa ${name}` : undefined} onClick={onEdit}>
-        Sửa
+      <Button size={size} variant="soft" icon="edit" onClick={onEdit}>
+        Sửa{forName}
       </Button>
       {isProductActive(product.status) && (
-        <Button size={size} variant="warn" icon="visibility_off" aria-label={compact ? `Ngừng bán ${name}` : undefined} disabled={busy} onClick={onHide}>
-          {busy ? 'Đang đổi…' : 'Ngừng bán'}
+        <Button size={size} variant="warn" icon="visibility_off" disabled={busy} onClick={onHide}>
+          {busy ? 'Đang ngừng bán…' : 'Ngừng bán'}
+          {forName}
         </Button>
       )}
       {compact ? (

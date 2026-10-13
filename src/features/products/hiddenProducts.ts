@@ -42,36 +42,53 @@ function writeHiddenProducts(list: HiddenProduct[]) {
   }
 }
 
+/*
+  `snapshot` chỉ là bản đọc cho useSyncExternalStore (cùng một mảng tới khi đổi). Nguồn thật là localStorage: mỗi lần ghi
+  đều đọc lại localStorage rồi mới sửa, nên trang không theo dõi kho (trang chi tiết) cũng không ghi đè bằng bản cũ những gì
+  tab khác vừa lưu – nếu không, sản phẩm tab kia vừa ngừng bán sẽ mất khỏi danh sách và không còn chỗ nào mở bán lại.
+  Một listener `storage` cho cả module (gắn khi có người theo dõi đầu tiên), đọc lại một lần rồi báo mọi người theo dõi.
+*/
 let snapshot = readHiddenProducts()
 const listeners = new Set<() => void>()
 
-function setSnapshot(next: HiddenProduct[]) {
+function publish(next: HiddenProduct[]) {
   snapshot = next
-  writeHiddenProducts(next)
   listeners.forEach((listener) => listener())
 }
 
+function onStorage(e: StorageEvent) {
+  // key null: localStorage.clear() ở tab khác.
+  if (e.key === KEY || e.key === null) publish(readHiddenProducts())
+}
+
 function subscribe(listener: () => void) {
-  listeners.add(listener)
-  const onStorage = (e: StorageEvent) => {
-    if (e.key !== KEY) return
+  if (listeners.size === 0) {
+    // Trong lúc không ai theo dõi, tab khác có thể đã đổi danh sách: đọc lại trước khi gắn.
     snapshot = readHiddenProducts()
-    listener()
+    window.addEventListener('storage', onStorage)
   }
-  window.addEventListener('storage', onStorage)
+  listeners.add(listener)
   return () => {
     listeners.delete(listener)
-    window.removeEventListener('storage', onStorage)
+    if (listeners.size === 0) window.removeEventListener('storage', onStorage)
   }
+}
+
+/* `change` trả lại đúng mảng nhận vào khi không có gì đổi: khi đó không ghi, chỉ cập nhật bản đọc nếu nó đã cũ. */
+function update(change: (list: HiddenProduct[]) => HiddenProduct[]) {
+  const current = readHiddenProducts()
+  const next = change(current)
+  if (next !== current) writeHiddenProducts(next)
+  if (JSON.stringify(next) !== JSON.stringify(snapshot)) publish(next)
 }
 
 /** Ghi nhớ TRƯỚC khi gọi API ngừng bán: tải lại trang lúc đang chờ thì sản phẩm vẫn còn để mở bán lại. */
 export function rememberHidden(entry: HiddenProduct) {
-  setSnapshot([entry, ...snapshot.filter((h) => h.id !== entry.id)])
+  update((list) => [entry, ...list.filter((h) => h.id !== entry.id)])
 }
 
 export function forgetHidden(id: string) {
-  if (snapshot.some((h) => h.id === id)) setSnapshot(snapshot.filter((h) => h.id !== id))
+  update((list) => (list.some((h) => h.id === id) ? list.filter((h) => h.id !== id) : list))
 }
 
 export function useHiddenProducts() {

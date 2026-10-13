@@ -113,8 +113,6 @@ export function initialBookingDate(now: Date = new Date()) {
   return timeFormat.format(now) >= '15:30' ? addDays(today, 1) : today
 }
 
-/** Giờ bắt đầu từ 07:00 đến 17:00 cách 30 phút: chỗ chọn giờ của kinh doanh (backend kiểm tra lại từng giờ). */
-export const HALF_HOUR_TIMES = Array.from({ length: 21 }, (_, i) => `${pad(7 + Math.floor(i / 2))}:${i % 2 ? '30' : '00'}`)
 
 /* ------------------------------------------------------------------ trạng thái */
 

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useSyncExternalStore } from 'react'
 import { toast } from 'sonner'
 import { forgetHidden, rememberHidden, type HiddenProduct } from '@/features/products/hiddenProducts'
 import { useChangeProductStatusMutation } from '@/features/products/hooks/useProducts'
@@ -6,24 +6,39 @@ import { errorMessage, isApiError } from '@/services/api/errors'
 import type { ProductResponse } from '@/types/res/adminProductsRes'
 
 /*
-  Ngừng bán / mở bán lại của admin, dùng chung cho trang chi tiết (Ngừng bán) và trang danh sách (Mở bán lại trong mục
-  "Đã ngừng bán"). Backend ẩn sản phẩm ngừng bán khỏi mọi API đọc, nên ghi nhớ sản phẩm (hiddenProducts.ts) trước khi
-  gọi API; toast ngừng bán có "Hoàn tác". Một mutation cho nhiều sản phẩm, nên tự giữ các id đang chờ thay vì isPending.
-  Trả true / false để trang biết đóng hộp thoại và chuyển trang hay giữ nguyên.
+  Ngừng bán / mở bán lại của admin, dùng chung cho trang chi tiết, từng dòng danh sách và mục "Đã ngừng bán". Backend ẩn
+  sản phẩm ngừng bán khỏi mọi API đọc, nên ghi nhớ sản phẩm (hiddenProducts.ts) trước khi gọi API; toast ngừng bán có
+  "Hoàn tác". Trả true / false để trang biết đóng hộp thoại và chuyển trang hay giữ nguyên.
+
+  Việc đang chờ nằm trong một kho chung của module, không theo từng trang: "Hoàn tác" bấm sau khi trang chi tiết đã đóng
+  (ngừng bán xong là về danh sách) vẫn làm nút "Mở bán lại" ở danh sách khoá lại và ghi đúng việc đang làm; bấm lần nữa khi
+  sản phẩm đang chờ thì bỏ qua, không gửi trùng.
 */
+export type PendingStatus = 'hide' | 'reopen'
+
+let pending: ReadonlyMap<string, PendingStatus> = new Map()
+const listeners = new Set<() => void>()
+
+function setPending(id: string, action: PendingStatus | null) {
+  const next = new Map(pending)
+  if (action) next.set(id, action)
+  else next.delete(id)
+  pending = next
+  listeners.forEach((listener) => listener())
+}
+
+function subscribe(listener: () => void) {
+  listeners.add(listener)
+  return () => listeners.delete(listener)
+}
+
 export function useProductStatusActions() {
   const mutation = useChangeProductStatusMutation()
-  const [pendingIds, setPendingIds] = useState<ReadonlySet<string>>(new Set())
-  const mark = (id: string, on: boolean) =>
-    setPendingIds((prev) => {
-      const next = new Set(prev)
-      if (on) next.add(id)
-      else next.delete(id)
-      return next
-    })
+  const pendingStatus = useSyncExternalStore(subscribe, () => pending)
 
   const reopen = async (entry: HiddenProduct) => {
-    mark(entry.id, true)
+    if (pending.has(entry.id)) return false
+    setPending(entry.id, 'reopen')
     try {
       await mutation.mutateAsync({ id: entry.id, body: { status: 'ACTIVE' } })
       forgetHidden(entry.id)
@@ -35,15 +50,15 @@ export function useProductStatusActions() {
       toast.error(errorMessage(error))
       return false
     } finally {
-      mark(entry.id, false)
+      setPending(entry.id, null)
     }
   }
 
   const hide = async (product: ProductResponse) => {
-    if (!product.id) return false
+    if (!product.id || pending.has(product.id)) return false
     const entry: HiddenProduct = { id: product.id, name: product.name ?? '', sku: product.sku ?? '', hiddenAt: new Date().toISOString() }
+    setPending(entry.id, 'hide')
     rememberHidden(entry)
-    mark(entry.id, true)
     try {
       await mutation.mutateAsync({ id: entry.id, body: { status: 'INACTIVE' } })
       toast.success(`Đã ngừng bán ${entry.name}`, { action: { label: 'Hoàn tác', onClick: () => void reopen(entry) } })
@@ -54,9 +69,9 @@ export function useProductStatusActions() {
       toast.error(errorMessage(error))
       return false
     } finally {
-      mark(entry.id, false)
+      setPending(entry.id, null)
     }
   }
 
-  return { hide, reopen, pendingIds }
+  return { hide, reopen, pendingStatus }
 }

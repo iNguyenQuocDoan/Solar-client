@@ -5,7 +5,7 @@ import { Icon } from '@/components/common/stitch-ui/Icon'
 import { Badge } from '@/components/common/ui/badge'
 import { Button } from '@/components/common/ui/button'
 import { DialogFooter, DialogTitle, ModalDialog } from '@/components/common/ui/dialog'
-import { DateField, Field, Select, Textarea } from '@/components/common/ui/field'
+import { DateField, Field, Textarea, TimeSelect } from '@/components/common/ui/field'
 import { Notice } from '@/components/common/ui/lists'
 import { Panel, PanelBody, PanelFooter, PanelHeader } from '@/components/common/ui/panel'
 import { ErrorState, Skeleton } from '@/components/common/ui/states'
@@ -14,7 +14,6 @@ import { formatDateTime } from '@/features/pre-surveys/components/preSurveyDispl
 import { TechnicianChoiceList } from '@/features/scheduling/components/TechnicianChoiceList'
 import {
   BOOKING_HORIZON_DAYS,
-  HALF_HOUR_TIMES,
   addDays,
   appointmentStatusMeta,
   formatAppointment,
@@ -321,13 +320,7 @@ function RescheduleDialog({
             />
           </Field>
           <Field label="Giờ bắt đầu" htmlFor="reschedule-time" className="w-full sm:w-36">
-            <Select id="reschedule-time" value={time} onChange={(e) => edit({ time: e.target.value })}>
-              {HALF_HOUR_TIMES.map((t) => (
-                <option key={t} value={t}>
-                  {t}
-                </option>
-              ))}
-            </Select>
+            <TimeSelect id="reschedule-time" from="07:00" to="17:00" value={time} onChange={(value) => edit({ time: value })} />
           </Field>
           <Button variant="soft" onClick={() => setChecked(startsAt)} disabled={checked === startsAt}>
             Xem kỹ thuật viên rảnh
