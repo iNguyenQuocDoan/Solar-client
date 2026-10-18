@@ -104,7 +104,7 @@ function MaintenanceTaskView({ task }: { task: Task }) {
             icon={task.history.icon}
             title={task.history.title}
             trailing={
-              <span className="rounded-full bg-primary-fixed/40 px-space-sm py-0.5 text-label-sm font-semibold text-on-primary-fixed">
+              <span className="rounded-full bg-status-complete-bg px-space-sm py-0.5 text-label-sm font-semibold text-status-complete">
                 {task.history.badge}
               </span>
             }
@@ -175,7 +175,7 @@ function MaintenanceTaskView({ task }: { task: Task }) {
             <div className="flex flex-col gap-space-xs rounded-xl bg-surface-container p-space-md">
               <div className="flex items-center justify-between gap-space-xs">
                 <span className="text-label-md font-bold text-on-surface">{task.telemetry.yield.title}</span>
-                <span className="rounded-md bg-primary-fixed/40 px-2 py-0.5 text-label-sm font-bold text-primary">
+                <span className="rounded-md bg-status-complete-bg px-2 py-0.5 text-label-sm font-bold text-status-complete">
                   {task.telemetry.yield.badge}
                 </span>
               </div>

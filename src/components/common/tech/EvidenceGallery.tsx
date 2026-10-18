@@ -71,7 +71,7 @@ export function EvidenceGroup({
             type="button"
             onClick={() => onSelectPhoto?.(photo)}
             className={cn(
-              'group relative overflow-hidden rounded-xl bg-surface-container text-left shadow-sm focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-tertiary-container/30',
+              'group relative overflow-hidden rounded-xl bg-surface-container text-left shadow-sm focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring',
               isSquare ? 'aspect-square' : 'aspect-video',
             )}
           >
@@ -83,7 +83,7 @@ export function EvidenceGroup({
             <div className="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-on-background/90 via-on-background/25 to-transparent p-space-xs text-surface">
               <div className="flex items-center justify-between gap-1">
                 <span className="truncate text-label-sm font-bold">{photo.title}</span>
-                {photo.verified && <Icon name="check_circle" className="shrink-0 text-[16px] text-primary-fixed" />}
+                {photo.verified && <Icon name="check_circle" className="shrink-0 text-[16px] text-inherit" />}
               </div>
               <span className="truncate text-body-sm opacity-80">{photo.meta}</span>
             </div>
@@ -96,15 +96,17 @@ export function EvidenceGroup({
             type="button"
             onClick={() => onUpload?.(dropzone)}
             className={cn(
-              'group flex flex-col items-center justify-center rounded-xl bg-surface-container-low p-space-md text-center transition-all hover:bg-surface-container focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-tertiary-container/30',
+              'group flex flex-col items-center justify-center rounded-xl bg-surface-container-low p-space-md text-center transition-all hover:bg-surface-container focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring',
               isSquare && 'aspect-square gap-space-2xs p-space-sm',
               dropzoneVariant === 'dashed' && 'border-2 border-dashed border-outline-variant hover:border-primary',
             )}
           >
             <div
               className={cn(
-                'flex items-center justify-center rounded-full text-primary transition-transform group-hover:scale-110',
-                isSquare ? 'h-12 w-12 bg-primary-fixed' : 'h-10 w-10 bg-surface-container-lowest shadow-sm',
+                'flex items-center justify-center rounded-full transition-transform group-hover:scale-110',
+                isSquare
+                  ? 'h-12 w-12 bg-primary-fixed text-on-primary-fixed'
+                  : 'h-10 w-10 bg-surface-container-lowest text-primary shadow-sm',
               )}
             >
               <Icon name={dropzone.icon} className={isSquare ? 'text-[26px]' : 'text-[20px]'} />

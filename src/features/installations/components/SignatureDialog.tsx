@@ -59,7 +59,7 @@ export function SignatureDialog({
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent size="lg">
         <DialogHeader className="flex-row items-center gap-space-xs">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary-fixed text-primary">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary-fixed text-on-primary-fixed">
             <Icon name="verified_user" className="text-[24px]" />
           </div>
           <div>

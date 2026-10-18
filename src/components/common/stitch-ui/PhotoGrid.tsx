@@ -46,7 +46,7 @@ export function PhotoCard({
         />
         {tag && (
           <div className="absolute left-2 top-2 flex items-center gap-1 rounded bg-on-background/70 px-2 py-0.5 text-label-sm text-surface backdrop-blur-md">
-            <Icon name={tag.icon ?? 'verified'} className="text-[12px] text-primary-fixed" />
+            <Icon name={tag.icon ?? 'verified'} className="text-[12px] text-inherit" />
             <span>{tag.label}</span>
           </div>
         )}

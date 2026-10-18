@@ -60,7 +60,7 @@ export function SegmentedControl<T extends string>({
             aria-checked={isSelected}
             onClick={() => onChange(option.value)}
             className={cn(
-              'rounded-lg transition-all focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-tertiary-container/30',
+              'rounded-lg transition-all focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring',
               sizeClasses[size],
               isSelected ? selectedClasses[option.tone ?? 'neutral'] : idleClasses[size],
             )}

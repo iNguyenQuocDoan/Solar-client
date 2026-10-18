@@ -34,9 +34,9 @@ const stateClasses: Record<
     box: 'bg-primary-container text-on-primary shadow-level-2',
     iconBox: 'bg-surface-container-lowest text-primary',
     icon: 'verified',
-    stage: 'text-primary-fixed',
+    stage: 'text-on-primary',
     title: 'text-on-primary',
-    text: 'text-primary-fixed',
+    text: 'text-on-primary',
   },
   upcoming: {
     box: 'bg-surface-container-low',

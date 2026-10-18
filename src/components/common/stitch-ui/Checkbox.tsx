@@ -28,7 +28,7 @@ export function Checkbox({ className, size = 'md', tone = 'primary', ...rest }: 
       className={cn(
         'group peer inline-flex shrink-0 cursor-pointer items-center justify-center border-[1.5px] border-outline-variant bg-surface-container-lowest text-on-primary transition-colors',
         toneClasses[tone],
-        'focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-tertiary-container/30',
+        'focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring',
         'disabled:cursor-not-allowed disabled:opacity-50',
         size === 'md' ? 'h-5 w-5 rounded-md' : 'h-4 w-4 rounded',
         className,

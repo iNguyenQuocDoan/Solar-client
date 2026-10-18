@@ -24,7 +24,7 @@ export type ChecklistTaskItem = {
 
 const toneClasses: Record<ChecklistPhaseTone, { box: string; badge: string }> = {
   safety: {
-    box: 'bg-primary-fixed text-primary',
+    box: 'bg-primary-fixed text-on-primary-fixed',
     badge: 'bg-primary-fixed text-on-primary-fixed-variant',
   },
   execution: {

@@ -483,7 +483,7 @@ function WarrantyRequestView({ warranty }: { warranty: WarrantyCase }) {
             </div>
           </div>
 
-          <div className="flex items-center gap-space-xs rounded-lg bg-primary-fixed/20 p-2.5 text-label-sm text-primary">
+          <div className="flex items-center gap-space-xs rounded-lg bg-status-complete-bg p-2.5 text-label-sm text-status-complete">
             <Icon name="verified_user" className="text-[18px]" />
             <span>{warranty.burnIn.note}</span>
           </div>

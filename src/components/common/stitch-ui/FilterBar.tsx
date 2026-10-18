@@ -124,7 +124,9 @@ export function FilterChip({
         <span
           className={cn(
             'rounded-full px-1.5 py-0.5 font-bold',
-            active && isPill ? 'bg-surface-container-lowest/20' : 'bg-surface-container-highest text-on-surface',
+            active && isPill
+              ? 'border border-on-primary/30 text-on-primary'
+              : 'bg-surface-container-highest text-on-surface',
           )}
         >
           {count}

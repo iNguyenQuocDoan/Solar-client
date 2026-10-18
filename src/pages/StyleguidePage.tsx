@@ -440,7 +440,7 @@ export function StyleguidePage() {
           <Card>
             <div className="mb-space-md flex items-center justify-between">
               <div className="flex items-center gap-space-sm">
-                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary-fixed text-primary">
+                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary-fixed text-on-primary-fixed">
                   <Icon name="health_and_safety" className="text-[22px]" />
                 </div>
                 <div>

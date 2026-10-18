@@ -15,7 +15,7 @@ export function TabsTrigger({ className, ...rest }: ComponentProps<typeof TabsPr
       className={cn(
         'whitespace-nowrap rounded-lg px-3 py-1.5 text-label-md text-on-surface-variant transition-all hover:bg-surface-container',
         'data-[state=active]:bg-primary data-[state=active]:font-semibold data-[state=active]:text-on-primary data-[state=active]:hover:bg-primary',
-        'focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-tertiary-container/30',
+        'focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring',
         className,
       )}
       {...rest}

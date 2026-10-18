@@ -43,7 +43,7 @@ export function ChoiceCardGroup({
             aria-checked={isSelected}
             onClick={() => onChange(option.value)}
             className={cn(
-              'flex flex-col items-center justify-center rounded-xl p-space-sm transition-all focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-tertiary-container/30',
+              'flex flex-col items-center justify-center rounded-xl p-space-sm transition-all focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring',
               isSelected
                 ? 'bg-primary-container text-on-primary shadow-sm'
                 : 'bg-surface-container-low text-on-surface hover:bg-surface-container-high',

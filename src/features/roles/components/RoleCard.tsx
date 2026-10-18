@@ -32,7 +32,7 @@ export function RoleCard({ role, selected, onSelect, onClone, onEdit, className 
         }
       }}
       className={cn(
-        'group relative cursor-pointer rounded-2xl border border-outline-card bg-surface-container-lowest p-space-md transition-all focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-tertiary-container/30',
+        'group relative cursor-pointer rounded-2xl border border-outline-card bg-surface-container-lowest p-space-md transition-all focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring',
         selected ? 'shadow-level-2' : 'shadow-level-1 hover:shadow-level-2',
         className,
       )}

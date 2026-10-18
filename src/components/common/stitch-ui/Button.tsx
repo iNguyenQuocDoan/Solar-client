@@ -13,7 +13,9 @@ const variantClasses: Record<ButtonVariant, string> = {
   primary: 'bg-primary-container text-on-primary shadow-sm hover:bg-primary hover:shadow-level-2',
   secondary:
     'border-[1.5px] border-primary-container bg-surface-container-lowest text-primary-container hover:bg-surface-container-low',
-  accent: 'bg-secondary-container text-on-secondary shadow-sm hover:bg-secondary',
+  /* Orange remains a brand accent; dark ink is the AA pair on the bright fill (4.54:1). */
+  accent:
+    'bg-secondary-container text-on-secondary-container shadow-sm hover:bg-secondary hover:text-on-secondary',
   tonal: 'bg-surface-container-lowest text-primary shadow-sm hover:bg-surface-container-low',
   ghost: 'bg-surface-container-low text-primary hover:bg-surface-container',
   neutral: 'bg-surface-container text-on-surface hover:bg-surface-container-high',
@@ -41,7 +43,7 @@ export function buttonVariants({
   className?: string
 }) {
   return cn(
-    'inline-flex items-center justify-center whitespace-nowrap font-bold transition-all focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-tertiary-container/30 disabled:pointer-events-none disabled:opacity-50',
+    'inline-flex items-center justify-center whitespace-nowrap font-bold transition-all focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50',
     variantClasses[variant],
     sizeClasses[size],
     className,
@@ -97,7 +99,7 @@ export function IconButton({ icon, label, size = 'sm', className, type = 'button
       aria-label={label}
       title={label}
       className={cn(
-        'inline-flex items-center justify-center bg-surface-container-low text-on-surface-variant transition-colors hover:bg-surface-container-high hover:text-primary focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-tertiary-container/30 disabled:pointer-events-none disabled:opacity-50',
+        'inline-flex items-center justify-center bg-surface-container-low text-on-surface-variant transition-colors hover:bg-surface-container-high hover:text-primary focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50',
         size === 'sm' ? 'h-8 w-8 rounded-lg' : 'h-9 w-9 rounded-xl',
         className,
       )}

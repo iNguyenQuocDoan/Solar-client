@@ -708,6 +708,90 @@
   --radius-4xl: var(--radius-container);
 }
 
+/*
+  Stitch originally shipped with one fixed Material palette for both themes. That made
+  `primary`, `secondary`, `tertiary` and `on-error-container` valid on the light
+  surfaces only: in dark mode they became dark text on dark surfaces (the auth error
+  alert measured 1.5:1). Keep the hue vocabulary, but give foreground/background
+  pairs a dark-mode value with the same meaning as the portal tokens above.
+
+  These tokens are shared by auth and the remaining Stitch components. They are not
+  role colours: every role continues to use the same brand green and semantic states.
+*/
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --color-primary: oklch(60% 0.1 160);
+    --color-on-primary: var(--canvas);
+    --color-primary-container: oklch(60% 0.1 160);
+    --color-on-primary-container: var(--canvas);
+    --color-surface-tint: oklch(60% 0.1 160);
+
+    --color-secondary: oklch(60% 0.13 70);
+    --color-on-secondary: var(--canvas);
+    --color-on-secondary-container: #2f1500;
+
+    --color-tertiary: oklch(60% 0.11 155);
+    --color-on-tertiary: var(--canvas);
+    --color-tertiary-container: oklch(60% 0.11 155);
+    --color-on-tertiary-container: var(--canvas);
+
+    --color-on-error: var(--canvas);
+    --color-on-error-container: var(--danger);
+
+    --color-status-submitted: var(--info);
+    --color-status-submitted-bg: var(--info-soft);
+    --color-status-submitted-dot: var(--info);
+    --color-status-review: var(--warn);
+    --color-status-review-bg: var(--warn-soft);
+    --color-status-review-dot: var(--warn);
+    --color-status-scheduled: oklch(78% 0.1 285);
+    --color-status-scheduled-bg: oklch(30% 0.06 285);
+    --color-status-scheduled-dot: oklch(72% 0.12 285);
+    --color-status-in-progress: var(--accent-fg);
+    --color-status-in-progress-bg: var(--accent-soft);
+    --color-status-in-progress-dot: var(--accent-fg);
+    --color-status-complete: var(--ok);
+    --color-status-complete-bg: var(--ok-soft);
+    --color-status-complete-dot: var(--ok);
+  }
+}
+
+:root[data-theme='dark'] {
+  --color-primary: oklch(60% 0.1 160);
+  --color-on-primary: var(--canvas);
+  --color-primary-container: oklch(60% 0.1 160);
+  --color-on-primary-container: var(--canvas);
+  --color-surface-tint: oklch(60% 0.1 160);
+
+  --color-secondary: oklch(60% 0.13 70);
+  --color-on-secondary: var(--canvas);
+  --color-on-secondary-container: #2f1500;
+
+  --color-tertiary: oklch(60% 0.11 155);
+  --color-on-tertiary: var(--canvas);
+  --color-tertiary-container: oklch(60% 0.11 155);
+  --color-on-tertiary-container: var(--canvas);
+
+  --color-on-error: var(--canvas);
+  --color-on-error-container: var(--danger);
+
+  --color-status-submitted: var(--info);
+  --color-status-submitted-bg: var(--info-soft);
+  --color-status-submitted-dot: var(--info);
+  --color-status-review: var(--warn);
+  --color-status-review-bg: var(--warn-soft);
+  --color-status-review-dot: var(--warn);
+  --color-status-scheduled: oklch(78% 0.1 285);
+  --color-status-scheduled-bg: oklch(30% 0.06 285);
+  --color-status-scheduled-dot: oklch(72% 0.12 285);
+  --color-status-in-progress: var(--accent-fg);
+  --color-status-in-progress-bg: var(--accent-soft);
+  --color-status-in-progress-dot: var(--accent-fg);
+  --color-status-complete: var(--ok);
+  --color-status-complete-bg: var(--ok-soft);
+  --color-status-complete-dot: var(--ok);
+}
+
 /* The kit's body styles (bg-surface text-body-md text-on-surface font-jakarta) are set on its roots, not on <body>, so both kits can share one document. */
 
 @layer components {

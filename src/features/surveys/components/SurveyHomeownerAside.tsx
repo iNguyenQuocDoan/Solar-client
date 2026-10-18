@@ -52,7 +52,7 @@ export function SurveyHomeownerAside({ data, onPhotoClick }: SurveyHomeownerAsid
               key={photo.id}
               type="button"
               onClick={() => onPhotoClick?.(photo.id)}
-              className="group relative aspect-square overflow-hidden rounded-xl bg-surface-container focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-tertiary-container/30"
+              className="group relative aspect-square overflow-hidden rounded-xl bg-surface-container focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring"
             >
               <img
                 src={photo.src}
