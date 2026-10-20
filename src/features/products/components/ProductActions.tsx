@@ -30,7 +30,7 @@ export function ProductActions({
   const size = compact ? 'sm' : 'md'
   const name = product.name ?? ''
   // Trên dòng danh sách, tên sản phẩm đi kèm nhãn cho trình đọc màn hình bằng chữ ẩn (không dùng aria-label, để nhãn
-  // "Đang ngừng bán…" lúc chờ vẫn được đọc).
+  // "Đang ngừng bán..." lúc chờ vẫn được đọc).
   const forName = compact && name ? <span className="sr-only"> {name}</span> : null
   return (
     <div className={cx('relative z-10 flex flex-wrap items-center gap-2', className)}>
@@ -44,7 +44,15 @@ export function ProductActions({
         </Button>
       )}
       {compact ? (
-        <IconButton size="sm" variant="danger" icon="delete" label={`Xoá ${name}`} tooltip="Xoá sản phẩm" disabled={busy} onClick={onDelete} />
+        <IconButton
+          size="sm"
+          variant="danger"
+          icon="delete"
+          label={`Xoá ${name}`}
+          tooltip="Xoá sản phẩm"
+          disabled={busy}
+          onClick={onDelete}
+        />
       ) : (
         <Button variant="danger" icon="delete" disabled={busy} onClick={onDelete}>
           Xoá

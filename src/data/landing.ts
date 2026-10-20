@@ -1,9 +1,9 @@
 /*
- * Nội dung trang chủ công khai "/" – website bán hàng của một công ty thi công điện mặt trời áp mái
+ * Nội dung trang chủ công khai "/", website bán hàng của một công ty thi công điện mặt trời áp mái
  * cho DOANH NGHIỆP (nhà xưởng, kho bãi, toà nhà).
  *
- * Mỗi section trả lời một câu hỏi bán hàng: bạn là ai và làm gì → công trình trông thế nào → vì sao tin
- * → doanh nghiệp nhận được gì → theo dõi công trình ra sao → bắt đầu thế nào. Không bảng giá, không biểu
+ * Mỗi section trả lời một câu hỏi bán hàng: bạn là ai và làm gì, công trình trông thế nào, vì sao tin,
+ * doanh nghiệp nhận được gì, theo dõi công trình ra sao, bắt đầu thế nào. Không bảng giá, không biểu
  * giá điện, không quy định pháp lý, không dashboard; giao diện hệ thống chỉ xuất hiện một lần.
  *
  * Ảnh: `src` có thì hiện ảnh, chưa có thì khung đúng tỷ lệ ghi "Ảnh cần bổ sung". Không chú thích ảnh như
@@ -131,9 +131,18 @@ export const trust = {
     need: 'kỹ thuật viên đang thi công trên mái nhà xưởng, có đồ bảo hộ',
   } satisfies Shot,
   points: [
-    { title: 'Khảo sát tận mái', text: 'Kỹ thuật viên lên mái đo diện tích, hướng, kết cấu và vật cản trước khi lên phương án cho công trình.' },
-    { title: 'Thi công an toàn, gọn gàng', text: 'Đội lắp đặt làm việc có đồ bảo hộ, theo lịch thống nhất trước với doanh nghiệp.' },
-    { title: 'Kiểm tra trước khi bàn giao', text: 'Từng phần việc có người ký xác nhận; hệ thống được đo kiểm trước khi đóng điện và bàn giao.' },
+    {
+      title: 'Khảo sát tận mái',
+      text: 'Kỹ thuật viên lên mái đo diện tích, hướng, kết cấu và vật cản trước khi lên phương án cho công trình.',
+    },
+    {
+      title: 'Thi công an toàn, gọn gàng',
+      text: 'Đội lắp đặt làm việc có đồ bảo hộ, theo lịch thống nhất trước với doanh nghiệp.',
+    },
+    {
+      title: 'Kiểm tra trước khi bàn giao',
+      text: 'Từng phần việc có người ký xác nhận; hệ thống được đo kiểm trước khi đóng điện và bàn giao.',
+    },
   ],
 }
 
@@ -142,15 +151,27 @@ export const benefits = {
   id: 'loi-ich',
   title: 'Doanh nghiệp nhận được gì',
   items: [
-    { title: 'Giảm tiền điện ban ngày', text: 'Tấm pin làm ra điện đúng những giờ nhà xưởng chạy máy, nên phần điện phải mua từ lưới giảm xuống.' },
-    { title: 'Tận dụng mái đang bỏ trống', text: 'Mái nhà xưởng, kho và toà nhà trở thành tài sản làm ra điện thay vì chỉ che nắng mưa.' },
-    { title: 'Thêm nguồn điện sạch', text: 'Một phần điện của doanh nghiệp đến từ năng lượng mặt trời trên chính mái nhà mình.' },
+    {
+      title: 'Giảm tiền điện ban ngày',
+      text: 'Tấm pin làm ra điện đúng những giờ nhà xưởng chạy máy, nên phần điện phải mua từ lưới giảm xuống.',
+    },
+    {
+      title: 'Tận dụng mái đang bỏ trống',
+      text: 'Mái nhà xưởng, kho và toà nhà trở thành tài sản làm ra điện thay vì chỉ che nắng mưa.',
+    },
+    {
+      title: 'Thêm nguồn điện sạch',
+      text: 'Một phần điện của doanh nghiệp đến từ năng lượng mặt trời trên chính mái nhà mình.',
+    },
   ],
   offerTitle: 'Trọn gói gồm thiết bị, lắp đặt và bảo hành',
   offer: [
     { title: 'Thiết bị', text: 'Tấm pin, inverter, khung, chân đế, dây và tủ điện, chọn theo quy mô và kết cấu mái.' },
     { title: 'Lắp đặt', text: 'Đội kỹ thuật của Smart Solar lắp, đấu nối và dọn sạch mái khi xong việc.' },
-    { title: 'Bảo hành', text: 'Bảo hành thiết bị và phần lắp đặt; có sự cố, doanh nghiệp gửi yêu cầu kèm ảnh ngay trên web.' },
+    {
+      title: 'Bảo hành',
+      text: 'Bảo hành thiết bị và phần lắp đặt; có sự cố, doanh nghiệp gửi yêu cầu kèm ảnh ngay trên web.',
+    },
   ],
 }
 

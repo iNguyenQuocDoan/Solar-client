@@ -17,7 +17,7 @@ import type { UserRole } from '@/config/roles'
  * - Không còn bộ đếm 30 phút giả lập: modal hết hạn mở khi client.ts bắn
  *   sự kiện "session-expired" (refresh thất bại).
  * - Đổi người dùng (đăng nhập, đăng xuất, hết phiên) thì xoá cache của React Query, để người sau không
- *   thấy dữ liệu của người trước (tên, số điện thoại khách…) trong lúc chờ tải lại.
+ *   thấy dữ liệu của người trước (tên, số điện thoại khách...) trong lúc chờ tải lại.
  */
 
 export type AuthUser = {
@@ -41,7 +41,7 @@ export type AuthContextValue = {
   clearSession: () => void
   sessionExpired: boolean
   dismissSessionExpired: () => void
-  /** Ép phiên hết hạn – chỉ dùng cho ô demo ở /login khi chạy DEV. */
+  /** Ép phiên hết hạn, chỉ dùng cho ô demo ở /login khi chạy DEV. */
   expireSession: () => void
 }
 
@@ -49,7 +49,7 @@ const AuthContext = createContext<AuthContextValue | null>(null)
 
 /**
  * Dựng AuthUser từ accessToken (+ /me nếu backend đã có).
- * Không đọc được vai trò thì coi như đăng nhập hỏng – tốt hơn là đoán bừa.
+ * Không đọc được vai trò thì coi như đăng nhập hỏng, tốt hơn là đoán bừa.
  */
 async function buildUser(accessToken: string, fallbackEmail?: string): Promise<AuthUser> {
   const profile = await fetchCurrentUser().catch(() => null)
@@ -116,37 +116,40 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => window.removeEventListener(SESSION_EXPIRED_EVENT, onExpired)
   }, [queryClient])
 
-  const signIn = useCallback(async (email: string, password: string, remember = true) => {
-    const tokens = await authService.login({ email, password })
-    queryClient.clear()
-    if (!tokens.accessToken || !tokens.refreshToken) {
-      throw new ApiError({ status: 0, message: 'Máy chủ không trả về token đăng nhập.' })
-    }
+  const signIn = useCallback(
+    async (email: string, password: string, remember = true) => {
+      const tokens = await authService.login({ email, password })
+      queryClient.clear()
+      if (!tokens.accessToken || !tokens.refreshToken) {
+        throw new ApiError({ status: 0, message: 'Máy chủ không trả về token đăng nhập.' })
+      }
 
-    saveTokens(
-      {
-        accessToken: tokens.accessToken,
-        accessTokenExpiresAt: tokens.accessTokenExpiresAt,
-        refreshToken: tokens.refreshToken,
-        refreshTokenExpiresAt: tokens.refreshTokenExpiresAt,
-        tokenType: tokens.tokenType ?? undefined,
-        userId: tokens.userId,
-      },
-      remember,
-    )
+      saveTokens(
+        {
+          accessToken: tokens.accessToken,
+          accessTokenExpiresAt: tokens.accessTokenExpiresAt,
+          refreshToken: tokens.refreshToken,
+          refreshTokenExpiresAt: tokens.refreshTokenExpiresAt,
+          tokenType: tokens.tokenType ?? undefined,
+          userId: tokens.userId,
+        },
+        remember,
+      )
 
-    try {
-      const next = await buildUser(tokens.accessToken, email)
-      setSessionExpired(false)
-      setUser(next)
-      setStatus('ready')
-      return next
-    } catch (error) {
-      // Token không dùng được (thiếu role…) → không giữ phiên dở dang.
-      clearTokens()
-      throw error
-    }
-  }, [queryClient])
+      try {
+        const next = await buildUser(tokens.accessToken, email)
+        setSessionExpired(false)
+        setUser(next)
+        setStatus('ready')
+        return next
+      } catch (error) {
+        // Token không dùng được (thiếu role...) thì không giữ phiên dở dang.
+        clearTokens()
+        throw error
+      }
+    },
+    [queryClient],
+  )
 
   const clearSession = useCallback(() => {
     clearTokens()

@@ -108,7 +108,7 @@ export const todayAssignments: TodayAssignment[] = [
     phoneHref: 'tel:5550239918',
     specs: [
       { label: 'Phạm vi', value: 'Trần mái, tủ điện, xà gồ' },
-      { label: 'Nâng cấp tủ điện', value: 'Cần nâng (125A → 200A)' },
+      { label: 'Nâng cấp tủ điện', value: 'Cần nâng (125A lên 200A)' },
       { label: 'Bay drone', value: 'Đã được cấp phép' },
     ],
     primaryAction: { label: 'Tải ảnh lên', icon: 'add_a_photo', variant: 'ghost' },

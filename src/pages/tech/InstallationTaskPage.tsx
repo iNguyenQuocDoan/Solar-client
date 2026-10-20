@@ -37,9 +37,7 @@ function InstallationTaskView({ task }: { task: NonNullable<ReturnType<typeof ge
   const [sync, setSync] = useState<SyncState>('idle')
 
   const toggleStep = (stepId: string, checked: boolean) =>
-    setCheckedIds((current) =>
-      checked ? [...current, stepId] : current.filter((value) => value !== stepId),
-    )
+    setCheckedIds((current) => (checked ? [...current, stepId] : current.filter((value) => value !== stepId)))
 
   /*
    * Mốc mở màn lấy nguyên 65% của thiết kế. Khi kỹ thuật viên chỉnh bộ đếm panel thì tính lại
@@ -48,9 +46,7 @@ function InstallationTaskView({ task }: { task: NonNullable<ReturnType<typeof ge
   const initialPanels = activeStep?.counter?.initial ?? 0
   const totalPanels = activeStep?.counter?.total ?? 1
   const livePercent =
-    mountedPanels === initialPanels
-      ? task.progress.percent
-      : Math.round(33 + (mountedPanels / totalPanels) * 32)
+    mountedPanels === initialPanels ? task.progress.percent : Math.round(33 + (mountedPanels / totalPanels) * 32)
 
   const syncLabel =
     sync === 'syncing' ? task.footer.syncingLabel : sync === 'synced' ? task.footer.syncedLabel : task.footer.syncLabel
@@ -132,7 +128,11 @@ function InstallationTaskView({ task }: { task: NonNullable<ReturnType<typeof ge
                       defaultValue={serial.value}
                       className="flex-1 bg-transparent text-body-md text-on-surface outline-none"
                     />
-                    <button type="button" title="Quét mã vạch" className="p-1 text-primary hover:text-primary-container">
+                    <button
+                      type="button"
+                      title="Quét mã vạch"
+                      className="p-1 text-primary hover:text-primary-container"
+                    >
                       <Icon name="barcode_scanner" className="text-[22px]" />
                     </button>
                   </div>

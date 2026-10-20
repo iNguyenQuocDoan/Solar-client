@@ -61,9 +61,7 @@ export function EvidenceGroup({
 
   return (
     <div className={cn('flex flex-col gap-space-xs', className)}>
-      {!hideTitle && (
-        <span className="text-label-sm font-bold text-on-surface-variant">{title}</span>
-      )}
+      {!hideTitle && <span className="text-label-sm font-bold text-on-surface-variant">{title}</span>}
       <div className={cn('grid gap-space-sm', columnClasses[columns], isSquare && 'gap-space-md')}>
         {photos.map((photo) => (
           <button

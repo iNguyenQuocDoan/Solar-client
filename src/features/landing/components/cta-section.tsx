@@ -19,7 +19,10 @@ export function CtaSection() {
           </h2>
           <p className="mt-4 max-w-xl ld-lede opacity-90">{cta.lede}</p>
         </Reveal>
-        <Reveal delay={150} className="col-span-4 flex flex-col gap-3 sm:items-start lg:col-span-4 lg:col-start-9 lg:self-end">
+        <Reveal
+          delay={150}
+          className="col-span-4 flex flex-col gap-3 sm:items-start lg:col-span-4 lg:col-start-9 lg:self-end"
+        >
           <Link
             to={ROUTES.REGISTER}
             className="press inline-flex h-12 items-center justify-center rounded-control bg-on-accent px-6 ld-action whitespace-nowrap text-accent hover:bg-on-accent/90"

@@ -27,8 +27,8 @@ const schema = z
 type ResetValues = z.infer<typeof schema>
 
 /*
- * /reset-password?token=…
- * ResetPasswordRequest trong swagger = { token, newPassword } – KHÔNG có email,
+ * /reset-password?token=...
+ * ResetPasswordRequest trong swagger = { token, newPassword }, KHÔNG có email,
  * nên trang chỉ đọc `token` từ query.
  */
 export function ResetPasswordPage() {
@@ -93,7 +93,7 @@ export function ResetPasswordPage() {
         </div>
       )}
 
-      {/* Thiếu token hoặc token bị từ chối → gợi ý xin liên kết mới */}
+      {/* Thiếu token hoặc token bị từ chối thì gợi ý xin liên kết mới */}
       {(!token || formError) && !done && (
         <div
           role="alert"
@@ -102,10 +102,7 @@ export function ResetPasswordPage() {
           <Icon name="error" className="mt-0.5 shrink-0 text-[22px] text-error" />
           <div className="flex-1 text-body-sm">
             <p>{formError ?? resetContent.missingToken}</p>
-            <Link
-              to={ROUTES.FORGOT_PASSWORD}
-              className="mt-1 inline-block text-label-sm font-semibold underline"
-            >
+            <Link to={ROUTES.FORGOT_PASSWORD} className="mt-1 inline-block text-label-sm font-semibold underline">
               {resetContent.requestNewLink}
             </Link>
           </div>

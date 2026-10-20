@@ -43,15 +43,21 @@ function scheduleBadge(r: SurveyRequestDetail): { label: string; tone: Tone } | 
   return null
 }
 
-/* Dòng thời gian: gửi → nhận → khách đặt giờ → phân công → kỹ thuật viên nhận việc → khảo sát (luồng 1 dừng ở nhận việc). */
+// Dòng thời gian: gửi, nhận, khách đặt giờ, phân công, kỹ thuật viên nhận việc, khảo sát (luồng 1 dừng ở nhận việc)
 function progressItems(r: SurveyRequestDetail): ActivityItem[] {
   const a = r.appointment
   const assigned = Boolean(a?.assignedAt) && a?.status !== 'BOOKED'
   const acknowledged = a?.status === 'ACKNOWLEDGED'
   return [
     { time: formatDateTime(r.submittedAt), title: 'Khách gửi yêu cầu', state: 'done' },
-    ...(r.assignedAt ? [{ time: formatDateTime(r.assignedAt), title: 'Bạn nhận yêu cầu', state: 'done' as const }] : []),
-    { time: a ? formatDateTime(a.bookedAt) : 'Chưa đặt', title: 'Khách đặt giờ khảo sát', state: a ? 'done' : 'current' },
+    ...(r.assignedAt
+      ? [{ time: formatDateTime(r.assignedAt), title: 'Bạn nhận yêu cầu', state: 'done' as const }]
+      : []),
+    {
+      time: a ? formatDateTime(a.bookedAt) : 'Chưa đặt',
+      title: 'Khách đặt giờ khảo sát',
+      state: a ? 'done' : 'current',
+    },
     {
       time: assigned ? `${a?.assignedTechnicianName ?? ''}, ${formatDateTime(a?.assignedAt)}` : '—',
       title: 'Phân công kỹ thuật viên',
@@ -120,7 +126,10 @@ function SimulationPanel({ request }: { request: SurveyRequestDetail }) {
               staleNote="Khách đã sửa mặt lắp sau lần chạy này; số liệu có thể không khớp mặt lắp cuối cùng."
             />
           ) : (
-            <EmptyState title="Khách chưa chạy mô phỏng" description="Bản đánh giá được gửi khi chưa có mô phỏng; dùng số liệu khách khai ở trên khi gọi khách." />
+            <EmptyState
+              title="Khách chưa chạy mô phỏng"
+              description="Bản đánh giá được gửi khi chưa có mô phỏng; dùng số liệu khách khai ở trên khi gọi khách."
+            />
           )}
         </PanelBody>
       </Panel>
@@ -201,19 +210,37 @@ export function OpsSurveyRequestPage() {
               <div className="min-w-0 space-y-4 lg:col-span-2">
                 <SalesSchedulePanel request={r} />
                 <Panel>
-                  <PanelHeader title="Số liệu khách khai" description="Đối chiếu khi gọi khách và đo lại khi khảo sát." />
+                  <PanelHeader
+                    title="Số liệu khách khai"
+                    description="Đối chiếu khi gọi khách và đo lại khi khảo sát."
+                  />
                   <PanelBody className="space-y-6">
-                    {/* lg: thay vì md: – StatRow có sẵn md:grid-cols-4 và cx không gộp class, nên chỉ media query muộn hơn mới đè được. */}
+                    {/* lg: thay vì md:, StatRow có sẵn md:grid-cols-4 và cx không gộp class, nên chỉ media query muộn hơn mới đè được. */}
                     <StatRow className="lg:grid-cols-3">
-                      <Stat label="Diện tích dùng được" value={r.usableAreaM2 == null ? '—' : num.format(r.usableAreaM2)} unit="m²" />
-                      <Stat label="Tổng diện tích" value={r.totalAreaM2 == null ? '—' : num.format(r.totalAreaM2)} unit="m²" />
-                      <Stat label="Độ dốc mái" value={r.tiltDegree == null ? '—' : num.format(r.tiltDegree)} unit="độ" />
+                      <Stat
+                        label="Diện tích dùng được"
+                        value={r.usableAreaM2 == null ? '—' : num.format(r.usableAreaM2)}
+                        unit="m²"
+                      />
+                      <Stat
+                        label="Tổng diện tích"
+                        value={r.totalAreaM2 == null ? '—' : num.format(r.totalAreaM2)}
+                        unit="m²"
+                      />
+                      <Stat
+                        label="Độ dốc mái"
+                        value={r.tiltDegree == null ? '—' : num.format(r.tiltDegree)}
+                        unit="độ"
+                      />
                     </StatRow>
                     <Facts
                       items={[
                         {
                           k: 'Hướng mái',
-                          v: r.azimuthDegree == null ? '—' : `${directionLabel(r.azimuthDegree)} (${num.format(r.azimuthDegree)}°)`,
+                          v:
+                            r.azimuthDegree == null
+                              ? '—'
+                              : `${directionLabel(r.azimuthDegree)} (${num.format(r.azimuthDegree)}°)`,
                         },
                         { k: 'Vật cản', v: r.hasObstruction == null ? '—' : r.hasObstruction ? 'Có' : 'Không' },
                         { k: 'Bề mặt', v: surfaceTypeLabel(r.installationSurfaceType) },
@@ -223,7 +250,12 @@ export function OpsSurveyRequestPage() {
                               {
                                 k: 'Toạ độ',
                                 v: (
-                                  <a className="tnum ui-link" href={`https://www.google.com/maps?q=${r.latitude},${r.longitude}`} target="_blank" rel="noreferrer">
+                                  <a
+                                    className="tnum ui-link"
+                                    href={`https://www.google.com/maps?q=${r.latitude},${r.longitude}`}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                  >
                                     {r.latitude}, {r.longitude}
                                   </a>
                                 ),
@@ -267,7 +299,16 @@ export function OpsSurveyRequestPage() {
                           v: r.customerEmail ? (
                             <a className="ui-link wrap-anywhere" href={`mailto:${r.customerEmail}`}>
                               {/* Cột hẹp: ưu tiên xuống dòng ngay sau "@" thay vì giữa tên miền. */}
-                              {r.customerEmail.split('@').map((part, i) => (i === 0 ? part : [<Fragment key={i}>@<wbr /></Fragment>, part]))}
+                              {r.customerEmail.split('@').map((part, i) =>
+                                i === 0
+                                  ? part
+                                  : [
+                                      <Fragment key={i}>
+                                        @<wbr />
+                                      </Fragment>,
+                                      part,
+                                    ],
+                              )}
                             </a>
                           ) : (
                             '—'

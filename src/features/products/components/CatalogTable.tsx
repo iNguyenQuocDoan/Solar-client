@@ -1,6 +1,11 @@
 import { Link } from 'react-router'
 import { Table, Td, Th, Tr } from '@/components/common/ui/table'
-import { formatPower, formatSize, formatWarranty, productTypeLabel } from '@/features/products/components/productDisplay'
+import {
+  formatPower,
+  formatSize,
+  formatWarranty,
+  productTypeLabel,
+} from '@/features/products/components/productDisplay'
 import type { ProductResponse } from '@/types/res/adminProductsRes'
 import { formatMoney } from '@/utils/format'
 
@@ -11,7 +16,13 @@ import { formatMoney } from '@/utils/format'
   chuyển màu thương hiệu + gạch chân. Lúc nghỉ tên giữ màu chữ chính, không tô xanh cả cột chỉ để báo "đây là link".
   Bàn phím vẫn Tab tới đúng link tên sản phẩm.
 */
-export function CatalogTable({ products, detailPath }: { products: ProductResponse[]; detailPath: (id: string) => string }) {
+export function CatalogTable({
+  products,
+  detailPath,
+}: {
+  products: ProductResponse[]
+  detailPath: (id: string) => string
+}) {
   return (
     <Table stack>
       <thead>

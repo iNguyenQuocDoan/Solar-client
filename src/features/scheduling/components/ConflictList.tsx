@@ -1,5 +1,9 @@
 import { Notice } from '@/components/common/ui/lists'
-import { appointmentStatusMeta, feasibilityLabel, formatAppointment } from '@/features/scheduling/components/schedulingDisplay'
+import {
+  appointmentStatusMeta,
+  feasibilityLabel,
+  formatAppointment,
+} from '@/features/scheduling/components/schedulingDisplay'
 import type { ConflictingAppointmentView } from '@/types/res/adminTechniciansRes'
 
 const PROBLEMS: Record<string, string> = {
@@ -22,7 +26,10 @@ export function ConflictList({ conflicts }: { conflicts: ConflictingAppointmentV
           </li>
         ))}
       </ul>
-      <p className="mt-2">Nhờ kinh doanh phụ trách đổi giờ hoặc chuyển các lịch này cho kỹ thuật viên khác, rồi lưu lại. Không lịch nào bị huỷ tự động.</p>
+      <p className="mt-2">
+        Nhờ kinh doanh phụ trách đổi giờ hoặc chuyển các lịch này cho kỹ thuật viên khác, rồi lưu lại. Không lịch nào bị
+        huỷ tự động.
+      </p>
     </Notice>
   )
 }

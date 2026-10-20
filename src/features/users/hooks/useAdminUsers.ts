@@ -4,7 +4,13 @@ import * as adminUserService from '@/features/users/services/adminUserService'
 import type { AdminUserListParams } from '@/features/users/services/adminUserService'
 import type { ApiError } from '@/services/api/errors'
 import type { CreateAdminUserRequest, UpdateAdminUserRequest } from '@/types/req/adminUsersReq'
-import type { AdminUserDetail, AdminUserPage, CreatedAdminUser, RecoveryIssued, UpdatedAdminUser } from '@/types/res/adminUsersRes'
+import type {
+  AdminUserDetail,
+  AdminUserPage,
+  CreatedAdminUser,
+  RecoveryIssued,
+  UpdatedAdminUser,
+} from '@/types/res/adminUsersRes'
 
 export const adminUserKeys = {
   all: ['admin-users'] as const,

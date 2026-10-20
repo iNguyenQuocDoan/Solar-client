@@ -5,7 +5,7 @@ import { LandingPhoto } from './photo'
 import { Reveal } from './reveal'
 import { Section, SectionTitle } from './section'
 
-/* Vì sao tin: split – ảnh người thật làm việc bên trái chiếm nhiều chỗ hơn, lý do bên phải. */
+/* Vì sao tin: split, ảnh người thật làm việc bên trái chiếm nhiều chỗ hơn, lý do bên phải. */
 export function TrustSection() {
   return (
     <Section id={trust.id} space="far" titleId="trust-title">

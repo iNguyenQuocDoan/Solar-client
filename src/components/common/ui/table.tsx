@@ -18,9 +18,18 @@ import { cx } from '@/utils/cx'
 */
 export function Table({ stack, className, ...rest }: HTMLAttributes<HTMLTableElement> & { stack?: boolean | 'xl' }) {
   return (
-    <div className={cx('scroll-x relative -mx-4 px-4 [scrollbar-width:thin] md:mx-0 md:px-0', stack === 'xl' ? 'xl:-mx-3' : 'lg:-mx-3')}>
+    <div
+      className={cx(
+        'scroll-x relative -mx-4 px-4 [scrollbar-width:thin] md:mx-0 md:px-0',
+        stack === 'xl' ? 'xl:-mx-3' : 'lg:-mx-3',
+      )}
+    >
       <table
-        className={cx('w-full border-collapse text-body', stack === 'xl' ? 'table-stack-xl' : stack && 'table-stack', className)}
+        className={cx(
+          'w-full border-collapse text-body',
+          stack === 'xl' ? 'table-stack-xl' : stack && 'table-stack',
+          className,
+        )}
         {...rest}
       />
     </div>
@@ -44,7 +53,10 @@ export function Td({ label, className, ...rest }: TdHTMLAttributes<HTMLTableCell
   return (
     <td
       data-label={label}
-      className={cx('border-b border-line px-3 py-3 align-top first:pl-0 last:pr-0 lg:first:pl-3 lg:last:pr-3', className)}
+      className={cx(
+        'border-b border-line px-3 py-3 align-top first:pl-0 last:pr-0 lg:first:pl-3 lg:last:pr-3',
+        className,
+      )}
       {...rest}
     />
   )

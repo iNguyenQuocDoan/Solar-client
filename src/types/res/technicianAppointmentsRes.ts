@@ -1,7 +1,7 @@
 /*
- * VIẾT TAY – swagger chỉ khai "200 OK" cho tag TechnicianAppointments (và TechnicianSchedule), không có
+ * VIẾT TAY, swagger chỉ khai "200 OK" cho tag TechnicianAppointments (và TechnicianSchedule), không có
  * schema response. Tên kiểu và field lấy đúng theo SmartSolar.Modules.Scheduling.PreSurveyAppointments.Views
- * (TechnicianAppointmentListItem, TechnicianJobView, AcknowledgementView, TechnicianScheduleView – backend
+ * (TechnicianAppointmentListItem, TechnicianJobView, AcknowledgementView, TechnicianScheduleView, backend
  * main 4d12e4d, 12/10/2026). Khi backend khai response trong swagger, `npm run gen:api` sẽ ghi đè file này.
  */
 import type { TravelEstimateView } from '@/types/res/technicianAvailabilityRes'
@@ -66,12 +66,12 @@ export type TechnicianJobView = {
   property: TechnicianJobProperty
   preSurvey: TechnicianJobPreSurvey
   selectedSimulation: SelectedSimulationSummary | null
-  /** "/api/pre-surveys/{id}/simulations/{simulationId}" – kỹ thuật viên được phân công đọc được. */
+  /** "/api/pre-surveys/{id}/simulations/{simulationId}", kỹ thuật viên được phân công đọc được. */
   simulationDetailPath: string | null
   inboundTravelEstimate: TravelEstimateView | null
 }
 
-/** POST …/acknowledge; gửi lại khi đã nhận thì `alreadyAcknowledged` = true (không phải lỗi). */
+/** POST .../acknowledge; gửi lại khi đã nhận thì `alreadyAcknowledged` = true (không phải lỗi). */
 export type AcknowledgementView = {
   appointmentId: string
   status: AppointmentStatus
@@ -96,7 +96,7 @@ export type ScheduleAppointmentView = {
   expectedOriginAppointmentId: string | null
   /** Chỉ có khi routingStatus = OK. */
   inboundTravel: TravelEstimateView | null
-  /** Ước tính cũ không còn đúng (đổi lịch trước đó…): chỉ để tham khảo, không dùng như hiện tại. */
+  /** Ước tính cũ không còn đúng (đổi lịch trước đó...): chỉ để tham khảo, không dùng như hiện tại. */
   nonCurrentEstimate: TravelEstimateView | null
   routingStatus: ScheduleRoutingStatus
   snapshotAgeMinutes: number | null

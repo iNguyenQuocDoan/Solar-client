@@ -50,9 +50,7 @@ export function DialogHeader({ className, ...rest }: ComponentProps<'div'>) {
 }
 
 export function DialogTitle({ className, ...rest }: ComponentProps<typeof DialogPrimitive.Title>) {
-  return (
-    <DialogPrimitive.Title className={cn('text-headline-lg tracking-tight text-primary', className)} {...rest} />
-  )
+  return <DialogPrimitive.Title className={cn('text-headline-lg tracking-tight text-primary', className)} {...rest} />
 }
 
 export function DialogDescription({ className, ...rest }: ComponentProps<typeof DialogPrimitive.Description>) {

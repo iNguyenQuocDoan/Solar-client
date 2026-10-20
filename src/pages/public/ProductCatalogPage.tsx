@@ -10,7 +10,7 @@ import { useDebouncedValue } from '@/hooks/useDebouncedValue'
 import { cx } from '@/utils/cx'
 
 /*
- * /products – danh mục sản phẩm công khai, đọc GET /api/products.
+ * /products, danh mục sản phẩm công khai, đọc GET /api/products.
  * Chỉ hiện sản phẩm ACTIVE: swagger không có tham số lọc theo trạng thái nên lọc ở client.
  */
 

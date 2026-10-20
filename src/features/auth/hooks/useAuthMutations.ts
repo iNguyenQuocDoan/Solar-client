@@ -18,7 +18,7 @@ import type {
 import type { ApiError } from '@/services/api/errors'
 
 /*
- * Mutation cho 9 endpoint Auth (trừ refresh – interceptor trong client.ts tự lo).
+ * Mutation cho 9 endpoint Auth (trừ refresh, interceptor trong client.ts tự lo).
  * Lỗi luôn là ApiError nên component đọc được `status`, `code`, `fieldErrors`.
  *
  * Hai mutation có ảnh hưởng tới phiên đăng nhập (login / logout) nằm trong

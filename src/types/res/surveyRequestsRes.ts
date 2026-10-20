@@ -1,5 +1,5 @@
 /*
- * VIẾT TAY – swagger chỉ khai "200 OK" cho tag SurveyRequests, không có schema response.
+ * VIẾT TAY, swagger chỉ khai "200 OK" cho tag SurveyRequests, không có schema response.
  * Tên kiểu và field lấy đúng theo SmartSolar.Modules.PreSurvey (GetPendingSurveyRequests,
  * GetMySurveyRequests, GetSurveyRequestDetail) và Contracts.SurveyRequests của image 05/10/2026;
  * lịch hẹn, phân công, đổi giờ theo Modules.Scheduling (backend main 4d12e4d, 12/10/2026).
@@ -72,7 +72,7 @@ export type SurveyRequestDetail = {
   appointment: SurveyAppointmentSummary | null
 }
 
-/** BOOKED → ASSIGNED → ACKNOWLEDGED, hoặc CANCELLED. Giá trị lạ vẫn nhận (backend có thể thêm). */
+/** BOOKED, rồi ASSIGNED, rồi ACKNOWLEDGED, hoặc CANCELLED. Giá trị lạ vẫn nhận (backend có thể thêm) */
 export type AppointmentStatus = 'BOOKED' | 'ASSIGNED' | 'ACKNOWLEDGED' | 'CANCELLED' | (string & {})
 
 /**
@@ -97,7 +97,7 @@ export type SurveyAppointmentSummary = {
   acknowledgedAt: string | null
 }
 
-/** POST …/assign-technician và PUT …/reassign-technician (cùng một handler). */
+/** POST .../assign-technician và PUT .../reassign-technician (cùng một handler). */
 export type AssignmentView = {
   appointmentId: string
   surveyRequestId: string
@@ -114,7 +114,7 @@ export type AssignmentView = {
   acknowledgementRequired: boolean
 }
 
-/** PUT …/reschedule. `previousAppointmentId` là lịch cũ (đã huỷ, giữ làm lịch sử). */
+/** PUT .../reschedule. `previousAppointmentId` là lịch cũ (đã huỷ, giữ làm lịch sử). */
 export type SalesRescheduleView = {
   appointmentId: string
   previousAppointmentId: string | null

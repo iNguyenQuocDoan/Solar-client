@@ -81,10 +81,7 @@ export function ChecklistPhaseCard({
           </div>
         </div>
         <span
-          className={cn(
-            'flex shrink-0 items-center gap-1 rounded-full px-2.5 py-1 text-label-sm font-bold',
-            t.badge,
-          )}
+          className={cn('flex shrink-0 items-center gap-1 rounded-full px-2.5 py-1 text-label-sm font-bold', t.badge)}
         >
           {badgeIcon && <Icon name={badgeIcon} className="text-[14px]" />}
           {badgeLabel}

@@ -17,7 +17,7 @@ export type ChecklistItemProps = {
   description?: string
   /** Mặc định suy từ checked: done / pending */
   state?: ChecklistState
-  /** Chữ bên phải: "Verified 13:05", "Pending", "Active Now"… */
+  /** Chữ bên phải: "Verified 13:05", "Pending", "Active Now"... */
   status?: ReactNode
   /** Icon cạnh status khi done (mặc định verified) */
   statusIcon?: string

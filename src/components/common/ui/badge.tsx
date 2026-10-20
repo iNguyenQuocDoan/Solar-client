@@ -38,7 +38,13 @@ export function Badge({
   children: ReactNode
 }) {
   return (
-    <span className={cx('inline-flex min-h-6 items-center gap-1.5 rounded-control px-2 py-0.5 text-meta font-medium', tones[tone], className)}>
+    <span
+      className={cx(
+        'inline-flex min-h-6 items-center gap-1.5 rounded-control px-2 py-0.5 text-meta font-medium',
+        tones[tone],
+        className,
+      )}
+    >
       {icon && <Icon name={icon} className="-ml-0.5 shrink-0 text-[16px]" />}
       {children}
     </span>

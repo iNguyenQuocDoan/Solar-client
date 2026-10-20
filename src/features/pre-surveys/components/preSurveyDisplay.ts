@@ -2,11 +2,8 @@ import type { Tone } from '@/components/common/ui/badge'
 import type { CustomerType, InstallationSurfaceType } from '@/types/req/customersReq'
 import type { SurveyRequestStatus } from '@/types/res/surveyRequestsRes'
 
-/*
- * Nhãn và định dạng dùng chung cho màn đánh giá của khách hàng và màn yêu cầu khảo sát của sales.
- * Swagger chỉ khai enum là số; tên từng giá trị lấy từ SmartSolar.Modules.PreSurvey.Enums
- * (image 05/10/2026). Giá trị lạ thì in nguyên số thay vì đoán nghĩa.
- */
+// Nhãn và định dạng dùng chung cho khách hàng và sales
+// Swagger chỉ có số của enum, tên lấy từ SmartSolar.Modules.PreSurvey.Enums của backend
 
 export const CUSTOMER_TYPES = [
   { value: 1, label: 'Cá nhân' },
@@ -21,10 +18,7 @@ export const SURFACE_TYPES = [
   { value: 5, label: 'Khác', hint: 'Ghi rõ ở phần ghi chú' },
 ] as const satisfies readonly { value: InstallationSurfaceType; label: string; hint: string }[]
 
-/*
- * Hướng mặt mái theo 8 hướng la bàn; giá trị gửi backend là góc phương vị (độ, 0 = Bắc, theo chiều kim đồng hồ).
- * Thứ tự mảng là thứ tự ô trên lưới 3×3 của bộ chọn (Tây Bắc ở góc trên trái), null là ô giữa.
- */
+// 8 hướng la bàn, xếp theo lưới 3x3 của bộ chọn (null là ô giữa)
 export const COMPASS_GRID = [
   { label: 'Tây Bắc', degree: 315 },
   { label: 'Bắc', degree: 0 },
@@ -39,7 +33,7 @@ export const COMPASS_GRID = [
 
 const DIRECTIONS = ['Bắc', 'Đông Bắc', 'Đông', 'Đông Nam', 'Nam', 'Tây Nam', 'Tây', 'Tây Bắc']
 
-/** 185 → "Nam"; dùng hướng gần nhất trong 8 hướng. */
+/** Ví dụ 185 độ là "Nam" */
 export function directionLabel(degree: number | null | undefined) {
   if (degree == null) return '—'
   const normalized = ((degree % 360) + 360) % 360
@@ -54,10 +48,7 @@ export function surfaceTypeLabel(value: number | null | undefined) {
   return SURFACE_TYPES.find((t) => t.value === value)?.label ?? (value == null ? '—' : `Loại ${value}`)
 }
 
-/*
-  Màu theo việc còn phải làm (Badge): "Chờ nhận" là yêu cầu cần người nhận nên tô đỏ; đã nhận / đang xem xét
-  là đang xử lý (chấm xanh dương); đã hẹn là đúng tiến độ (chấm xanh lá); xong hoặc huỷ thì chấm xám.
-*/
+// "Chờ nhận" tô đỏ vì cần người nhận
 const STATUS_META: Record<SurveyRequestStatus, { label: string; tone: Tone }> = {
   1: { label: 'Chờ nhận', tone: 'danger' },
   2: { label: 'Đã nhận', tone: 'info' },
@@ -67,32 +58,26 @@ const STATUS_META: Record<SurveyRequestStatus, { label: string; tone: Tone }> = 
   6: { label: 'Đã huỷ', tone: 'neutral' },
 }
 
-/**
- * Có toạ độ dùng được không. (0, 0) nằm giữa vịnh Guinea: đó là giá trị mặc định khi khách bỏ trống,
- * không phải vị trí thật (dữ liệu thật 08/10/2026 có một yêu cầu như vậy).
- */
+/** (0, 0) là giá trị mặc định khi bỏ trống, không phải vị trí thật */
 export function hasCoordinates(latitude: number | null | undefined, longitude: number | null | undefined) {
   return latitude != null && longitude != null && !(latitude === 0 && longitude === 0)
 }
 
-/*
-  Dự án chỉ nhận công trình ở TP.HCM (người dùng 10/10/2026). Khung toạ độ thô của TP.HCM sau sáp nhập 01/07/2025 (gồm
-  Bình Dương, Bà Rịa – Vũng Tàu cũ): đất liền và đặc khu Côn Đảo. Chỉ để cảnh báo toạ độ nhập nhầm (đảo hai số, sai dấu,
-  lệch hẳn nơi khác: một bản nháp thật ra khí hậu Nam Cực), không thay được ranh giới hành chính.
-*/
+// Khung toạ độ gần đúng của TP.HCM (gồm đất liền và Côn Đảo), chỉ dùng để cảnh báo nhập nhầm
 const HCM_BOXES = [
   { latMin: 10.3, latMax: 11.6, lonMin: 106.3, lonMax: 107.65 },
   { latMin: 8.5, latMax: 8.9, lonMin: 106.4, lonMax: 106.8 },
 ]
 
 export function isInHcm(latitude: number, longitude: number) {
-  return HCM_BOXES.some((b) => latitude >= b.latMin && latitude <= b.latMax && longitude >= b.lonMin && longitude <= b.lonMax)
+  return HCM_BOXES.some(
+    (b) => latitude >= b.latMin && latitude <= b.latMax && longitude >= b.lonMin && longitude <= b.lonMax,
+  )
 }
 
-/** Câu hướng dẫn khi toạ độ nằm ngoài TP.HCM: số viết kiểu Google Maps (dấu chấm) như khách chép vào ô. */
 export const HCM_COORDINATE_HINT = 'vĩ độ (số đầu) khoảng 10.3 đến 11.6, kinh độ (số sau) khoảng 106.3 đến 107.6'
 
-/** Toạ độ viết như Google Maps ("10.9036, 106.7686"): kiểu số Việt "10,9, 106,7" đọc nhầm dấu phẩy ngăn cách. */
+/** Dùng dấu chấm như Google Maps, tránh nhầm với dấu phẩy ngăn cách */
 export function formatCoordinates(latitude: number, longitude: number) {
   const part = (v: number) => String(Number(v.toFixed(5)))
   return `${part(latitude)}, ${part(longitude)}`
@@ -102,17 +87,22 @@ export function mapsUrl(latitude: number, longitude: number) {
   return `https://www.google.com/maps?q=${latitude},${longitude}`
 }
 
-/** Đã nhận nhưng chưa chốt lịch (chưa phân công kỹ thuật viên): việc tiếp theo của sales là phân công, hoặc nhắc khách đặt giờ. */
+/** Đã nhận nhưng chưa phân công kỹ thuật viên */
 export function needsScheduling(status: number | null | undefined) {
   return status === 2 || status === 3
 }
 
 export function surveyStatusMeta(status: number | null | undefined): { label: string; tone: Tone } {
-  return STATUS_META[status as SurveyRequestStatus] ?? { label: status == null ? '—' : `Trạng thái ${status}`, tone: 'neutral' }
+  return (
+    STATUS_META[status as SurveyRequestStatus] ?? {
+      label: status == null ? '—' : `Trạng thái ${status}`,
+      tone: 'neutral',
+    }
+  )
 }
 
 const decimal = new Intl.NumberFormat('vi-VN', { maximumFractionDigits: 1 })
-/* Giờ nghiệp vụ là giờ Việt Nam, không theo múi giờ của máy đang xem (tài liệu bàn giao BE 12/10/2026, mục 15). */
+// Luôn hiển thị theo giờ Việt Nam
 const dateTime = new Intl.DateTimeFormat('vi-VN', {
   timeZone: 'Asia/Ho_Chi_Minh',
   day: '2-digit',
@@ -137,7 +127,7 @@ const MINUTE = 60_000
 const HOUR = 60 * MINUTE
 const DAY = 24 * HOUR
 
-/** "vừa xong", "35 phút trước", "2 giờ trước", "hôm qua"; quá 30 ngày thì in ngày giờ. */
+/** "vừa xong", "35 phút trước", "hôm qua"...; quá 30 ngày thì in ngày giờ */
 export function formatRelative(iso: string | null | undefined, now = Date.now()) {
   if (!iso) return '—'
   const time = new Date(iso).getTime()
@@ -150,18 +140,16 @@ export function formatRelative(iso: string | null | undefined, now = Date.now())
   else if (abs < DAY) text = relative.format(Math.round(diff / HOUR), 'hour')
   else if (abs < 30 * DAY) text = relative.format(Math.round(diff / DAY), 'day')
   else return formatDateTime(iso)
-  // Intl viết hoa "Hôm qua"; câu hiển thị luôn đặt nó sau một động từ.
+  // Intl viết hoa "Hôm qua", đổi về chữ thường
   return text.charAt(0).toLowerCase() + text.slice(1)
 }
 
-/** Yêu cầu chờ quá một ngày chưa ai nhận thì cần chú ý. */
 export function isOverdue(iso: string | null | undefined, now = Date.now()) {
   if (!iso) return false
   const time = new Date(iso).getTime()
   return !Number.isNaN(time) && now - time > DAY
 }
 
-/** "12 Lê Lợi, Phường Bến Nghé, Quận 1, TP. Hồ Chí Minh" – bỏ phần trống. */
 export function formatAddress(parts: {
   streetLine?: string | null
   ward?: string | null
@@ -175,7 +163,7 @@ export function formatAddress(parts: {
   return text || '—'
 }
 
-/** Mã ngắn để đọc qua điện thoại: 8 ký tự đầu của GUID, viết hoa. */
+/** 8 ký tự đầu của GUID, dễ đọc qua điện thoại */
 export function shortCode(id: string | null | undefined) {
   return id ? id.slice(0, 8).toUpperCase() : '—'
 }

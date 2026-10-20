@@ -5,7 +5,7 @@ import { LandingPhoto } from './photo'
 import { Reveal } from './reveal'
 import { Section, SectionTitle } from './section'
 
-/* Rê chuột vào ảnh công trình thì ảnh phóng nhẹ trong khung – chỉ transform, không đổi layout. */
+/* Rê chuột vào ảnh công trình thì ảnh phóng nhẹ trong khung, chỉ transform, không đổi layout. */
 const ZOOM = 'transition-transform duration-700 ease-ld group-hover:scale-103'
 
 /*

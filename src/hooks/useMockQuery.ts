@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery } from '@tanstack/react-query'
 
 /*
   Until the API lands, every page reads through this hook so loading and
@@ -8,8 +8,7 @@ import { useQuery } from "@tanstack/react-query";
 export function useMockQuery<T>(key: readonly unknown[], data: T, delay = 220) {
   return useQuery({
     queryKey: key,
-    queryFn: () =>
-      new Promise<T>((resolve) => setTimeout(() => resolve(data), delay)),
+    queryFn: () => new Promise<T>((resolve) => setTimeout(() => resolve(data), delay)),
     staleTime: Infinity,
-  });
+  })
 }

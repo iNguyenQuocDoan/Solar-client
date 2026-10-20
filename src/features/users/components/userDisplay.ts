@@ -33,11 +33,19 @@ export const STATUS_OPTIONS = [
   Đang hoạt động là ok; chờ kích hoạt là đang xử lý (người dùng chưa đặt mật khẩu / xác minh email); tạm khoá là lưu ý;
   vô hiệu và đã xoá là không còn hoạt động.
 */
-const STATUS_TONES: Record<string, Tone> = { PENDING_VERIFICATION: 'info', ACTIVE: 'ok', SUSPENDED: 'warn', DISABLED: 'neutral' }
+const STATUS_TONES: Record<string, Tone> = {
+  PENDING_VERIFICATION: 'info',
+  ACTIVE: 'ok',
+  SUSPENDED: 'warn',
+  DISABLED: 'neutral',
+}
 
 export function userStatusMeta(u: Pick<AdminUserListItem, 'status' | 'deletedAt'>): { label: string; tone: Tone } {
   if (u.deletedAt) return { label: 'Đã xoá', tone: 'neutral' }
-  return { label: STATUS_OPTIONS.find((s) => s.value === u.status)?.label ?? u.status, tone: STATUS_TONES[u.status] ?? 'neutral' }
+  return {
+    label: STATUS_OPTIONS.find((s) => s.value === u.status)?.label ?? u.status,
+    tone: STATUS_TONES[u.status] ?? 'neutral',
+  }
 }
 
 /** Câu báo kết quả gửi link (tạo tài khoản, đổi email, gửi lại link). `ok` = link thật sự đã vào hàng đợi gửi. */
@@ -50,6 +58,9 @@ export function activationMessage(a: ActivationState): { ok: boolean; text: stri
         : 'link đặt lại mật khẩu'
   if (a.emailDelivery === 'QUEUED') return { ok: true, text: `Đã gửi ${what} tới email của tài khoản.` }
   if (a.emailDelivery === 'EMAIL_DELIVERY_DISABLED')
-    return { ok: false, text: `Môi trường này chưa bật gửi email nên ${what} CHƯA được gửi. Bật gửi email rồi bấm "Gửi link" để gửi lại.` }
+    return {
+      ok: false,
+      text: `Môi trường này chưa bật gửi email nên ${what} CHƯA được gửi. Bật gửi email rồi bấm "Gửi link" để gửi lại.`,
+    }
   return { ok: false, text: `Không gửi được ${what} (hàng đợi email lỗi). Bấm "Gửi link" để thử lại.` }
 }

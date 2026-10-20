@@ -23,7 +23,8 @@ function rank(r: CustomerSurveyRequestView) {
 function byNextAction(a: CustomerSurveyRequestView, b: CustomerSurveyRequestView) {
   const diff = rank(a) - rank(b)
   if (diff !== 0) return diff
-  if (a.appointment && b.appointment) return new Date(a.appointment.startsAt).getTime() - new Date(b.appointment.startsAt).getTime()
+  if (a.appointment && b.appointment)
+    return new Date(a.appointment.startsAt).getTime() - new Date(b.appointment.startsAt).getTime()
   return new Date(b.submittedAt).getTime() - new Date(a.submittedAt).getTime()
 }
 
@@ -71,12 +72,15 @@ export function CustomerRequestsPage() {
                       <div className="min-w-0">
                         <h2 className="text-title font-semibold">{r.propertyName || 'Công trình chưa đặt tên'}</h2>
                         <p className="mt-1 text-body text-fg-2">
-                          Gửi {formatRelative(r.submittedAt)}, mã <span className="tnum">{shortCode(r.surveyRequestId)}</span>
+                          Gửi {formatRelative(r.submittedAt)}, mã{' '}
+                          <span className="tnum">{shortCode(r.surveyRequestId)}</span>
                         </p>
                         {a && (
                           <p className="mt-2 text-body text-fg">
                             Khảo sát {formatAppointment(a.startsAt, a.endsAt)}
-                            {a.assignedTechnicianName && <span className="text-fg-2">, kỹ thuật viên {a.assignedTechnicianName}</span>}
+                            {a.assignedTechnicianName && (
+                              <span className="text-fg-2">, kỹ thuật viên {a.assignedTechnicianName}</span>
+                            )}
                           </p>
                         )}
                       </div>

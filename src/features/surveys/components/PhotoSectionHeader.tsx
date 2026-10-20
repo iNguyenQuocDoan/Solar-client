@@ -49,12 +49,7 @@ export function PhotoSectionHeader({
   return (
     <div className={cn('flex items-start justify-between gap-space-sm', className)}>
       <div className="flex min-w-0 items-start gap-space-sm">
-        <div
-          className={cn(
-            'flex h-8 w-8 shrink-0 items-center justify-center rounded-xl',
-            iconToneClasses[iconTone],
-          )}
-        >
+        <div className={cn('flex h-8 w-8 shrink-0 items-center justify-center rounded-xl', iconToneClasses[iconTone])}>
           <Icon name={icon} className="text-[18px]" />
         </div>
         <div className="min-w-0">

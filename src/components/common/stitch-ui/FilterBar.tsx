@@ -140,13 +140,13 @@ export function FilterChip({
 export type ActiveScope = { key: string; label: string; onRemove?: () => void }
 
 export type FilterBarProps = {
-  /** Hàng chip trên cùng (Today / Upcoming / …) */
+  /** Hàng chip trên cùng (Today / Upcoming / ...) */
   chips?: ReactNode
   search?: SearchInputProps
   selects?: (SelectProps & { key: string })[]
   /** Chip lọc đang áp dụng + nút reset */
   scopes?: { label?: string; items: ActiveScope[]; onReset?: () => void }
-  /** Slot phải của hàng scopes (bulk actions…) */
+  /** Slot phải của hàng scopes (bulk actions...) */
   trailing?: ReactNode
   className?: string
 }
@@ -172,9 +172,7 @@ export function FilterBar({ chips, search, selects, scopes, trailing, className 
       {(scopes || trailing) && (
         <div className="flex flex-col justify-between gap-space-xs rounded-xl bg-surface-container-low/40 px-space-sm py-2 sm:flex-row sm:items-center">
           <div className="flex flex-wrap items-center gap-space-xs">
-            {scopes?.label && (
-              <span className="text-label-sm font-semibold text-outline">{scopes.label}</span>
-            )}
+            {scopes?.label && <span className="text-label-sm font-semibold text-outline">{scopes.label}</span>}
             {scopes?.items.map((scope) => (
               <span
                 key={scope.key}
@@ -194,7 +192,11 @@ export function FilterBar({ chips, search, selects, scopes, trailing, className 
               </span>
             ))}
             {scopes?.onReset && (
-              <button type="button" onClick={scopes.onReset} className="ml-1 text-label-sm text-primary hover:underline">
+              <button
+                type="button"
+                onClick={scopes.onReset}
+                className="ml-1 text-label-sm text-primary hover:underline"
+              >
                 Xoá bộ lọc
               </button>
             )}

@@ -44,7 +44,13 @@ import {
   shortCode,
   surfaceTypeLabel,
 } from '@/features/pre-surveys/components/preSurveyDisplay'
-import { formatKwh, formatM2, formatOne, formatTwo, mountingLabel } from '@/features/pre-surveys/components/simulationDisplay'
+import {
+  formatKwh,
+  formatM2,
+  formatOne,
+  formatTwo,
+  mountingLabel,
+} from '@/features/pre-surveys/components/simulationDisplay'
 import { EMPTY_SIMULATION_FORM, type SimulationForm } from '@/features/pre-surveys/components/simulationForm'
 import { SimulationHistory } from '@/features/pre-surveys/components/SimulationHistory'
 import { SimulationWorkspace } from '@/features/pre-surveys/components/SimulationWorkspace'
@@ -81,21 +87,11 @@ import { ROUTES, withId } from '@/routes/paths'
 import { errorMessage, isApiError } from '@/services/api/errors'
 import { cx } from '@/utils/cx'
 
-/*
- * Đánh giá sơ bộ: hồ sơ khách hàng → địa điểm → mặt lắp (kích thước, hướng, vật cản) → mô phỏng → xem lại và gửi.
- * - Hồ sơ không sửa được: tạo một lần, nhớ cờ trong localStorage theo tài khoản.
- * - Địa điểm không sửa được: đổi thông tin thì tạo địa điểm mới, và bản nháp cũ (gắn với địa điểm cũ) được thay bằng
- *   bản nháp mới; mặt lắp đang nhập vẫn giữ để không phải nhập lại.
- * - Backend không có API liệt kê bản nháp: id bản nháp + địa điểm nhớ trong localStorage (assessmentDraft.ts), mở lại
- *   trang thì đọc lại mặt lắp (GET .../surface) và làm tiếp ở bước mặt lắp hoặc mô phỏng.
- * - Mặt lắp và form cũ dùng chung độ dốc / hướng: lưu mặt lắp trước (có kiểm revision), rồi mới ghi số liệu khai với
- *   đúng độ dốc / hướng đó, nên mô phỏng không bị đánh dấu cũ vì ghi lệch.
- * - Gửi không bắt buộc đã chạy mô phỏng (người dùng chốt 09/10/2026), bước xem lại chỉ nhắc.
- * - Gửi xong khách chọn giờ khảo sát ngay ở trang của yêu cầu (/customer/requests/:id, luồng đặt lịch 12/10/2026).
- */
+// Wizard đánh giá sơ bộ gồm 5 bước: hồ sơ, địa điểm, mặt lắp, mô phỏng, xem lại và gửi
+// Hồ sơ và địa điểm không có API sửa, đổi địa điểm thì tạo địa điểm và bản nháp mới
+// Lưu mặt lắp trước số liệu khai, vì cả hai API đều ghi độ dốc và hướng
 
 const STEP_LABELS = ['Thông tin khách hàng', 'Địa điểm lắp đặt', 'Mặt lắp', 'Mô phỏng', 'Xem lại và gửi']
-/** Một câu dưới tiêu đề trang: bước này để làm gì (người dùng 10/10/2026: các bước phải rõ, thân thiện). */
 const STEP_HINTS = [
   'Cho biết bạn lắp đặt cho cá nhân hay doanh nghiệp. Chỉ khai một lần cho tài khoản này.',
   'Công trình ở đâu và tấm pin sẽ lắp trên bề mặt nào.',
@@ -107,7 +103,7 @@ const SITE = 1
 const SURFACE = 2
 const SIMULATION = 3
 const REVIEW = 4
-/** Bước trên địa chỉ trang (?buoc=mat-lap) để nút Back / Forward của trình duyệt đi giữa các bước. */
+/** Lưu bước trên URL để nút Back / Forward của trình duyệt chuyển được bước */
 const STEP_PARAM = 'buoc'
 const STEP_SLUGS = ['ho-so', 'dia-diem', 'mat-lap', 'mo-phong', 'xem-lai']
 
@@ -128,7 +124,7 @@ function writeFlag(key: string, on: boolean) {
     if (on) localStorage.setItem(key, '1')
     else localStorage.removeItem(key)
   } catch {
-    /* Trình duyệt chặn storage: lần sau chỉ phải đi qua bước hồ sơ một lần nữa. */
+    // localStorage bị chặn: bỏ qua
   }
 }
 
@@ -143,11 +139,7 @@ export function AssessmentPage() {
 
   const [saved, setSavedState] = useState<AssessmentDraft>(() => readDraft(account))
   const [profileDone, setProfileDone] = useState(() => readFlag(flagKey))
-  /*
-    Bản đang làm dở trên máy (assessmentDraft.ts, người dùng 10/10/2026: "không giữ lại giá trị của form nếu back qua back
-    lại"): mở lại trang thì nạp lại mọi ô chưa gửi và về đúng bước. Mặt lắp trên máy chỉ dùng khi nó thuộc đúng bản nháp
-    đang mở (hoặc cả hai chưa có bản nháp); khác thì lấy từ server.
-  */
+  // Mặt lắp trên máy chỉ dùng nếu thuộc đúng bản nháp đang mở
   const [work] = useState(() => readWork(account))
   const workSurface = work && work.preSurveyId === saved.preSurveyId ? work : null
   const [profile, setProfile] = useState<ProfileForm>(() => work?.profile ?? EMPTY_PROFILE)
@@ -159,32 +151,30 @@ export function AssessmentPage() {
   const [formError, setFormError] = useState<string | null>(null)
   const [conflict, setConflict] = useState(false)
   const [requestId, setRequestId] = useState<string | null>(null)
-  /** revision của bản mặt lắp mà form đang sửa (expectedRevision khi lưu); null khi form chưa nạp từ server. */
+  /** Gửi làm expectedRevision khi lưu, null là chưa nạp từ server */
   const [baseRevision, setBaseRevision] = useState<number | null>(() => workSurface?.baseRevision ?? null)
   const dialogRef = useRef<HTMLDialogElement>(null)
   const surfaceQuery = useSurfaceQuery(saved.preSurveyId)
   const loaded = surfaceQuery.data
 
-  /*
-    Bước đọc từ địa chỉ trang (?buoc=…): mỗi lần khách chuyển bước là một mục lịch sử, nên nút Back / Forward của trình duyệt
-    đi giữa các bước thay vì rời trang. Không có trên địa chỉ (mở từ menu) thì về bước đang làm dở đã nhớ; vẫn không có thì
-    đoán như cũ (đã có địa điểm thì làm tiếp ở mặt lắp). Không cho đi quá bước đã mở được: chưa có địa điểm thì tối đa bước
-    địa điểm, chưa lưu mặt lắp thì tối đa bước mặt lắp.
-  */
+  // Bước lấy từ URL, không có thì lấy bước đã lưu, rồi giới hạn để không nhảy qua bước chưa làm
   const [searchParams, setSearchParams] = useSearchParams()
-  const [initialStep] = useState(() => work?.step ?? (saved.preSurveyId || saved.siteId ? SURFACE : readFlag(flagKey) ? SITE : 0))
-  /** Mở trang đã có bước cụ thể (trên địa chỉ hoặc bản trên máy): mở lại bản nháp thì không tự nhảy sang bước mô phỏng. */
+  const [initialStep] = useState(
+    () => work?.step ?? (saved.preSurveyId || saved.siteId ? SURFACE : readFlag(flagKey) ? SITE : 0),
+  )
+  /** Đã biết bước từ URL hoặc localStorage thì không tự nhảy sang bước mô phỏng */
   const [explicitStep] = useState(() => searchParams.has(STEP_PARAM) || work !== null)
-  /** Bước của lần vẽ trước: địa chỉ mất ?buoc (bấm lại "Đánh giá sơ bộ" trên menu) thì giữ nguyên bước đang làm. */
+  /** Giữ bước hiện tại khi URL mất ?buoc (bấm lại menu) */
   const lastStep = useRef<number | null>(null)
   const urlStep = STEP_SLUGS.indexOf(searchParams.get(STEP_PARAM) ?? '')
   const firstStep = profileDone ? SITE : 0
-  const maxStep = !saved.siteId && !saved.preSurveyId ? firstStep : saved.preSurveyId && loaded?.surfaceDefined ? REVIEW : SURFACE
+  const maxStep =
+    !saved.siteId && !saved.preSurveyId ? firstStep : saved.preSurveyId && loaded?.surfaceDefined ? REVIEW : SURFACE
   const step = Math.min(maxStep, Math.max(firstStep, urlStep >= 0 ? urlStep : (lastStep.current ?? initialStep)))
-  /** Đổi bước lặng lẽ (replace, không cuộn): mở lại bản nháp, bỏ bản nháp, lỗi buộc quay về một bước. */
+  /** Chuyển bước do code: thay URL hiện tại và không cuộn trang */
   const silentMove = useRef(false)
   function moveTo(target: number, { replace = false } = {}) {
-    // Chỉ đánh dấu "lặng lẽ" khi bước thật sự đổi; không thì cờ còn sót và nuốt lần Back / Forward kế tiếp.
+    // Chỉ bật cờ khi bước thật sự đổi, tránh cờ bị sót lại
     silentMove.current = replace && target !== step
     setSearchParams(
       (prev) => {
@@ -195,13 +185,13 @@ export function AssessmentPage() {
       { replace },
     )
   }
-  // Hàm mới nhất cho effect mở lại bản nháp (effect không chạy lại chỉ vì hàm đổi tham chiếu).
+  // Ref để effect luôn gọi được bản moveTo mới nhất
   const moveRef = useRef(moveTo)
   useEffect(() => {
     moveRef.current = moveTo
     lastStep.current = step
   })
-  // Địa chỉ chưa có ?buoc (mở từ menu): ghi bước hiện tại vào (replace) để Back từ bước sau quay về đúng bước này.
+  // Mở từ menu (chưa có ?buoc) thì ghi bước vào URL
   useEffect(() => {
     if (!searchParams.has(STEP_PARAM)) moveRef.current(lastStep.current ?? step, { replace: true })
   }, [searchParams, step])
@@ -215,23 +205,24 @@ export function AssessmentPage() {
   const wards = useHcmWardsQuery()
   const simulations = useSimulationsQuery(step >= SIMULATION ? saved.preSurveyId : null)
   const [savingSurface, setSavingSurface] = useState(false)
-  // Đang chạy mô phỏng (có thể tới ~30 giây) cũng là bận: rời bước / gửi lúc này thì lần chạy bị 409 và mất (rà code 09/10/2026).
+  // Đang chạy mô phỏng cũng tính là bận
   const runningSimulation = useIsMutating({ mutationKey: CREATE_SIMULATION_KEY }) > 0
   const busy =
-    savingSurface || runningSimulation || [createProfile, createSite, createPreSurvey, updatePreSurvey, saveSurfaceMutation, submitPreSurvey].some((m) => m.isPending)
+    savingSurface ||
+    runningSimulation ||
+    [createProfile, createSite, createPreSurvey, updatePreSurvey, saveSurfaceMutation, submitPreSurvey].some(
+      (m) => m.isPending,
+    )
 
   function setSaved(next: AssessmentDraft) {
     setSavedState(next)
     writeDraft(account, next)
   }
 
-  /*
-    Mở lại bản nháp đã nhớ (một lần cho mỗi id): đọc mặt lắp rồi nạp vào form; refetch nền về sau không đè chữ khách đang
-    gõ. Bản nháp không còn dùng được (404, không thuộc tài khoản, đã gửi ở tab khác) thì bỏ và bắt đầu bản mới; lỗi mạng
-    thì giữ bản nháp và cho thử lại.
-  */
+  // Mở lại bản nháp đã lưu, mỗi id chỉ nạp vào form một lần
+  // 403, 404 hoặc đã gửi thì bỏ bản nháp, lỗi khác thì cho thử lại
   const [hydratedFor, setHydratedFor] = useState<string | null>(null)
-  /** Id bản nháp mà mặt lắp trên máy thuộc về: lần mở lại đầu tiên giữ bản trên máy, không nạp đè từ server. */
+  /** Id bản nháp có mặt lắp đang giữ trên máy */
   const restoreLocal = useRef(workSurface?.preSurveyId ?? null)
   const [resumeError, setResumeError] = useState<string | null>(null)
   const [resumeAttempt, setResumeAttempt] = useState(0)
@@ -254,15 +245,14 @@ export function AssessmentPage() {
         setHydratedFor(id)
         setResumeError(null)
         if (restoreLocal.current === id) {
-          // Mặt lắp đang sửa dở trên máy cho đúng bản nháp này: giữ bản trên máy (đã nạp lúc mở trang). Server đã đổi sau đó
-          // (sửa ở máy / tab khác) thì báo xung đột ngay để khách chọn tải bản mới hay lưu đè, như khi lưu bị 409.
+          // Server đã đổi revision so với bản trên máy thì báo xung đột
           restoreLocal.current = null
           if (workSurface?.baseRevision != null && workSurface.baseRevision !== view.revision) setConflict(true)
         } else {
           setBaseRevision(view.revision)
           if (view.surfaceDefined) setSurface(surfaceToForm(view))
           else
-            // Lần lưu mặt lắp đầu tiên chưa xong: bản nháp vẫn có độ dốc, hướng (gửi lúc tạo) – nạp lại để khách không nhập lại.
+            // Chưa lưu mặt lắp: vẫn nạp lại độ dốc, hướng đã gửi lúc tạo bản nháp
             setSurface((f) => ({
               ...f,
               tiltDegree: view.surfaceTiltDegree == null ? f.tiltDegree : meterText(view.surfaceTiltDegree),
@@ -270,21 +260,31 @@ export function AssessmentPage() {
             }))
         }
         setViewId(view.selectedSimulationId)
-        // Mở trang không chỉ định bước (lần đầu trên máy này) mà mặt lắp đã lưu: làm tiếp ở bước mô phỏng.
+        // Mặt lắp đã lưu thì đi thẳng tới bước mô phỏng
         if (!explicitStep && view.surfaceDefined) moveRef.current(SIMULATION, { replace: true })
       },
       (error: unknown) => {
         if (cancelled) return
-        if (isApiError(error) && [403, 404].includes(error.status)) dropDraft('Không mở được bản nháp trước. Bắt đầu một bản đánh giá mới.')
+        if (isApiError(error) && [403, 404].includes(error.status))
+          dropDraft('Không mở được bản nháp trước. Bắt đầu một bản đánh giá mới.')
         else setResumeError(errorMessage(error))
       },
     )
     return () => {
       cancelled = true
     }
-  }, [account, explicitStep, flagKey, hydratedFor, queryClient, resumeAttempt, saved.preSurveyId, saved.profile, workSurface])
+  }, [
+    account,
+    explicitStep,
+    flagKey,
+    hydratedFor,
+    queryClient,
+    resumeAttempt,
+    saved.preSurveyId,
+    saved.profile,
+    workSurface,
+  ])
 
-  // Thanh định vị ghi bước đang làm: "Cổng khách hàng / Đánh giá sơ bộ / Mặt lắp".
   usePageCrumb(STEP_LABELS[step])
 
   function editor<F>(setter: (fn: (f: F) => F) => void) {
@@ -294,7 +294,7 @@ export function AssessmentPage() {
     }
   }
 
-  /** Xoá lỗi của các ô vừa sửa; sửa hết thì tắt luôn câu nhắc chung ở thanh thao tác (câu lỗi từ server thì giữ). */
+  /** Hết lỗi thì tắt câu nhắc chung (lỗi từ server thì giữ) */
   function clearErrors(keys: string[]) {
     const next = { ...errors }
     for (const key of keys) delete next[key]
@@ -309,11 +309,7 @@ export function AssessmentPage() {
     moveTo(target)
   }
 
-  /*
-    Đổi bước do khách (Tiếp tục, Quay lại, bấm bước đã xong, nút Sửa, Back / Forward của trình duyệt): đưa trang về đầu bước
-    mới thay vì đứng ở cuối trang của bước cũ, và đưa focus về tiêu đề (ẩn) của bước để bàn phím / trình đọc màn hình bắt
-    đầu từ đầu bước. Đổi bước lặng lẽ (mở lại bản nháp…) và lần vẽ đầu thì không.
-  */
+  // Khách chuyển bước: cuộn lên đầu trang và focus tiêu đề của bước
   const stepHeadingRef = useRef<HTMLHeadingElement>(null)
   const shownStep = useRef(step)
   useEffect(() => {
@@ -332,7 +328,7 @@ export function AssessmentPage() {
     setFormError(FIX_FIELDS)
   }
 
-  /** Lỗi từ server: gắn vào ô nếu được, còn lại hiện ở thanh thao tác. */
+  /** Lỗi server: gắn vào ô nếu được, còn lại hiện ở thanh dưới */
   function fail<F extends object>(error: unknown, form?: F) {
     const fieldErrors = form && isApiError(error) ? serverFieldErrors(error, form) : {}
     setErrors(fieldErrors as Record<string, string>)
@@ -359,20 +355,27 @@ export function AssessmentPage() {
   }
 
   async function saveSite() {
-    // Không sửa gì ở địa điểm đã lưu: đi tiếp, kể cả địa điểm cũ khai tự do trước khi có danh sách phường/xã 2 cấp
-    // (kiểm tra lại sẽ bắt chọn phường mới và tạo bản nháp mới chỉ vì khách bấm Quay lại rồi Tiếp tục). Trừ khi địa điểm
-    // cũ thiếu toạ độ: không có toạ độ thì không đặt được giờ khảo sát, phải khai rồi tạo địa điểm mới.
-    if (saved.siteId && saved.site && same(site, siteToForm(saved.site)) && hasCoordinates(saved.site.latitude, saved.site.longitude))
+    // Không sửa gì thì đi tiếp, không validate lại vì địa điểm cũ có thể chưa có phường theo danh sách mới
+    // Trừ khi thiếu toạ độ, vì cần toạ độ để đặt lịch khảo sát
+    if (
+      saved.siteId &&
+      saved.site &&
+      same(site, siteToForm(saved.site)) &&
+      hasCoordinates(saved.site.latitude, saved.site.longitude)
+    )
       return goTo(SURFACE)
     const result = check(siteSchema, site)
     const wardNames = wards.data?.map((w) => w.name)
-    // Danh sách không tải được thì nhận chữ khách gõ (đã báo ở ô); có danh sách thì phải đúng một phường, xã trong đó.
-    const wardIssue = wardNames && site.ward.trim() && !wardNames.includes(site.ward.trim()) ? 'Chọn phường, xã trong danh sách.' : undefined
+    // Không tải được danh sách phường thì cho gõ tay
+    const wardIssue =
+      wardNames && site.ward.trim() && !wardNames.includes(site.ward.trim())
+        ? 'Chọn phường, xã trong danh sách.'
+        : undefined
     if (result.errors || wardIssue) return showErrors({ ...result.errors, ...(wardIssue ? { ward: wardIssue } : {}) })
     if (saved.siteId && same(saved.site, result.data)) return goTo(SURFACE)
     try {
       const { propertySiteId } = await createSite.mutateAsync(result.data)
-      // Bản nháp gắn với địa điểm; địa điểm mới thì bản nháp mới (mặt lắp đang nhập vẫn giữ trong form).
+      // Địa điểm mới thì bản nháp mới, mặt lắp trong form vẫn giữ
       setSaved({ profile: saved.profile, site: result.data, siteId: propertySiteId })
       setHydratedFor(null)
       setBaseRevision(null)
@@ -380,7 +383,7 @@ export function AssessmentPage() {
       goTo(SURFACE)
     } catch (error) {
       if (isApiError(error) && error.code === 'CUSTOMER_PROFILE_NOT_FOUND') {
-        // Cờ trong localStorage sai (ví dụ đổi máy chủ): quay lại khai hồ sơ.
+        // Cờ hồ sơ trong localStorage bị sai: quay lại bước hồ sơ
         writeFlag(flagKey, false)
         setProfileDone(false)
         moveTo(0, { replace: true })
@@ -389,15 +392,13 @@ export function AssessmentPage() {
     }
   }
 
-  /** Đọc mặt lắp mới nhất từ server (bỏ cache) – dùng sau khi ghi để có revision / geometryVersion đúng. */
+  /** Bỏ qua cache để lấy revision mới nhất */
   function fetchSurface(id: string) {
     return queryClient.fetchQuery({ queryKey: preSurveyKeys.surface(id), queryFn: () => getSurface(id), staleTime: 0 })
   }
 
-  /**
-   * Lưu mặt lắp: lần đầu tạo bản nháp (kèm số liệu khai, độ dốc, hướng) rồi PUT mặt lắp; các lần sau chỉ ghi phần đổi.
-   * `overwrite`: khách chọn lưu đè sau xung đột 409 – lấy revision mới nhất làm mốc.
-   */
+  // Lưu mặt lắp: tạo bản nháp nếu chưa có, PUT surface, PUT số liệu khai, rồi đọc lại revision
+  // overwrite: khách chọn lưu đè sau khi bị 409
   async function saveSurface({ overwrite = false } = {}) {
     const found = validateSurface(surface)
     if (Object.keys(found).length > 0) {
@@ -415,7 +416,8 @@ export function AssessmentPage() {
       let server = id ? loaded : undefined
       let revision = baseRevision
       if (!id) {
-        id = (await createPreSurvey.mutateAsync({ propertySiteId: saved.siteId, ...toDeclaredRequest(surface) })).preSurveyId
+        id = (await createPreSurvey.mutateAsync({ propertySiteId: saved.siteId, ...toDeclaredRequest(surface) }))
+          .preSurveyId
         setHydratedFor(id)
         setSaved({ ...saved, preSurveyId: id })
         server = await fetchSurface(id)
@@ -427,9 +429,13 @@ export function AssessmentPage() {
       const body = toSurfaceRequest(surface, revision!)
       if (surfaceDiffers(server!, body)) {
         const written = await saveSurfaceMutation.mutateAsync({ id, body })
-        // Mốc mới ngay khi ghi xong: bước sau (số liệu khai) có lỗi thì lần lưu tới không bị báo xung đột oan.
+        // Cập nhật revision ngay, để lỗi ở bước sau không gây xung đột giả
         setBaseRevision(written.revision)
-        server = { ...server!, surfaceTiltDegree: body.surfaceTiltDegree ?? null, surfaceAzimuthDegree: body.surfaceAzimuthDegree ?? null }
+        server = {
+          ...server!,
+          surfaceTiltDegree: body.surfaceTiltDegree ?? null,
+          surfaceAzimuthDegree: body.surfaceAzimuthDegree ?? null,
+        }
       }
       const declared = toDeclaredRequest(surface)
       if (declaredDiffers(server!, declared)) await updatePreSurvey.mutateAsync({ id, body: declared })
@@ -440,14 +446,17 @@ export function AssessmentPage() {
       return true
     } catch (error) {
       if (isApiError(error) && error.code === 'PRE_SURVEY_CONCURRENTLY_MODIFIED') {
-        // Khối đỏ "Mặt lắp vừa được sửa ở nơi khác" đã nói đủ: không báo đỏ lần hai ở thanh thao tác.
+        // Đã có khối báo xung đột riêng
         setConflict(true)
-      } else if (isApiError(error) && (error.code === 'PRE_SURVEY_NOT_EDITABLE' || error.code === 'PRE_SURVEY_ALREADY_SUBMITTED')) {
+      } else if (
+        isApiError(error) &&
+        (error.code === 'PRE_SURVEY_NOT_EDITABLE' || error.code === 'PRE_SURVEY_ALREADY_SUBMITTED')
+      ) {
         restartDraft()
       } else if (isApiError(error) && error.code === 'PRESURVEY_VALIDATION_FAILED') {
         const mapped = serverSurfaceErrors(error.fieldErrors)
         if (mapped.totalAreaM2 || mapped.usableAreaM2) {
-          // Số khai tự tính bị từ chối: chuyển sang tự khai (điền sẵn số đang tính) để khách thấy và sửa được ô bị đánh dấu.
+          // Diện tích tự tính bị từ chối: chuyển sang tự khai để khách sửa
           const auto = autoDeclared(surface)
           setSurface((f) => ({
             ...f,
@@ -465,10 +474,7 @@ export function AssessmentPage() {
     }
   }
 
-  /**
-   * Bản nháp đã được gửi ở nơi khác (tab / máy khác): không sửa hay chạy thêm được. Giữ địa điểm và mặt lắp đang nhập, bỏ id
-   * bản nháp; lần lưu tới tạo bản đánh giá mới cho cùng địa điểm thay vì kẹt ở lỗi 409.
-   */
+  /** Bản nháp đã gửi ở tab khác: bỏ id, lần lưu sau sẽ tạo bản nháp mới */
   function restartDraft() {
     setSaved({ profile: saved.profile, site: saved.site, siteId: saved.siteId })
     setHydratedFor(null)
@@ -479,7 +485,7 @@ export function AssessmentPage() {
     toast('Bản đánh giá này đã được gửi ở nơi khác. Lưu mặt lắp để tạo bản đánh giá mới cho địa điểm này.')
   }
 
-  /** Xung đột: bỏ phần đang sửa, nạp bản mới nhất từ server vào form. */
+  /** Bỏ thay đổi, nạp lại mặt lắp từ server */
   async function reloadSurface() {
     if (!saved.preSurveyId) return
     try {
@@ -501,7 +507,7 @@ export function AssessmentPage() {
 
   async function submit() {
     if (!saved.preSurveyId) return goTo(SURFACE)
-    // Bản nháp cũ gắn với địa điểm thiếu toạ độ: gửi được nhưng không đặt được giờ khảo sát, nên bắt khai toạ độ trước.
+    // Thiếu toạ độ thì không đặt được lịch, bắt nhập trước khi gửi
     if (saved.site && !hasCoordinates(saved.site.latitude, saved.site.longitude)) {
       goTo(SITE)
       return showErrors({ latitude: 'Nhập toạ độ công trình để đặt được lịch khảo sát.' })
@@ -513,8 +519,7 @@ export function AssessmentPage() {
       setRequestId(surveyRequestId)
       dialogRef.current?.showModal()
     } catch (error) {
-      // Lần gửi trước đã tới server nhưng mất phản hồi: bản đánh giá đã gửi rồi, coi như xong
-      // (không có mã yêu cầu trong phản hồi lỗi nên hộp thoại bỏ dòng mã).
+      // Lần gửi trước đã thành công nhưng mất phản hồi: coi như xong
       if (isApiError(error) && error.code === 'PRE_SURVEY_ALREADY_SUBMITTED') {
         clearDraft(account)
         clearWork(account)
@@ -556,23 +561,25 @@ export function AssessmentPage() {
 
   const submitted = requestId !== null
   const waitingDraft = Boolean(saved.preSurveyId) && hydratedFor !== saved.preSurveyId
-  // Ghi bản đang làm mỗi lần đổi (sau khi đã mở xong bản nháp, kẻo ghi form rỗng đè lên bản trên máy); gửi xong thì thôi.
+  // Lưu form vào localStorage, đợi nạp bản nháp xong để không ghi đè bằng form rỗng
   useEffect(() => {
     if (waitingDraft || submitted) return
     writeWork(account, { step, profile, site, surface, simForm, preSurveyId: saved.preSurveyId, baseRevision })
   }, [account, baseRevision, profile, saved.preSurveyId, simForm, site, step, submitted, surface, waitingDraft])
-  // Mặt lắp sửa rồi chưa lưu (đi tiếp bằng nút Forward, hoặc bản trên máy khác bản trên server): mô phỏng / xem lại vẫn dùng
-  // bản đã lưu, nên nhắc ở các bước sau.
+  // Mặt lắp có thay đổi chưa lưu: nhắc ở bước mô phỏng và xem lại
   const surfaceUnsaved = surfaceChanged(surface, loaded)
   const selectedRun = simulations.data?.find((s) => s.isSelected) ?? null
-  /** Tóm tắt dưới bước đã xong: khách nhìn lại được đã khai gì mà không phải mở lại từng bước. */
   const stepSummaries: (string | undefined)[] = [
-    saved.profile ? [customerTypeLabel(saved.profile.customerType), saved.profile.companyName].filter(Boolean).join(', ') : 'Đã có hồ sơ',
+    saved.profile
+      ? [customerTypeLabel(saved.profile.customerType), saved.profile.companyName].filter(Boolean).join(', ')
+      : 'Đã có hồ sơ',
     saved.site ? [saved.site.name, saved.site.ward].filter(Boolean).join(', ') : undefined,
     loaded?.surfaceDefined
       ? `${formatTwo(loaded.surfaceWidthM)} × ${formatTwo(loaded.surfaceLengthM)} m, ${loaded.obstacles.length > 0 ? `${loaded.obstacles.length} vật cản` : 'không có vật cản'}`
       : undefined,
-    selectedRun ? `${selectedRun.panelCount} tấm, ${formatOne(selectedRun.installedCapacityKwp)} kWp` : 'Chưa chạy mô phỏng',
+    selectedRun
+      ? `${selectedRun.panelCount} tấm, ${formatOne(selectedRun.installedCapacityKwp)} kWp`
+      : 'Chưa chạy mô phỏng',
     undefined,
   ]
   const steps: WizardStep[] = STEP_LABELS.map((label, i) => {
@@ -581,14 +588,11 @@ export function AssessmentPage() {
       label,
       state,
       summary: state === 'done' ? stepSummaries[i] : undefined,
-      // Bấm bước đã xong để quay lại; hồ sơ khách hàng tạo một lần, không sửa được nên không bấm.
+      // Hồ sơ không sửa được nên không cho bấm
       onSelect: state === 'done' && i >= firstStep && !busy && !submitted ? () => goTo(i) : undefined,
     }
   })
-  /*
-    Bước có hình vẽ (mặt lắp, mô phỏng) rộng hết trang và tự đặt cột phụ cạnh khối nhập liệu ở hàng đầu, để hình to và nằm
-    giữa trang (người dùng 10/10/2026). Các bước còn lại giữ form 2/3 + cột phụ 1/3.
-  */
+  // Bước mặt lắp và mô phỏng dùng hết chiều ngang
   const wide = step === SURFACE || (step === SIMULATION && Boolean(saved.preSurveyId && loaded?.surfaceDefined))
   const aside = (
     <>
@@ -602,18 +606,22 @@ export function AssessmentPage() {
             }
           />
           <PanelBody>
-            <SimulationHistory items={simulations.data} viewingId={viewId ?? loaded?.selectedSimulationId ?? null} onView={setViewId} />
+            <SimulationHistory
+              items={simulations.data}
+              viewingId={viewId ?? loaded?.selectedSimulationId ?? null}
+              onView={setViewId}
+            />
           </PanelBody>
         </Panel>
       )}
       <Notice tone="info" title="Sau khi gửi">
-        Bạn chọn ngày giờ khảo sát trong 30 ngày tới. Bộ phận kinh doanh phân công kỹ thuật viên tới công trình để kiểm tra
-        lại các số đo bạn khai.
+        Bạn chọn ngày giờ khảo sát trong 30 ngày tới. Bộ phận kinh doanh phân công kỹ thuật viên tới công trình để kiểm
+        tra lại các số đo bạn khai.
       </Notice>
       {saved.preSurveyId && !submitted && (
         <Notice tone="ok">
-          Bản nháp <span className="tnum font-medium text-fg">{shortCode(saved.preSurveyId)}</span> đã lưu trên hệ thống. Phần đang nhập dở được giữ
-          trên máy này, rời trang hay tải lại vẫn còn.
+          Bản nháp <span className="tnum font-medium text-fg">{shortCode(saved.preSurveyId)}</span> đã lưu trên hệ
+          thống. Phần đang nhập dở được giữ trên máy này, rời trang hay tải lại vẫn còn.
         </Notice>
       )}
     </>
@@ -644,7 +652,12 @@ export function AssessmentPage() {
       </h2>
 
       <div className={cx('grid gap-6', !wide && 'lg:grid-cols-3')}>
-        <form id="assessment-step" noValidate onSubmit={next} className={cx('min-w-0 space-y-4', !wide && 'lg:col-span-2')}>
+        <form
+          id="assessment-step"
+          noValidate
+          onSubmit={next}
+          className={cx('min-w-0 space-y-4', !wide && 'lg:col-span-2')}
+        >
           {(step === SIMULATION || step === REVIEW) && loaded?.surfaceDefined && surfaceUnsaved && (
             <Notice tone="warn" title="Mặt lắp có thay đổi chưa lưu">
               Mô phỏng và phần xem lại đang dùng mặt lắp đã lưu trước đó. Thay đổi vẫn được giữ trên máy này.{' '}
@@ -664,8 +677,8 @@ export function AssessmentPage() {
 
           {step === SITE && saved.preSurveyId && (
             <Notice tone="warn">
-              Bản đánh giá đang làm gắn với địa điểm này. Đổi thông tin địa điểm sẽ tạo địa điểm và bản đánh giá mới: mặt lắp giữ
-              nguyên, các lần mô phỏng phải chạy lại.
+              Bản đánh giá đang làm gắn với địa điểm này. Đổi thông tin địa điểm sẽ tạo địa điểm và bản đánh giá mới:
+              mặt lắp giữ nguyên, các lần mô phỏng phải chạy lại.
             </Notice>
           )}
           {step === SITE && (
@@ -681,12 +694,18 @@ export function AssessmentPage() {
             <>
               {conflict && (
                 <Notice tone="danger" title="Mặt lắp vừa được sửa ở nơi khác">
-                  Có thể bạn đang mở bản đánh giá này ở một tab khác. Tải bản mới nhất để xem trước khi lưu, hoặc lưu đè bằng bản đang sửa ở đây.
+                  Có thể bạn đang mở bản đánh giá này ở một tab khác. Tải bản mới nhất để xem trước khi lưu, hoặc lưu đè
+                  bằng bản đang sửa ở đây.
                   <span className="mt-3 flex flex-wrap gap-3">
                     <Button size="sm" icon="refresh" onClick={reloadSurface} disabled={busy}>
                       Tải bản mới nhất
                     </Button>
-                    <Button size="sm" variant="warn" onClick={() => void saveSurface({ overwrite: true })} disabled={busy}>
+                    <Button
+                      size="sm"
+                      variant="warn"
+                      onClick={() => void saveSurface({ overwrite: true })}
+                      disabled={busy}
+                    >
                       Lưu đè bằng bản đang sửa
                     </Button>
                   </span>
@@ -756,7 +775,7 @@ export function AssessmentPage() {
                 />
                 <PanelBody>
                   {saved.site ? (
-                    /* Một cột: địa chỉ dài, chia hai cột thì bị bẻ từng chữ. */
+                    // Địa chỉ dài nên để 1 cột
                     <KeyValueList
                       items={[
                         { k: 'Tên địa điểm', v: saved.site.name },
@@ -787,9 +806,18 @@ export function AssessmentPage() {
                     <KeyValueList
                       columns={2}
                       items={[
-                        { k: 'Kích thước', v: `${formatTwo(loaded.surfaceWidthM)} × ${formatTwo(loaded.surfaceLengthM)} m` },
-                        { k: 'Độ dốc, hướng', v: `${formatTwo(loaded.surfaceTiltDegree)}°, ${directionLabel(loaded.surfaceAzimuthDegree)}` },
-                        { k: 'Vật cản', v: loaded.obstacles.length > 0 ? loaded.obstacles.map((o) => o.name).join(', ') : 'Không' },
+                        {
+                          k: 'Kích thước',
+                          v: `${formatTwo(loaded.surfaceWidthM)} × ${formatTwo(loaded.surfaceLengthM)} m`,
+                        },
+                        {
+                          k: 'Độ dốc, hướng',
+                          v: `${formatTwo(loaded.surfaceTiltDegree)}°, ${directionLabel(loaded.surfaceAzimuthDegree)}`,
+                        },
+                        {
+                          k: 'Vật cản',
+                          v: loaded.obstacles.length > 0 ? loaded.obstacles.map((o) => o.name).join(', ') : 'Không',
+                        },
                         { k: 'Tổng diện tích khai', v: formatM2(loaded.declared.totalAreaM2) },
                         { k: 'Dùng được', v: formatM2(loaded.declared.usableAreaM2) },
                       ]}
@@ -816,16 +844,25 @@ export function AssessmentPage() {
                           { k: 'Kiểu lắp', v: mountingLabel(selectedRun.mountingType) },
                           { k: 'Số tấm', v: `${selectedRun.panelCount} tấm` },
                           { k: 'Công suất', v: `${formatOne(selectedRun.installedCapacityKwp)} kWp` },
-                          { k: 'Sản lượng năm', v: selectedRun.annualEnergyKwh == null ? 'Chưa có dữ liệu' : `${formatKwh(selectedRun.annualEnergyKwh)} kWh` },
+                          {
+                            k: 'Sản lượng năm',
+                            v:
+                              selectedRun.annualEnergyKwh == null
+                                ? 'Chưa có dữ liệu'
+                                : `${formatKwh(selectedRun.annualEnergyKwh)} kWh`,
+                          },
                         ]}
                       />
                       {selectedRun.isStale && (
-                        <Notice tone="warn">Mô phỏng này tính theo mặt lắp cũ. Chạy lại để chuyên viên thấy kết quả theo mặt lắp mới.</Notice>
+                        <Notice tone="warn">
+                          Mô phỏng này tính theo mặt lắp cũ. Chạy lại để chuyên viên thấy kết quả theo mặt lắp mới.
+                        </Notice>
                       )}
                     </>
                   ) : (
                     <Notice tone="warn">
-                      Chưa chạy mô phỏng. Vẫn gửi được, nhưng chạy trước giúp chuyên viên thấy số tấm và sản lượng dự kiến khi gọi bạn.
+                      Chưa chạy mô phỏng. Vẫn gửi được, nhưng chạy trước giúp chuyên viên thấy số tấm và sản lượng dự
+                      kiến khi gọi bạn.
                     </Notice>
                   )}
                 </PanelBody>
@@ -846,8 +883,9 @@ export function AssessmentPage() {
             Lưu nháp
           </Button>
         )}
-        {/* Nói rõ trạng thái lưu: thay đổi luôn giữ trên máy, lên hệ thống khi bấm Lưu nháp / Tiếp tục. */}
-        {step === SURFACE && surfaceUnsaved && !busy && <span className="text-meta text-fg-2">Chưa lưu lên hệ thống, vẫn giữ trên máy này</span>}
+        {step === SURFACE && surfaceUnsaved && !busy && (
+          <span className="text-meta text-fg-2">Chưa lưu lên hệ thống, vẫn giữ trên máy này</span>
+        )}
         <div className="flex w-full flex-wrap items-center gap-3 sm:ml-auto sm:w-auto">
           {formError && (
             <span className="flex items-center gap-1.5 text-body font-medium text-danger" role="alert">
@@ -862,7 +900,13 @@ export function AssessmentPage() {
             className="w-full sm:w-auto"
             disabled={busy || submitted || (step === SIMULATION && !loaded?.surfaceDefined)}
           >
-            {runningSimulation ? 'Đang chạy mô phỏng…' : busy ? 'Đang lưu…' : step === REVIEW ? 'Gửi yêu cầu khảo sát' : `Tiếp tục: ${STEP_LABELS[step + 1]}`}
+            {runningSimulation
+              ? 'Đang chạy mô phỏng…'
+              : busy
+                ? 'Đang lưu…'
+                : step === REVIEW
+                  ? 'Gửi yêu cầu khảo sát'
+                  : `Tiếp tục: ${STEP_LABELS[step + 1]}`}
           </Button>
         </div>
       </ActionBar>
@@ -870,8 +914,8 @@ export function AssessmentPage() {
       <Dialog ref={dialogRef} className="max-w-lg">
         <DialogTitle>Đã gửi yêu cầu khảo sát</DialogTitle>
         <p className="mt-2 text-body text-fg-2">
-          Bước cuối: chọn ngày giờ để kỹ thuật viên tới khảo sát {saved.site?.name ?? 'địa điểm của bạn'}. Bạn cũng có thể chọn sau ở mục
-          Yêu cầu khảo sát.
+          Bước cuối: chọn ngày giờ để kỹ thuật viên tới khảo sát {saved.site?.name ?? 'địa điểm của bạn'}. Bạn cũng có
+          thể chọn sau ở mục Yêu cầu khảo sát.
         </p>
         {requestId && (
           <KeyValueList
@@ -883,7 +927,7 @@ export function AssessmentPage() {
           <Button variant="ghost" onClick={startOver}>
             Đánh giá địa điểm khác
           </Button>
-          {/* Mất phản hồi khi gửi (PRE_SURVEY_ALREADY_SUBMITTED) thì không có mã yêu cầu: mở danh sách để khách chọn. */}
+          {/* Không có mã yêu cầu thì mở danh sách yêu cầu */}
           <Button
             variant="primary"
             onClick={() => navigate(requestId ? withId(ROUTES.customer.request, requestId) : ROUTES.customer.requests)}

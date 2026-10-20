@@ -25,32 +25,22 @@ import {
   type SurfaceForm,
 } from '@/features/pre-surveys/components/surfaceForm'
 
-/*
-  Bước "Mặt lắp" của đánh giá sơ bộ: kích thước, độ dốc, hướng, vật cản. Ô nhập là nguồn chính; trên hình chọn và kéo
-  thả vật cản (người dùng chốt 09/10/2026). Số liệu khai (tổng, dùng được, có vật cản) tự tính từ mặt lắp, khách vẫn
-  sửa được hai ô diện tích. Trang giữ state; `onChange` nhận form mới và các khoá lỗi cần xoá.
-  Bố cục (người dùng 10/10/2026: hình phải to và nằm giữa): kích thước + hướng chiếm 2/3 hàng đầu, cạnh cột phụ của trang
-  (`aside`); hình mặt lắp và số liệu khai rộng hết trang. Thứ tự DOM là thứ tự trên điện thoại (cột phụ xuống cuối), từ lg
-  cột phụ mới được đặt lên hàng đầu.
-  Vật cản (người dùng chọn 10/10/2026): hình bên trái, cột sửa `ObstaclePanel` bên phải (danh sách + ô của một vật cản đang
-  chọn), nên vừa sửa số vừa thấy hình. Điện thoại: hình ở trên, cột sửa ở dưới.
-*/
+// Bước mặt lắp: kích thước, độ dốc, hướng và vật cản. State nằm ở trang cha
+// Ô nhập là nguồn dữ liệu chính, trên hình chỉ chọn và kéo thả vật cản
 
 type Props = {
   value: SurfaceForm
   errors: SurfaceErrors
   onChange: (next: SurfaceForm, touched: string[]) => void
-  /** Cột phụ của trang (ghi chú), đặt cạnh khối kích thước. */
   aside?: ReactNode
 }
 
 export function SurfaceEditor({ value, errors, onChange, aside }: Props) {
   const [selected, setSelected] = useState<number | null>(null)
-  /** Vật cản vừa thêm / nhân bản: ô tên của nó được focus một lần. */
   const [focusKey, setFocusKey] = useState<string | null>(null)
   const clearFocusKey = useCallback(() => setFocusKey(null), [])
   const addRef = useRef<HTMLButtonElement>(null)
-  // "Hoàn tác" trong toast chạy sau nhiều lần vẽ lại: phải ghi vào form và hàm xoá lỗi MỚI NHẤT, không phải bản lúc xoá.
+  // Dùng ref vì "Hoàn tác" chạy sau nhiều lần render, cần form mới nhất
   const latest = useRef({ value, onChange, errors })
   useEffect(() => {
     latest.current = { value, onChange, errors }
@@ -58,12 +48,17 @@ export function SurfaceEditor({ value, errors, onChange, aside }: Props) {
   const width = num(value.widthM)
   const length = num(value.lengthM)
   const size =
-    width !== null && length !== null && width > 0 && length > 0 && width <= SURFACE_LIMITS.maxSideM && length <= SURFACE_LIMITS.maxSideM
+    width !== null &&
+    length !== null &&
+    width > 0 &&
+    length > 0 &&
+    width <= SURFACE_LIMITS.maxSideM &&
+    length <= SURFACE_LIMITS.maxSideM
       ? { width, length }
       : null
   const auto = autoDeclared(value)
 
-  // Hình chỉ vẽ vật cản đọc được thành số; chỉ số trong mảng này trùng chỉ số của form (ô sai vẽ thành 0 × 0 thì bỏ qua).
+  // Chỉ vẽ vật cản đã nhập đúng số, index vẫn khớp với form
   const planObstacles = useMemo(
     () =>
       value.obstacles.map((o) => ({
@@ -80,17 +75,20 @@ export function SurfaceEditor({ value, errors, onChange, aside }: Props) {
 
   function setObstacle(index: number, patch: Partial<ObstacleForm>) {
     const obstacles = value.obstacles.map((o, i) => (i === index ? { ...o, ...patch } : o))
-    onChange({ ...value, obstacles }, Object.keys(patch).map((f) => obstacleErrorKey(index, f as ObstacleField)))
+    onChange(
+      { ...value, obstacles },
+      Object.keys(patch).map((f) => obstacleErrorKey(index, f as ObstacleField)),
+    )
   }
 
-  /** Thêm vào CUỐI danh sách (cả khi nhân bản) để số thứ tự các vật cản đang có trên hình không đổi. */
+  /** Thêm vào cuối để số thứ tự các vật cản cũ không đổi */
   function appendObstacle(obstacle: ObstacleForm) {
     onChange({ ...value, obstacles: [...value.obstacles, obstacle] }, ['obstacles'])
     setSelected(value.obstacles.length)
     setFocusKey(obstacle.key)
   }
 
-  /** Lỗi gắn theo chỉ số: thêm / bớt ở giữa làm lệch chỉ số các vật cản sau, nên xoá hết lỗi vật cản. */
+  /** Lỗi gắn theo index nên thêm / xoá thì xoá hết lỗi vật cản */
   const obstacleErrorKeys = (all: SurfaceErrors) => Object.keys(all).filter((k) => k.startsWith('obstacles'))
 
   function removeObstacle(index: number) {
@@ -98,7 +96,7 @@ export function SurfaceEditor({ value, errors, onChange, aside }: Props) {
     const remaining = value.obstacles.filter((_, i) => i !== index)
     onChange({ ...value, obstacles: remaining }, obstacleErrorKeys(errors))
     setSelected(remaining.length > 0 ? Math.min(index, remaining.length - 1) : null)
-    // Nút xoá biến mất cùng ô sửa: đưa focus về nút thêm thay vì để rơi về <body>.
+    // Đưa focus về nút thêm vì nút xoá vừa biến mất
     addRef.current?.focus()
     toast(`Đã xoá ${removed.name.trim() || `vật cản ${index + 1}`}.`, {
       action: {
@@ -116,8 +114,7 @@ export function SurfaceEditor({ value, errors, onChange, aside }: Props) {
   }
 
   const obstacleCount = value.obstacles.length
-  // Chưa chọn gì mà có vật cản báo lỗi (vừa bấm Tiếp tục): mở sẵn vật cản lỗi đầu tiên để thấy ô cần sửa.
-  // Lỗi số của vật cản báo ngay khi gõ; lỗi từ lần bấm Tiếp tục (page) đè lên nếu cùng ô.
+  // Chưa chọn gì mà có lỗi thì mở sẵn vật cản lỗi đầu tiên
   const obstacleErrors = useMemo(() => ({ ...liveObstacleErrors(value), ...errors }), [value, errors])
   const firstBroken = value.obstacles.findIndex((_, i) => hasObstacleError(errors, i))
   const current = selected !== null && selected < obstacleCount ? selected : firstBroken >= 0 ? firstBroken : null
@@ -141,7 +138,12 @@ export function SurfaceEditor({ value, errors, onChange, aside }: Props) {
               />
             </WithUnit>
           </Field>
-          <Field label="Chiều dài theo dốc" htmlFor="surfaceLength" hint="Từ mép cao xuống mép thấp." error={errors.lengthM}>
+          <Field
+            label="Chiều dài theo dốc"
+            htmlFor="surfaceLength"
+            hint="Từ mép cao xuống mép thấp."
+            error={errors.lengthM}
+          >
             <WithUnit unit="m">
               <Input
                 id="surfaceLength"
@@ -152,7 +154,12 @@ export function SurfaceEditor({ value, errors, onChange, aside }: Props) {
               />
             </WithUnit>
           </Field>
-          <Field label="Độ dốc mái" htmlFor="surfaceTilt" hint="Mái bằng là 0°. Không chắc thì ước lượng." error={errors.tiltDegree}>
+          <Field
+            label="Độ dốc mái"
+            htmlFor="surfaceTilt"
+            hint="Mái bằng là 0°. Không chắc thì ước lượng."
+            error={errors.tiltDegree}
+          >
             <WithUnit unit="độ">
               <Input
                 id="surfaceTilt"
@@ -191,14 +198,17 @@ export function SurfaceEditor({ value, errors, onChange, aside }: Props) {
                 caption={
                   value.azimuthDegree && (
                     <p className="text-meta text-fg-3">
-                      Hình vẽ nhìn từ trên xuống theo mặt mái: mép trên là mép cao, mái dốc xuống phía dưới hình và quay về hướng{' '}
-                      {directionLabel(Number(value.azimuthDegree))}.
+                      Hình vẽ nhìn từ trên xuống theo mặt mái: mép trên là mép cao, mái dốc xuống phía dưới hình và quay
+                      về hướng {directionLabel(Number(value.azimuthDegree))}.
                     </p>
                   )
                 }
               />
             ) : (
-              <EmptyState title="Nhập chiều rộng và chiều dài để vẽ mặt lắp" description="Hình vẽ giúp đặt vật cản đúng chỗ trên mái." />
+              <EmptyState
+                title="Nhập chiều rộng và chiều dài để vẽ mặt lắp"
+                description="Hình vẽ giúp đặt vật cản đúng chỗ trên mái."
+              />
             )}
           </div>
           <ObstaclePanel
@@ -218,7 +228,10 @@ export function SurfaceEditor({ value, errors, onChange, aside }: Props) {
       </Panel>
 
       <Panel className="min-w-0 lg:col-span-3">
-        <PanelHeader title="Số liệu khai báo" description="Tính từ mặt lắp ở trên; dùng để chuyên viên đối chiếu khi khảo sát." />
+        <PanelHeader
+          title="Số liệu khai báo"
+          description="Tính từ mặt lắp ở trên; dùng để chuyên viên đối chiếu khi khảo sát."
+        />
         <PanelBody className="space-y-4">
           <Facts
             items={[
@@ -234,7 +247,7 @@ export function SurfaceEditor({ value, errors, onChange, aside }: Props) {
             onChange={(e) =>
               set({
                 declaredManual: e.target.checked,
-                // Mở chế độ tự khai lần đầu: điền sẵn số đang tính để khách chỉ sửa phần khác.
+                // Bật tự khai lần đầu thì điền sẵn số đang tính
                 ...(e.target.checked && !value.totalAreaM2 && auto
                   ? { totalAreaM2: meterText(auto.totalAreaM2), usableAreaM2: meterText(auto.usableAreaM2) }
                   : {}),
@@ -254,7 +267,12 @@ export function SurfaceEditor({ value, errors, onChange, aside }: Props) {
                   />
                 </WithUnit>
               </Field>
-              <Field label="Diện tích dùng được" htmlFor="declaredUsable" hint="Trừ lối đi, bồn nước, chỗ bị che." error={errors.usableAreaM2}>
+              <Field
+                label="Diện tích dùng được"
+                htmlFor="declaredUsable"
+                hint="Trừ lối đi, bồn nước, chỗ bị che."
+                error={errors.usableAreaM2}
+              >
                 <WithUnit unit="m²">
                   <Input
                     id="declaredUsable"

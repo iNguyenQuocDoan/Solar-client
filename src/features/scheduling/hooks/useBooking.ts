@@ -41,7 +41,7 @@ export function useMyRequestQuery(id: string | undefined) {
 
 /*
  * Giờ trống của một ngày. Backend giới hạn 20 lần đọc / phút / người (cả kiểm tra đường đi): giữ kết quả 30 giây, không
- * tự tải lại khi quay về tab, không tự thử lại khi Vietmap lỗi (503) – khách bấm "Thử lại" –, để bấm qua lại vài ngày
+ * tự tải lại khi quay về tab, không tự thử lại khi Vietmap lỗi (503), khách bấm "Thử lại" -, để bấm qua lại vài ngày
  * không chạm giới hạn.
  */
 export function useSurveySlotsQuery(propertySiteId: string | undefined, date: string | null) {

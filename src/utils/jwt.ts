@@ -48,8 +48,7 @@ export function emailFromToken(token: string): string | null {
   const claims = decodeToken(token)
   if (!claims) return null
   return (
-    asString(claims.email) ??
-    asString(claims['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'])
+    asString(claims.email) ?? asString(claims['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'])
   )
 }
 

@@ -19,14 +19,7 @@ export type ChoiceCardGroupProps = {
 
 const columnClasses = { 3: 'sm:grid-cols-3', 4: 'sm:grid-cols-4' } as const
 
-export function ChoiceCardGroup({
-  options,
-  value,
-  onChange,
-  label,
-  columns = 4,
-  className,
-}: ChoiceCardGroupProps) {
+export function ChoiceCardGroup({ options, value, onChange, label, columns = 4, className }: ChoiceCardGroupProps) {
   return (
     <div
       role="radiogroup"

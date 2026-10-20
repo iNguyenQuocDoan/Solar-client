@@ -74,7 +74,7 @@ export type WorkOrder = {
   typeKey: 'survey' | 'installation' | 'warranty' | 'maintenance'
   /** Loại việc + icon màu theo loại */
   work: { label: string; icon: string; iconClassName: string }
-  /** Dòng phụ dưới loại việc: serial, thiết bị… */
+  /** Dòng phụ dưới loại việc: serial, thiết bị... */
   reference: string
   customer: { name: string; phone: string; property: string; propertyIcon: string }
   site: { street: string; zone: string; distance: string }
@@ -241,11 +241,10 @@ export const quickStatusDrawer = {
     title: 'Ghi chú tại hiện trường',
     dictateLabel: 'Ghi âm ghi chú',
     dictateIcon: 'mic',
-    placeholder:
-      'Ghi chú tại chỗ (ví dụ: xà gồ hướng nam cách nhau 60cm, có bóng cây che sau 16 giờ)…',
+    placeholder: 'Ghi chú tại chỗ (ví dụ: xà gồ hướng nam cách nhau 60cm, có bóng cây che sau 16 giờ)…',
   },
   photos: {
-    /** "Job Site Photos (3 uploaded)" – 2 ảnh + 1 ô Add Slot như code.html */
+    /** "Job Site Photos (3 uploaded)", 2 ảnh + 1 ô Add Slot như code.html */
     titleTemplate: 'Ảnh công trình ({count} ảnh)',
     uploadedCount: 3,
     captureLabel: 'Chụp ảnh',

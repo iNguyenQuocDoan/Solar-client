@@ -72,9 +72,7 @@ export function QuickStatusDrawer({ order, open, onClose, onCommit }: QuickStatu
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-space-xs">
                   <span aria-hidden="true" className="h-3 w-3 rounded-full bg-primary" />
-                  <span className="text-label-sm font-bold text-primary">
-                    {d.sync.label}
-                  </span>
+                  <span className="text-label-sm font-bold text-primary">{d.sync.label}</span>
                 </div>
                 <IconButton
                   size="md"
@@ -99,9 +97,7 @@ export function QuickStatusDrawer({ order, open, onClose, onCommit }: QuickStatu
 
               {/* Shift Job Lifecycle Stage */}
               <div className="flex flex-col gap-space-sm rounded-2xl bg-surface-container-low p-space-md">
-                <span className="text-label-sm font-bold text-on-surface">
-                  {d.lifecycle.title}
-                </span>
+                <span className="text-label-sm font-bold text-on-surface">{d.lifecycle.title}</span>
                 <div className="grid grid-cols-2 gap-space-xs">
                   {d.lifecycle.stages.map((item) => {
                     const active = item.value === stage
@@ -136,10 +132,7 @@ export function QuickStatusDrawer({ order, open, onClose, onCommit }: QuickStatu
                       key={item.id}
                       className="flex cursor-pointer items-center gap-space-sm rounded-xl bg-surface-container-low p-3 transition-colors hover:bg-surface-container"
                     >
-                      <Checkbox
-                        checked={checked}
-                        onCheckedChange={(value) => toggleItem(item.id, value === true)}
-                      />
+                      <Checkbox checked={checked} onCheckedChange={(value) => toggleItem(item.id, value === true)} />
                       <span className="flex flex-col">
                         <span className="text-label-sm font-semibold text-on-surface">{item.label}</span>
                         <span className="text-body-sm text-on-surface-variant">{item.description}</span>

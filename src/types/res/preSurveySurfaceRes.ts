@@ -1,5 +1,5 @@
 /*
- * VIẾT TAY – swagger chỉ khai "200 OK" cho tag PreSurveySurface, không có schema response.
+ * VIẾT TAY, swagger chỉ khai "200 OK" cho tag PreSurveySurface, không có schema response.
  * Tên kiểu và field lấy đúng theo SmartSolar.Modules.PreSurvey (GetPreSurveySurface, UpdatePreSurveySurface,
  * Surface/SurfaceObstacle) và Contracts.PreSurveys của image 09/10/2026 (commit 833ff3c), đã đối chiếu response thật.
  * Khi backend khai response trong swagger, `npm run gen:api` sẽ ghi đè file này bằng bản sinh tự động.
@@ -36,7 +36,7 @@ export type SurfaceConventions = {
   obstacleHeight: string
 }
 
-/** GET /api/pre-surveys/{id}/surface – chỉ khách hàng sở hữu bản đánh giá. */
+/** GET /api/pre-surveys/{id}/surface, chỉ khách hàng sở hữu bản đánh giá. */
 export type PreSurveySurfaceView = {
   preSurveyId: string
   /** Tên enum PreSurveyStatus viết hoa: "DRAFT", "SUBMITTED". */
@@ -52,7 +52,7 @@ export type PreSurveySurfaceView = {
   /** Dùng chung cột với tiltDegree / azimuthDegree của form cũ. */
   surfaceTiltDegree: number | null
   surfaceAzimuthDegree: number | null
-  /** Mảng rỗng cả khi chưa lưu mặt lắp – xem `surfaceDefined`. */
+  /** Mảng rỗng cả khi chưa lưu mặt lắp, xem `surfaceDefined`. */
   obstacles: SurfaceObstacle[]
   declared: DeclaredSurveyValues
   latitude: number | null

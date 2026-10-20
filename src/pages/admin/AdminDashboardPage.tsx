@@ -185,8 +185,7 @@ export function AdminDashboardPage() {
             <AuditTrailTable entries={auditTrail.entries} />
             <div className="mt-space-md flex flex-col justify-between gap-space-xs pt-space-xs text-body-sm text-outline sm:flex-row sm:items-center">
               <span>
-                Hiển thị {auditTrail.entries.length} trên {auditTrail.total.toLocaleString()}{' '}
-                {auditTrail.periodLabel}
+                Hiển thị {auditTrail.entries.length} trên {auditTrail.total.toLocaleString()} {auditTrail.periodLabel}
               </span>
               <Link
                 to={ROUTES.ADMIN.REPORTS}
@@ -212,10 +211,7 @@ export function AdminDashboardPage() {
           <Card>
             <CardHeader className="mb-space-md">
               <CardTitle icon="display_settings">{engineDefaults.title}</CardTitle>
-              <Link
-                to={ROUTES.ADMIN.TECH_CONFIG}
-                className="text-label-sm font-semibold text-primary hover:underline"
-              >
+              <Link to={ROUTES.ADMIN.TECH_CONFIG} className="text-label-sm font-semibold text-primary hover:underline">
                 {engineDefaults.editLabel}
               </Link>
             </CardHeader>

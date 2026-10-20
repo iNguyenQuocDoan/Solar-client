@@ -10,7 +10,7 @@ export const fmt = {
 }
 
 /**
- * Tiền theo mã tiền tệ backend trả về (VND, USD…), định dạng kiểu Việt Nam: "12.500.000 ₫", "7.200,00 US$".
+ * Tiền theo mã tiền tệ backend trả về (VND, USD...), định dạng kiểu Việt Nam: "12.500.000 ₫", "7.200,00 US$".
  * Mã lạ hoặc thiếu thì chỉ in số kèm mã để không làm vỡ trang.
  */
 export function formatMoney(amount: number | null | undefined, currency: string | null | undefined) {

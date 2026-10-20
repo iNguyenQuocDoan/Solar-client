@@ -41,7 +41,7 @@ export function CustomerShell({ children }: { children: ReactNode }) {
   const onItemPage = current ? isNavItemPage(current, pathname) : false
   const crumbLabel = crumb?.pathname === pathname ? crumb.label : null
 
-  // Tiêu đề tab trình duyệt theo vị trí: "<trang> – Cổng khách hàng – Smart Solar".
+  // Tiêu đề tab trình duyệt theo vị trí: "<trang>, Cổng khách hàng, Smart Solar".
   const title = [crumbLabel ?? current?.label, portal.name, 'Smart Solar'].filter(Boolean).join(' – ')
   useEffect(() => {
     document.title = title
@@ -114,7 +114,10 @@ export function CustomerShell({ children }: { children: ReactNode }) {
                         active ? 'bg-accent-soft font-semibold text-fg' : 'text-fg-2 hover:bg-hover hover:text-fg',
                       )}
                     >
-                      <Icon name={item.icon} className={cx('text-[20px]', active ? 'icon-fill text-accent-fg' : 'text-fg-3')} />
+                      <Icon
+                        name={item.icon}
+                        className={cx('text-[20px]', active ? 'icon-fill text-accent-fg' : 'text-fg-3')}
+                      />
                       {item.label}
                     </Link>
                   )
@@ -134,7 +137,10 @@ export function CustomerShell({ children }: { children: ReactNode }) {
         <main id="main" className="mx-auto w-full max-w-landing flex-1 px-4 py-6 md:px-6 lg:py-8">
           {current && !onItemPage && (
             <nav aria-label="Vị trí hiện tại" className="mb-4 flex min-w-0 items-center gap-2 text-meta">
-              <Link to={current.to} className="tap shrink-0 text-fg-2 underline-offset-4 hover:text-accent-fg hover:underline">
+              <Link
+                to={current.to}
+                className="tap shrink-0 text-fg-2 underline-offset-4 hover:text-accent-fg hover:underline"
+              >
                 {current.label}
               </Link>
               <span aria-hidden className="text-fg-3">
@@ -153,7 +159,9 @@ export function CustomerShell({ children }: { children: ReactNode }) {
         <div className="mx-auto w-full max-w-landing px-4 py-6 text-meta text-fg-2 md:px-6">© 2026 Smart Solar</div>
       </footer>
 
-      {canChangeOwnPassword(user?.role) && <ChangePasswordDialog open={changingPassword} onOpenChange={setChangingPassword} />}
+      {canChangeOwnPassword(user?.role) && (
+        <ChangePasswordDialog open={changingPassword} onOpenChange={setChangingPassword} />
+      )}
     </div>
   )
 }
@@ -167,7 +175,9 @@ function TopNavLink({ item, pathname }: { item: NavItem; pathname: string }) {
       aria-current={active ? (isNavItemPage(item, pathname) ? 'page' : 'location') : undefined}
       className={cx(
         'tap text-body underline-offset-8',
-        active ? 'font-semibold text-fg underline decoration-accent decoration-2' : 'text-fg-2 hover:text-fg hover:underline hover:decoration-line-2',
+        active
+          ? 'font-semibold text-fg underline decoration-accent decoration-2'
+          : 'text-fg-2 hover:text-fg hover:underline hover:decoration-line-2',
       )}
     >
       {item.label}
@@ -222,7 +232,10 @@ function AccountMenu({ onChangePassword, className }: { onChangePassword: () => 
         <Icon name={open ? 'expand_less' : 'expand_more'} className="shrink-0 text-[20px] text-fg-3" />
       </button>
       {open && (
-        <div id={panelId} className="absolute top-full right-0 z-40 mt-2 w-72 rounded-container border border-line bg-canvas p-2 shadow-pop">
+        <div
+          id={panelId}
+          className="absolute top-full right-0 z-40 mt-2 w-72 rounded-container border border-line bg-canvas p-2 shadow-pop"
+        >
           <AccountActions
             onChangePassword={() => {
               setOpen(false)
@@ -259,7 +272,11 @@ function AccountActions({ onChangePassword }: { onChangePassword: () => void }) 
       </div>
       <div className="my-1 border-t border-line" />
       {canChangeOwnPassword(user?.role) && (
-        <button type="button" onClick={onChangePassword} className={cx(accountRow, 'text-fg-2 hover:bg-hover hover:text-fg')}>
+        <button
+          type="button"
+          onClick={onChangePassword}
+          className={cx(accountRow, 'text-fg-2 hover:bg-hover hover:text-fg')}
+        >
           <Icon name="key" className="text-[20px]" />
           {changePasswordContent.menuLabel}
         </button>
@@ -269,10 +286,20 @@ function AccountActions({ onChangePassword }: { onChangePassword: () => void }) 
           <Icon name={current.icon} className="text-[20px]" />
           Giao diện
         </p>
-        <Segmented label="Giao diện" size="sm" options={THEME_OPTIONS.map(({ value, label }) => ({ value, label }))} value={theme} onChange={setTheme} />
+        <Segmented
+          label="Giao diện"
+          size="sm"
+          options={THEME_OPTIONS.map(({ value, label }) => ({ value, label }))}
+          value={theme}
+          onChange={setTheme}
+        />
       </div>
       <div className="my-1 border-t border-line" />
-      <button type="button" onClick={handleSignOut} className={cx(accountRow, 'text-fg-2 hover:bg-danger-soft hover:text-danger')}>
+      <button
+        type="button"
+        onClick={handleSignOut}
+        className={cx(accountRow, 'text-fg-2 hover:bg-danger-soft hover:text-danger')}
+      >
         <Icon name="logout" className="text-[20px]" />
         Đăng xuất
       </button>

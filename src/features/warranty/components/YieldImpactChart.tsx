@@ -45,7 +45,13 @@ export function YieldImpactChart({
 }: YieldImpactChartProps) {
   return (
     <div className={cn('w-full pt-space-xs', className)}>
-      <svg viewBox="0 0 400 120" preserveAspectRatio="none" role="img" aria-label={postWashLabel} className="h-28 w-full">
+      <svg
+        viewBox="0 0 400 120"
+        preserveAspectRatio="none"
+        role="img"
+        aria-label={postWashLabel}
+        className="h-28 w-full"
+      >
         <defs>
           <linearGradient id="yield-pre" x1="0" x2="0" y1="0" y2="1">
             <stop offset="0%" stopColor="#fe932c" stopOpacity="0.3" />

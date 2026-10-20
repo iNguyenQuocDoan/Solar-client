@@ -50,11 +50,13 @@ export function TechnicianChoiceList({
               <span className="flex flex-wrap items-center gap-2">
                 <span className="font-semibold text-fg">{t.fullName}</span>
                 {t.technicianUserId === currentAssigneeId && <Badge tone="info">Đang phụ trách</Badge>}
-                {t.isCurrentReservation && t.technicianUserId !== currentAssigneeId && <Badge tone="accent">Hệ thống đang giữ chỗ</Badge>}
+                {t.isCurrentReservation && t.technicianUserId !== currentAssigneeId && (
+                  <Badge tone="accent">Hệ thống đang giữ chỗ</Badge>
+                )}
               </span>
               <span className="block text-meta text-fg-2">
-                Tới nơi sớm nhất <span className="tnum font-medium text-fg">{formatTime(t.earliestArrivalAt)}</span>, {t.activeAppointmentsThatDay} lịch
-                khác trong ngày
+                Tới nơi sớm nhất <span className="tnum font-medium text-fg">{formatTime(t.earliestArrivalAt)}</span>,{' '}
+                {t.activeAppointmentsThatDay} lịch khác trong ngày
               </span>
               <TravelSummary leg={t.inbound} />
               {t.outbound && <TravelSummary leg={t.outbound} label="Sau lịch này, tới công trình kế tiếp" />}

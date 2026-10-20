@@ -29,7 +29,7 @@ export type ExecutionStepListProps = {
   checkedIds: string[]
   onToggle: (id: string, checked: boolean) => void
   variant?: 'installation' | 'protocol'
-  /** Nội dung phụ dưới mô tả của một bước (bộ đếm panel, bảng số đo…) */
+  /** Nội dung phụ dưới mô tả của một bước (bộ đếm panel, bảng số đo...) */
   renderExtra?: (step: ExecutionStepItem) => ReactNode
   className?: string
 }
@@ -50,7 +50,11 @@ export function ExecutionStepList({
         const checked = checkedIds.includes(step.id)
         const isActive = step.state === 'active'
         const extra = renderExtra?.(step)
-        const protocolStatus = isActive ? step.statusText : checked ? step.activeMetric ?? step.statusText : step.statusText
+        const protocolStatus = isActive
+          ? step.statusText
+          : checked
+            ? (step.activeMetric ?? step.statusText)
+            : step.statusText
 
         return (
           <li
@@ -68,12 +72,7 @@ export function ExecutionStepList({
               step.state === 'pending' && (isProtocol ? 'opacity-90' : 'opacity-80'),
             )}
           >
-            <div
-              className={cn(
-                'flex min-w-0 flex-1 items-start',
-                isProtocol ? 'gap-space-md' : 'gap-space-sm',
-              )}
-            >
+            <div className={cn('flex min-w-0 flex-1 items-start', isProtocol ? 'gap-space-md' : 'gap-space-sm')}>
               {isProtocol && isActive ? (
                 <div className="mt-1 flex h-5 w-5 shrink-0 items-center justify-center rounded-md bg-primary-container text-on-primary">
                   <Icon name="sync" className="text-[14px]" />
@@ -136,9 +135,7 @@ export function ExecutionStepList({
                         </span>
                       )}
                       {step.state === 'pending' && (
-                        <span className="mt-0.5 shrink-0 text-label-sm text-on-surface-variant">
-                          {step.statusText}
-                        </span>
+                        <span className="mt-0.5 shrink-0 text-label-sm text-on-surface-variant">{step.statusText}</span>
                       )}
                     </>
                   )}

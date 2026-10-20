@@ -82,9 +82,16 @@ export function PermissionMatrix({
         const allowed = module.items.filter((item) => granted.has(item.id)).length
         const isCollapsed = collapsed.has(module.id)
         const countTone =
-          allowed === module.items.length ? 'text-tertiary-container' : allowed === 0 ? 'text-outline' : 'text-secondary'
+          allowed === module.items.length
+            ? 'text-tertiary-container'
+            : allowed === 0
+              ? 'text-outline'
+              : 'text-secondary'
         return (
-          <section key={module.id} className="flex flex-col gap-space-sm rounded-2xl bg-surface-container-low/40 p-space-md">
+          <section
+            key={module.id}
+            className="flex flex-col gap-space-sm rounded-2xl bg-surface-container-low/40 p-space-md"
+          >
             <button
               type="button"
               aria-expanded={!isCollapsed}
@@ -123,7 +130,10 @@ export function PermissionMatrix({
                         <div className="flex flex-col pr-2">
                           <div className="flex items-center gap-1.5">
                             <span
-                              className={cn('text-label-md font-semibold', item.destructive ? 'text-error' : 'text-on-surface')}
+                              className={cn(
+                                'text-label-md font-semibold',
+                                item.destructive ? 'text-error' : 'text-on-surface',
+                              )}
                             >
                               {item.label}
                             </span>

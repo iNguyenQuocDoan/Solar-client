@@ -7,7 +7,7 @@ import { useAuth } from '@/context/AuthProvider'
 import { sessionExpiredContent } from '@/data/auth'
 
 /*
- * Modal "Phiên đăng nhập đã hết hạn" – bật khi refresh token hỏng (client.ts bắn sự kiện session-expired).
+ * Modal "Phiên đăng nhập đã hết hạn", bật khi refresh token hỏng (client.ts bắn sự kiện session-expired).
  * Dùng Radix Dialog cho hành vi (khoá focus, Esc), còn hình thức theo hộp thoại của portal kit (08/10/2026, thống nhất):
  * nền canvas có viền, bóng lớp nổi, tiêu đề cỡ title căn trái, nút chính bên phải. Bỏ nút X mặc định vì chỉ có 2 lựa chọn.
  */
@@ -35,7 +35,9 @@ export function SessionExpiredModal() {
         >
           <div className="flex items-start gap-3">
             <Icon name="timer_off" className="mt-0.5 shrink-0 text-[24px] text-danger" />
-            <DialogPrimitive.Title className="text-title font-semibold">{sessionExpiredContent.title}</DialogPrimitive.Title>
+            <DialogPrimitive.Title className="text-title font-semibold">
+              {sessionExpiredContent.title}
+            </DialogPrimitive.Title>
           </div>
           <div className="mt-6 flex flex-wrap justify-end gap-3">
             <Button variant="ghost" onClick={goHome}>

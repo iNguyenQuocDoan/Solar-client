@@ -9,7 +9,7 @@ import { authImages, authLayoutContent } from '@/data/auth'
 /*
  * Shell các màn xác thực (/login, /register, /forgot-password, /reset-password, /verify-email, /403).
  *
- * Desktop: cao đúng một màn hình – ảnh 5/12 bên trái, form 7/12 bên phải (logo + về trang chủ ở trên,
+ * Desktop: cao đúng một màn hình, ảnh 5/12 bên trái, form 7/12 bên phải (logo + về trang chủ ở trên,
  * form ở giữa, bản quyền ở dưới). Màn thấp hơn 720px (variant `short`) thu khoảng đệm; nếu vẫn không
  * đủ thì chỉ cột form cuộn bên trong, trang không cuộn.
  * Mobile: dải ảnh thấp ở trên, form bên dưới, cuộn bình thường.

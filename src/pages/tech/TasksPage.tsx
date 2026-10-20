@@ -4,7 +4,16 @@ import { NoticeBar } from '@/features/tasks/components/NoticeBar'
 import { QuickStatusDrawer } from '@/features/tasks/components/QuickStatusDrawer'
 import { TaskFilterBar, type TaskFilterValue } from '@/features/tasks/components/TaskFilterBar'
 import { ViewToggle } from '@/features/tasks/components/ViewToggle'
-import { Button, DataTable, Icon, IconButton, PageHeader, StatusBadge, TaskCard, Toast } from '@/components/common/stitch-ui'
+import {
+  Button,
+  DataTable,
+  Icon,
+  IconButton,
+  PageHeader,
+  StatusBadge,
+  TaskCard,
+  Toast,
+} from '@/components/common/stitch-ui'
 import type { DataTableColumn } from '@/components/common/stitch-ui/DataTable'
 import { techTaskPath } from '@/routes/paths'
 import { cn } from '@/utils/cn'
@@ -204,12 +213,7 @@ export function TasksPage() {
                 >
                   {row.action.label}
                 </Button>
-                <IconButton
-                  size="md"
-                  icon="add_a_photo"
-                  label="Tải nhanh ảnh"
-                  className="bg-surface-container"
-                />
+                <IconButton size="md" icon="add_a_photo" label="Tải nhanh ảnh" className="bg-surface-container" />
                 <IconButton size="md" icon="directions" label="Chỉ đường" className="bg-surface-container" />
               </>
             )}

@@ -1,7 +1,7 @@
 export const ROUTES = {
   /*
-    Một portal cho mỗi vai trò, cùng shell portal kit: customer, sales -> ops, admin -> ADMIN,
-    technician -> TECH (field chuyển về TECH), manager -> manage. / là landing công khai.
+    Một portal cho mỗi vai trò, cùng shell portal kit: customer, sales dùng ops, admin dùng ADMIN,
+    technician dùng TECH (field chuyển về TECH), manager dùng manage. / là landing công khai.
   */
   customer: {
     home: '/customer',

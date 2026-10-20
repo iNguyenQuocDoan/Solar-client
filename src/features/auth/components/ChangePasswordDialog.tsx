@@ -40,7 +40,13 @@ export function ChangePasswordDialog({ open, onOpenChange }: ChangePasswordDialo
   // Đang gửi thì không cho đóng (Esc): form báo trạng thái lên đây vì mutation nằm trong form.
   const [busy, setBusy] = useState(false)
   return (
-    <ModalDialog open={open} onOpenChange={onOpenChange} dismissible={!busy} aria-label={changePasswordContent.title} className="max-w-lg">
+    <ModalDialog
+      open={open}
+      onOpenChange={onOpenChange}
+      dismissible={!busy}
+      aria-label={changePasswordContent.title}
+      className="max-w-lg"
+    >
       <ChangePasswordForm onDone={() => onOpenChange(false)} onBusyChange={setBusy} />
     </ModalDialog>
   )
@@ -91,9 +97,27 @@ function ChangePasswordForm({ onDone, onBusyChange }: { onDone: () => void; onBu
     <form onSubmit={onSubmit} noValidate>
       <DialogTitle>{changePasswordContent.title}</DialogTitle>
       <div className="mt-6 space-y-4">
-        <PasswordField id={f('current')} label={changePasswordContent.currentLabel} autoComplete="current-password" error={errors.currentPassword?.message} field={register('currentPassword')} />
-        <PasswordField id={f('new')} label={changePasswordContent.newLabel} autoComplete="new-password" error={errors.newPassword?.message} field={register('newPassword')} />
-        <PasswordField id={f('confirm')} label={changePasswordContent.confirmLabel} autoComplete="new-password" error={errors.confirm?.message} field={register('confirm')} />
+        <PasswordField
+          id={f('current')}
+          label={changePasswordContent.currentLabel}
+          autoComplete="current-password"
+          error={errors.currentPassword?.message}
+          field={register('currentPassword')}
+        />
+        <PasswordField
+          id={f('new')}
+          label={changePasswordContent.newLabel}
+          autoComplete="new-password"
+          error={errors.newPassword?.message}
+          field={register('newPassword')}
+        />
+        <PasswordField
+          id={f('confirm')}
+          label={changePasswordContent.confirmLabel}
+          autoComplete="new-password"
+          error={errors.confirm?.message}
+          field={register('confirm')}
+        />
         {/* Quy tắc đạt: dấu tích tròn màu xanh (ok); chưa đạt: vòng tròn xám. Chữ đọc thêm "(đã đạt)" cho trình đọc màn hình. */}
         <div className="rounded-container bg-surface-2 px-4 py-3">
           <p className="text-meta font-medium text-fg-2">{registerContent.rulesTitle}</p>
@@ -149,7 +173,13 @@ function PasswordField({
   return (
     <Field label={label} htmlFor={id} error={error}>
       <div className="flex gap-2">
-        <Input id={id} type={shown ? 'text' : 'password'} autoComplete={autoComplete} aria-invalid={error ? true : undefined} {...field} />
+        <Input
+          id={id}
+          type={shown ? 'text' : 'password'}
+          autoComplete={autoComplete}
+          aria-invalid={error ? true : undefined}
+          {...field}
+        />
         <Button
           variant="ghost"
           icon={shown ? 'visibility_off' : 'visibility'}

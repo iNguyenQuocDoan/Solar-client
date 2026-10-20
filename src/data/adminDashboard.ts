@@ -108,7 +108,7 @@ export const auditTrail = {
       timestamp: 'Hôm nay, 14:32:10',
       actor: { initials: 'ES', name: 'Eleanor Sterling', tone: 'primary-container' },
       action: 'Sửa hệ số suy giảm tấm pin:',
-      actionCode: '0,50% → 0,48%/năm',
+      actionCode: '0,50% xuống 0,48%/năm',
       actionCodeTone: 'tertiary',
       target: 'Tham số sản lượng toàn hệ thống',
       origin: { ip: '192.168.4.12', site: 'Trụ sở Austin' },

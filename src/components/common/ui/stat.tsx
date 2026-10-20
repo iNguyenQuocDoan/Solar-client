@@ -12,7 +12,15 @@ import { cx } from '@/utils/cx'
   Dùng khi dải số đứng một mình trên trang rộng: không khung thì 4 số rải hết bề ngang, trông rời rạc (lịch theo ngày,
   người dùng chê 12/10/2026).
 */
-export function StatRow({ children, className, framed = false }: { children: ReactNode; className?: string; framed?: boolean }) {
+export function StatRow({
+  children,
+  className,
+  framed = false,
+}: {
+  children: ReactNode
+  className?: string
+  framed?: boolean
+}) {
   return (
     <dl
       className={cx(
@@ -51,7 +59,9 @@ export function Stat({
     <div className={cx('row-span-3 grid min-w-0 grid-rows-subgrid gap-y-1', className)}>
       <dt className="text-meta text-fg-2">{label}</dt>
       <dd className="flex flex-wrap items-baseline gap-x-2">
-        <span className={cx('tnum font-semibold', size === 'lg' ? 'text-display' : 'text-figure', valueTone)}>{value}</span>
+        <span className={cx('tnum font-semibold', size === 'lg' ? 'text-display' : 'text-figure', valueTone)}>
+          {value}
+        </span>
         {unit && <span className="text-body text-fg-3">{unit}</span>}
       </dd>
       <dd className="text-meta text-fg-3">{note}</dd>

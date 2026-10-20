@@ -1,8 +1,8 @@
 /*
- * VIẾT TAY – swagger chỉ khai "200 OK" cho tag Simulations, không có schema response.
+ * VIẾT TAY, swagger chỉ khai "200 OK" cho tag Simulations, không có schema response.
  * Tên kiểu và field lấy đúng theo SmartSolar.Modules.SolarSimulation (Models/SimulationDocuments.cs,
  * Energy/EnergyContracts.cs) của image 09/10/2026 (commit 833ff3c), đã đối chiếu response thật.
- * Chuỗi mã (status, source, reason, code…) để kiểu string: giá trị đã biết liệt kê ở simulationDisplay.ts,
+ * Chuỗi mã (status, source, reason, code...) để kiểu string: giá trị đã biết liệt kê ở simulationDisplay.ts,
  * giá trị lạ thì giao diện in nguyên văn. Khi backend khai response trong swagger, `npm run gen:api` sẽ ghi đè file này.
  */
 
@@ -191,10 +191,10 @@ export type EnergyScenario = {
 export type EnergyInfo = {
   /** SUCCEEDED | NOT_APPLICABLE | UNAVAILABLE | FAILED */
   status: string
-  /** NO_PANELS | LOCATION_MISSING … */
+  /** NO_PANELS | LOCATION_MISSING ... */
   reason: string | null
   estimateType: string
-  /** null khi chưa ước tính được – hiển thị "chưa có dữ liệu", không phải 0. */
+  /** null khi chưa ước tính được, hiển thị "chưa có dữ liệu", không phải 0. */
   annualEnergyKwh: number | null
   specificYieldKwhPerKwpYear: number | null
   monthly: MonthlyPvEnergy[]
@@ -244,11 +244,11 @@ export type ClimateInfo = {
 
 export type SimulationWarning = { code: string; message: string }
 
-/** POST /api/pre-surveys/{id}/simulations (201 tạo mới, 200 dùng lại) và GET …/simulations/{simulationId}. */
+/** POST /api/pre-surveys/{id}/simulations (201 tạo mới, 200 dùng lại) và GET .../simulations/{simulationId}. */
 export type SimulationDetail = {
   simulationId: string
   preSurveyId: string
-  /** COMPLETED | PARTIALLY_COMPLETED – cả hai đều là kết quả đã lưu; xem riêng energy.status, climate.status. */
+  /** COMPLETED | PARTIALLY_COMPLETED, cả hai đều là kết quả đã lưu; xem riêng energy.status, climate.status. */
   status: string
   /** Tính theo hình học cũ (geometryVersion đã đổi). */
   isStale: boolean
@@ -268,7 +268,7 @@ export type SimulationDetail = {
   limitations: string[]
 }
 
-/** GET /api/pre-surveys/{id}/simulations – mảng, mới nhất trước, chưa phân trang. */
+/** GET /api/pre-surveys/{id}/simulations, mảng, mới nhất trước, chưa phân trang. */
 export type SimulationListItem = {
   simulationId: string
   status: string

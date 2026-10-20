@@ -56,7 +56,12 @@ export function useProductStatusActions() {
 
   const hide = async (product: ProductResponse) => {
     if (!product.id || pending.has(product.id)) return false
-    const entry: HiddenProduct = { id: product.id, name: product.name ?? '', sku: product.sku ?? '', hiddenAt: new Date().toISOString() }
+    const entry: HiddenProduct = {
+      id: product.id,
+      name: product.name ?? '',
+      sku: product.sku ?? '',
+      hiddenAt: new Date().toISOString(),
+    }
     setPending(entry.id, 'hide')
     rememberHidden(entry)
     try {

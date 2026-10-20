@@ -7,7 +7,7 @@ export type { Crumb } from '@/components/common/stitch-ui/Breadcrumb'
 /* Theo phần đầu trang admin_dashboard / user_management: breadcrumb, eyebrow, h1 headline-xl, mô tả, nút. */
 export type PageHeaderProps = {
   breadcrumb?: Crumb[]
-  /** Góc phải hàng breadcrumb: trạng thái cluster, sync… */
+  /** Góc phải hàng breadcrumb: trạng thái cluster, sync... */
   meta?: ReactNode
   /** Chuỗi = nhãn nhỏ phía trên tiêu đề; node = hàng badge (user_management) */
   eyebrow?: ReactNode

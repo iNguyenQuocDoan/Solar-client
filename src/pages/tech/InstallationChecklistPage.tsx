@@ -32,17 +32,9 @@ export function InstallationChecklistPage() {
 
 type ChecklistData = NonNullable<ReturnType<typeof getInstallationChecklist>>
 
-function InstallationChecklistView({
-  checklist,
-  defaultNotes,
-}: {
-  checklist: ChecklistData
-  defaultNotes: string
-}) {
+function InstallationChecklistView({ checklist, defaultNotes }: { checklist: ChecklistData; defaultNotes: string }) {
   const allTasks = useMemo(() => checklist.phases.flatMap((phase) => phase.tasks), [checklist.phases])
-  const [checkedIds, setCheckedIds] = useState(
-    allTasks.filter((task) => task.defaultChecked).map((task) => task.id),
-  )
+  const [checkedIds, setCheckedIds] = useState(allTasks.filter((task) => task.defaultChecked).map((task) => task.id))
   const [notes, setNotes] = useState(defaultNotes)
   const [signOpen, setSignOpen] = useState(false)
   const [toast, setToast] = useState<string | null>(null)
@@ -65,9 +57,7 @@ function InstallationChecklistView({
       <div className="mb-space-md flex flex-col gap-space-xs rounded-xl bg-surface-container px-space-md py-space-xs shadow-sm lg:flex-row lg:items-center lg:justify-between">
         <div className="flex flex-wrap items-center gap-space-sm">
           <span aria-hidden="true" className="h-2.5 w-2.5 rounded-full bg-primary-container" />
-          <span className="text-label-sm font-bold text-primary">
-            {checklist.session.label}
-          </span>
+          <span className="text-label-sm font-bold text-primary">{checklist.session.label}</span>
           <span className="text-body-sm text-on-surface-variant">{checklist.session.mode}</span>
         </div>
         <div className="flex flex-wrap items-center gap-space-md text-on-surface-variant">
@@ -112,7 +102,10 @@ function InstallationChecklistView({
               </span>
               <span className="flex items-center gap-1.5 text-body-md">
                 <Icon name="perm_phone_msg" className="text-[18px] text-primary" />
-                <a href={checklist.header.phone.href} className="font-medium text-on-surface underline hover:text-primary">
+                <a
+                  href={checklist.header.phone.href}
+                  className="font-medium text-on-surface underline hover:text-primary"
+                >
                   {checklist.header.phone.label}
                 </a>
               </span>
@@ -133,10 +126,7 @@ function InstallationChecklistView({
                   action.tone === 'plain' ? 'text-on-surface' : 'text-primary',
                 )}
               >
-                <Icon
-                  name={action.icon}
-                  className={cn('text-[20px]', action.tone === 'plain' && 'text-secondary')}
-                />
+                <Icon name={action.icon} className={cn('text-[20px]', action.tone === 'plain' && 'text-secondary')} />
                 {action.label}
               </button>
             ))}
@@ -152,8 +142,7 @@ function InstallationChecklistView({
             <div key={stat.label} className="flex flex-col px-space-xs">
               <span className="text-label-sm font-semibold text-on-surface-variant">{stat.label}</span>
               <span className={cn('text-headline-md font-bold', statToneClasses[stat.tone ?? 'default'])}>
-                {stat.value}{' '}
-                <span className="text-label-md font-normal text-on-surface-variant">{stat.unit}</span>
+                {stat.value} <span className="text-label-md font-normal text-on-surface-variant">{stat.unit}</span>
               </span>
             </div>
           ))}

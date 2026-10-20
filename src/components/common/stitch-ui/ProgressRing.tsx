@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 import { cn } from '@/utils/cn'
 
 export type ProgressRingProps = {
-  /** 0–100 */
+  /** 0-100 */
   value: number
   /** Đường kính px */
   size?: number

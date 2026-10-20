@@ -1,11 +1,11 @@
 /*
- * VIẾT TAY – swagger chỉ khai "200 OK" cho tag AdminTechnicians, không có schema response.
+ * VIẾT TAY, swagger chỉ khai "200 OK" cho tag AdminTechnicians, không có schema response.
  * Tên kiểu và field lấy đúng theo SmartSolar.Modules.Scheduling.PreSurveyAppointments.AdminTechnicianHandlers
- * (TechnicianProfileView, WorkingScheduleView, UnavailablePeriodView, ConflictingAppointmentView – backend
+ * (TechnicianProfileView, WorkingScheduleView, UnavailablePeriodView, ConflictingAppointmentView, backend
  * main 4d12e4d, 12/10/2026). Khi backend khai response trong swagger, `npm run gen:api` sẽ ghi đè file này.
  */
 
-/** GET /api/admin/technicians (mỗi tài khoản có vai trò TECHNICIAN) và PUT …/profile. */
+/** GET /api/admin/technicians (mỗi tài khoản có vai trò TECHNICIAN) và PUT .../profile. */
 export type TechnicianProfileView = {
   technicianUserId: string
   fullName: string
@@ -27,7 +27,7 @@ export type TechnicianProfileView = {
   vehicleType: string
 }
 
-/** day: MONDAY … SUNDAY; start / end: "HH:mm" giờ địa phương. */
+/** day: MONDAY ... SUNDAY; start / end: "HH:mm" giờ địa phương. */
 export type WorkingPeriodView = {
   day: string
   start: string
@@ -60,6 +60,6 @@ export type ConflictingAppointmentView = {
   startsAt: string
   endsAt: string
   status: string
-  /** SCHEDULING_DISABLED, OUTSIDE_WORKING_HOURS, TECHNICIAN_UNAVAILABLE_PERIOD, BEFORE_EARLIEST_BASE_DEPARTURE, … */
+  /** SCHEDULING_DISABLED, OUTSIDE_WORKING_HOURS, TECHNICIAN_UNAVAILABLE_PERIOD, BEFORE_EARLIEST_BASE_DEPARTURE, ... */
   problem: string
 }

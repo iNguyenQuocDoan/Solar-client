@@ -8,7 +8,7 @@ import type { UserRole } from '@/config/roles'
  *   1. chạy lại `npm run gen:api` để src/types/req|res có type của endpoint đó;
  *   2. thay phần thân fetchCurrentUser() bên dưới bằng lời gọi apiGet('<đường dẫn>')
  *      và ánh xạ sang CurrentUser;
- *   3. không cần sửa chỗ nào khác – AuthProvider đã gọi hàm này sau mỗi lần
+ *   3. không cần sửa chỗ nào khác, AuthProvider đã gọi hàm này sau mỗi lần
  *      đăng nhập / khôi phục phiên và tự lùi về claim trong JWT nếu trả null.
  */
 
@@ -19,7 +19,7 @@ export type CurrentUser = {
   userId?: string | null
 }
 
-/** Trả null nghĩa là "chưa có /me" – AuthProvider sẽ dùng claim trong JWT. */
+/** Trả null nghĩa là "chưa có /me", AuthProvider sẽ dùng claim trong JWT. */
 export async function fetchCurrentUser(): Promise<CurrentUser | null> {
   return null
 }

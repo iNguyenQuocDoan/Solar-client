@@ -22,7 +22,7 @@ import { apiGet, apiPost, apiRequest } from '@/services/api/client'
 const base = '/admin/users'
 const path = (id: string) => `${base}/${encodeURIComponent(id)}`
 
-/** Giá trị hợp lệ lấy từ AdminUserHandlers.ListAsync: pageSize 1–100; sort name | createdAt | status. */
+/** Giá trị hợp lệ lấy từ AdminUserHandlers.ListAsync: pageSize 1-100; sort name | createdAt | status. */
 export type AdminUserListParams = {
   page?: number
   pageSize?: number
@@ -35,7 +35,9 @@ export type AdminUserListParams = {
 }
 
 function compact(params: AdminUserListParams) {
-  return Object.fromEntries(Object.entries(params).filter(([, value]) => value !== undefined && value !== '' && value !== false))
+  return Object.fromEntries(
+    Object.entries(params).filter(([, value]) => value !== undefined && value !== '' && value !== false),
+  )
 }
 
 /** GET /api/admin/users */
@@ -48,32 +50,32 @@ export function getUser(id: string) {
   return apiGet<AdminUserDetail>(path(id))
 }
 
-/** POST /api/admin/users (201) – kèm trạng thái gửi link đặt mật khẩu. */
+/** POST /api/admin/users (201), kèm trạng thái gửi link đặt mật khẩu. */
 export function createUser(body: CreateAdminUserRequest) {
   return apiPost<CreatedAdminUser>(base, body)
 }
 
-/** PUT /api/admin/users/{id} – đổi email thì mất dấu đã xác minh và gửi link xác minh mới. */
+/** PUT /api/admin/users/{id}, đổi email thì mất dấu đã xác minh và gửi link xác minh mới. */
 export function updateUser(id: string, body: UpdateAdminUserRequest) {
   return apiRequest<UpdatedAdminUser>({ method: 'PUT', url: path(id), data: body })
 }
 
-/** PATCH …/status – ACTIVE | SUSPENDED | DISABLED (không quay về PENDING_VERIFICATION). */
+/** PATCH .../status, ACTIVE | SUSPENDED | DISABLED (không quay về PENDING_VERIFICATION). */
 export function changeUserStatus(id: string, body: ChangeUserStatusRequest) {
   return apiRequest<AdminUserDetail>({ method: 'PATCH', url: `${path(id)}/status`, data: body })
 }
 
-/** PUT …/roles – thay toàn bộ vai trò (ít nhất một). */
+/** PUT .../roles, thay toàn bộ vai trò (ít nhất một). */
 export function replaceUserRoles(id: string, body: ReplaceUserRolesRequest) {
   return apiRequest<AdminUserDetail>({ method: 'PUT', url: `${path(id)}/roles`, data: body })
 }
 
-/** DELETE …?reason= (204) – xoá mềm, giữ lịch sử; gọi lại khi đã xoá vẫn 204. */
+/** DELETE ...?reason= (204), xoá mềm, giữ lịch sử; gọi lại khi đã xoá vẫn 204. */
 export function deleteUser(id: string, reason: string | null) {
   return apiRequest<void>({ method: 'DELETE', url: path(id), params: reason ? { reason } : undefined })
 }
 
-/** POST …/send-password-reset (202) – gửi link đặt mật khẩu / xác minh / đặt lại tuỳ trạng thái tài khoản. */
+/** POST .../send-password-reset (202), gửi link đặt mật khẩu / xác minh / đặt lại tuỳ trạng thái tài khoản. */
 export function sendPasswordReset(id: string) {
   return apiPost<RecoveryIssued>(`${path(id)}/send-password-reset`)
 }

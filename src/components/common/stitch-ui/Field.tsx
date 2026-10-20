@@ -35,14 +35,14 @@ export function Field({
         htmlFor={htmlFor}
         className={cn(
           'flex items-center justify-between',
-          variant === 'caps'
-            ? 'text-label-sm text-outline'
-            : 'text-label-md font-semibold text-on-surface',
+          variant === 'caps' ? 'text-label-sm text-outline' : 'text-label-md font-semibold text-on-surface',
           labelClassName,
         )}
       >
         <span>{label}</span>
-        {hint && <span className="text-label-sm font-medium normal-case tracking-normal text-tertiary-container">{hint}</span>}
+        {hint && (
+          <span className="text-label-sm font-medium normal-case tracking-normal text-tertiary-container">{hint}</span>
+        )}
       </label>
       {children}
       {error ? (

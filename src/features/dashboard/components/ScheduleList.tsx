@@ -46,18 +46,11 @@ export function ScheduleList({ days, className }: ScheduleListProps) {
       {days.map((day, index) => (
         <div
           key={day.id}
-          className={cn(
-            'flex flex-col',
-            index > 0 && 'pt-space-md',
-            index < days.length - 1 && 'pb-space-md',
-          )}
+          className={cn('flex flex-col', index > 0 && 'pt-space-md', index < days.length - 1 && 'pb-space-md')}
         >
           <div className="mb-space-sm flex flex-wrap items-center gap-space-xs">
             <span
-              className={cn(
-                'text-label-md font-bold',
-                day.tone === 'default' ? 'text-on-surface' : 'text-primary',
-              )}
+              className={cn('text-label-md font-bold', day.tone === 'default' ? 'text-on-surface' : 'text-primary')}
             >
               {day.label}
             </span>

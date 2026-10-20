@@ -21,7 +21,14 @@ export function FilterChips<T extends string>({
   className?: string
 }) {
   return (
-    <div role="tablist" aria-label={label} className={cx('scroll-x flex gap-x-6 shadow-[inset_0_-1px_0_var(--color-line)] [scrollbar-width:none]', className)}>
+    <div
+      role="tablist"
+      aria-label={label}
+      className={cx(
+        'scroll-x flex gap-x-6 shadow-[inset_0_-1px_0_var(--color-line)] [scrollbar-width:none]',
+        className,
+      )}
+    >
       {chips.map((c) => {
         const active = c.value === value
         return (
@@ -33,7 +40,9 @@ export function FilterChips<T extends string>({
             onClick={() => onChange(c.value)}
             className={cx(
               'press inline-flex h-11 shrink-0 items-center gap-2 border-b-2 text-body whitespace-nowrap focus-visible:outline-offset-[-2px] lg:h-10',
-              active ? 'border-accent font-semibold text-fg' : 'border-transparent text-fg-2 hover:border-line-2 hover:text-fg',
+              active
+                ? 'border-accent font-semibold text-fg'
+                : 'border-transparent text-fg-2 hover:border-line-2 hover:text-fg',
             )}
           >
             {c.label}

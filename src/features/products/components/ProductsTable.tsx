@@ -2,13 +2,18 @@ import { Link } from 'react-router'
 import { Badge } from '@/components/common/ui/badge'
 import { Table, Td, Th, Tr } from '@/components/common/ui/table'
 import { ProductActions } from '@/features/products/components/ProductActions'
-import { formatPower, panelSpecGaps, productStatusMeta, productTypeLabel } from '@/features/products/components/productDisplay'
+import {
+  formatPower,
+  panelSpecGaps,
+  productStatusMeta,
+  productTypeLabel,
+} from '@/features/products/components/productDisplay'
 import type { PendingStatus } from '@/features/products/hooks/useProductStatusActions'
 import type { ProductResponse } from '@/types/res/adminProductsRes'
 import { formatMoney } from '@/utils/format'
 
 /*
-  Danh sách sản phẩm của /admin/products. Người dùng 12/10/2026: "phải là 1 list khi ấn vào thì mới hiển thị chi tiết" –
+  Danh sách sản phẩm của /admin/products. Người dùng 12/10/2026: "phải là 1 list khi ấn vào thì mới hiển thị chi tiết" -
   mỗi dòng chỉ giữ thứ để nhận ra và so nhanh (ảnh, tên, SKU, loại, hãng, công suất, giá, trạng thái); model, kích thước,
   nhóm hàng, thông số nằm ở trang chi tiết /admin/products/:id. Rồi "tại sao lại không để cái nút này ở ngoài luôn cho
   tiện": Sửa / Ngừng bán / Xoá có cả trên từng dòng (ProductActions compact) lẫn ở trang chi tiết.
@@ -31,7 +36,7 @@ export function ProductsTable({
   detailPath: (id: string) => string
   /** Gửi kèm link tới trang chi tiết (vd. địa chỉ danh sách để quay về đúng bộ lọc). */
   linkState?: unknown
-  /** sản phẩm đang chờ đổi trạng thái (id → việc đang làm), để khoá thao tác của đúng những dòng đó */
+  /** Sản phẩm đang chờ đổi trạng thái (theo id), để khoá thao tác của đúng những dòng đó */
   pending?: ReadonlyMap<string, PendingStatus>
   onEdit: (product: ProductResponse) => void
   onHide: (product: ProductResponse) => void

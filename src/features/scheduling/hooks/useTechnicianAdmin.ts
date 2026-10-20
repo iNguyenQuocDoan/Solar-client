@@ -54,7 +54,7 @@ export function useTechnicianScheduleQuery(id: string | undefined, date: string)
 
 /*
  * Mọi thay đổi cấu hình có thể đổi giờ trống của khách và đường đi đã lưu (backend xếp hàng tính lại): làm mới cả cụm
- * kỹ thuật viên – hồ sơ, giờ làm, lịch nghỉ, lịch ngày – kể cả khi lỗi.
+ * kỹ thuật viên, hồ sơ, giờ làm, lịch nghỉ, lịch ngày, kể cả khi lỗi.
  */
 function useInvalidateTechnicians() {
   const queryClient = useQueryClient()

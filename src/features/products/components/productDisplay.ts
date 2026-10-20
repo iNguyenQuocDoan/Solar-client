@@ -1,5 +1,9 @@
 import type { Tone } from '@/components/common/ui/badge'
-import type { ProductListParams, ProductSortBy, ProductSortDirection } from '@/features/products/services/productService'
+import type {
+  ProductListParams,
+  ProductSortBy,
+  ProductSortDirection,
+} from '@/features/products/services/productService'
 import type { ProductResponse } from '@/types/res/adminProductsRes'
 
 /*
@@ -86,7 +90,7 @@ export function formatPower(watt: number | null | undefined) {
   return `${new Intl.NumberFormat('vi-VN').format(watt)} W`
 }
 
-/** Kích thước rộng × cao (mm). */
+/** Kích thước rộng x cao (mm). */
 export function formatSize(product: Pick<ProductResponse, 'widthMm' | 'heightMm'>) {
   if (product.widthMm == null || product.heightMm == null) return null
   const n = new Intl.NumberFormat('vi-VN')

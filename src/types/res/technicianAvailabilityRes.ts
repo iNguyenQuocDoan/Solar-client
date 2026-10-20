@@ -1,7 +1,7 @@
 /*
- * VIẾT TAY – swagger chỉ khai "200 OK" cho tag TechnicianAvailability, không có schema response.
+ * VIẾT TAY, swagger chỉ khai "200 OK" cho tag TechnicianAvailability, không có schema response.
  * Tên kiểu và field lấy đúng theo SmartSolar.Modules.Scheduling.PreSurveyAppointments.Views
- * (TechnicianAvailabilityView, AvailableTechnicianView, TravelEstimateView – backend main 4d12e4d,
+ * (TechnicianAvailabilityView, AvailableTechnicianView, TravelEstimateView, backend main 4d12e4d,
  * 12/10/2026). TravelEstimateView dùng chung cho lịch kỹ thuật viên. Khi backend khai response trong
  * swagger, `npm run gen:api` sẽ ghi đè file này bằng bản sinh tự động.
  */
@@ -34,7 +34,7 @@ export type TravelEstimateView = {
   durationSeconds: number | null
   safetyBufferMinutes: number
   estimatedArrivalAt: string | null
-  /** OK, ROUTE_NOT_FOUND, QUOTA_EXCEEDED, RATE_LIMITED, TIMEOUT, PROVIDER_UNAVAILABLE, … */
+  /** OK, ROUTE_NOT_FOUND, QUOTA_EXCEEDED, RATE_LIMITED, TIMEOUT, PROVIDER_UNAVAILABLE, ... */
   routeCalculationStatus: string
   congestion: TravelCongestionView
   /** Đang chỉ có "HISTORICAL_ESTIMATE". */

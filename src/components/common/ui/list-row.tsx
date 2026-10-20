@@ -17,7 +17,14 @@ export function ListRow({
   className?: string
   children: ReactNode
 }) {
-  const rule = tone === 'danger' ? 'border-l-danger' : tone === 'warn' ? 'border-l-warn' : tone === 'accent' ? 'border-l-accent' : undefined
+  const rule =
+    tone === 'danger'
+      ? 'border-l-danger'
+      : tone === 'warn'
+        ? 'border-l-warn'
+        : tone === 'accent'
+          ? 'border-l-accent'
+          : undefined
   return (
     <li
       aria-current={selected ? 'true' : undefined}

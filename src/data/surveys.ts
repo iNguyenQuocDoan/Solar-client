@@ -18,7 +18,7 @@ export type SurveySeverity = 'none' | 'light' | 'moderate' | 'heavy'
 export type SurveyObstacle = {
   id: string
   icon: string
-  /** Màu icon theo thiết kế: secondary cho cây, muted cho ống khói… */
+  /** Màu icon theo thiết kế: secondary cho cây, muted cho ống khói... */
   iconTone: 'primary' | 'secondary' | 'muted'
   title: string
   description: string
@@ -293,7 +293,7 @@ export function getSurveyById(id: string | undefined): SurveyRecord | undefined 
 }
 
 /* ------------------------------------------------------------------------------------------------
- * Màn 9 – /tech/surveys/:id/verify (site_survey_verification)
+ * Màn 9, /tech/surveys/:id/verify (site_survey_verification)
  * Phần mở rộng, không sửa dữ liệu của màn 8. Mọi con số đo đạc suy ra từ `surveys` ở trên để ba màn
  * của cùng một survey không mâu thuẫn (xem ghi chú từng field).
  * ---------------------------------------------------------------------------------------------- */
@@ -412,7 +412,7 @@ const surveyVerifications: Record<string, SurveyVerification> = {
       badge: 'Khách tự khai',
       blueprint: {
         label: 'Ước tính theo bản vẽ mái',
-        // 12.5m × 6.8m ≈ 41ft × 22ft ≈ 915 sq ft, khớp "85 m²" ở màn 8
+        // 12.5m x 6.8m ~41ft x 22ft ~915 sq ft, khớp "85 m²" ở màn 8
         length: '41 ft',
         width: '22 ft',
         area: '~915 ft²',
@@ -453,14 +453,14 @@ const surveyVerifications: Record<string, SurveyVerification> = {
       title: 'Kích thước mái đã xác minh',
       subtitle: 'Đo trên mái bằng thiết bị đã hiệu chuẩn',
       badge: 'Đồng bộ laser trực tiếp',
-      // 40.5 × 20.9 ≈ 846 sq ft ≈ 78.5 m² – đúng "Verified Usable Area" của màn 8
+      // 40.5 x 20.9 ~846 sq ft ~78.5 m², đúng "Verified Usable Area" của màn 8
       length: { label: 'Chiều dài sử dụng được (ft)', value: '40.5', footnote: 'Khách khai: 41 ft' },
       width: { label: 'Chiều rộng sử dụng được (ft)', value: '20.9', footnote: 'Chừa mép mái: 2 ft' },
       area: { label: 'Diện tích sử dụng thực', unit: 'ft²', footnote: 'Đủ cho hơn 22 tấm' },
       tilt: {
         label: 'Độ dốc / nghiêng đo được',
         syncLabel: 'Lấy số từ thước đo nghiêng',
-        // Màn 8 chốt pitch 28°, baseline 25° → lệch +3°
+        // Màn 8 chốt pitch 28°, baseline 25° nên lệch +3°
         value: '28°',
         footnote: 'Chênh lệch: +3° so với khách ước tính',
       },
@@ -505,7 +505,7 @@ const surveyVerifications: Record<string, SurveyVerification> = {
       badge: 'Ưu tiên cho kinh doanh',
       capacity: {
         label: 'Công suất hệ thống đề xuất',
-        // Màn 8: 22 tấm 400W; GIS 1,420 kWh/kWp × 8.8 kW ≈ 12,400 kWh/năm
+        // Màn 8: 22 tấm 400W; GIS 1,420 kWh/kWp x 8.8 kW ~12,400 kWh/năm
         value: '8.8 kW DC (22 tấm Tier-1 400W)',
         caption: 'Sản lượng ước tính: 12,400 kWh/năm',
       },
@@ -516,8 +516,7 @@ const surveyVerifications: Record<string, SurveyVerification> = {
       },
       notes: {
         label: 'Ghi chú kết cấu & kỹ thuật',
-        value:
-          'Xà gồ chắc chắn, không cần gia cố, bức xạ mặt trời rất tốt. Dễ đấu nối cọc tiếp địa.',
+        value: 'Xà gồ chắc chắn, không cần gia cố, bức xạ mặt trời rất tốt. Dễ đấu nối cọc tiếp địa.',
       },
       risk: {
         label: 'Đánh giá rủi ro kỹ thuật',

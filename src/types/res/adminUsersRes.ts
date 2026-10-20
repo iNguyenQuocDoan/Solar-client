@@ -1,5 +1,5 @@
 /*
- * VIẾT TAY – swagger chỉ khai "200 OK" cho tag AdminUsers, không có schema response.
+ * VIẾT TAY, swagger chỉ khai "200 OK" cho tag AdminUsers, không có schema response.
  * Tên kiểu và field lấy đúng theo SmartSolar.Modules.Identity.AdminUsers.AdminUserContracts và
  * Contracts.Persistence.IAdminUserStore (backend main 4d12e4d, 12/10/2026). Phản hồi không bao giờ
  * chứa mật khẩu, token hay link kích hoạt. Khi backend khai response trong swagger, `npm run gen:api`
@@ -75,7 +75,7 @@ export type UpdatedAdminUser = {
   activation: ActivationState | null
 }
 
-/** POST …/send-password-reset (202). */
+/** POST .../send-password-reset (202). */
 export type RecoveryIssued = {
   userId: string
   activation: ActivationState

@@ -4,22 +4,14 @@ import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import type { SimulationDetail, WorldPoint } from '@/types/res/simulationsRes'
 
-/*
-  Cảnh 3D của một lần mô phỏng, dựng thẳng từ toạ độ backend trả về (không tự tính lại bố trí):
-  - Hệ thế giới của backend: E = Đông, N = Bắc, U = lên, mét, gốc là góc trên-trái mặt lắp. Dùng nguyên X = Đông,
-    Y = Bắc, Z = lên và đặt camera.up = (0, 0, 1) nên quaternion của từng tấm áp thẳng, không phải đổi cơ sở.
-  - Tấm pin: hộp đơn vị có mặt trước ở z = 0, độ dày về -z (đúng `layout.details.frame.panelFrame`), phóng theo
-    physical (rộng, dài, dày), đặt ở worldCenter với worldRotation. Một InstancedMesh cho mọi tấm (tới 5.000 tấm).
-  - Mặt mái theo surfaceCornersWorld; vật cản theo baseCornersWorld + chiều cao dọc pháp tuyến mặt mái.
-  - Thân nhà chỉ để minh hoạ: tường thả từ mép mái xuống mặt đất thấp hơn góc thấp nhất 4 m.
-  Tách module để three.js chỉ tải khi mở góc nhìn 3D (React.lazy). Vẽ theo yêu cầu (frameloop "demand").
-  Màu vật liệu là hex cố định vì three.js không đọc được token oklch; cùng tông với --pv-glass / --pv-frame của mặt bằng 2D.
-*/
+// Cảnh 3D dựng từ toạ độ backend trả về. Trục: X = Đông, Y = Bắc, Z = lên (camera.up = Z)
+// Tấm pin vẽ bằng một InstancedMesh (tới 5.000 tấm). Thân nhà chỉ để minh hoạ
+// Tách file để three.js chỉ tải khi mở góc nhìn 3D
 
 export type SceneView = 'angle' | 'top' | 'front'
 
 const WALL_HEIGHT = 4
-/** Vật cản chưa khai chiều cao: vẽ một tấm mỏng để vẫn thấy vị trí. */
+/** Vật cản chưa có chiều cao: vẽ tấm mỏng để vẫn thấy vị trí */
 const FLAT_OBSTACLE_M = 0.15
 const COLORS = {
   wall: '#d5d9cf',
@@ -37,7 +29,7 @@ const GROUND = {
 
 const v3 = (p: WorldPoint) => new THREE.Vector3(p.e, p.n, p.u)
 
-/* Trang đang ở giao diện tối? Đọc color-scheme của <html> (globals.css đặt theo hệ thống hoặc data-theme), theo dõi khi đổi. */
+// Theo dõi giao diện sáng / tối của trang
 function useDarkScheme() {
   const read = () => getComputedStyle(document.documentElement).colorScheme.includes('dark')
   const [dark, setDark] = useState(read)
@@ -55,7 +47,6 @@ function useDarkScheme() {
   return dark
 }
 
-/** Lăng trụ 8 đỉnh: 4 đỉnh đáy + 4 đỉnh đỉnh cùng thứ tự (đủ cho thân nhà và vật cản). */
 function prism(bottom: THREE.Vector3[], top: THREE.Vector3[]) {
   const v = [...bottom, ...top]
   const faces = [
@@ -77,7 +68,14 @@ function prism(bottom: THREE.Vector3[], top: THREE.Vector3[]) {
 }
 
 function Building({ corners, groundZ }: { corners: THREE.Vector3[]; groundZ: number }) {
-  const geometry = useMemo(() => prism(corners.map((c) => new THREE.Vector3(c.x, c.y, groundZ)), corners), [corners, groundZ])
+  const geometry = useMemo(
+    () =>
+      prism(
+        corners.map((c) => new THREE.Vector3(c.x, c.y, groundZ)),
+        corners,
+      ),
+    [corners, groundZ],
+  )
   useEffect(() => () => geometry.dispose(), [geometry])
   return (
     <mesh geometry={geometry}>
@@ -86,13 +84,19 @@ function Building({ corners, groundZ }: { corners: THREE.Vector3[]; groundZ: num
   )
 }
 
-/* Mặt mái: tứ giác theo surfaceCornersWorld, nhích 1 cm theo pháp tuyến để không chập với đỉnh thân nhà. */
+// Nhích 1 cm để không chập với đỉnh thân nhà
 function Roof({ corners, normal }: { corners: THREE.Vector3[]; normal: THREE.Vector3 }) {
   const geometry = useMemo(() => {
     const lift = normal.clone().multiplyScalar(0.01)
     const [a, b, c, d] = corners.map((p) => p.clone().add(lift))
     const g = new THREE.BufferGeometry()
-    g.setAttribute('position', new THREE.Float32BufferAttribute([a, b, c, a, c, d].flatMap((p) => [p!.x, p!.y, p!.z]), 3))
+    g.setAttribute(
+      'position',
+      new THREE.Float32BufferAttribute(
+        [a, b, c, a, c, d].flatMap((p) => [p!.x, p!.y, p!.z]),
+        3,
+      ),
+    )
     g.computeVertexNormals()
     return g
   }, [corners, normal])
@@ -107,7 +111,10 @@ function Roof({ corners, normal }: { corners: THREE.Vector3[]; normal: THREE.Vec
 function Obstacle({ base, height, normal }: { base: THREE.Vector3[]; height: number; normal: THREE.Vector3 }) {
   const geometry = useMemo(() => {
     const up = normal.clone().multiplyScalar(height)
-    return prism(base, base.map((p) => p.clone().add(up)))
+    return prism(
+      base,
+      base.map((p) => p.clone().add(up)),
+    )
   }, [base, height, normal])
   useEffect(() => () => geometry.dispose(), [geometry])
   return (
@@ -117,7 +124,6 @@ function Obstacle({ base, height, normal }: { base: THREE.Vector3[]; height: num
   )
 }
 
-/* Mặt trước tấm pin: kính tối, khung sáng, vân cell 6 × 10 theo cạnh dài (u theo bề rộng, v theo chiều dài tấm). */
 function panelFaceTexture(widthM: number, lengthM: number) {
   const LONG = 256
   const w = widthM >= lengthM ? LONG : Math.max(16, Math.round((LONG * widthM) / lengthM))
@@ -164,8 +170,15 @@ function Panels({ detail }: { detail: SimulationDetail }) {
     const face = panelFaceTexture(physicalW, physicalL)
     face.anisotropy = maxAnisotropy
     const side = new THREE.MeshStandardMaterial({ color: COLORS.frame, metalness: 0.3, roughness: 0.6 })
-    // Thứ tự mặt của BoxGeometry: +x, -x, +y, -y, +z (mặt trước), -z (mặt sau).
-    return [side, side, side, side, new THREE.MeshStandardMaterial({ map: face, metalness: 0.2, roughness: 0.5 }), new THREE.MeshStandardMaterial({ color: COLORS.back })]
+    // Thứ tự mặt của BoxGeometry: +x, -x, +y, -y, +z (trước), -z (sau)
+    return [
+      side,
+      side,
+      side,
+      side,
+      new THREE.MeshStandardMaterial({ map: face, metalness: 0.2, roughness: 0.5 }),
+      new THREE.MeshStandardMaterial({ color: COLORS.back }),
+    ]
   }, [physicalW, physicalL, maxAnisotropy])
   useEffect(
     () => () => {
@@ -199,8 +212,18 @@ function Panels({ detail }: { detail: SimulationDetail }) {
   return <instancedMesh ref={ref} args={[geometry, materials, placements.length]} />
 }
 
-/* Chữ chỉ hướng trên mặt đất (B, Đ, N, T), vẽ bằng canvas để không phải tải font 3D. */
-function Letter({ text, color, position, size }: { text: string; color: string; position: [number, number, number]; size: number }) {
+// Vẽ chữ bằng canvas để khỏi tải font 3D
+function Letter({
+  text,
+  color,
+  position,
+  size,
+}: {
+  text: string
+  color: string
+  position: [number, number, number]
+  size: number
+}) {
   const texture = useMemo(() => {
     const canvas = document.createElement('canvas')
     canvas.width = canvas.height = 128
@@ -222,7 +245,17 @@ function Letter({ text, color, position, size }: { text: string; color: string; 
   )
 }
 
-function Ground({ center, z, radius, letterRadius }: { center: THREE.Vector3; z: number; radius: number; letterRadius: number }) {
+function Ground({
+  center,
+  z,
+  radius,
+  letterRadius,
+}: {
+  center: THREE.Vector3
+  z: number
+  radius: number
+  letterRadius: number
+}) {
   const palette = useDarkScheme() ? GROUND.dark : GROUND.light
   const size = Math.max(letterRadius * 0.12, 2)
   const at = (dx: number, dy: number): [number, number, number] => [center.x + dx, center.y + dy, z + size / 2]
@@ -240,8 +273,17 @@ function Ground({ center, z, radius, letterRadius }: { center: THREE.Vector3; z:
   )
 }
 
-/* Xoay / phóng to của three.js (không dùng drei) quanh tâm mặt mái + đặt camera theo góc nhìn đã chọn. Trục lên là Z. */
-function Rig({ view, distance, facing, target }: { view: SceneView; distance: number; facing: THREE.Vector3; target: THREE.Vector3 }) {
+function Rig({
+  view,
+  distance,
+  facing,
+  target,
+}: {
+  view: SceneView
+  distance: number
+  facing: THREE.Vector3
+  target: THREE.Vector3
+}) {
   const camera = useThree((s) => s.camera)
   const dom = useThree((s) => s.gl.domElement)
   const invalidate = useThree((s) => s.invalidate)
@@ -253,15 +295,12 @@ function Rig({ view, distance, facing, target }: { view: SceneView; distance: nu
     controls.maxPolarAngle = Math.PI / 2 - 0.05
     controls.minDistance = 2
     controls.maxDistance = distance * 3
-    /*
-      Khung 3D cao gần bằng màn hình nên không được nuốt thao tác cuộn trang: lăn thường thì cuộn trang, Ctrl/Cmd + lăn
-      (cả chụm hai ngón trên touchpad) mới phóng to; cảm ứng vuốt dọc để cuộn trang (touch-action: pan-y).
-    */
+    // Lăn chuột thì cuộn trang, Ctrl + lăn mới phóng to
     controls.enableZoom = false
     const onWheel = (e: WheelEvent) => {
       controls.enableZoom = e.ctrlKey || e.metaKey
     }
-    // Cảm ứng: bật phóng to để chụm hai ngón dùng được (chuột thì vẫn chỉ Ctrl + lăn mới phóng to).
+    // Cảm ứng thì bật phóng to bằng chụm hai ngón
     const onPointerDown = (e: PointerEvent) => {
       if (e.pointerType === 'touch') controls.enableZoom = true
     }
@@ -286,11 +325,16 @@ function Rig({ view, distance, facing, target }: { view: SceneView; distance: nu
     const up = new THREE.Vector3(0, 0, 1)
     const side = new THREE.Vector3(facing.y, -facing.x, 0)
     if (view === 'top') {
-      // Lệch nhẹ về phía mép thấp: nhìn thẳng xuống đúng trục lên thì OrbitControls không xác định được hướng.
-      camera.position.copy(target).add(up.clone().multiplyScalar(distance * 1.15)).add(facing.clone().multiplyScalar(0.01))
+      // Lệch nhẹ vì nhìn thẳng xuống trục Z thì OrbitControls bị lỗi hướng
+      camera.position
+        .copy(target)
+        .add(up.clone().multiplyScalar(distance * 1.15))
+        .add(facing.clone().multiplyScalar(0.01))
     } else if (view === 'front') {
-      // Cao hơn một chút để chữ hướng ở phía trước nhà (giữa camera và mái) không rơi khỏi mép dưới khung.
-      camera.position.copy(target).add(facing.clone().multiplyScalar(distance * 1.1)).add(up.clone().multiplyScalar(distance * 0.5))
+      camera.position
+        .copy(target)
+        .add(facing.clone().multiplyScalar(distance * 1.1))
+        .add(up.clone().multiplyScalar(distance * 0.5))
     } else {
       camera.position
         .copy(target)
@@ -310,29 +354,40 @@ export function SimulationScene({ detail, view }: { detail: SimulationDetail; vi
   const frame = detail.layout.details.frame
   const corners = useMemo(() => frame.surfaceCornersWorld.map(v3), [frame])
   const normal = useMemo(() => v3(frame.surfaceNormalWorld).normalize(), [frame])
-  const target = useMemo(() => corners.reduce((sum, p) => sum.add(p), new THREE.Vector3()).multiplyScalar(1 / corners.length), [corners])
+  const target = useMemo(
+    () => corners.reduce((sum, p) => sum.add(p), new THREE.Vector3()).multiplyScalar(1 / corners.length),
+    [corners],
+  )
   const groundZ = Math.min(...corners.map((c) => c.z)) - WALL_HEIGHT
   const span = Math.max(detail.surface.widthM, detail.surface.lengthM)
   const distance = span * 1.3 + 10
-  // Hướng mặt mái nhìn ra trên mặt phẳng ngang: phương vị 0° = Bắc (+Y), 90° = Đông (+X).
+  // Phương vị 0° = Bắc (+Y), 90° = Đông (+X)
   const facing = useMemo(() => {
     const theta = (detail.surface.azimuthDegree * Math.PI) / 180
     return new THREE.Vector3(Math.sin(theta), Math.cos(theta), 0)
   }, [detail.surface.azimuthDegree])
   const obstacles = useMemo(
-    () => detail.surface.obstacles.map((o) => ({ base: o.baseCornersWorld.map(v3), height: o.heightM && o.heightM > 0 ? o.heightM : FLAT_OBSTACLE_M })),
+    () =>
+      detail.surface.obstacles.map((o) => ({
+        base: o.baseCornersWorld.map(v3),
+        height: o.heightM && o.heightM > 0 ? o.heightM : FLAT_OBSTACLE_M,
+      })),
     [detail.surface.obstacles],
   )
 
   return (
-    /*
-      `key` theo cỡ cảnh: prop `camera` chỉ áp lúc tạo canvas, mà khung 3D được giữ lại khi đổi sang lần chạy khác (kết quả cũ
-      giữ trên màn trong lúc tải). Đổi sang mái cỡ khác thì tạo lại canvas để mặt phẳng xa đúng (rà code 09/10/2026: mái 200 m
-      bị cắt mất).
-    */
-    <Canvas key={Math.round(distance)} frameloop="demand" dpr={[1, 2]} camera={{ fov: 40, near: 0.1, far: distance * 10, up: [0, 0, 1] }}>
+    // Đổi cỡ mái thì tạo lại canvas, vì camera chỉ áp dụng lúc tạo (mái lớn sẽ bị cắt)
+    <Canvas
+      key={Math.round(distance)}
+      frameloop="demand"
+      dpr={[1, 2]}
+      camera={{ fov: 40, near: 0.1, far: distance * 10, up: [0, 0, 1] }}
+    >
       <ambientLight intensity={0.75} />
-      <directionalLight position={[target.x + distance * 0.3, target.y - distance * 0.4, target.z + distance]} intensity={1.5} />
+      <directionalLight
+        position={[target.x + distance * 0.3, target.y - distance * 0.4, target.z + distance]}
+        intensity={1.5}
+      />
       <Building corners={corners} groundZ={groundZ} />
       <Roof corners={corners} normal={normal} />
       {obstacles.map((o, i) => (

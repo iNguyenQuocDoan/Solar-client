@@ -12,7 +12,13 @@ import { DeleteProductDialog } from '@/features/products/components/DeleteProduc
 import { HideProductDialog } from '@/features/products/components/ProductActions'
 import { ProductFormDialog } from '@/features/products/components/ProductFormDialog'
 import { ProductsTable } from '@/features/products/components/ProductsTable'
-import { PRODUCT_SORT_OPTIONS, SOLAR_PANEL_QUERY, panelSpecGaps, parseSort, productTypeLabel } from '@/features/products/components/productDisplay'
+import {
+  PRODUCT_SORT_OPTIONS,
+  SOLAR_PANEL_QUERY,
+  panelSpecGaps,
+  parseSort,
+  productTypeLabel,
+} from '@/features/products/components/productDisplay'
 import { useHiddenProducts } from '@/features/products/hiddenProducts'
 import { useProductOptions } from '@/features/products/hooks/useProductOptions'
 import { useProductStatusActions } from '@/features/products/hooks/useProductStatusActions'
@@ -40,7 +46,11 @@ export function AdminProductsPage() {
   const location = useLocation()
   const [params, setParams] = useSearchParams()
   const urlSearch = params.get('q') ?? ''
-  const filter = { productType: params.get('loai') ?? '', brand: params.get('hang') ?? '', sort: params.get('sapxep') ?? DEFAULT_SORT }
+  const filter = {
+    productType: params.get('loai') ?? '',
+    brand: params.get('hang') ?? '',
+    sort: params.get('sapxep') ?? DEFAULT_SORT,
+  }
   const page = Math.max(1, Number.parseInt(params.get('trang') ?? '', 10) || 1)
   // Ô tìm gõ vào state riêng; giá trị đã ngừng gõ mới ghi lên địa chỉ (và mới gọi API).
   const [searchText, setSearchText] = useState(urlSearch)
@@ -146,7 +156,12 @@ export function AdminProductsPage() {
       <FilterBar>
         <label className="min-w-0 flex-1 basis-64">
           <span className="sr-only">Tìm sản phẩm</span>
-          <SearchInput name="search" placeholder="Tìm theo tên, SKU, hãng" value={searchText} onChange={(e) => setSearchText(e.target.value)} />
+          <SearchInput
+            name="search"
+            placeholder="Tìm theo tên, SKU, hãng"
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
+          />
         </label>
         {/* Loại và hãng là danh sách chọn từ dữ liệu thật: backend chỉ lọc khớp đúng cả chuỗi. Đang lọc thì ô tô màu. */}
         <label className="w-full sm:w-52">
@@ -167,7 +182,12 @@ export function AdminProductsPage() {
         </label>
         <label className="w-full sm:w-44">
           <span className="sr-only">Hãng</span>
-          <Select name="brand" active={filter.brand !== ''} value={filter.brand} onChange={(e) => updateFilter({ hang: e.target.value })}>
+          <Select
+            name="brand"
+            active={filter.brand !== ''}
+            value={filter.brand}
+            onChange={(e) => updateFilter({ hang: e.target.value })}
+          >
             <option value="">Tất cả hãng</option>
             {options.brands.map((brand) => (
               <option key={brand} value={brand}>
@@ -197,9 +217,18 @@ export function AdminProductsPage() {
         )}
       </FilterBar>
 
-      <section ref={listRef} tabIndex={-1} aria-label="Danh sách sản phẩm" aria-live="polite" aria-busy={query.isFetching}>
+      <section
+        ref={listRef}
+        tabIndex={-1}
+        aria-label="Danh sách sản phẩm"
+        aria-live="polite"
+        aria-busy={query.isFetching}
+      >
         {query.isError ? (
-          <ErrorState message={errorMessage(query.error, 'Không tải được danh sách sản phẩm.')} onRetry={() => query.refetch()} />
+          <ErrorState
+            message={errorMessage(query.error, 'Không tải được danh sách sản phẩm.')}
+            onRetry={() => query.refetch()}
+          />
         ) : loading ? (
           <div aria-label="Đang tải" className="space-y-4">
             {Array.from({ length: 5 }, (_, i) => (

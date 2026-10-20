@@ -83,9 +83,16 @@ export function OpsSurveysPage() {
         <QueryBoundary query={pending}>
           {(rows) =>
             rows.length === 0 ? (
-              <EmptyState title="Chưa có yêu cầu nào chờ nhận" description="Yêu cầu mới xuất hiện ở đây khi khách hàng gửi bản đánh giá sơ bộ." />
+              <EmptyState
+                title="Chưa có yêu cầu nào chờ nhận"
+                description="Yêu cầu mới xuất hiện ở đây khi khách hàng gửi bản đánh giá sơ bộ."
+              />
             ) : (
-              <PendingRequestList rows={rows} claimingId={claim.isPending ? (claim.variables ?? null) : null} onClaim={onClaim} />
+              <PendingRequestList
+                rows={rows}
+                claimingId={claim.isPending ? (claim.variables ?? null) : null}
+                onClaim={onClaim}
+              />
             )
           }
         </QueryBoundary>

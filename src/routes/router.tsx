@@ -6,7 +6,7 @@ import { publicRoutes } from '@/routes/publicRoutes'
 
 /*
   Điều hướng:
-    /            landing công khai, /login … /verify-email, /403, /coming-soon
+    /            landing công khai, /login ... /verify-email, /403, /coming-soon
     /customer    khách hàng        (role customer)
     /ops         kinh doanh        (role sales)
     /admin       quản trị viên     (role admin)

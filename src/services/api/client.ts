@@ -12,8 +12,8 @@ import type { AuthTokensResponse } from '@/types/res/authRes'
  * - Response: mở wrapper *ApiResponse ({ isSuccess, traceId, data, error }) và trả thẳng `data`;
  *   lỗi thì ném ApiError.
  * - 401: gọi /auth/refresh theo kiểu single-flight (nhiều request cùng 401 chỉ refresh 1 lần,
- *   các request còn lại xếp hàng chờ rồi retry). Refresh hỏng → xoá phiên + bắn "session-expired".
- *   Chỉ lỗi của chính lần refresh mới tính là hết phiên; request gửi lại mà lỗi (400, 409, 5xx…) thì
+ *   các request còn lại xếp hàng chờ rồi retry). Refresh hỏng thì xoá phiên + bắn "session-expired".
+ *   Chỉ lỗi của chính lần refresh mới tính là hết phiên; request gửi lại mà lỗi (400, 409, 5xx...) thì
  *   trả nguyên lỗi đó cho màn hình.
  * - Backend thu hồi MỌI phiên khi một refresh token đã dùng bị gửi lại, nên refresh giữa các tab được
  *   xếp hàng bằng Web Locks và luôn đọc refresh token mới nhất ngay trước khi gửi.
@@ -66,7 +66,6 @@ apiClient.interceptors.request.use((config) => {
 
 /* ---------------------------------------------------------------- refresh */
 
-
 /** Promise của lần refresh đang chạy; các 401 khác chờ vào đây thay vì gọi thêm. */
 let refreshInFlight: Promise<string> | null = null
 
@@ -90,7 +89,7 @@ async function requestNewAccessToken(): Promise<string> {
     throw new ApiError({ status: 401, message: 'Phiên đăng nhập không còn hiệu lực.' })
   }
 
-  // Giữ nguyên nơi lưu cũ (local hay session) – không truyền `remember`.
+  // Giữ nguyên nơi lưu cũ (local hay session), không truyền `remember`.
   saveTokens({
     accessToken: tokens.accessToken,
     accessTokenExpiresAt: tokens.accessTokenExpiresAt,

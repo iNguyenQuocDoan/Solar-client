@@ -6,7 +6,9 @@ import { useProductsQuery } from '@/features/products/hooks/useProducts'
 const ALL_PRODUCTS = { PageSize: 100, SortBy: 'name', SortDirection: 'asc' } as const
 
 const unique = (values: (string | null | undefined)[]) =>
-  [...new Set(values.map((v) => v?.trim()).filter((v): v is string => Boolean(v)))].sort((a, b) => a.localeCompare(b, 'vi'))
+  [...new Set(values.map((v) => v?.trim()).filter((v): v is string => Boolean(v)))].sort((a, b) =>
+    a.localeCompare(b, 'vi'),
+  )
 
 /*
   Bộ lọc của danh sách và gợi ý của form thêm / sửa sản phẩm, lấy từ dữ liệu thật (backend chỉ lọc khớp đúng cả chuỗi).

@@ -14,8 +14,7 @@ const variantClasses: Record<ButtonVariant, string> = {
   secondary:
     'border-[1.5px] border-primary-container bg-surface-container-lowest text-primary-container hover:bg-surface-container-low',
   /* Orange remains a brand accent; dark ink is the AA pair on the bright fill (4.54:1). */
-  accent:
-    'bg-secondary-container text-on-secondary-container shadow-sm hover:bg-secondary hover:text-on-secondary',
+  accent: 'bg-secondary-container text-on-secondary-container shadow-sm hover:bg-secondary hover:text-on-secondary',
   tonal: 'bg-surface-container-lowest text-primary shadow-sm hover:bg-surface-container-low',
   ghost: 'bg-surface-container-low text-primary hover:bg-surface-container',
   neutral: 'bg-surface-container text-on-surface hover:bg-surface-container-high',
@@ -91,7 +90,7 @@ export type IconButtonProps = Omit<ComponentProps<'button'>, 'children'> & {
   size?: 'sm' | 'md'
 }
 
-/** Nút vuông chỉ có icon – cột action trong bảng, nút zoom/replace trên ảnh… */
+/** Nút vuông chỉ có icon, cột action trong bảng, nút zoom/replace trên ảnh... */
 export function IconButton({ icon, label, size = 'sm', className, type = 'button', ...rest }: IconButtonProps) {
   return (
     <button

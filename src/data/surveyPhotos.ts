@@ -1,5 +1,5 @@
 /*
- * Dữ liệu giả cho /tech/surveys/:id/photos – dựng từ survey_image_documentation/screen.png.
+ * Dữ liệu giả cho /tech/surveys/:id/photos, dựng từ survey_image_documentation/screen.png.
  * Dùng chung survey id với data/surveys.ts (SS-8842): mã dự án, khách hàng, địa chỉ, thông số
  * mái và tủ điện phải khớp với màn 8 và màn 9.
  *
@@ -211,8 +211,7 @@ const surveyPhotoDocs: Record<string, SurveyPhotoDoc> = {
         icon: 'bolt',
         iconTone: 'secondary',
         title: 'Mục B: Tủ điện & công tơ',
-        description:
-          'Kiểm tra dây điện vào nhà, chỉ số công tơ, định mức thanh cái chính và mối nối cọc tiếp địa.',
+        description: 'Kiểm tra dây điện vào nhà, chỉ số công tơ, định mức thanh cái chính và mối nối cọc tiếp địa.',
         requiredCount: 2,
         requirementLabel: 'Tối thiểu 2 ảnh (đã đủ)',
         requirementTone: 'success',
@@ -232,8 +231,7 @@ const surveyPhotoDocs: Record<string, SurveyPhotoDoc> = {
               elevation: '78m so với mực nước biển',
               lens: '24mm (f/2.0)',
               annotations: 1,
-              notes:
-                'Vỏ tủ ngoài trời còn tốt. Đo được khoảng trống thao tác 36 inch trước nắp che.',
+              notes: 'Vỏ tủ ngoài trời còn tốt. Đo được khoảng trống thao tác 36 inch trước nắp che.',
             },
           },
           {
@@ -295,8 +293,7 @@ const surveyPhotoDocs: Record<string, SurveyPhotoDoc> = {
               lens: '24mm (f/1.8)',
               annotations: 0,
               // Khớp đề xuất microinverter IQ8M của màn 8 và màn 9
-              notes:
-                'Tường Bắc gara đủ chỗ cho bộ gom IQ8M. Ống luồn dây về tủ điện chính dài khoảng 35 ft.',
+              notes: 'Tường Bắc gara đủ chỗ cho bộ gom IQ8M. Ống luồn dây về tủ điện chính dài khoảng 35 ft.',
             },
           },
         ],
@@ -327,8 +324,7 @@ const surveyPhotoDocs: Record<string, SurveyPhotoDoc> = {
         icon: 'nature',
         iconTone: 'neutral',
         title: 'Mục D: Bóng che & vật cản',
-        description:
-          'Ghi lại cây lớn gần nhà, cửa mái, ống khói và ống thông hơi có thể che bóng làm giảm sản lượng.',
+        description: 'Ghi lại cây lớn gần nhà, cửa mái, ống khói và ống thông hơi có thể che bóng làm giảm sản lượng.',
         requiredCount: 0,
         requirementLabel: 'Tuỳ chọn / khi cần',
         requirementTone: 'neutral',
@@ -392,7 +388,7 @@ export type SurveyPhotoProgress = {
   required: number
   percent: number
   remaining: number
-  /** "Mục A (2/3), Mục B (2/2), …" */
+  /** "Mục A (2/3), Mục B (2/2), ..." */
   breakdown: string
 }
 

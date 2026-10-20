@@ -5,7 +5,7 @@ export const USER_ROLES = ['customer', 'technician', 'sales', 'manager', 'admin'
 
 export type UserRole = (typeof USER_ROLES)[number]
 
-/** Nhãn tiếng Việt – dùng cho chip vai trò và trang /403. */
+/** Nhãn tiếng Việt, dùng cho chip vai trò và trang /403. */
 export const roleLabels: Record<UserRole, string> = {
   customer: 'Khách hàng',
   technician: 'Kỹ thuật viên',
@@ -15,7 +15,7 @@ export const roleLabels: Record<UserRole, string> = {
 }
 
 /*
- * Giá trị claim `role` trong JWT → vai trò của web.
+ * Đổi giá trị claim `role` trong JWT sang vai trò của web.
  * So khớp không phân biệt hoa thường; thêm vài biến thể hay gặp phía .NET.
  * Nếu backend phát giá trị khác, bổ sung vào bảng này (chỉ sửa 1 chỗ).
  */
@@ -45,7 +45,10 @@ export function canChangeOwnPassword(role: UserRole | undefined) {
 const ROLE_PRIORITY: UserRole[] = ['admin', 'manager', 'sales', 'technician', 'customer']
 
 function normalize(value: string) {
-  return value.trim().toLowerCase().replace(/[\s_-]/g, '')
+  return value
+    .trim()
+    .toLowerCase()
+    .replace(/[\s_-]/g, '')
 }
 
 /** Đổi một giá trị claim thành UserRole; không nhận ra thì trả null. */
@@ -53,9 +56,7 @@ export function parseRole(value: unknown): UserRole | null {
   if (typeof value === 'string') return ROLE_ALIASES[normalize(value)] ?? null
 
   if (Array.isArray(value)) {
-    const found = value
-      .map((item) => parseRole(item))
-      .filter((role): role is UserRole => role !== null)
+    const found = value.map((item) => parseRole(item)).filter((role): role is UserRole => role !== null)
     if (found.length === 0) return null
     return ROLE_PRIORITY.find((role) => found.includes(role)) ?? found[0] ?? null
   }
@@ -63,7 +64,7 @@ export function parseRole(value: unknown): UserRole | null {
   return null
 }
 
-/** Trang đích sau đăng nhập theo vai trò – mỗi vai trò có một portal. */
+/** Trang đích sau đăng nhập theo vai trò, mỗi vai trò có một portal. */
 export function homePathForRole(role: UserRole): string {
   switch (role) {
     case 'admin':

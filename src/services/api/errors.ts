@@ -88,17 +88,21 @@ const ERROR_MESSAGES: Record<string, string> = {
   SURVEY_REQUEST_NOT_FOUND: 'Không tìm thấy yêu cầu khảo sát.',
   SURVEY_REQUEST_NOT_ASSIGNED: 'Yêu cầu này không do bạn phụ trách nên không xem được chi tiết.',
   // Mặt lắp + mô phỏng (PreSurveyErrorCodes, SimulationErrorCodes trong image 09/10/2026, dò ngày 09/10/2026)
-  PRE_SURVEY_CONCURRENTLY_MODIFIED: 'Bản đánh giá vừa được sửa ở nơi khác (tab hoặc máy khác). Tải lại bản mới nhất rồi lưu lại.',
+  PRE_SURVEY_CONCURRENTLY_MODIFIED:
+    'Bản đánh giá vừa được sửa ở nơi khác (tab hoặc máy khác). Tải lại bản mới nhất rồi lưu lại.',
   SIMULATION_VALIDATION_FAILED: 'Cấu hình mô phỏng chưa hợp lệ. Kiểm tra lại các ô được đánh dấu.',
   SURFACE_NOT_DEFINED: 'Chưa lưu mặt lắp. Lưu kích thước mặt lắp rồi chạy mô phỏng.',
   PRODUCT_NOT_FOUND: 'Tấm pin này không còn bán. Chọn tấm pin khác.',
   PRODUCT_NOT_SOLAR_PANEL: 'Sản phẩm đã chọn không phải tấm pin. Chọn tấm pin khác.',
   PRODUCT_SPEC_INCOMPLETE: 'Tấm pin này thiếu công suất hoặc kích thước nên chưa mô phỏng được. Chọn tấm pin khác.',
-  INSTALLATION_BELOW_DOCUMENTED_MINIMUM: 'Khoảng cách đã nhập nhỏ hơn mức tối thiểu trong tài liệu của nhà sản xuất. Tăng khoảng cách rồi chạy lại.',
+  INSTALLATION_BELOW_DOCUMENTED_MINIMUM:
+    'Khoảng cách đã nhập nhỏ hơn mức tối thiểu trong tài liệu của nhà sản xuất. Tăng khoảng cách rồi chạy lại.',
   INSTALLATION_PARAMETER_REQUIRED: 'Thiếu một khoảng cách lắp đặt bắt buộc. Nhập đủ các ô khoảng cách rồi chạy lại.',
-  PANEL_FACES_INTO_SURFACE: 'Với góc và hướng này, mặt tấm pin sẽ quay vào mặt mái. Đổi hướng tấm hoặc giảm góc nghiêng.',
+  PANEL_FACES_INTO_SURFACE:
+    'Với góc và hướng này, mặt tấm pin sẽ quay vào mặt mái. Đổi hướng tấm hoặc giảm góc nghiêng.',
   PANEL_ORIENTATION_UNSUPPORTED: 'Bản mô phỏng chưa hỗ trợ góc và hướng tấm pin này. Thử góc nghiêng hoặc hướng khác.',
-  SIMULATION_LAYOUT_LIMIT_EXCEEDED: 'Bố trí vượt 5.000 tấm, giới hạn của bản mô phỏng sơ bộ. Thu nhỏ mặt lắp hoặc chọn tấm pin lớn hơn.',
+  SIMULATION_LAYOUT_LIMIT_EXCEEDED:
+    'Bố trí vượt 5.000 tấm, giới hạn của bản mô phỏng sơ bộ. Thu nhỏ mặt lắp hoặc chọn tấm pin lớn hơn.',
   SIMULATION_SOURCE_CHANGED: 'Mặt lắp vừa thay đổi sau lần tải trước. Đã tải lại mặt lắp, hãy chạy mô phỏng lại.',
   SIMULATION_NOT_FOUND: 'Không tìm thấy lần mô phỏng này.',
   SIMULATION_ACCESS_DENIED: 'Bạn không có quyền xem mô phỏng của bản đánh giá này.',
@@ -109,17 +113,20 @@ const ERROR_MESSAGES: Record<string, string> = {
   SURVEY_BOOKING_NOT_FOUND: 'Yêu cầu này chưa có lịch hẹn đang hiệu lực.',
   INVALID_BOOKING_TIME:
     'Giờ này không đặt được: giờ bắt đầu phải theo mốc 30 phút, nằm trọn trong giờ làm của kỹ thuật viên, chưa qua và trong 30 ngày tới.',
-  INVALID_BOOKING_STATE: 'Lịch hẹn đã đổi trạng thái (đã phân công, đã qua giờ hoặc đã huỷ) nên không làm được thao tác này. Tải lại để xem trạng thái mới.',
+  INVALID_BOOKING_STATE:
+    'Lịch hẹn đã đổi trạng thái (đã phân công, đã qua giờ hoặc đã huỷ) nên không làm được thao tác này. Tải lại để xem trạng thái mới.',
   TECHNICIAN_NOT_AVAILABLE: 'Kỹ thuật viên này không nhận được lịch vào giờ đó. Tải lại danh sách và chọn người khác.',
   TECHNICIAN_NOT_FOUND: 'Không tìm thấy kỹ thuật viên.',
   TECHNICIAN_NOT_ASSIGNED: 'Lịch này không giao cho bạn.',
   TRAVEL_ROUTE_UNAVAILABLE: 'Không tìm được đường đi tới công trình. Kiểm tra lại toạ độ của địa điểm.',
-  TRAVEL_PROVIDER_UNAVAILABLE: 'Dịch vụ tính đường đi (Vietmap) đang lỗi nên chưa kiểm tra được giờ này. Thử lại sau ít phút.',
+  TRAVEL_PROVIDER_UNAVAILABLE:
+    'Dịch vụ tính đường đi (Vietmap) đang lỗi nên chưa kiểm tra được giờ này. Thử lại sau ít phút.',
   TRAVEL_PROVIDER_QUOTA_EXCEEDED: 'Đã hết lượt tính đường đi của Vietmap. Thử lại sau.',
   APPOINTMENT_CONCURRENCY_CONFLICT: 'Lịch hẹn vừa được thay đổi ở nơi khác. Đã tải lại, hãy thử lại.',
   PROPERTY_SITE_LOCATION_REQUIRED: 'Địa điểm chưa có toạ độ GPS hợp lệ nên chưa tính được đường đi và giờ khảo sát.',
   APPOINTMENT_NOT_FOUND: 'Không tìm thấy lịch hẹn, hoặc lịch không còn giao cho bạn.',
-  TECHNICIAN_HAS_CONFLICTING_APPOINTMENTS: 'Thay đổi này làm hỏng lịch hẹn đã có. Đổi giờ hoặc chuyển các lịch bên dưới cho người khác trước.',
+  TECHNICIAN_HAS_CONFLICTING_APPOINTMENTS:
+    'Thay đổi này làm hỏng lịch hẹn đã có. Đổi giờ hoặc chuyển các lịch bên dưới cho người khác trước.',
   TECHNICIAN_PROFILE_REQUIRED: 'Lưu hồ sơ lịch của kỹ thuật viên (nơi xuất phát) trước.',
   // Quản lý tài khoản: AdminUserErrorCodes (backend main 4d12e4d, 12/10/2026)
   ADMIN_USER_NOT_FOUND: 'Không tìm thấy tài khoản.',
@@ -128,7 +135,8 @@ const ERROR_MESSAGES: Record<string, string> = {
     'Không chuyển được sang trạng thái này. Tài khoản chưa xác minh email thì gửi link kích hoạt; chỉ tài khoản đang hoạt động mới tạm khoá được.',
   ADMIN_LAST_ACTIVE_ADMIN: 'Đây là quản trị viên đang hoạt động cuối cùng. Cấp quyền quản trị cho người khác trước.',
   ADMIN_CANNOT_MODIFY_OWN_ACCOUNT: 'Bạn không thể đổi trạng thái hay xoá chính tài khoản của mình.',
-  ACCOUNT_HAS_ACTIVE_WORK: 'Tài khoản còn lịch khảo sát sắp tới hoặc yêu cầu khảo sát đang xử lý. Chuyển các việc này cho người khác trước.',
+  ACCOUNT_HAS_ACTIVE_WORK:
+    'Tài khoản còn lịch khảo sát sắp tới hoặc yêu cầu khảo sát đang xử lý. Chuyển các việc này cho người khác trước.',
   ADMIN_USER_DELETED: 'Tài khoản đã bị xoá nên không sửa được.',
   ADMIN_RECOVERY_NOT_ALLOWED: 'Tài khoản đang tạm khoá hoặc bị vô hiệu: kích hoạt lại trước khi gửi link.',
   // Mã chung của backend (dò GET bằng từng vai trò ngày 08/10/2026)
@@ -186,7 +194,7 @@ function isRecord(value: unknown): value is Record<string, unknown> {
  *   1. { email: ["..."], password: ["..."] }        (ModelState / ProblemDetails của .NET)
  *   2. [{ field: "email", message: "..." }, ...]    (mảng lỗi)
  *   3. { errors: { email: [...] } }                 (ProblemDetails bọc thêm 1 lớp)
- * Dạng khác (chuỗi mô tả, null…) trả về {} và để message chung hiển thị ở alert.
+ * Dạng khác (chuỗi mô tả, null...) trả về {} và để message chung hiển thị ở alert.
  */
 export function parseFieldErrors(details: unknown): FieldErrors {
   if (!details) return {}
@@ -247,12 +255,9 @@ export function toApiError(status: number, body: unknown, retryAfter: number | n
 
   return new ApiError({
     status,
-    // Bản dịch theo mã → message của server → câu theo status.
+    // Ưu tiên bản dịch theo mã, rồi message của server, cuối cùng là câu theo status
     message:
-      messageForCode(code) ??
-      serverMessage ??
-      firstString(Object.values(fieldErrors)) ??
-      messageForStatus(status),
+      messageForCode(code) ?? serverMessage ?? firstString(Object.values(fieldErrors)) ?? messageForStatus(status),
     code,
     fieldErrors,
     traceId,

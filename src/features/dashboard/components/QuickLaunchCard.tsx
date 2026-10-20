@@ -23,13 +23,7 @@ export type QuickLaunchCardProps = {
   className?: string
 }
 
-export function QuickLaunchCard({
-  title,
-  description,
-  ctaLabel,
-  href,
-  className,
-}: QuickLaunchCardProps) {
+export function QuickLaunchCard({ title, description, ctaLabel, href, className }: QuickLaunchCardProps) {
   return (
     <Link
       to={href}
@@ -39,7 +33,9 @@ export function QuickLaunchCard({
       )}
     >
       <div>
-        <h3 className={cn('text-body-lg font-semibold text-on-surface transition-colors', titleHoverClasses)}>{title}</h3>
+        <h3 className={cn('text-body-lg font-semibold text-on-surface transition-colors', titleHoverClasses)}>
+          {title}
+        </h3>
         {description && <p className="mt-1 text-body-sm text-on-surface-variant">{description}</p>}
       </div>
       <span className={cn('mt-space-lg text-label-md font-semibold', ctaClasses)}>{ctaLabel}</span>

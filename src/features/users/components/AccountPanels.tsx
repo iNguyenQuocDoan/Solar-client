@@ -34,7 +34,10 @@ function ErrorLine({ message }: { message: string | null }) {
 function activeWorkOf(error: unknown): AccountActiveWork | null {
   if (!isApiError(error) || error.code !== 'ACCOUNT_HAS_ACTIVE_WORK') return null
   const d = error.details as Partial<AccountActiveWork> | null
-  return { technicianAppointments: d?.technicianAppointments ?? [], ownedOpenSurveyRequestIds: d?.ownedOpenSurveyRequestIds ?? [] }
+  return {
+    technicianAppointments: d?.technicianAppointments ?? [],
+    ownedOpenSurveyRequestIds: d?.ownedOpenSurveyRequestIds ?? [],
+  }
 }
 
 /* Không tự chuyển việc: chỉ liệt kê để quản trị nhờ kinh doanh đổi người / chuyển yêu cầu trước. */
@@ -56,7 +59,10 @@ function ActiveWork({ work }: { work: AccountActiveWork }) {
       {work.ownedOpenSurveyRequestIds.length > 0 && (
         <p className="mt-1">{work.ownedOpenSurveyRequestIds.length} yêu cầu khảo sát đang do người này phụ trách.</p>
       )}
-      <p className="mt-2">Nhờ kinh doanh chuyển các lịch cho kỹ thuật viên khác (Đổi kỹ thuật viên) rồi thử lại. Không việc nào bị chuyển tự động.</p>
+      <p className="mt-2">
+        Nhờ kinh doanh chuyển các lịch cho kỹ thuật viên khác (Đổi kỹ thuật viên) rồi thử lại. Không việc nào bị chuyển
+        tự động.
+      </p>
     </Notice>
   )
 }
@@ -82,7 +88,10 @@ export function RolesPanel({ user, readOnly }: { user: AdminUserDetail; readOnly
   const work = activeWorkOf(failure)
   return (
     <Panel>
-      <PanelHeader title="Vai trò" description="Đổi vai trò làm mọi phiên đang mở của tài khoản này hết hiệu lực ngay; người dùng đăng nhập lại." />
+      <PanelHeader
+        title="Vai trò"
+        description="Đổi vai trò làm mọi phiên đang mở của tài khoản này hết hiệu lực ngay; người dùng đăng nhập lại."
+      />
       <PanelBody className="space-y-4">
         <div className="grid gap-2 sm:grid-cols-2">
           {ROLE_OPTIONS.map((r) => (
@@ -101,7 +110,11 @@ export function RolesPanel({ user, readOnly }: { user: AdminUserDetail; readOnly
         {work && <ActiveWork work={work} />}
         {!readOnly && (
           <div className="flex flex-wrap items-center gap-3">
-            <Button variant="soft" disabled={!changed || roles.length === 0 || save.isPending} onClick={() => void submit()}>
+            <Button
+              variant="soft"
+              disabled={!changed || roles.length === 0 || save.isPending}
+              onClick={() => void submit()}
+            >
               {save.isPending ? 'Đang lưu…' : 'Lưu vai trò'}
             </Button>
             {roles.length === 0 && <span className="text-meta text-danger">Chọn ít nhất một vai trò.</span>}
@@ -115,10 +128,16 @@ export function RolesPanel({ user, readOnly }: { user: AdminUserDetail; readOnly
 
 /* ---------------------------------------------------------------- trạng thái */
 
-/** `tone`: màu nút theo việc nó làm – Tạm khoá (hoàn tác được) vàng, Vô hiệu hoá đỏ, Mở khoá / Kích hoạt lại xanh. */
-type StatusAction = { status: 'ACTIVE' | 'SUSPENDED' | 'DISABLED'; label: string; title: string; text: string; tone: 'soft' | 'warn' | 'danger' }
+/** `tone`: màu nút theo việc nó làm, Tạm khoá (hoàn tác được) vàng, Vô hiệu hoá đỏ, Mở khoá / Kích hoạt lại xanh. */
+type StatusAction = {
+  status: 'ACTIVE' | 'SUSPENDED' | 'DISABLED'
+  label: string
+  title: string
+  text: string
+  tone: 'soft' | 'warn' | 'danger'
+}
 
-/* Chuyển được: ACTIVE → SUSPENDED / DISABLED; SUSPENDED → ACTIVE / DISABLED; DISABLED → ACTIVE (cần email đã xác minh). */
+// Chuyển được: ACTIVE sang SUSPENDED / DISABLED, SUSPENDED sang ACTIVE / DISABLED, DISABLED sang ACTIVE (cần email đã xác minh)
 function actionsFor(user: AdminUserDetail): StatusAction[] {
   const suspend: StatusAction = {
     status: 'SUSPENDED',
@@ -188,8 +207,19 @@ function StatusForm({
       <p className="mt-2 text-body text-fg-2">
         {user.fullName} ({user.email}). {action.text}
       </p>
-      <Field label="Lý do" htmlFor="status-reason" hint={`Không bắt buộc, tối đa ${REASON_MAX} ký tự. Lưu vào nhật ký.`} className="mt-4">
-        <Textarea id="status-reason" rows={2} maxLength={REASON_MAX} value={reason} onChange={(e) => setReason(e.target.value)} />
+      <Field
+        label="Lý do"
+        htmlFor="status-reason"
+        hint={`Không bắt buộc, tối đa ${REASON_MAX} ký tự. Lưu vào nhật ký.`}
+        className="mt-4"
+      >
+        <Textarea
+          id="status-reason"
+          rows={2}
+          maxLength={REASON_MAX}
+          value={reason}
+          onChange={(e) => setReason(e.target.value)}
+        />
       </Field>
       {work && <ActiveWork work={work} />}
       <DialogFooter className="items-center">
@@ -197,7 +227,11 @@ function StatusForm({
         <Button variant="ghost" disabled={change.isPending} onClick={onClose}>
           Huỷ
         </Button>
-        <Button variant={action.tone === 'soft' ? 'primary' : action.tone} disabled={change.isPending} onClick={() => void confirm()}>
+        <Button
+          variant={action.tone === 'soft' ? 'primary' : action.tone}
+          disabled={change.isPending}
+          onClick={() => void confirm()}
+        >
           {change.isPending ? 'Đang lưu…' : action.label}
         </Button>
       </DialogFooter>
@@ -217,7 +251,9 @@ export function StatusPanel({ user, isSelf }: { user: AdminUserDetail; isSelf: b
         <p className="flex flex-wrap items-center gap-3 text-body text-fg-2">
           <Badge tone={status.tone}>{status.label}</Badge>
           {user.status === 'PENDING_VERIFICATION' && 'Người dùng chưa đặt mật khẩu hoặc chưa xác minh email.'}
-          {user.status === 'DISABLED' && !user.emailVerifiedAt && 'Email chưa xác minh: gửi link kích hoạt thay vì kích hoạt tay.'}
+          {user.status === 'DISABLED' &&
+            !user.emailVerifiedAt &&
+            'Email chưa xác minh: gửi link kích hoạt thay vì kích hoạt tay.'}
         </p>
         {isSelf && <p className="text-meta text-fg-2">Đây là tài khoản của bạn: không tự khoá hay xoá được.</p>}
         {actions.length > 0 && (
@@ -246,8 +282,8 @@ export function StatusPanel({ user, isSelf }: { user: AdminUserDetail; isSelf: b
 /* ---------------------------------------------------------- link mật khẩu */
 
 /*
-  Một nút cho mọi trường hợp; backend chọn loại link theo trạng thái: chưa đặt mật khẩu → link đặt mật khẩu lần đầu, chưa
-  xác minh email → link xác minh, còn lại → link đặt lại mật khẩu. Link chỉ gửi qua email, không hiện ở đây.
+  Một nút cho mọi trường hợp; backend chọn loại link theo trạng thái: chưa đặt mật khẩu thì link đặt mật khẩu lần đầu, chưa
+  xác minh email thì link xác minh, còn lại là link đặt lại mật khẩu. Link chỉ gửi qua email, không hiện ở đây.
 */
 export function RecoveryPanel({ user }: { user: AdminUserDetail }) {
   const send = useSendPasswordResetMutation()
@@ -278,7 +314,9 @@ export function RecoveryPanel({ user }: { user: AdminUserDetail }) {
         <Button size="sm" variant="soft" icon="mail" disabled={blocked || send.isPending} onClick={() => void submit()}>
           {send.isPending ? 'Đang gửi…' : user.hasPassword ? 'Gửi link đặt lại mật khẩu' : 'Gửi link đặt mật khẩu'}
         </Button>
-        {blocked && !user.deletedAt && <p className="text-meta text-fg-2">Tài khoản đang tạm khoá hoặc vô hiệu: kích hoạt lại trước khi gửi link.</p>}
+        {blocked && !user.deletedAt && (
+          <p className="text-meta text-fg-2">Tài khoản đang tạm khoá hoặc vô hiệu: kích hoạt lại trước khi gửi link.</p>
+        )}
         {result && (
           <Notice tone={result.ok ? 'ok' : 'warn'} className="max-w-prose">
             {result.text}
@@ -319,14 +357,31 @@ export function DeleteAccountDialog({
 
   const work = activeWorkOf(failure)
   return (
-    <ModalDialog open={open} onOpenChange={onOpenChange} dismissible={!remove.isPending} className="max-w-lg" aria-label="Xoá tài khoản">
+    <ModalDialog
+      open={open}
+      onOpenChange={onOpenChange}
+      dismissible={!remove.isPending}
+      className="max-w-lg"
+      aria-label="Xoá tài khoản"
+    >
       <DialogTitle>Xoá tài khoản {user.email}?</DialogTitle>
       <p className="mt-2 text-body text-fg-2">
-        Người dùng bị đăng xuất và không đăng nhập được nữa. Lịch sử (yêu cầu, lịch hẹn, nhật ký) vẫn giữ. Giao diện chưa có cách khôi
-        phục tài khoản đã xoá.
+        Người dùng bị đăng xuất và không đăng nhập được nữa. Lịch sử (yêu cầu, lịch hẹn, nhật ký) vẫn giữ. Giao diện
+        chưa có cách khôi phục tài khoản đã xoá.
       </p>
-      <Field label="Lý do" htmlFor="delete-reason" hint={`Không bắt buộc, tối đa ${REASON_MAX} ký tự.`} className="mt-4">
-        <Textarea id="delete-reason" rows={2} maxLength={REASON_MAX} value={reason} onChange={(e) => setReason(e.target.value)} />
+      <Field
+        label="Lý do"
+        htmlFor="delete-reason"
+        hint={`Không bắt buộc, tối đa ${REASON_MAX} ký tự.`}
+        className="mt-4"
+      >
+        <Textarea
+          id="delete-reason"
+          rows={2}
+          maxLength={REASON_MAX}
+          value={reason}
+          onChange={(e) => setReason(e.target.value)}
+        />
       </Field>
       {work && <ActiveWork work={work} />}
       <DialogFooter className="items-center">

@@ -1,7 +1,7 @@
 /*
- * VIẾT TAY – swagger chỉ khai "200 OK" cho tag SurveySlots, không có schema response.
+ * VIẾT TAY, swagger chỉ khai "200 OK" cho tag SurveySlots, không có schema response.
  * Tên kiểu và field lấy đúng theo SmartSolar.Modules.Scheduling.PreSurveyAppointments.Views
- * (SurveySlotsView, SurveySlotView – backend main 4d12e4d, 12/10/2026). Khi backend khai response
+ * (SurveySlotsView, SurveySlotView, backend main 4d12e4d, 12/10/2026). Khi backend khai response
  * trong swagger, `npm run gen:api` sẽ ghi đè file này bằng bản sinh tự động.
  */
 

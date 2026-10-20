@@ -15,7 +15,7 @@ import { ROUTES, withId } from '@/routes/paths'
 import type { TechnicianProfileView } from '@/types/res/adminTechniciansRes'
 
 /*
-  Kỹ thuật viên và việc nhận lịch của họ (GET /api/admin/technicians – mọi tài khoản có vai trò kỹ thuật viên, kể cả chưa
+  Kỹ thuật viên và việc nhận lịch của họ (GET /api/admin/technicians, mọi tài khoản có vai trò kỹ thuật viên, kể cả chưa
   cấu hình). Quản trị và quản lý dùng chung trang (backend cho cả hai vai trò). Người chưa nhận lịch được đứng đầu: thiếu
   nơi xuất phát là việc phải làm (đỏ). Cả dòng là link sang trang cấu hình.
 */
@@ -52,7 +52,11 @@ function TechniciansPage({ detailPattern, usersLink }: { detailPattern: string; 
       <FilterBar>
         <label className="min-w-0 flex-1 basis-64">
           <span className="sr-only">Tìm kỹ thuật viên</span>
-          <SearchInput placeholder="Tìm theo tên, số điện thoại" value={search} onChange={(e) => setSearch(e.target.value)} />
+          <SearchInput
+            placeholder="Tìm theo tên, số điện thoại"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
         </label>
       </FilterBar>
       <QueryBoundary query={query}>
@@ -68,7 +72,8 @@ function TechniciansPage({ detailPattern, usersLink }: { detailPattern: string; 
                 action={usersLink ? <ButtonLink to={usersLink}>Mở trang tài khoản</ButtonLink> : undefined}
               />
             )
-          if (shown.length === 0) return <EmptyState title="Không có kỹ thuật viên nào khớp" description="Thử từ khoá khác." />
+          if (shown.length === 0)
+            return <EmptyState title="Không có kỹ thuật viên nào khớp" description="Thử từ khoá khác." />
           return (
             <Table stack>
               <thead>
@@ -101,7 +106,9 @@ function TechniciansPage({ detailPattern, usersLink }: { detailPattern: string; 
                         {t.baseLatitude != null && t.baseLongitude != null ? (
                           <>
                             <p>{t.baseLabel || 'Chưa đặt tên'}</p>
-                            <p className="tnum text-meta text-fg-2">{formatCoordinates(t.baseLatitude, t.baseLongitude)}</p>
+                            <p className="tnum text-meta text-fg-2">
+                              {formatCoordinates(t.baseLatitude, t.baseLongitude)}
+                            </p>
                           </>
                         ) : (
                           <span className="text-fg-3">Chưa có</span>
@@ -110,7 +117,9 @@ function TechniciansPage({ detailPattern, usersLink }: { detailPattern: string; 
                       <Td label="Lịch / ngày" className="tnum lg:text-right">
                         {t.maxAppointmentsPerDay ?? <span className="text-fg-2">Mặc định</span>}
                       </Td>
-                      <Td label="Giờ làm">{t.hasCustomWorkingSchedule ? 'Giờ riêng' : <span className="text-fg-2">Giờ chung</span>}</Td>
+                      <Td label="Giờ làm">
+                        {t.hasCustomWorkingSchedule ? 'Giờ riêng' : <span className="text-fg-2">Giờ chung</span>}
+                      </Td>
                     </Tr>
                   )
                 })}

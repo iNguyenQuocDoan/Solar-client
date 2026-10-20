@@ -12,7 +12,7 @@ const sizes = {
 
 /*
   Chọn một trong vài lựa chọn ngang hàng (giao diện, góc nhìn mô phỏng): mọi lựa chọn hiện sẵn, lựa chọn đang dùng nằm
-  trên nền "đang chọn" (accent-soft, chữ accent-fg đậm) – cùng màu với tab và trang đang chọn – thay vì một nút đặc
+  trên nền "đang chọn" (accent-soft, chữ accent-fg đậm), cùng màu với tab và trang đang chọn, thay vì một nút đặc
   tranh chỗ với nút chính của trang. Radio thật (ẩn) nên Tab vào nhóm rồi dùng phím mũi tên như mọi nhóm radio.
   Mỗi lựa chọn rộng theo chữ (flex-auto), không chia đều, để nhãn dài không bị bẻ dòng.
 */
@@ -33,7 +33,11 @@ export function Segmented<T extends string>({
 }) {
   const name = useId()
   return (
-    <div role="radiogroup" aria-label={label} className={cx('flex gap-0.5 rounded-control border border-line-2 bg-canvas p-0.5', className)}>
+    <div
+      role="radiogroup"
+      aria-label={label}
+      className={cx('flex gap-0.5 rounded-control border border-line-2 bg-canvas p-0.5', className)}
+    >
       {options.map((option) => (
         <label
           key={option.value}

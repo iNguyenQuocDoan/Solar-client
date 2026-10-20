@@ -271,10 +271,7 @@ function WarrantyRequestView({ warranty }: { warranty: WarrantyCase }) {
 
             <div className="grid grid-cols-1 gap-space-md pt-space-2xs sm:grid-cols-2">
               <div className="flex flex-col gap-1 rounded-lg bg-surface-container-lowest p-space-sm">
-                <label
-                  htmlFor="removed-serial"
-                  className="text-label-sm font-semibold text-error"
-                >
+                <label htmlFor="removed-serial" className="text-label-sm font-semibold text-error">
                   {diagnostics.hardwareSwap.removedLabel}
                 </label>
                 <Input
@@ -293,10 +290,7 @@ function WarrantyRequestView({ warranty }: { warranty: WarrantyCase }) {
               </div>
 
               <div className="flex flex-col gap-1 rounded-lg bg-surface-container-lowest p-space-sm">
-                <label
-                  htmlFor="replacement-serial"
-                  className="text-label-sm font-semibold text-primary"
-                >
+                <label htmlFor="replacement-serial" className="text-label-sm font-semibold text-primary">
                   {diagnostics.hardwareSwap.replacementLabel}
                 </label>
                 <Input
@@ -366,9 +360,7 @@ function WarrantyRequestView({ warranty }: { warranty: WarrantyCase }) {
               </div>
               <div className="flex flex-col">
                 <span className="text-label-md font-bold text-on-surface">{warranty.audit.attachment.title}</span>
-                <span className="text-body-sm text-on-surface-variant">
-                  {warranty.audit.attachment.description}
-                </span>
+                <span className="text-body-sm text-on-surface-variant">{warranty.audit.attachment.description}</span>
               </div>
             </div>
             <span className="rounded-lg bg-primary-container px-3 py-1.5 text-label-sm font-semibold text-on-primary">
@@ -455,9 +447,7 @@ function WarrantyRequestView({ warranty }: { warranty: WarrantyCase }) {
               label={`${warranty.burnIn.value} ${warranty.burnIn.unit}`}
             >
               <div className="flex flex-col items-center justify-center text-center">
-                <span className="text-label-sm text-on-surface-variant">
-                  {warranty.burnIn.ringLabel}
-                </span>
+                <span className="text-label-sm text-on-surface-variant">{warranty.burnIn.ringLabel}</span>
                 <span className="text-data-metric text-on-surface">{warranty.burnIn.value}</span>
                 <span className="text-label-sm font-bold text-primary">{warranty.burnIn.unit}</span>
               </div>
@@ -498,7 +488,6 @@ function WarrantyRequestView({ warranty }: { warranty: WarrantyCase }) {
             </h3>
             <span className="text-label-sm text-on-surface-variant">{signOff.sectionLabel}</span>
           </div>
-
 
           <Controller
             control={control}
@@ -543,7 +532,11 @@ function WarrantyRequestView({ warranty }: { warranty: WarrantyCase }) {
                 {signOff.confirmations.map((confirmation) => {
                   const selected = field.value.includes(confirmation.id)
                   return (
-                    <label key={confirmation.id} htmlFor={confirmation.id} className="flex cursor-pointer items-start gap-space-xs">
+                    <label
+                      key={confirmation.id}
+                      htmlFor={confirmation.id}
+                      className="flex cursor-pointer items-start gap-space-xs"
+                    >
                       <Checkbox
                         id={confirmation.id}
                         size="sm"
@@ -571,7 +564,12 @@ function WarrantyRequestView({ warranty }: { warranty: WarrantyCase }) {
           />
 
           <div className="flex flex-col gap-space-xs pt-space-sm">
-            <Button type="submit" fullWidth disabled={isSubmitting} iconLeft={isSubmitSuccessful ? 'task_alt' : undefined}>
+            <Button
+              type="submit"
+              fullWidth
+              disabled={isSubmitting}
+              iconLeft={isSubmitSuccessful ? 'task_alt' : undefined}
+            >
               {isSubmitting ? 'Đang gửi...' : signOff.submitLabel}
             </Button>
             <Button type="button" variant="ghost" fullWidth iconLeft="print">

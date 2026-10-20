@@ -24,7 +24,7 @@ const toVnIso = (local: string) => `${local}:00+07:00`
 
 /*
   Mỗi mốc là ô ngày (13/10/2026) + ô giờ 24 giờ, thay cho ô datetime-local hiện theo ngôn ngữ trình duyệt
-  ("10/13/2026, 01:00 PM" ở bản tiếng Anh – 12/10/2026). Giờ mặc định 08:00 → 17:00 là một ngày làm việc.
+  ("10/13/2026, 01:00 PM" ở bản tiếng Anh, 12/10/2026). Giờ mặc định 08:00 đến 17:00 là một ngày làm việc.
 */
 function AddPeriodForm({ technicianUserId }: { technicianUserId: string }) {
   const [fromDate, setFromDate] = useState('')
@@ -48,7 +48,10 @@ function AddPeriodForm({ technicianUserId }: { technicianUserId: string }) {
     if (end - start > MAX_DAYS * 86_400_000) return setIssue('Mỗi lần nghỉ tối đa một năm.')
     setIssue(null)
     try {
-      await add.mutateAsync({ id: technicianUserId, body: { startsAt: toVnIso(from), endsAt: toVnIso(to), reason: reason.trim() || null } })
+      await add.mutateAsync({
+        id: technicianUserId,
+        body: { startsAt: toVnIso(from), endsAt: toVnIso(to), reason: reason.trim() || null },
+      })
       toast.success('Đã thêm lịch nghỉ.')
       setFromDate('')
       setFromTime('08:00')
@@ -67,13 +70,26 @@ function AddPeriodForm({ technicianUserId }: { technicianUserId: string }) {
       <div className="grid gap-4 sm:grid-cols-2">
         <Field label="Từ" htmlFor="leave-from" required>
           <div className="flex gap-2">
-            <DateField id="leave-from" aria-required className="min-w-0 flex-1" value={fromDate} onChange={setFromDate} />
+            <DateField
+              id="leave-from"
+              aria-required
+              className="min-w-0 flex-1"
+              value={fromDate}
+              onChange={setFromDate}
+            />
             <TimeSelect aria-label="Giờ bắt đầu" className="w-28" value={fromTime} onChange={setFromTime} />
           </div>
         </Field>
         <Field label="Đến" htmlFor="leave-to" required>
           <div className="flex gap-2">
-            <DateField id="leave-to" aria-required className="min-w-0 flex-1" min={fromDate || undefined} value={toDate} onChange={setToDate} />
+            <DateField
+              id="leave-to"
+              aria-required
+              className="min-w-0 flex-1"
+              min={fromDate || undefined}
+              value={toDate}
+              onChange={setToDate}
+            />
             <TimeSelect aria-label="Giờ kết thúc" className="w-28" value={toTime} onChange={setToTime} />
           </div>
         </Field>
@@ -158,11 +174,17 @@ export function UnavailablePeriods({ technicianUserId }: { technicianUserId: str
         <AddPeriodForm technicianUserId={technicianUserId} />
       </section>
 
-      <ModalDialog open={removing !== null} onOpenChange={(open) => !open && setRemoving(null)} dismissible={!remove.isPending} aria-label="Bỏ lịch nghỉ">
+      <ModalDialog
+        open={removing !== null}
+        onOpenChange={(open) => !open && setRemoving(null)}
+        dismissible={!remove.isPending}
+        aria-label="Bỏ lịch nghỉ"
+      >
         <DialogTitle>Bỏ lịch nghỉ này?</DialogTitle>
         {removing && (
           <p className="mt-2 text-body text-fg-2">
-            {formatMoment(removing.startsAt)} – {formatMoment(removing.endsAt)}. Khách đặt được giờ trong khoảng này ngay sau khi bỏ.
+            {formatMoment(removing.startsAt)} – {formatMoment(removing.endsAt)}. Khách đặt được giờ trong khoảng này
+            ngay sau khi bỏ.
           </p>
         )}
         <DialogFooter>

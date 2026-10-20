@@ -1,4 +1,8 @@
-import type { ChangeProductStatusRequest, CreateProductRequest, UpdateProductRequest } from '@/types/req/adminProductsReq'
+import type {
+  ChangeProductStatusRequest,
+  CreateProductRequest,
+  UpdateProductRequest,
+} from '@/types/req/adminProductsReq'
 import type { ProductDeletedResponse, ProductResponse } from '@/types/res/adminProductsRes'
 import type { ProductResponsePagedResult } from '@/types/res/productsRes'
 import { apiGet, apiPost, apiRequest } from '@/services/api/client'
@@ -12,13 +16,13 @@ import { apiGet, apiPost, apiRequest } from '@/services/api/client'
 /*
  * Swagger khai SortBy/SortDirection là string; giá trị hợp lệ lấy từ lỗi validate của backend
  * (29/09/2026): SortBy ∈ name | brand | ratedPowerW | unitPrice | createdAt, SortDirection ∈ asc | desc,
- * Page ≥ 1, PageSize 1–100 (mặc định 20), MinPrice ≤ MaxPrice.
+ * Page >= 1, PageSize 1-100 (mặc định 20), MinPrice <= MaxPrice.
  */
 export type ProductSortBy = 'name' | 'brand' | 'ratedPowerW' | 'unitPrice' | 'createdAt'
 export type ProductSortDirection = 'asc' | 'desc'
 export const PRODUCT_PAGE_SIZE_MAX = 100
 
-/** Query của GET /api/products – theo swagger. */
+/** Query của GET /api/products, theo swagger. */
 export type ProductListParams = {
   Search?: string
   ProductType?: string
@@ -49,12 +53,12 @@ export function getProduct(id: string) {
   return apiGet<ProductResponse>(`/products/${encodeURIComponent(id)}`)
 }
 
-/** POST /api/admin/products – trả 201 kèm sản phẩm vừa tạo */
+/** POST /api/admin/products, trả 201 kèm sản phẩm vừa tạo */
 export function createProduct(body: CreateProductRequest) {
   return apiPost<ProductResponse>('/admin/products', body)
 }
 
-/** PUT /api/admin/products/{id} – body không có status, đổi status qua PATCH riêng */
+/** PUT /api/admin/products/{id}, body không có status, đổi status qua PATCH riêng */
 export function updateProduct(id: string, body: UpdateProductRequest) {
   return apiRequest<ProductResponse>({ method: 'PUT', url: `/admin/products/${encodeURIComponent(id)}`, data: body })
 }

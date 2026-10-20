@@ -21,13 +21,7 @@ export type SurveyBaselineAsideProps = {
 
 const innerCard = 'flex flex-col rounded-xl bg-surface-container-lowest p-space-sm shadow-sm'
 
-export function SurveyBaselineAside({
-  data,
-  safety,
-  photos,
-  checked,
-  onCheckedChange,
-}: SurveyBaselineAsideProps) {
+export function SurveyBaselineAside({ data, safety, photos, checked, onCheckedChange }: SurveyBaselineAsideProps) {
   return (
     <>
       <div className="flex flex-col gap-space-md rounded-2xl bg-surface-container-low p-space-lg shadow-level-1">
@@ -47,9 +41,7 @@ export function SurveyBaselineAside({
         </div>
 
         <div className={cn(innerCard, 'gap-space-xs')}>
-          <span className="text-label-sm text-on-surface-variant">
-            {data.blueprint.label}
-          </span>
+          <span className="text-label-sm text-on-surface-variant">{data.blueprint.label}</span>
           <div className="flex items-baseline justify-between gap-space-xs">
             <span className="text-headline-lg font-bold text-on-surface">
               {data.blueprint.length} <span className="font-normal text-on-surface-variant">×</span>{' '}

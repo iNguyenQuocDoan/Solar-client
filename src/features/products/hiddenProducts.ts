@@ -21,7 +21,12 @@ export type HiddenProduct = { id: string; name: string; sku: string; hiddenAt: s
 function isHiddenProduct(value: unknown): value is HiddenProduct {
   if (!value || typeof value !== 'object') return false
   const v = value as Record<string, unknown>
-  return typeof v.id === 'string' && typeof v.name === 'string' && typeof v.sku === 'string' && typeof v.hiddenAt === 'string'
+  return (
+    typeof v.id === 'string' &&
+    typeof v.name === 'string' &&
+    typeof v.sku === 'string' &&
+    typeof v.hiddenAt === 'string'
+  )
 }
 
 function readHiddenProducts(): HiddenProduct[] {
@@ -45,7 +50,7 @@ function writeHiddenProducts(list: HiddenProduct[]) {
 /*
   `snapshot` chỉ là bản đọc cho useSyncExternalStore (cùng một mảng tới khi đổi). Nguồn thật là localStorage: mỗi lần ghi
   đều đọc lại localStorage rồi mới sửa, nên trang không theo dõi kho (trang chi tiết) cũng không ghi đè bằng bản cũ những gì
-  tab khác vừa lưu – nếu không, sản phẩm tab kia vừa ngừng bán sẽ mất khỏi danh sách và không còn chỗ nào mở bán lại.
+  tab khác vừa lưu, nếu không, sản phẩm tab kia vừa ngừng bán sẽ mất khỏi danh sách và không còn chỗ nào mở bán lại.
   Một listener `storage` cho cả module (gắn khi có người theo dõi đầu tiên), đọc lại một lần rồi báo mọi người theo dõi.
 */
 let snapshot = readHiddenProducts()

@@ -40,7 +40,7 @@ export function useMyAppointmentQuery(id: string | undefined) {
 
 /*
  * Lịch một ngày. Đang chờ tính lại đường đi (worker chạy nền, thử lại có giãn cách) thì tự tải lại mỗi 30 giây cho tới khi
- * xong – có giới hạn, không dồn yêu cầu; còn lại không tự tải.
+ * xong, có giới hạn, không dồn yêu cầu; còn lại không tự tải.
  */
 export function useMyScheduleQuery(date: string) {
   return useQuery<TechnicianScheduleView, ApiError>({

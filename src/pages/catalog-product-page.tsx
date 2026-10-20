@@ -49,9 +49,10 @@ export function CatalogProductPage({
           { k: 'Model', v: p.model },
           {
             k: 'Loại',
-            v: admin && p.productType && productTypeLabel(p.productType) !== p.productType
-              ? `${productTypeLabel(p.productType)} (${p.productType})`
-              : (productTypeLabel(p.productType) ?? '—'),
+            v:
+              admin && p.productType && productTypeLabel(p.productType) !== p.productType
+                ? `${productTypeLabel(p.productType)} (${p.productType})`
+                : (productTypeLabel(p.productType) ?? '—'),
           },
           { k: 'Nhóm hàng', v: p.category },
           { k: 'SKU', v: p.sku },

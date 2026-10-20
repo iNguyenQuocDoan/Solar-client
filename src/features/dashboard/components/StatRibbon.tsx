@@ -38,17 +38,11 @@ export function StatRibbon({ stats, unitLabel, readyLabel, busyLabel, className 
   return (
     <Card
       padding="md"
-      className={cn(
-        'flex flex-col items-stretch justify-between gap-space-md xl:flex-row xl:items-center',
-        className,
-      )}
+      className={cn('flex flex-col items-stretch justify-between gap-space-md xl:flex-row xl:items-center', className)}
     >
       <div className="grid flex-1 grid-cols-2 gap-space-sm md:grid-cols-4">
         {stats.map((stat) => (
-          <div
-            key={stat.key}
-            className="flex items-center gap-space-sm rounded-xl bg-surface-container-low p-space-sm"
-          >
+          <div key={stat.key} className="flex items-center gap-space-sm rounded-xl bg-surface-container-low p-space-sm">
             <div
               className={cn(
                 'flex h-10 w-10 shrink-0 items-center justify-center rounded-lg',

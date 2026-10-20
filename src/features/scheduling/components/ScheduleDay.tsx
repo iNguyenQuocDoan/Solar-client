@@ -31,13 +31,31 @@ import type { ScheduleAppointmentView, TechnicianScheduleView } from '@/types/re
 
 /* Ngày trước / ô ngày (hiện 13/10/2026 dù trình duyệt tiếng gì) / ngày sau / Hôm nay. "Hôm nay" luôn có chỗ, chỉ tắt khi đang
    xem hôm nay, để cụm nút không nhảy khi đổi ngày. */
-export function DayNav({ date, onChange, label = 'Ngày' }: { date: string; onChange: (date: string) => void; label?: string }) {
+export function DayNav({
+  date,
+  onChange,
+  label = 'Ngày',
+}: {
+  date: string
+  onChange: (date: string) => void
+  label?: string
+}) {
   const today = todayVn()
   return (
     <div className="flex flex-wrap items-center gap-2">
-      <IconButton icon="chevron_left" label="Ngày trước" variant="secondary" onClick={() => onChange(addDays(date, -1))} />
+      <IconButton
+        icon="chevron_left"
+        label="Ngày trước"
+        variant="secondary"
+        onClick={() => onChange(addDays(date, -1))}
+      />
       <DateField className="w-40" label={label} value={date} onChange={(value) => value && onChange(value)} />
-      <IconButton icon="chevron_right" label="Ngày sau" variant="secondary" onClick={() => onChange(addDays(date, 1))} />
+      <IconButton
+        icon="chevron_right"
+        label="Ngày sau"
+        variant="secondary"
+        onClick={() => onChange(addDays(date, 1))}
+      />
       <Button disabled={date === today} onClick={() => onChange(today)}>
         Hôm nay
       </Button>
@@ -61,7 +79,15 @@ function Leg({ item }: { item: ScheduleAppointmentView }) {
 }
 
 /* Mỗi lịch một khối có viền (giờ | công trình, trạng thái, đường đi | nút xem), để các lịch trong ngày tách rõ nhau. */
-function AppointmentItem({ item, linkTo, viewer }: { item: ScheduleAppointmentView; linkTo?: string; viewer: 'technician' | 'staff' }) {
+function AppointmentItem({
+  item,
+  linkTo,
+  viewer,
+}: {
+  item: ScheduleAppointmentView
+  linkTo?: string
+  viewer: 'technician' | 'staff'
+}) {
   const status = appointmentStatusMeta(item.status, viewer)
   return (
     <li className="grid gap-x-6 gap-y-3 rounded-container border border-line bg-canvas p-4 sm:grid-cols-[7rem_minmax(0,1fr)_auto] sm:items-start">
@@ -119,14 +145,22 @@ export function ScheduleDay({
         <StatRow framed>
           <Stat label="Lịch trong ngày" value={s.appointmentCount} />
           <Stat label="Quãng đường đã kiểm tra" value={formatDistance(s.estimatedTravelDistanceMeters)} />
-          <Stat label="Thời gian đi" value={formatDuration(s.estimatedTravelSeconds)} note={`cộng ${s.safetyBufferMinutesTotal} phút dự phòng`} />
+          <Stat
+            label="Thời gian đi"
+            value={formatDuration(s.estimatedTravelSeconds)}
+            note={`cộng ${s.safetyBufferMinutesTotal} phút dự phòng`}
+          />
           <Stat label="Rời nơi xuất phát từ" value={formatTime(s.earliestBaseDeparture)} />
         </StatRow>
       )}
 
       {r && (
-        <Notice tone={r.status === 'FAILED' ? 'warn' : 'info'} title={r.status === 'FAILED' ? 'Chưa tính lại được đường đi' : 'Đang tính lại đường đi'}>
-          Lịch trong ngày vừa thay đổi ({recalculationReasonLabel(r.reason)}). Hệ thống thử lại lúc {formatTime(r.nextAttemptAt)}
+        <Notice
+          tone={r.status === 'FAILED' ? 'warn' : 'info'}
+          title={r.status === 'FAILED' ? 'Chưa tính lại được đường đi' : 'Đang tính lại đường đi'}
+        >
+          Lịch trong ngày vừa thay đổi ({recalculationReasonLabel(r.reason)}). Hệ thống thử lại lúc{' '}
+          {formatTime(r.nextAttemptAt)}
           {r.attempts > 0 ? `, đã thử ${r.attempts} lần` : ''}. Trang tự tải lại khi xong.
         </Notice>
       )}
@@ -137,7 +171,8 @@ export function ScheduleDay({
       )}
       {s.routesNeedingReview > 0 && !r && (
         <Notice tone="warn">
-          {s.routesNeedingReview} chặng đường chưa được kiểm tra lại; tổng quãng đường và thời gian đi chỉ tính các chặng đã kiểm tra.
+          {s.routesNeedingReview} chặng đường chưa được kiểm tra lại; tổng quãng đường và thời gian đi chỉ tính các
+          chặng đã kiểm tra.
         </Notice>
       )}
 
@@ -146,12 +181,18 @@ export function ScheduleDay({
       ) : (
         <ol className="space-y-3">
           {s.appointments.map((item) => (
-            <AppointmentItem key={item.appointmentId} item={item} viewer={viewer} linkTo={linkFor?.(item.appointmentId)} />
+            <AppointmentItem
+              key={item.appointmentId}
+              item={item}
+              viewer={viewer}
+              linkTo={linkFor?.(item.appointmentId)}
+            />
           ))}
         </ol>
       )}
       <p className="text-meta text-fg-3">
-        Thời gian đi là ước tính xe máy của Vietmap lưu lại khi lịch thay đổi, không phải giao thông trực tiếp. Mỗi chặng cộng thêm phút dự phòng.
+        Thời gian đi là ước tính xe máy của Vietmap lưu lại khi lịch thay đổi, không phải giao thông trực tiếp. Mỗi
+        chặng cộng thêm phút dự phòng.
       </p>
     </section>
   )

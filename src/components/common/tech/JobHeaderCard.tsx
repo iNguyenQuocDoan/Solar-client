@@ -27,7 +27,7 @@ export type JobProgress = {
 }
 
 export type JobHeaderCardProps = {
-  /** Pill nhỏ trước mã job: "Job Order", "Service Ticket"… */
+  /** Pill nhỏ trước mã job: "Job Order", "Service Ticket"... */
   kindLabel: string
   code: string
   status: { label: string; variant?: StatusVariant }
@@ -38,7 +38,7 @@ export type JobHeaderCardProps = {
   meta: InfoTileData[]
   metaColumns?: 3 | 4
   progress?: JobProgress
-  /** Nội dung thêm dưới cùng (SLA, cảnh báo…) */
+  /** Nội dung thêm dưới cùng (SLA, cảnh báo...) */
   children?: ReactNode
   className?: string
 }
@@ -77,9 +77,7 @@ export function JobHeaderCard({
             </StatusBadge>
           </div>
           {title && <h1 className="mt-1 text-headline-xl tracking-tight text-on-surface">{title}</h1>}
-          <p className={cn('text-on-surface-variant', title ? 'mt-1 text-body-md' : 'mt-1 text-body-lg')}>
-            {summary}
-          </p>
+          <p className={cn('text-on-surface-variant', title ? 'mt-1 text-body-md' : 'mt-1 text-body-lg')}>{summary}</p>
         </div>
 
         {actions.length > 0 && (

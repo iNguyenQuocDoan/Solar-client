@@ -17,7 +17,7 @@ import type { ProductResponse } from '@/types/res/adminProductsRes'
  * Form thêm / sửa sản phẩm (POST và PUT /api/admin/products).
  * Ràng buộc lấy từ lỗi validate thật của backend (29/09/2026):
  *   bắt buộc sku, productType, name, brand, unit, unitPrice, currency (đúng 3 ký tự);
- *   unitPrice, warrantyMonth ≥ 0; ratedPowerW, widthMm, heightMm > 0 khi có nhập;
+ *   unitPrice, warrantyMonth >= 0; ratedPowerW, widthMm, heightMm > 0 khi có nhập;
  *   spec phải là JSON object; status chỉ ACTIVE | INACTIVE.
  * Loại SOLAR_PANEL (không phân biệt hoa thường) bắt buộc thêm ratedPowerW, widthMm, heightMm (dò 05/10/2026);
  * mô phỏng 3D dùng đúng ba số này.
@@ -32,7 +32,10 @@ const optionalNumber = (label: string, { allowZero }: { allowZero: boolean }) =>
     .string()
     .trim()
     .refine((v) => v === '' || Number.isFinite(Number(v)), `${label} phải là số`)
-    .refine((v) => v === '' || (allowZero ? Number(v) >= 0 : Number(v) > 0), `${label} phải ${allowZero ? 'từ 0 trở lên' : 'lớn hơn 0'}`)
+    .refine(
+      (v) => v === '' || (allowZero ? Number(v) >= 0 : Number(v) > 0),
+      `${label} phải ${allowZero ? 'từ 0 trở lên' : 'lớn hơn 0'}`,
+    )
 
 const productFormSchema = z
   .object({
@@ -43,7 +46,10 @@ const productFormSchema = z
     brand: required('hãng'),
     model: z.string().trim(),
     unit: required('đơn vị tính'),
-    unitPrice: required('đơn giá').refine((v) => Number.isFinite(Number(v)) && Number(v) >= 0, 'Đơn giá phải là số từ 0 trở lên'),
+    unitPrice: required('đơn giá').refine(
+      (v) => Number.isFinite(Number(v)) && Number(v) >= 0,
+      'Đơn giá phải là số từ 0 trở lên',
+    ),
     currency: z
       .string()
       .trim()
@@ -61,14 +67,17 @@ const productFormSchema = z
   })
   .superRefine((values, ctx) => {
     if (isSolarPanelType(values.productType)) {
-      if (!values.ratedPowerW) ctx.addIssue({ code: 'custom', path: ['ratedPowerW'], message: 'Tấm pin cần công suất định mức' })
+      if (!values.ratedPowerW)
+        ctx.addIssue({ code: 'custom', path: ['ratedPowerW'], message: 'Tấm pin cần công suất định mức' })
       if (!values.widthMm) ctx.addIssue({ code: 'custom', path: ['widthMm'], message: 'Tấm pin cần chiều rộng' })
       if (!values.heightMm) ctx.addIssue({ code: 'custom', path: ['heightMm'], message: 'Tấm pin cần chiều cao' })
     }
     const seen = new Set<string>()
     values.spec.forEach((row, i) => {
-      if (!row.key && row.value) ctx.addIssue({ code: 'custom', path: ['spec', i, 'key'], message: 'Nhập tên thông số' })
-      if (row.key && seen.has(row.key)) ctx.addIssue({ code: 'custom', path: ['spec', i, 'key'], message: 'Thông số bị trùng' })
+      if (!row.key && row.value)
+        ctx.addIssue({ code: 'custom', path: ['spec', i, 'key'], message: 'Nhập tên thông số' })
+      if (row.key && seen.has(row.key))
+        ctx.addIssue({ code: 'custom', path: ['spec', i, 'key'], message: 'Thông số bị trùng' })
       seen.add(row.key)
     })
   })
@@ -169,7 +178,10 @@ function ProductForm({
   suggestions,
   onDone,
   onBusyChange,
-}: Pick<ProductFormDialogProps, 'product' | 'suggestions'> & { onDone: () => void; onBusyChange: (busy: boolean) => void }) {
+}: Pick<ProductFormDialogProps, 'product' | 'suggestions'> & {
+  onDone: () => void
+  onBusyChange: (busy: boolean) => void
+}) {
   const id = useId()
   const isEdit = Boolean(product?.id)
   const createMutation = useCreateProductMutation()
@@ -218,7 +230,10 @@ function ProductForm({
           }
         }
       }
-      setError('root', { type: 'server', message: mapped ? 'Một số ô chưa hợp lệ, xem thông báo ở từng ô.' : errorMessage(error) })
+      setError('root', {
+        type: 'server',
+        message: mapped ? 'Một số ô chưa hợp lệ, xem thông báo ở từng ô.' : errorMessage(error),
+      })
     }
   }
 
@@ -253,10 +268,21 @@ function ProductForm({
           <Input id={f('brand')} aria-required aria-invalid={invalid('brand')} {...register('brand')} />
         </Field>
         <Field label="Loại sản phẩm" required htmlFor={f('productType')} error={errors.productType?.message}>
-          <Input id={f('productType')} list={f('types')} aria-required aria-invalid={invalid('productType')} {...register('productType')} />
+          <Input
+            id={f('productType')}
+            list={f('types')}
+            aria-required
+            aria-invalid={invalid('productType')}
+            {...register('productType')}
+          />
         </Field>
         <Field label="Nhóm hàng" htmlFor={f('category')} error={errors.category?.message}>
-          <Input id={f('category')} list={f('categories')} aria-invalid={invalid('category')} {...register('category')} />
+          <Input
+            id={f('category')}
+            list={f('categories')}
+            aria-invalid={invalid('category')}
+            {...register('category')}
+          />
         </Field>
         <Field label="Model" htmlFor={f('model')} error={errors.model?.message}>
           <Input id={f('model')} aria-invalid={invalid('model')} {...register('model')} />
@@ -265,13 +291,31 @@ function ProductForm({
           <Input id={f('unit')} aria-required aria-invalid={invalid('unit')} {...register('unit')} />
         </Field>
         <Field label="Đơn giá" required htmlFor={f('unitPrice')} error={errors.unitPrice?.message}>
-          <Input id={f('unitPrice')} inputMode="decimal" aria-required aria-invalid={invalid('unitPrice')} {...register('unitPrice')} />
+          <Input
+            id={f('unitPrice')}
+            inputMode="decimal"
+            aria-required
+            aria-invalid={invalid('unitPrice')}
+            {...register('unitPrice')}
+          />
         </Field>
         <Field label="Tiền tệ" required htmlFor={f('currency')} error={errors.currency?.message}>
-          <Input id={f('currency')} maxLength={3} className="uppercase" aria-required aria-invalid={invalid('currency')} {...register('currency')} />
+          <Input
+            id={f('currency')}
+            maxLength={3}
+            className="uppercase"
+            aria-required
+            aria-invalid={invalid('currency')}
+            {...register('currency')}
+          />
         </Field>
         <Field label="Bảo hành (tháng)" htmlFor={f('warrantyMonth')} error={errors.warrantyMonth?.message}>
-          <Input id={f('warrantyMonth')} inputMode="numeric" aria-invalid={invalid('warrantyMonth')} {...register('warrantyMonth')} />
+          <Input
+            id={f('warrantyMonth')}
+            inputMode="numeric"
+            aria-invalid={invalid('warrantyMonth')}
+            {...register('warrantyMonth')}
+          />
         </Field>
 
         {/* Ba số này đi cùng nhau: bắt buộc với tấm pin vì backend kiểm tra và mô phỏng 3D cần chúng. */}
@@ -280,23 +324,54 @@ function ProductForm({
             <span className="text-body font-semibold sm:col-span-3">
               Công suất và kích thước
               <span className="block text-meta font-normal text-fg-2">
-                {isPanel ? 'Bắt buộc với tấm pin, dùng cho mô phỏng bố trí.' : `Bắt buộc khi loại là ${SOLAR_PANEL_TYPE}.`}
+                {isPanel
+                  ? 'Bắt buộc với tấm pin, dùng cho mô phỏng bố trí.'
+                  : `Bắt buộc khi loại là ${SOLAR_PANEL_TYPE}.`}
               </span>
             </span>
           </legend>
-          <Field label="Công suất định mức (W)" required={isPanel} htmlFor={f('ratedPowerW')} error={errors.ratedPowerW?.message}>
-            <Input id={f('ratedPowerW')} inputMode="decimal" aria-required={isPanel} aria-invalid={invalid('ratedPowerW')} {...register('ratedPowerW')} />
+          <Field
+            label="Công suất định mức (W)"
+            required={isPanel}
+            htmlFor={f('ratedPowerW')}
+            error={errors.ratedPowerW?.message}
+          >
+            <Input
+              id={f('ratedPowerW')}
+              inputMode="decimal"
+              aria-required={isPanel}
+              aria-invalid={invalid('ratedPowerW')}
+              {...register('ratedPowerW')}
+            />
           </Field>
           <Field label="Chiều rộng (mm)" required={isPanel} htmlFor={f('widthMm')} error={errors.widthMm?.message}>
-            <Input id={f('widthMm')} inputMode="decimal" aria-required={isPanel} aria-invalid={invalid('widthMm')} {...register('widthMm')} />
+            <Input
+              id={f('widthMm')}
+              inputMode="decimal"
+              aria-required={isPanel}
+              aria-invalid={invalid('widthMm')}
+              {...register('widthMm')}
+            />
           </Field>
           <Field label="Chiều cao (mm)" required={isPanel} htmlFor={f('heightMm')} error={errors.heightMm?.message}>
-            <Input id={f('heightMm')} inputMode="decimal" aria-required={isPanel} aria-invalid={invalid('heightMm')} {...register('heightMm')} />
+            <Input
+              id={f('heightMm')}
+              inputMode="decimal"
+              aria-required={isPanel}
+              aria-invalid={invalid('heightMm')}
+              {...register('heightMm')}
+            />
           </Field>
         </fieldset>
 
         <Field label="Link ảnh" htmlFor={f('imageUrl')} error={errors.imageUrl?.message} className="sm:col-span-2">
-          <Input id={f('imageUrl')} type="url" placeholder="https://" aria-invalid={invalid('imageUrl')} {...register('imageUrl')} />
+          <Input
+            id={f('imageUrl')}
+            type="url"
+            placeholder="https://"
+            aria-invalid={invalid('imageUrl')}
+            {...register('imageUrl')}
+          />
         </Field>
       </div>
 
@@ -336,16 +411,26 @@ function ProductForm({
             </div>
           ))}
         </div>
-        <Button variant="soft" size="sm" icon="add" className="mt-2" onClick={() => spec.append({ key: '', value: '' })}>
+        <Button
+          variant="soft"
+          size="sm"
+          icon="add"
+          className="mt-2"
+          onClick={() => spec.append({ key: '', value: '' })}
+        >
           Thêm thông số
         </Button>
       </fieldset>
 
       <datalist id={f('types')}>
-        {suggestions?.productTypes.map((value) => <option key={value} value={value} />)}
+        {suggestions?.productTypes.map((value) => (
+          <option key={value} value={value} />
+        ))}
       </datalist>
       <datalist id={f('categories')}>
-        {suggestions?.categories.map((value) => <option key={value} value={value} />)}
+        {suggestions?.categories.map((value) => (
+          <option key={value} value={value} />
+        ))}
       </datalist>
 
       {errors.root?.message && (

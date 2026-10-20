@@ -25,7 +25,15 @@ const SECTIONS: { value: Section; label: string }[] = [
 const isSection = (v: string | null): v is Section => SECTIONS.some((s) => s.value === v)
 const isDate = (v: string | null): v is string => v != null && /^\d{4}-\d{2}-\d{2}$/.test(v)
 
-function DaySchedule({ technicianUserId, date, onDateChange }: { technicianUserId: string; date: string; onDateChange: (d: string) => void }) {
+function DaySchedule({
+  technicianUserId,
+  date,
+  onDateChange,
+}: {
+  technicianUserId: string
+  date: string
+  onDateChange: (d: string) => void
+}) {
   const query = useTechnicianScheduleQuery(technicianUserId, date)
   return (
     <div className="space-y-6">
@@ -40,8 +48,8 @@ function DaySchedule({ technicianUserId, date, onDateChange }: { technicianUserI
 
 /*
   Một kỹ thuật viên (quản trị và quản lý dùng chung): lịch theo ngày (đường đi, cảnh báo trùng giờ) và ba phần cấu hình
-  quyết định giờ trống của khách – hồ sơ nhận lịch (nơi xuất phát…), giờ làm theo tuần, lịch nghỉ. Mục và ngày nằm trên địa
-  chỉ (?muc=…&ngay=…). Backend không có API đọc một hồ sơ nên lấy từ danh sách kỹ thuật viên.
+  quyết định giờ trống của khách, hồ sơ nhận lịch (nơi xuất phát...), giờ làm theo tuần, lịch nghỉ. Mục và ngày nằm trên địa
+  chỉ (?muc=...&ngay=...). Backend không có API đọc một hồ sơ nên lấy từ danh sách kỹ thuật viên.
 */
 function TechnicianPage({ accountPattern }: { accountPattern?: string }) {
   const { id } = useParams()
@@ -72,7 +80,12 @@ function TechnicianPage({ accountPattern }: { accountPattern?: string }) {
     <QueryBoundary query={query}>
       {() => {
         if (!technician || !id)
-          return <EmptyState title="Không tìm thấy kỹ thuật viên" description="Tài khoản có thể đã bị xoá hoặc không còn vai trò kỹ thuật viên." />
+          return (
+            <EmptyState
+              title="Không tìm thấy kỹ thuật viên"
+              description="Tài khoản có thể đã bị xoá hoặc không còn vai trò kỹ thuật viên."
+            />
+          )
         const ready = technicianReadiness(technician)
         const section: Section = isSection(rawSection) ? rawSection : (defaultSection ?? 'lich')
         return (
@@ -93,8 +106,16 @@ function TechnicianPage({ accountPattern }: { accountPattern?: string }) {
                 ) : undefined
               }
             />
-            <FilterChips label="Phần của trang" className="mb-6" chips={SECTIONS} value={section} onChange={(muc) => update({ muc })} />
-            {section === 'lich' && <DaySchedule technicianUserId={id} date={date} onDateChange={(ngay) => update({ ngay })} />}
+            <FilterChips
+              label="Phần của trang"
+              className="mb-6"
+              chips={SECTIONS}
+              value={section}
+              onChange={(muc) => update({ muc })}
+            />
+            {section === 'lich' && (
+              <DaySchedule technicianUserId={id} date={date} onDateChange={(ngay) => update({ ngay })} />
+            )}
             {/* key: lưu xong danh sách tải lại, form lấy lại giá trị mới nhất thay vì giữ bản đang sửa. */}
             {section === 'nhan-lich' && (
               <TechnicianProfileForm

@@ -62,7 +62,11 @@ export function PhotoInspector({
           <img src={photo.src} alt={photo.alt} className="h-64 w-full object-cover" />
 
           {photo.inspector.annotations > 0 && (
-            <svg viewBox="0 0 400 256" aria-hidden="true" className="pointer-events-none absolute inset-0 h-full w-full">
+            <svg
+              viewBox="0 0 400 256"
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-0 h-full w-full"
+            >
               <defs>
                 <marker
                   id="inspector-arrow"

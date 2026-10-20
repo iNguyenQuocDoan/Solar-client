@@ -44,9 +44,23 @@ export function CancelBookingDialog({
   return (
     <ModalDialog open={open} onOpenChange={onOpenChange} dismissible={!cancel.isPending} aria-label="Huỷ lịch khảo sát">
       <DialogTitle>Huỷ lịch {formatAppointment(appointment.startsAt, appointment.endsAt)}?</DialogTitle>
-      <p className="mt-2 text-body text-fg-2">Giờ này được nhả cho khách khác. Yêu cầu khảo sát vẫn giữ, bạn đặt lại giờ khác được.</p>
-      <Field label="Lý do" htmlFor="cancel-reason" hint={`Không bắt buộc, tối đa ${REASON_MAX} ký tự.`} error={error ?? undefined} className="mt-4">
-        <Textarea id="cancel-reason" rows={3} maxLength={REASON_MAX} value={reason} onChange={(e) => setReason(e.target.value)} />
+      <p className="mt-2 text-body text-fg-2">
+        Giờ này được nhả cho khách khác. Yêu cầu khảo sát vẫn giữ, bạn đặt lại giờ khác được.
+      </p>
+      <Field
+        label="Lý do"
+        htmlFor="cancel-reason"
+        hint={`Không bắt buộc, tối đa ${REASON_MAX} ký tự.`}
+        error={error ?? undefined}
+        className="mt-4"
+      >
+        <Textarea
+          id="cancel-reason"
+          rows={3}
+          maxLength={REASON_MAX}
+          value={reason}
+          onChange={(e) => setReason(e.target.value)}
+        />
       </Field>
       <DialogFooter>
         <Button variant="ghost" disabled={cancel.isPending} onClick={() => onOpenChange(false)}>

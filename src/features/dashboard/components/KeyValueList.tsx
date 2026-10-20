@@ -12,7 +12,7 @@ export type KeyValueRowProps = {
   sublabelClassName?: string
   value?: ReactNode
   valueClassName?: string
-  /** Thay cho value: chấm trạng thái, badge… */
+  /** Thay cho value: chấm trạng thái, badge... */
   trailing?: ReactNode
   className?: string
 }

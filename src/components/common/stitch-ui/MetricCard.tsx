@@ -66,7 +66,7 @@ export type MetricCardProps = {
   description?: string
   descriptionTone?: 'default' | 'muted'
   layout?: MetricLayout
-  /** Slot dưới cùng: chip phân bố, progress… (stacked / inline) */
+  /** Slot dưới cùng: chip phân bố, progress... (stacked / inline) */
   children?: ReactNode
   className?: string
 }
@@ -106,12 +106,7 @@ export function MetricCard({
     return (
       <Card padding="md" className={cn('flex items-center justify-between gap-space-sm', className)}>
         <div className="flex min-w-0 flex-col">
-          <span
-            className={cn(
-              'text-label-sm',
-              labelTone === 'default' ? 'text-outline' : labelToneClasses[labelTone],
-            )}
-          >
+          <span className={cn('text-label-sm', labelTone === 'default' ? 'text-outline' : labelToneClasses[labelTone])}>
             {label}
           </span>
           <span className={cn('mt-1 text-headline-lg font-bold', valueToneClasses[valueTone])}>{value}</span>
@@ -126,7 +121,9 @@ export function MetricCard({
             </span>
           ) : (
             description && (
-              <span className={cn('text-body-sm', descriptionTone === 'muted' ? 'text-outline' : 'text-on-surface-variant')}>
+              <span
+                className={cn('text-body-sm', descriptionTone === 'muted' ? 'text-outline' : 'text-on-surface-variant')}
+              >
                 {description}
               </span>
             )
@@ -203,7 +200,12 @@ export function MetricCard({
             <div>{valueNode}</div>
             {deltaNode}
             {description && (
-              <p className={cn('mt-1 text-body-sm', descriptionTone === 'muted' ? 'text-outline' : 'text-on-surface-variant')}>
+              <p
+                className={cn(
+                  'mt-1 text-body-sm',
+                  descriptionTone === 'muted' ? 'text-outline' : 'text-on-surface-variant',
+                )}
+              >
                 {description}
               </p>
             )}
@@ -212,7 +214,6 @@ export function MetricCard({
       </div>
 
       {children && <div className={cn(!inline && 'mt-space-md')}>{children}</div>}
-
     </Card>
   )
 }

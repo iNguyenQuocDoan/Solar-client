@@ -5,7 +5,7 @@ import { AuthProvider } from '@/context/AuthProvider'
 import { isApiError } from '@/services/api/errors'
 import { cx } from '@/utils/cx'
 
-/* Lỗi 4xx (chưa đăng nhập, không có quyền, không tìm thấy…) thử lại cũng không khỏi: báo ngay. */
+/* Lỗi 4xx (chưa đăng nhập, không có quyền, không tìm thấy...) thử lại cũng không khỏi: báo ngay. */
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -19,7 +19,7 @@ const queryClient = new QueryClient({
 
 /*
  * Toast (sonner, unstyled) theo màu ngữ nghĩa của hệ token (08/10/2026): nền sáng có viền + bóng lớp nổi, icon tô theo
- * loại – thành công xanh (ok), thông tin xanh dương (info) –; lỗi và cảnh báo nằm trên nền đỏ / vàng nhạt để khác hẳn
+ * loại, thành công xanh (ok), thông tin xanh dương (info) -; lỗi và cảnh báo nằm trên nền đỏ / vàng nhạt để khác hẳn
  * thông báo thường. Nền và viền chỉ đặt trong class theo loại (sonner ghép `toast` + `[loại]`, cx không gộp class nên
  * đặt ở cả hai sẽ đè nhau tuỳ thứ tự CSS).
  */

@@ -263,9 +263,7 @@ function SurveyTaskView({ survey }: { survey: SurveyRecord }) {
                       <span className="block text-label-md font-semibold text-on-surface">
                         {audit.electrical.panel.title}
                       </span>
-                      <span className="text-body-sm text-on-surface-variant">
-                        {audit.electrical.panel.description}
-                      </span>
+                      <span className="text-body-sm text-on-surface-variant">{audit.electrical.panel.description}</span>
                     </div>
                   </div>
                   <span className="text-headline-md font-bold text-primary">{audit.electrical.panel.rating}</span>
@@ -278,9 +276,7 @@ function SurveyTaskView({ survey }: { survey: SurveyRecord }) {
                     <span className="text-label-md font-semibold text-on-surface">
                       {audit.electrical.breaker.question}
                     </span>
-                    <span className="text-body-sm text-on-surface-variant">
-                      {audit.electrical.breaker.description}
-                    </span>
+                    <span className="text-body-sm text-on-surface-variant">{audit.electrical.breaker.description}</span>
                   </div>
                   <SegmentedControl
                     label={audit.electrical.breaker.question}

@@ -28,12 +28,7 @@ import {
 import { ROUTES, surveyPhotosPath } from '@/routes/paths'
 import { cn } from '@/utils/cn'
 import { notFound } from '@/routes/notFound'
-import {
-  getSurveyById,
-  getSurveyVerificationById,
-  type SurveyRecord,
-  type SurveyVerification,
-} from '@/data/surveys'
+import { getSurveyById, getSurveyVerificationById, type SurveyRecord, type SurveyVerification } from '@/data/surveys'
 
 /* Dựng từ site_survey_verification/code.html + screen.png. */
 
@@ -84,13 +79,7 @@ export function SurveyVerificationPage() {
   return <SurveyVerificationView survey={survey} verification={verification} />
 }
 
-function SurveyVerificationView({
-  survey,
-  verification,
-}: {
-  survey: SurveyRecord
-  verification: SurveyVerification
-}) {
+function SurveyVerificationView({ survey, verification }: { survey: SurveyRecord; verification: SurveyVerification }) {
   const { dimensions, accessibility, proposal } = verification
 
   const {
@@ -172,9 +161,7 @@ function SurveyVerificationView({
         <TaskHeaderCard
           eyebrow={
             <>
-              <span className="text-label-sm font-bold text-primary">
-                {verification.cluster}
-              </span>
+              <span className="text-label-sm font-bold text-primary">{verification.cluster}</span>
               <span className="text-label-sm text-on-surface-variant">{verification.assignee}</span>
             </>
           }
@@ -375,9 +362,7 @@ function SurveyVerificationView({
             <SectionCard
               step={2}
               title={accessibility.title}
-              trailing={
-                <span className="shrink-0 text-label-sm text-on-surface-variant">{accessibility.badge}</span>
-              }
+              trailing={<span className="shrink-0 text-label-sm text-on-surface-variant">{accessibility.badge}</span>}
             >
               <FieldSection
                 label={accessibility.shading.label}
@@ -567,7 +552,7 @@ function SurveyVerificationView({
         </ActionDock>
       </form>
 
-      {/* Modal ký xác nhận – chỉ mở khi zod validate xong toàn bộ form */}
+      {/* Modal ký xác nhận, chỉ mở khi zod validate xong toàn bộ form */}
       <Dialog open={signOffOpen} onOpenChange={setSignOffOpen}>
         <DialogContent size="lg">
           <DialogHeader>

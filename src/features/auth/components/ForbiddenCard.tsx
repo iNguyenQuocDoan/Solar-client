@@ -6,7 +6,7 @@ import { roleLabels, type UserRole } from '@/config/roles'
 import { forbiddenContent } from '@/data/auth'
 
 /*
- * Thẻ 403 – "State 1: Unauthorized Access Warning Box" trong auth_portal/code.html.
+ * Thẻ 403, "State 1: Unauthorized Access Warning Box" trong auth_portal/code.html.
  * "Đổi tài khoản khác" = đăng xuất rồi về /login.
  */
 export function ForbiddenCard() {

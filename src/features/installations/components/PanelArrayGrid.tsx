@@ -46,10 +46,7 @@ export function PanelArrayGrid({ cells, legend, columns = 6, className }: PanelA
         {cells.map((cell) => (
           <div
             key={cell.index}
-            className={cn(
-              'flex h-9 items-center justify-center rounded text-label-sm',
-              cellClasses[cell.state],
-            )}
+            className={cn('flex h-9 items-center justify-center rounded text-label-sm', cellClasses[cell.state])}
           >
             {cell.index}
           </div>

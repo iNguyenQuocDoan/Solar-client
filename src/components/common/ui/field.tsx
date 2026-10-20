@@ -51,7 +51,8 @@ type ControlSize = 'sm' | 'md'
   Nền trắng (canvas) để ô nhập luôn trông là chỗ điền được, kể cả trên nền xám.
 */
 /* Màu chữ, viền, nền KHÔNG nằm trong `shape`: cx không gộp class, hai màu chữ cùng lúc thì lớp nào thắng tuỳ thứ tự CSS. */
-const shape = 'rounded-control border text-body placeholder:text-fg-3 disabled:border-line disabled:bg-surface-2 disabled:text-fg-3'
+const shape =
+  'rounded-control border text-body placeholder:text-fg-3 disabled:border-line disabled:bg-surface-2 disabled:text-fg-3'
 const states =
   'not-disabled:hover:border-fg-3 focus:border-accent focus-visible:outline-1 focus-visible:outline-offset-0 focus-visible:outline-accent aria-invalid:border-danger aria-invalid:outline-danger not-disabled:aria-invalid:hover:border-danger'
 const control = cx(shape, states, 'border-line-2 bg-canvas text-fg')
@@ -67,17 +68,21 @@ const heights: Record<ControlSize, string> = {
 /* Controls fill their container unless the caller sets a width. */
 const width = (className?: string) => (className && /(^|\s)w-/.test(className) ? undefined : 'w-full')
 
-export function Input({ className, size = 'md', ...rest }: Omit<InputHTMLAttributes<HTMLInputElement>, 'size'> & { size?: ControlSize }) {
+export function Input({
+  className,
+  size = 'md',
+  ...rest
+}: Omit<InputHTMLAttributes<HTMLInputElement>, 'size'> & { size?: ControlSize }) {
   return <input className={cx(control, width(className), heights[size], 'px-3', className)} {...rest} />
 }
 
-/** "2026-10-15" → "15/10/2026"; rỗng → rỗng. */
+/** Đổi "2026-10-15" thành "15/10/2026", rỗng thì trả rỗng */
 const toVnDate = (iso: string) => {
   const [y, m, d] = iso.split('-')
   return y && m && d ? `${d}/${m}/${y}` : ''
 }
 
-/** "15/10/2026", "5/10/2026", "15-10-2026", "15.10.2026" → "2026-10-15"; ngày không có thật (31/02) → null. */
+/** Đổi "15/10/2026", "5/10/2026", "15-10-2026", "15.10.2026" thành "2026-10-15", ngày không có thật (31/02) thì trả null */
 function parseVnDate(text: string): string | null {
   const match = /^(\d{1,2})[/.-](\d{1,2})[/.-](\d{4})$/.exec(text.trim())
   if (!match) return null
@@ -89,12 +94,12 @@ function parseVnDate(text: string): string | null {
 
 /*
   Ô ngày kiểu Việt Nam (13/10/2026) dù trình duyệt đặt ngôn ngữ nào: ô date gốc hiện và nhận phím theo ngôn ngữ trình duyệt
-  (bản tiếng Anh ra 10/13/2026 và gõ "15" là sửa tháng – người dùng báo 12/10/2026, review 13/10/2026). Nên ô người dùng
+  (bản tiếng Anh ra 10/13/2026 và gõ "15" là sửa tháng, người dùng báo 12/10/2026, review 13/10/2026). Nên ô người dùng
   thấy là ô chữ thật: gõ ngày/tháng/năm (15/10/2026, 5/10/2026, 15-10-2026), rời ô hoặc Enter thì đọc lại; ngày sai hoặc
   ngoài min / max thì trả về ngày cũ. Vùng icon lịch bên phải là một ô date gốc trong suốt (nút lịch của nó kéo phủ cả vùng):
   bấm là bấm thẳng vào ô gốc nên trình duyệt mở lịch chọn của nó. Không gọi showPicker() từ một nút khác: thử 13/10/2026,
   Chrome không hiện lịch khi ô date không được focus. Ô gốc không nhận Tab (người dùng bàn phím gõ ngày). Các thuộc tính
-  còn lại (aria-invalid, aria-required, required, disabled, aria-describedby, name…) đặt lên ô chữ như `Input`.
+  còn lại (aria-invalid, aria-required, required, disabled, aria-describedby, name...) đặt lên ô chữ như `Input`.
 */
 export function DateField({
   id,
@@ -190,10 +195,17 @@ export function DateField({
 }
 
 /* Ô tìm kiếm: icon kính lúp ở đầu ô để nhận ra ngay là ô tìm, không chỉ dựa vào chữ gợi ý. */
-export function SearchInput({ className, size = 'md', ...rest }: Omit<InputHTMLAttributes<HTMLInputElement>, 'size' | 'type'> & { size?: ControlSize }) {
+export function SearchInput({
+  className,
+  size = 'md',
+  ...rest
+}: Omit<InputHTMLAttributes<HTMLInputElement>, 'size' | 'type'> & { size?: ControlSize }) {
   return (
     <span className={cx('relative block', width(className), className)}>
-      <Icon name="search" className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-[20px] text-fg-3" />
+      <Icon
+        name="search"
+        className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-[20px] text-fg-3"
+      />
       <input type="search" className={cx(control, 'w-full pr-3 pl-10', heights[size])} {...rest} />
     </span>
   )
@@ -203,7 +215,7 @@ export function Textarea({ className, rows = 4, ...rest }: TextareaHTMLAttribute
   return <textarea rows={rows} className={cx(control, width(className), 'px-3 py-2', className)} {...rest} />
 }
 
-/** `active`: ô lọc đang có giá trị khác "Tất cả…", tô màu để thấy bộ lọc đang áp dụng. */
+/** `active`: ô lọc đang có giá trị khác "Tất cả...", tô màu để thấy bộ lọc đang áp dụng. */
 export function Select({
   className,
   size = 'md',
@@ -212,18 +224,28 @@ export function Select({
   ...rest
 }: Omit<SelectHTMLAttributes<HTMLSelectElement>, 'size'> & { size?: ControlSize; active?: boolean }) {
   return (
-    <select className={cx(active ? controlActive : control, width(className), heights[size], 'cursor-pointer px-3 pr-8', className)} {...rest}>
+    <select
+      className={cx(
+        active ? controlActive : control,
+        width(className),
+        heights[size],
+        'cursor-pointer px-3 pr-8',
+        className,
+      )}
+      {...rest}
+    >
       {children}
     </select>
   )
 }
 
 const minutesOf = (time: string) => Number(time.slice(0, 2)) * 60 + Number(time.slice(3, 5))
-const timeOf = (minutes: number) => `${String(Math.floor(minutes / 60)).padStart(2, '0')}:${String(minutes % 60).padStart(2, '0')}`
+const timeOf = (minutes: number) =>
+  `${String(Math.floor(minutes / 60)).padStart(2, '0')}:${String(minutes % 60).padStart(2, '0')}`
 
 /*
   Ô chọn giờ kiểu 24 giờ (13:00), mỗi `step` phút từ `from` tới `to`. Ô time gốc hiện theo ngôn ngữ trình duyệt (bản tiếng
-  Anh ra "01:00 PM", lệch với "13:00–17:00" in ngay cạnh – 12/10/2026). Giá trị đang có mà lệch lưới (vd. 08:10 lưu từ nơi
+  Anh ra "01:00 PM", lệch với "13:00-17:00" in ngay cạnh, 12/10/2026). Giá trị đang có mà lệch lưới (vd. 08:10 lưu từ nơi
   khác) vẫn được thêm vào danh sách để không bị đổi ngầm. `emptyLabel`: thêm lựa chọn rỗng (vd. "Theo mặc định").
 */
 export function TimeSelect({

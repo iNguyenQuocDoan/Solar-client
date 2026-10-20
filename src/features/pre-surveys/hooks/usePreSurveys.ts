@@ -9,11 +9,6 @@ import type { PreSurveySurfaceView, UpdatePreSurveySurfaceResponse } from '@/typ
 import type { CreatePreSurveyResponse, SubmitPreSurveyResponse } from '@/types/res/preSurveysRes'
 import type { ApiError } from '@/services/api/errors'
 
-/*
- * Query + mutation phía khách hàng. Đọc lại được duy nhất một thứ: mặt lắp của một bản nháp (GET .../surface), kèm
- * revision / geometryVersion để chống ghi đè. Mọi lần ghi bản nháp đều làm mới mặt lắp và danh sách mô phỏng (cờ "cũ").
- */
-
 export const preSurveyKeys = {
   all: ['pre-surveys'] as const,
   one: (id: string) => [...preSurveyKeys.all, id] as const,
@@ -38,7 +33,7 @@ export function useCreatePreSurveyMutation() {
   })
 }
 
-/** Làm mới mọi thứ thuộc một bản nháp (mặt lắp, danh sách mô phỏng). Không chờ: nút bấm báo xong ngay khi ghi xong. */
+/** Không await để nút bấm báo xong ngay */
 function useInvalidatePreSurvey() {
   const queryClient = useQueryClient()
   return (id: string) => {
@@ -59,13 +54,12 @@ export function useSubmitPreSurveyMutation() {
   const queryClient = useQueryClient()
   return useMutation<SubmitPreSurveyResponse, ApiError, string>({
     mutationFn: (id) => preSurveyService.submitPreSurvey(id),
-    // Gửi xong sinh một yêu cầu khảo sát mới: danh sách "Yêu cầu khảo sát" của khách phải có nó ngay.
+    // Để danh sách yêu cầu của khách có ngay yêu cầu mới
     onSettled: (_data, _error, id) =>
       Promise.all([invalidate(id), queryClient.invalidateQueries({ queryKey: bookingKeys.all })]),
   })
 }
 
-/** `enabled`: chỉ gọi khi đã có id bản nháp (bản nháp mới tạo hoặc nhớ từ lần trước). */
 export function useSurfaceQuery(id: string | null | undefined) {
   return useQuery<PreSurveySurfaceView, ApiError>({
     queryKey: preSurveyKeys.surface(id ?? ''),

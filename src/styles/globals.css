@@ -5,7 +5,7 @@
 /*
   `dark:` theo đúng giao diện đang dùng như các token màu bên dưới: data-theme trên <html>, không đặt thì theo hệ thống.
   Mặc định của Tailwind v4 chỉ đọc prefers-color-scheme, nên máy để chế độ tối mà khách chọn "Sáng" thì `dark:bg-fg` vẫn
-  chạy và đặt logo lên màu chữ của chế độ sáng (gần đen) – logo thành khối đen (người dùng báo 10/10/2026).
+  chạy và đặt logo lên màu chữ của chế độ sáng (gần đen), logo thành khối đen (người dùng báo 10/10/2026).
 */
 @custom-variant dark {
   &:where([data-theme='dark'], [data-theme='dark'] *) {
@@ -27,7 +27,7 @@
   Theme follows the system preference and can be pinned with
   <html data-theme="light|dark">.
 
-  Colour roles (08/10/2026 – mỗi màu một vai trò, dùng giống nhau ở mọi màn):
+  Colour roles (08/10/2026, mỗi màu một vai trò, dùng giống nhau ở mọi màn):
     accent        thương hiệu + hành động chính: nút đặc duy nhất của trang, vạch mục menu đang mở,
                   tab / trang / bộ lọc đang chọn, tiến độ đã xong
     accent-soft   nền "đang chọn" trong nội dung, nền của nút hành động phụ mang màu (Button soft)
@@ -46,7 +46,7 @@
     fg    primary text, headings, figures
     fg-2  secondary body: descriptions, key labels, supporting sentences
     fg-3  tertiary meta: timestamps, captions, units, hints, sub-lines in lists
-  Mọi cặp chữ/nền ở trên đạt ≥ 4,5:1 ở cả hai chế độ (đo 08/10/2026), kể cả fg-3 trên rail.
+  Mọi cặp chữ/nền ở trên đạt >= 4,5:1 ở cả hai chế độ (đo 08/10/2026), kể cả fg-3 trên rail.
 */
 :root {
   color-scheme: light;
@@ -89,7 +89,7 @@
   /* Màu vật liệu của tấm pin trên mặt bằng 2D (mặt kính, khung nhôm): vẽ vật thể thật, không mang nghĩa trạng thái. */
   --pv-glass: oklch(31% 0.045 262);
   --pv-frame: oklch(84% 0.01 250);
-  /* Cột biểu đồ một chuỗi (sản lượng theo tháng): cùng hue thương hiệu, đo bằng validator dataviz ≥ 3:1 trên canvas. */
+  /* Cột biểu đồ một chuỗi (sản lượng theo tháng): cùng hue thương hiệu, đo bằng validator dataviz >= 3:1 trên canvas. */
   --chart-1: oklch(55% 0.11 160);
   /* Lớp phủ sau hộp thoại / drawer: luôn làm tối trang. bg-fg/40 cũ làm SÁNG trang ở chế độ tối (fg gần trắng). */
   --scrim: oklch(20% 0.012 130 / 0.4);
@@ -509,7 +509,7 @@
    ===================================================================== */
 
 /*
- * Design tokens – lấy từ block YAML đầu
+ * Design tokens, lấy từ block YAML đầu
  * design/stitch/stitch_smart_solar_customer_portal/solaris_home_design_system/DESIGN.md
  * (trùng với tailwind.config trong mỗi code.html).
  */
@@ -524,7 +524,7 @@
     ---- Colors ----
     Nền, chữ và đường kẻ dùng chung token của portal kit nên hai bộ không còn
     lệch tông (bộ Stitch vốn ngả xanh, portal kit ngả trung tính ấm).
-    Các màu ngữ nghĩa (primary/error/secondary…) bên dưới giữ vai trò cũ.
+    Các màu ngữ nghĩa (primary/error/secondary...) bên dưới giữ vai trò cũ.
   */
   --color-surface: var(--canvas);
   --color-surface-dim: var(--surface-3);
@@ -574,7 +574,7 @@
   --color-on-background: var(--fg);
   --color-surface-variant: var(--surface-3);
 
-  /* ---- Spacing (p-space-md, gap-space-sm, px-space-lg…) ---- */
+  /* ---- Spacing (p-space-md, gap-space-sm, px-space-lg...) ---- */
   --spacing-space-2xs: 0.25rem;
   --spacing-space-xs: 0.5rem;
   --spacing-space-sm: 0.75rem;
@@ -589,7 +589,7 @@
   --spacing-margin-tablet: 2rem;
   --spacing-margin-desktop: 3rem;
 
-  /* ---- Typography (text-headline-md, text-label-sm…) ---- */
+  /* ---- Typography (text-headline-md, text-label-sm...) ---- */
   /*
     Thang chữ dùng chung với portal kit: 13 / 15 / 18 / 24 / 32.
     Tên token của bộ Stitch giữ nguyên, chỉ ánh xạ về 5 bậc này.
@@ -812,7 +812,11 @@
     white-space: nowrap;
     word-wrap: normal;
     direction: ltr;
-    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    font-variation-settings:
+      'FILL' 0,
+      'wght' 400,
+      'GRAD' 0,
+      'opsz' 24;
     -webkit-font-smoothing: antialiased;
     /*
       Mỗi icon là đúng một ô vuông 1em: font chưa tải xong thì chữ tên icon ("solar_power") không đẩy lệch bố cục.

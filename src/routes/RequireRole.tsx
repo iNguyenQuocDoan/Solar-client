@@ -9,7 +9,7 @@ export type RequireRoleProps = {
   children: ReactNode
 }
 
-/** Đang khôi phục phiên → màn chờ; chưa đăng nhập → /login; sai vai trò → /403. */
+/** Đang khôi phục phiên thì hiện màn chờ, chưa đăng nhập thì về /login, sai vai trò thì về /403 */
 export function RequireRole({ role, children }: RequireRoleProps) {
   const { user, status } = useAuth()
   const location = useLocation()

@@ -19,7 +19,9 @@ export function AdminLayout({ children }: { children?: ReactNode }) {
   const isAdmin = useAuth().user?.role === 'admin'
   const productTotal = useProductsQuery({ PageSize: 1 }, { enabled: isAdmin }).data?.totalItems
   const userTotal = useAdminUsersQuery({ page: 1, pageSize: 1 }, { enabled: isAdmin }).data?.totalItems
-  const missingBase = useTechniciansQuery({ enabled: isAdmin }).data?.filter((t) => technicianReadiness(t).tone === 'danger').length
+  const missingBase = useTechniciansQuery({ enabled: isAdmin }).data?.filter(
+    (t) => technicianReadiness(t).tone === 'danger',
+  ).length
   return (
     <AppShell
       portal={PORTALS.admin}

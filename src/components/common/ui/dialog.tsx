@@ -5,7 +5,12 @@ import { cx } from '@/utils/cx'
   Native <dialog>, opened with ref.current.showModal(). The only floating layer
   in the product, so the only place --shadow-pop is used.
 */
-export function Dialog({ ref, className, children, ...rest }: DialogHTMLAttributes<HTMLDialogElement> & { ref: Ref<HTMLDialogElement> }) {
+export function Dialog({
+  ref,
+  className,
+  children,
+  ...rest
+}: DialogHTMLAttributes<HTMLDialogElement> & { ref: Ref<HTMLDialogElement> }) {
   return (
     <dialog
       ref={ref}

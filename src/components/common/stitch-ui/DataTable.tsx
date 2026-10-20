@@ -26,12 +26,12 @@ export type DataTableProps<T> = {
   selectable?: boolean
   selectedKeys?: ReadonlySet<string>
   onSelectionChange?: (keys: Set<string>) => void
-  /** Cột action bên phải (IconButton…) */
+  /** Cột action bên phải (IconButton...) */
   actions?: (row: T) => ReactNode
   actionsHeader?: ReactNode
-  /** Thanh tiêu đề trên bảng: tên + chip đếm + nút export… */
+  /** Thanh tiêu đề trên bảng: tên + chip đếm + nút export... */
   toolbar?: ReactNode
-  /** Nội dung dưới bảng khi không dùng pagination (dòng "Showing…" + link) */
+  /** Nội dung dưới bảng khi không dùng pagination (dòng "Showing..." + link) */
   footer?: ReactNode
   pagination?: PaginationProps
   emptyMessage?: ReactNode
@@ -132,13 +132,7 @@ export function DataTable<T>({
   }
 
   const cellPadding =
-    size === 'sm'
-      ? 'py-3'
-      : size === 'matrix'
-        ? 'py-space-lg'
-        : size === 'compact' || dense
-          ? 'py-space-sm'
-          : 'py-4'
+    size === 'sm' ? 'py-3' : size === 'matrix' ? 'py-space-lg' : size === 'compact' || dense ? 'py-space-sm' : 'py-4'
   const columnCount = columns.length + (selectable ? 1 : 0) + (actions ? 1 : 0)
   const lastIndex = columns.length - 1
 

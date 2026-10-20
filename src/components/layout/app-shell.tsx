@@ -176,7 +176,7 @@ export function AppShell({
 
 /*
   Biểu tượng thương hiệu (mặt trời, mái nhà, tấm pin), thu từ public/images/Logo.png về 96px nền trong suốt
-  (public/images/mark-96.png): đủ nét cho màn 2x/3x ở cỡ 24–32px. Không dùng apple-touch-icon.png vì ảnh đó nền trắng đặc.
+  (public/images/mark-96.png): đủ nét cho màn 2x/3x ở cỡ 24-32px. Không dùng apple-touch-icon.png vì ảnh đó nền trắng đặc.
 */
 function BrandImage({ className }: { className?: string }) {
   return <img src="/images/mark-96.png" width={32} height={32} alt="" className={cx('shrink-0', className)} />
@@ -228,7 +228,9 @@ function Rail({
           // Đóng: ẩn hẳn (invisible gỡ khỏi thứ tự Tab và cây trợ năng), không chỉ đẩy ra ngoài màn hình.
           // Transition lấy theo trạng thái MỚI: lúc ẩn có visibility trong transition nên trượt ra hết rồi mới ẩn;
           // lúc hiện thì không, để rail hiện ngay và nhận được focus ở khung hình đầu. Từ lg rail luôn hiện.
-          open ? 'visible translate-x-0 transition-[translate]' : 'invisible -translate-x-full transition-[translate,visibility]',
+          open
+            ? 'visible translate-x-0 transition-[translate]'
+            : 'invisible -translate-x-full transition-[translate,visibility]',
           'lg:visible lg:translate-x-0',
         )}
         aria-label="Điều hướng chính"
@@ -264,18 +266,29 @@ function Rail({
         {context && !compact && <div className="mt-4 shrink-0 text-meta text-fg-2">{context}</div>}
 
         {/* -mx-3 px-3: khung cuộn rộng bằng các hàng (hàng lấn 12px mỗi bên), để hàng không bị cắt hay sinh cuộn ngang. */}
-        <nav className={cx('-mx-3 mt-6 min-h-28 flex-1 overflow-y-auto overscroll-contain px-3 [scrollbar-width:thin]', compact && 'pt-1.5')}>
+        <nav
+          className={cx(
+            '-mx-3 mt-6 min-h-28 flex-1 overflow-y-auto overscroll-contain px-3 [scrollbar-width:thin]',
+            compact && 'pt-1.5',
+          )}
+        >
           {portal.groups.map((group, gi) => {
             const groupActive = group.items.some((item) => isNavItemActive(item, pathname))
             return (
               <div key={gi} className={cx(gi > 0 && (compact ? 'mt-3 border-t border-line pt-3' : 'mt-5'))}>
                 {group.label && !compact && (
-                  <p className={cx('mb-1 text-meta font-medium', groupActive ? 'text-fg' : 'text-fg-2')}>{group.label}</p>
+                  <p className={cx('mb-1 text-meta font-medium', groupActive ? 'text-fg' : 'text-fg-2')}>
+                    {group.label}
+                  </p>
                 )}
                 <ul aria-label={compact ? group.label : undefined} className="space-y-0.5">
                   {group.items.map((item) => (
                     <li key={item.label}>
-                      {compact ? <RailIconLink item={item} count={badges?.[item.to]} /> : <RailLink item={item} count={badges?.[item.to]} />}
+                      {compact ? (
+                        <RailIconLink item={item} count={badges?.[item.to]} />
+                      ) : (
+                        <RailLink item={item} count={badges?.[item.to]} />
+                      )}
                     </li>
                   ))}
                 </ul>
@@ -318,7 +331,8 @@ function Rail({
   icon in the accent colour, so "where am I" reads at a glance; other rows show a neutral field on hover.
   Viền focus vẽ vào trong (outline-offset âm): khung cuộn của menu cắt mất phần viền vẽ ra ngoài.
 */
-const railActiveBar = 'before:absolute before:inset-y-2 before:left-0 before:w-[3px] before:rounded-control before:bg-accent'
+const railActiveBar =
+  'before:absolute before:inset-y-2 before:left-0 before:w-[3px] before:rounded-control before:bg-accent'
 
 function RailLink({ item, count }: { item: NavItem; count?: RailCount }) {
   const { pathname } = useLocation()
@@ -331,7 +345,10 @@ function RailLink({ item, count }: { item: NavItem; count?: RailCount }) {
     )
   const inner = (on: boolean) => (
     <>
-      <Icon name={item.icon} className={cx('shrink-0 text-[20px]', on ? 'icon-fill text-accent-fg' : 'text-fg-3 group-hover:text-fg-2')} />
+      <Icon
+        name={item.icon}
+        className={cx('shrink-0 text-[20px]', on ? 'icon-fill text-accent-fg' : 'text-fg-3 group-hover:text-fg-2')}
+      />
       <span className="min-w-0 flex-1 truncate">{item.label}</span>
       {item.badge && <span className="text-meta text-accent-fg">{item.badge}</span>}
       {!item.badge && count?.value ? <Count value={count.value} attention={count.attention} /> : null}
@@ -339,14 +356,19 @@ function RailLink({ item, count }: { item: NavItem; count?: RailCount }) {
   )
   if (isPlaceholder) {
     return (
-      <button type="button" className={cx(className(false), 'w-[calc(100%+1.5rem)] text-left')} aria-disabled title="Chưa có trong bản này">
+      <button
+        type="button"
+        className={cx(className(false), 'w-[calc(100%+1.5rem)] text-left')}
+        aria-disabled
+        title="Chưa có trong bản này"
+      >
         {inner(false)}
       </button>
     )
   }
   return (
     // Link thường thay NavLink: NavLink bỏ aria-current khi đường dẫn không khớp hẳn, kể cả lúc đang ở trang con.
-    // Đúng trang của mục: "page"; trang con (chi tiết…): "location".
+    // Đúng trang của mục: "page"; trang con (chi tiết...): "location".
     <Link
       to={item.to}
       aria-current={active ? (isNavItemPage(item, pathname) ? 'page' : 'location') : undefined}
@@ -362,11 +384,17 @@ function RailIconLink({ item, count }: { item: NavItem; count?: RailCount }) {
   const { pathname } = useLocation()
   const active = isNavItemActive(item, pathname)
   const label = count?.value ? `${item.label} (${count.value})` : item.label
-  const className = cx(railIcon, 'focus-visible:-outline-offset-2', active ? cx('bg-accent-muted text-accent-fg', railActiveBar) : railQuiet)
+  const className = cx(
+    railIcon,
+    'focus-visible:-outline-offset-2',
+    active ? cx('bg-accent-muted text-accent-fg', railActiveBar) : railQuiet,
+  )
   const inner = (
     <>
       <Icon name={item.icon} className={cx('text-[20px]', active && 'icon-fill')} />
-      {count?.value ? <Count value={count.value} attention={count.attention} className="absolute -top-1.5 -right-1.5" /> : null}
+      {count?.value ? (
+        <Count value={count.value} attention={count.attention} className="absolute -top-1.5 -right-1.5" />
+      ) : null}
     </>
   )
   if (item.to === '#') {
@@ -401,8 +429,8 @@ function RailIconLink({ item, count }: { item: NavItem; count?: RailCount }) {
   Thanh định vị: portal / nhóm menu / mục đang mở / trang chi tiết (hoặc bước wizard).
   - Mắt xích cuối là trang đang xem (aria-current, không phải link); mục menu là link về danh sách khi đang ở trang
     con, kể cả lúc trang con còn đang tải hoặc báo lỗi (404/403), để không thành đường cụt.
-  - Điện thoại: ẩn tên portal và nhóm, nhường chỗ cho tên trang hiện tại; tên quá dài thì cắt "…" và có tooltip.
-  - Tiêu đề tab trình duyệt đi theo vị trí: "<trang> – <portal> – Smart Solar".
+  - Điện thoại: ẩn tên portal và nhóm, nhường chỗ cho tên trang hiện tại; tên quá dài thì cắt "..." và có tooltip.
+  - Tiêu đề tab trình duyệt đi theo vị trí: "<trang>, <portal>, Smart Solar".
 */
 function LocationBar({ portal, crumb }: { portal: Portal; crumb: string | null }) {
   const { pathname } = useLocation()
@@ -439,7 +467,10 @@ function LocationBar({ portal, crumb }: { portal: Portal; crumb: string | null }
             >
               {i > 0 && (
                 // Trên điện thoại các mắt xích "wide" phía trước bị ẩn: bỏ luôn dấu "/" đứng đầu.
-                <span aria-hidden className={cx('text-fg-3', trail.slice(0, i).every((prev) => prev.wide) && 'hidden sm:inline')}>
+                <span
+                  aria-hidden
+                  className={cx('text-fg-3', trail.slice(0, i).every((prev) => prev.wide) && 'hidden sm:inline')}
+                >
                   /
                 </span>
               )}
@@ -449,7 +480,10 @@ function LocationBar({ portal, crumb }: { portal: Portal; crumb: string | null }
                   {step.label}
                 </span>
               ) : step.to ? (
-                <Link to={step.to} className="tap min-w-0 text-fg-2 underline-offset-4 hover:text-accent-fg hover:underline">
+                <Link
+                  to={step.to}
+                  className="tap min-w-0 text-fg-2 underline-offset-4 hover:text-accent-fg hover:underline"
+                >
                   <span className="min-w-0 truncate">{step.label}</span>
                 </Link>
               ) : (
@@ -593,7 +627,12 @@ function SessionBlock({ compact, onExpandRail }: { compact: boolean; onExpandRai
                   <Icon name={themeOpen ? 'expand_less' : 'expand_more'} className="text-[20px] text-fg-3" />
                 </button>
                 {themeOpen && (
-                  <div id={themeId} role="radiogroup" aria-label="Giao diện" className="mt-0.5 ml-[17px] space-y-0.5 border-l border-line pl-2">
+                  <div
+                    id={themeId}
+                    role="radiogroup"
+                    aria-label="Giao diện"
+                    className="mt-0.5 ml-[17px] space-y-0.5 border-l border-line pl-2"
+                  >
                     {THEMES.map((t) => {
                       const on = theme === t.value
                       return (
@@ -605,7 +644,14 @@ function SessionBlock({ compact, onExpandRail }: { compact: boolean; onExpandRai
                             on ? 'bg-accent-soft font-semibold text-accent-fg' : railQuiet,
                           )}
                         >
-                          <input type="radio" name={themeId} value={t.value} checked={on} onChange={() => setTheme(t.value)} className="sr-only" />
+                          <input
+                            type="radio"
+                            name={themeId}
+                            value={t.value}
+                            checked={on}
+                            onChange={() => setTheme(t.value)}
+                            className="sr-only"
+                          />
                           {/* Không icon riêng cho từng lựa chọn: tầng ba chỉ còn ~125px, icon làm "Tự động" bẻ dòng. */}
                           <span className="min-w-0 flex-1 whitespace-nowrap">{t.label}</span>
                           {on && <Icon name="check" className="text-[20px]" />}
@@ -625,7 +671,9 @@ function SessionBlock({ compact, onExpandRail }: { compact: boolean; onExpandRai
           )}
         </ul>
       )}
-      {canChangePassword(user?.role) && <ChangePasswordDialog open={changingPassword} onOpenChange={setChangingPassword} />}
+      {canChangePassword(user?.role) && (
+        <ChangePasswordDialog open={changingPassword} onOpenChange={setChangingPassword} />
+      )}
     </div>
   )
 }

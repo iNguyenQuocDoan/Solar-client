@@ -3,7 +3,7 @@
  *
  * Swagger trả token trong body (AuthTokensResponse) chứ không phải cookie httpOnly,
  * nên KHÔNG dùng withCredentials:
- * - accessToken giữ trong bộ nhớ (mất khi reload → khôi phục bằng refresh).
+ * - accessToken giữ trong bộ nhớ (mất khi reload, khôi phục lại bằng refresh).
  * - refreshToken lưu localStorage khi người dùng tick "Ghi nhớ đăng nhập",
  *   ngược lại lưu sessionStorage (mất khi đóng tab).
  */
@@ -77,7 +77,7 @@ export function setRefreshToken(token: string | null, store: TokenStore = curren
       window.localStorage.removeItem(STORE_KEY)
     }
   } catch {
-    /* storage bị chặn – bỏ qua, phiên vẫn chạy được trong bộ nhớ */
+    /* storage bị chặn, bỏ qua, phiên vẫn chạy được trong bộ nhớ */
   }
 }
 

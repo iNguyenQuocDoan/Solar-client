@@ -23,7 +23,7 @@ const schema = z.object({
 
 type LoginValues = z.infer<typeof schema>
 
-/** /login – view "Đăng nhập" của auth_portal, gọi POST /api/auth/login. */
+/** /login, view "Đăng nhập" của auth_portal, gọi POST /api/auth/login. */
 export function LoginPage() {
   const navigate = useNavigate()
   const location = useLocation()
@@ -57,10 +57,11 @@ export function LoginPage() {
       const user = await signIn(email, password, remember)
       toast.success(loginContent.toastSuccess)
       // Quay lại trang đang muốn vào nếu bị RequireRole chặn, nếu không thì theo vai trò.
-      // `from` có thể là trang của tài khoản vừa đăng xuất (vai trò khác) → chỉ dùng khi thuộc portal của vai trò này.
+      // `from` có thể là trang của tài khoản vừa đăng xuất (vai trò khác), nên chỉ dùng khi thuộc portal của vai trò này.
       const home = homePathForRole(user.role)
       const from = (location.state as { from?: string } | null)?.from
-      const inPortal = from !== undefined && (from === home || from.startsWith(`${home}/`) || from.startsWith(`${home}?`))
+      const inPortal =
+        from !== undefined && (from === home || from.startsWith(`${home}/`) || from.startsWith(`${home}?`))
       navigate(inPortal ? from : home, { replace: true })
     } catch (error) {
       signingIn.current = false
@@ -176,9 +177,7 @@ export function LoginPage() {
       {/* Chỉ hiện khi chạy dev và có khai báo tài khoản mẫu trong .env.development.local */}
       {import.meta.env.DEV && demoAccounts.length > 0 && (
         <div className="mt-space-lg border-t border-surface-container-highest pt-space-md">
-          <span className="mb-2 block text-label-sm text-on-surface-variant">
-            {loginContent.quickTitle}
-          </span>
+          <span className="mb-2 block text-label-sm text-on-surface-variant">{loginContent.quickTitle}</span>
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
             {demoAccounts.map((account) => (
               <button

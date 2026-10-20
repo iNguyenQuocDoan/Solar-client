@@ -28,7 +28,9 @@ export function Stepper({ steps, className }: { steps: Step[]; className?: strin
               step.state === 'active' && 'font-semibold text-fg',
             )}
           >
-            {step.state === 'done' && <Icon name="check_circle" className="icon-fill shrink-0 text-[20px] text-accent-fg" />}
+            {step.state === 'done' && (
+              <Icon name="check_circle" className="icon-fill shrink-0 text-[20px] text-accent-fg" />
+            )}
             {step.label}
             {step.state === 'done' && <span className="sr-only"> (đã xong)</span>}
           </p>

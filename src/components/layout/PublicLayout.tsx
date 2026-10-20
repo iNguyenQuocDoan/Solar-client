@@ -13,7 +13,7 @@ import { footer, header, projects, trust } from '@/data/landing'
  * Shell của các trang công khai ("/", "/coming-soon", "/products"). Không dùng AppShell/sidebar.
  * Font Be Vietnam Pro (300 số khai, 400 chữ, 600 tiêu đề và số đo) chỉ đặt ở đây vì
  * Schibsted Grotesk của portal thiếu dấu tiếng Việt.
- * Header không có menu theo giai đoạn (khảo sát, báo giá, thi công…): điều hướng đặt tên theo
+ * Header không có menu theo giai đoạn (khảo sát, báo giá, thi công...): điều hướng đặt tên theo
  * giai đoạn đọc thành quy trình. Chỉ link tới danh mục sản phẩm, phần công trình và phần năng lực thi công.
  */
 const capabilityLink = { pathname: ROUTES.HOME, hash: `#${trust.id}` }
@@ -58,19 +58,30 @@ export function PublicLayout() {
               className={({ isActive }) =>
                 cx(
                   'tap ld-body underline-offset-8 hover:text-fg',
-                  isActive ? 'font-semibold text-fg underline decoration-accent decoration-2' : 'text-fg-2 hover:underline hover:decoration-line-2',
+                  isActive
+                    ? 'font-semibold text-fg underline decoration-accent decoration-2'
+                    : 'text-fg-2 hover:underline hover:decoration-line-2',
                 )
               }
             >
               {header.products}
             </NavLink>
-            <Link to={projectsLink} className="hidden ld-body text-fg-2 underline-offset-8 hover:text-fg hover:underline hover:decoration-line-2 lg:inline">
+            <Link
+              to={projectsLink}
+              className="hidden ld-body text-fg-2 underline-offset-8 hover:text-fg hover:underline hover:decoration-line-2 lg:inline"
+            >
               {header.projects}
             </Link>
-            <Link to={capabilityLink} className="hidden ld-body text-fg-2 underline-offset-8 hover:text-fg hover:underline hover:decoration-line-2 lg:inline">
+            <Link
+              to={capabilityLink}
+              className="hidden ld-body text-fg-2 underline-offset-8 hover:text-fg hover:underline hover:decoration-line-2 lg:inline"
+            >
               {header.capability}
             </Link>
-            <Link to={account.to} className="tap ld-body text-fg-2 underline-offset-8 hover:text-fg hover:underline hover:decoration-line-2">
+            <Link
+              to={account.to}
+              className="tap ld-body text-fg-2 underline-offset-8 hover:text-fg hover:underline hover:decoration-line-2"
+            >
               {account.label}
             </Link>
             {!user && (

@@ -50,10 +50,7 @@ export function SectionCard({
   const isPlain = iconTone === 'plain'
 
   return (
-    <Card
-      padding="lg"
-      className={cn('flex flex-col', gap === 'md' ? 'gap-space-md' : 'gap-space-lg', className)}
-    >
+    <Card padding="lg" className={cn('flex flex-col', gap === 'md' ? 'gap-space-md' : 'gap-space-lg', className)}>
       <div className="flex flex-wrap items-center justify-between gap-space-sm pb-space-xs">
         {/* flex-1 để khối tiêu đề co lại nhường chỗ cho `trailing` thay vì đẩy nó xuống dòng */}
         <div className="flex min-w-0 flex-1 items-center gap-space-xs">
@@ -73,9 +70,7 @@ export function SectionCard({
             </div>
           )}
           <div className="min-w-0">
-            <h2 className={cn('text-headline-md leading-tight text-on-surface', isPlain && 'font-bold')}>
-              {title}
-            </h2>
+            <h2 className={cn('text-headline-md leading-tight text-on-surface', isPlain && 'font-bold')}>{title}</h2>
             {subtitle && <span className="text-label-sm text-on-surface-variant">{subtitle}</span>}
           </div>
         </div>
