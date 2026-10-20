@@ -6,10 +6,7 @@ import { LandingPhoto } from './photo'
 import { Reveal } from './reveal'
 import { Section, SectionTitle } from './section'
 
-/*
-  Theo dõi dự án ra sao: section DUY NHẤT có giao diện hệ thống, và chỉ một thẻ công trình gọn
-  (giai đoạn, số tấm đã lên mái, ảnh cập nhật, việc tiếp theo), không bảng, không phiếu.
-*/
+// Section theo dõi dự án, chỉ có một thẻ công trình gọn
 export function TrackingSection() {
   const { card } = tracking
   const pct = Math.round((card.progress.done / card.progress.total) * 100)

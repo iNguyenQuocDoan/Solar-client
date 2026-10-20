@@ -5,11 +5,7 @@ import { formatTime } from '@/features/scheduling/components/schedulingDisplay'
 import type { AvailableTechnicianView } from '@/types/res/technicianAvailabilityRes'
 import { cx } from '@/utils/cx'
 
-/*
-  Chọn một kỹ thuật viên trong danh sách backend trả (đã kiểm tra lịch, giờ làm, lịch nghỉ, số lịch / ngày và đường đi);
-  không bao giờ cho chọn người ngoài danh sách. Mỗi lựa chọn là một radio thật trong khối có viền; khối đang chọn mang
-  nền "đang chọn" như mọi lựa chọn khác. Thứ tự giữ như backend: người đang giữ chỗ lên đầu, rồi người tới nhanh hơn.
-*/
+// Chọn kỹ thuật viên trong danh sách backend trả, giữ đúng thứ tự backend
 export function TechnicianChoiceList({
   technicians,
   value,

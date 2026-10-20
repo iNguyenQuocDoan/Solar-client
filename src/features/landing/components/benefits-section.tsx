@@ -4,10 +4,7 @@ import { PAGE_GRID } from './classes'
 import { Reveal } from './reveal'
 import { Section, SectionTitle } from './section'
 
-/*
-  Doanh nghiệp nhận được gì: section chỉ có chữ để xen giữa các section nhiều ảnh. Lợi ích đứng hàng
-  lớn, trọn gói nhỏ hơn bên dưới. Không con số nào chưa có nguồn.
-*/
+// Section lợi ích, chỉ có chữ để xen giữa các section nhiều ảnh
 export function BenefitsSection() {
   return (
     <Section id={benefits.id} space="far" titleId="benefits-title">

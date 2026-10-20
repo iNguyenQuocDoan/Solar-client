@@ -1,10 +1,6 @@
 import { cn } from '@/utils/cn'
 
-/*
- * Biểu đồ "Generation Yield Impact" trong maintenance_task: hai đường sản lượng
- * (baseline trước vệ sinh màu secondary, post-wash màu primary) trên lưới nét đứt,
- * kèm chấm đánh dấu đỉnh và hàng chú giải giờ bắt đầu / kết thúc.
- */
+// Biểu đồ sản lượng trước và sau vệ sinh
 export type YieldSeriesPoint = { x: number; y: number }
 
 export type YieldImpactChartProps = {

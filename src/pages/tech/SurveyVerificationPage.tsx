@@ -206,10 +206,7 @@ function SurveyVerificationView({ survey, verification }: { survey: SurveyRecord
         </TaskHeaderCard>
       </div>
 
-      {/*
-       * Thiết kế chia 5/7 từ lg trở lên, cột trái là aside dữ liệu chủ nhà.
-       * Dưới lg xếp một cột và `order` đẩy aside xuống dưới form xác minh.
-       */}
+      {/* Từ lg chia 5/7, dưới lg xếp một cột và `order` đẩy aside xuống dưới */}
       <form id={FORM_ID} noValidate onSubmit={handleSubmit(onSubmit)}>
         <div className="grid grid-cols-1 items-start gap-space-lg lg:grid-cols-12">
           <aside className="order-2 flex flex-col gap-space-lg lg:order-1 lg:col-span-5">

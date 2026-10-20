@@ -9,13 +9,7 @@ import { useAuth } from '@/context/AuthProvider'
 import { cx } from '@/utils/cx'
 import { footer, header, projects, trust } from '@/data/landing'
 
-/*
- * Shell của các trang công khai ("/", "/coming-soon", "/products"). Không dùng AppShell/sidebar.
- * Font Be Vietnam Pro (300 số khai, 400 chữ, 600 tiêu đề và số đo) chỉ đặt ở đây vì
- * Schibsted Grotesk của portal thiếu dấu tiếng Việt.
- * Header không có menu theo giai đoạn (khảo sát, báo giá, thi công...): điều hướng đặt tên theo
- * giai đoạn đọc thành quy trình. Chỉ link tới danh mục sản phẩm, phần công trình và phần năng lực thi công.
- */
+// Layout các trang công khai. Dùng Be Vietnam Pro vì font của portal thiếu dấu tiếng Việt
 const capabilityLink = { pathname: ROUTES.HOME, hash: `#${trust.id}` }
 const projectsLink = { pathname: ROUTES.HOME, hash: `#${projects.id}` }
 
@@ -38,8 +32,7 @@ export function PublicLayout() {
 
       <header className="sticky top-0 z-40 border-b border-line bg-canvas">
         <div className={cx('flex h-14 items-center justify-between gap-4 lg:h-16', LANDING_CONTAINER)}>
-          {/* Logo người dùng cung cấp (public/images/Logo-navbar.png), bản WebP đã cắt viền trong suốt. Chữ "Smart" màu
-              navy chìm trên nền tối nên ở dark mode logo đặt trên một nền sáng. */}
+          {/* Ở dark mode logo đặt trên nền sáng vì chữ "Smart" màu navy khó thấy */}
           <Link to={ROUTES.HOME} className="flex items-center rounded-control dark:bg-fg dark:px-2 dark:py-1">
             <img
               src="/images/logo-64h.webp"
@@ -97,7 +90,6 @@ export function PublicLayout() {
         <Outlet />
       </main>
 
-      {/* Trang chủ kết thúc bằng dải CTA màu nên footer đứng sát; trang khác cần khoảng trống phía trên. */}
       <footer className={cx('border-t border-line', !onHome && 'mt-24 lg:mt-32')}>
         <div
           className={cx(

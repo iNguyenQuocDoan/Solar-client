@@ -45,21 +45,17 @@ export function Field({
 
 type ControlSize = 'sm' | 'md'
 
-/*
-  Trạng thái ô nhập: rê chuột viền đậm lên; focus là MỘT vòng liền 2px màu thương hiệu (viền 1px + outline 1px sát viền,
-  thay cho vòng focus chung cách 2px trông thành hai vòng); lỗi viền đỏ, vòng focus cũng đỏ; tắt thì nền xám.
-  Nền trắng (canvas) để ô nhập luôn trông là chỗ điền được, kể cả trên nền xám.
-*/
-/* Màu chữ, viền, nền KHÔNG nằm trong `shape`: cx không gộp class, hai màu chữ cùng lúc thì lớp nào thắng tuỳ thứ tự CSS. */
+// Trạng thái ô nhập: hover viền đậm, focus một vòng 2px màu chính, lỗi viền đỏ, disabled nền xám
+// Màu chữ, viền, nền không để trong `shape` vì cx không gộp class trùng nhau
 const shape =
   'rounded-control border text-body placeholder:text-fg-3 disabled:border-line disabled:bg-surface-2 disabled:text-fg-3'
 const states =
   'not-disabled:hover:border-fg-3 focus:border-accent focus-visible:outline-1 focus-visible:outline-offset-0 focus-visible:outline-accent aria-invalid:border-danger aria-invalid:outline-danger not-disabled:aria-invalid:hover:border-danger'
 const control = cx(shape, states, 'border-line-2 bg-canvas text-fg')
-/* Bộ lọc đang áp dụng (giá trị khác mặc định): nền + viền + chữ màu thương hiệu để thấy ngay đang lọc theo gì. */
+// Bộ lọc đang áp dụng thì tô màu chính
 const controlActive = cx(shape, states, 'border-accent-line bg-accent-soft font-medium text-accent-fg')
 
-/* Same heights as Button: 44px touch target below the desktop breakpoint. sm is for dense rows (pagination, rail). */
+// Cao bằng Button: 44px dưới breakpoint desktop
 const heights: Record<ControlSize, string> = {
   sm: 'h-11 lg:h-8',
   md: 'h-11 lg:h-10',
@@ -92,15 +88,8 @@ function parseVnDate(text: string): string | null {
   return `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`
 }
 
-/*
-  Ô ngày kiểu Việt Nam (13/10/2026) dù trình duyệt đặt ngôn ngữ nào: ô date gốc hiện và nhận phím theo ngôn ngữ trình duyệt
-  (bản tiếng Anh ra 10/13/2026 và gõ "15" là sửa tháng, người dùng báo 12/10/2026, review 13/10/2026). Nên ô người dùng
-  thấy là ô chữ thật: gõ ngày/tháng/năm (15/10/2026, 5/10/2026, 15-10-2026), rời ô hoặc Enter thì đọc lại; ngày sai hoặc
-  ngoài min / max thì trả về ngày cũ. Vùng icon lịch bên phải là một ô date gốc trong suốt (nút lịch của nó kéo phủ cả vùng):
-  bấm là bấm thẳng vào ô gốc nên trình duyệt mở lịch chọn của nó. Không gọi showPicker() từ một nút khác: thử 13/10/2026,
-  Chrome không hiện lịch khi ô date không được focus. Ô gốc không nhận Tab (người dùng bàn phím gõ ngày). Các thuộc tính
-  còn lại (aria-invalid, aria-required, required, disabled, aria-describedby, name...) đặt lên ô chữ như `Input`.
-*/
+// Ô ngày dạng dd/mm/yyyy, vì ô date gốc hiện theo ngôn ngữ trình duyệt (bản tiếng Anh ra mm/dd/yyyy)
+// Ô chữ để gõ ngày, icon lịch bên phải là một ô date gốc trong suốt để mở lịch của trình duyệt
 export function DateField({
   id,
   value,
@@ -113,7 +102,7 @@ export function DateField({
   disabled,
   ...rest
 }: Omit<InputHTMLAttributes<HTMLInputElement>, 'value' | 'onChange' | 'size' | 'type' | 'min' | 'max'> & {
-  /** Gắn với nhãn của `Field` (htmlFor); không có nhãn hiện thì truyền `label` để đọc cho trình đọc màn hình. */
+  /** Không có nhãn thì truyền `label` cho trình đọc màn hình */
   id?: string
   /** YYYY-MM-DD */
   value: string
@@ -134,7 +123,7 @@ export function DateField({
   const commit = () => {
     if (text.trim() === '') {
       if (value) onChange('')
-      // Nơi dùng không nhận ngày rỗng (vd. thanh chọn ngày) thì giữ ngày cũ; nhận thì lần vẽ sau ô thành rỗng.
+      // Không nhận ngày rỗng thì giữ ngày cũ
       setText(toVnDate(value))
       return
     }
@@ -177,7 +166,7 @@ export function DateField({
         value={value}
         onChange={(e) => e.target.value && onChange(e.target.value)}
         onClick={(e) => {
-          // Firefox / Safari: bấm vào ô date là mở lịch; Chrome / Edge đã mở nhờ nút lịch phủ cả vùng. Gọi thêm cho chắc.
+          // Firefox / Safari cần gọi showPicker(), Chrome đã tự mở
           try {
             e.currentTarget.showPicker()
           } catch {
@@ -243,11 +232,8 @@ const minutesOf = (time: string) => Number(time.slice(0, 2)) * 60 + Number(time.
 const timeOf = (minutes: number) =>
   `${String(Math.floor(minutes / 60)).padStart(2, '0')}:${String(minutes % 60).padStart(2, '0')}`
 
-/*
-  Ô chọn giờ kiểu 24 giờ (13:00), mỗi `step` phút từ `from` tới `to`. Ô time gốc hiện theo ngôn ngữ trình duyệt (bản tiếng
-  Anh ra "01:00 PM", lệch với "13:00-17:00" in ngay cạnh, 12/10/2026). Giá trị đang có mà lệch lưới (vd. 08:10 lưu từ nơi
-  khác) vẫn được thêm vào danh sách để không bị đổi ngầm. `emptyLabel`: thêm lựa chọn rỗng (vd. "Theo mặc định").
-*/
+// Ô chọn giờ 24h, vì ô time gốc hiện theo ngôn ngữ trình duyệt (01:00 PM)
+// Giá trị lệch bước vẫn được thêm vào danh sách để không bị đổi ngầm
 export function TimeSelect({
   value,
   onChange,

@@ -5,10 +5,7 @@ import { cta } from '@/data/landing'
 import { LANDING_CONTAINER, PAGE_GRID } from './classes'
 import { Reveal } from './reveal'
 
-/*
-  Bắt đầu thế nào: dải màu thương hiệu tràn màn, một câu hỏi, một nút. Nút đảo màu (nền chữ,
-  chữ xanh) vì dải đã là màu accent.
-*/
+// Dải CTA màu thương hiệu, nút đảo màu vì nền đã là màu chính
 export function CtaSection() {
   return (
     <section id={cta.id} aria-labelledby="cta-title" className="mt-24 bg-accent py-16 text-on-accent lg:mt-40 lg:py-24">

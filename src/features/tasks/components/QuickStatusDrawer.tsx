@@ -4,11 +4,7 @@ import { cn } from '@/utils/cn'
 import { quickStatusDrawer } from '@/data/tasks'
 import type { WorkOrder } from '@/data/tasks'
 
-/*
- * Slide-over "#quickStatusDrawer" của my_tasks_1/code.html.
- * Đóng: translate-x-full (giao diện trang giữ nguyên như screen.png);
- * mở: translate-x-0 kèm overlay "#drawerOverlay". Đóng bằng overlay, nút close hoặc Escape.
- */
+// Drawer trạng thái nhanh, đóng bằng overlay, nút đóng hoặc Esc
 export type QuickStatusDrawerProps = {
   /** Work order đang hiển thị; giữ lại khi đóng để chạy hết animation trượt ra. */
   order: WorkOrder | null
@@ -20,10 +16,7 @@ export type QuickStatusDrawerProps = {
 
 const d = quickStatusDrawer
 
-/*
- * TasksPage truyền `key={order.id}` nên đổi sang work order khác là remount:
- * state dưới đây khởi tạo thẳng từ props, không cần effect đồng bộ lại.
- */
+// Trang cha truyền `key={order.id}` nên state khởi tạo thẳng từ props
 export function QuickStatusDrawer({ order, open, onClose, onCommit }: QuickStatusDrawerProps) {
   const titleId = useId()
   const [stage, setStage] = useState<WorkOrder['lifecycleStage']>(order?.lifecycleStage ?? 3)

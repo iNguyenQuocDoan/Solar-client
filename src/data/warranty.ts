@@ -1,8 +1,4 @@
-/*
- * Dữ liệu giả cho màn 14, warranty_request (/tech/warranty/:id).
- * Dựng theo warranty_request/screen.png: hồ sơ bảo hành một ca lỗi microinverter,
- * gồm bằng chứng của khách, kết quả đo hiện trường và biểu mẫu chốt bảo hành.
- */
+// Dữ liệu giả cho màn bảo hành (/tech/warranty/:id)
 
 import type { MeasurementReading } from '@/components/common/tech/MeasurementCard'
 import type { StatusVariant } from '@/components/common/stitch-ui/StatusBadge'
@@ -130,7 +126,6 @@ export type WarrantyCase = {
     receiptLabel: string
     successMessage: string
   }
-  /** Thông báo lỗi của biểu mẫu chốt bảo hành */
   validation: {
     rootCause: string
     actions: string

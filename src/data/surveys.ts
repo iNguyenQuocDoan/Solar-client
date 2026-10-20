@@ -1,9 +1,4 @@
-/*
- * Dữ liệu giả cho luồng khảo sát technician.
- * Màn 8 (/tech/surveys/:id) dựng từ site_survey_task/screen.png.
- * Màn 9 (/tech/surveys/:id/verify) mở rộng thêm khối `verification` ở cuối file.
- * Cả ba màn của luồng dùng chung một survey id nên mọi dữ liệu phải lấy từ đây.
- */
+// Dữ liệu giả cho luồng khảo sát của kỹ thuật viên, các màn dùng chung một survey id
 
 export type SurveyContact = { icon: string; label: string; value: string }
 
@@ -292,11 +287,7 @@ export function getSurveyById(id: string | undefined): SurveyRecord | undefined 
   return surveys.find((survey) => survey.id === id)
 }
 
-/* ------------------------------------------------------------------------------------------------
- * Màn 9, /tech/surveys/:id/verify (site_survey_verification)
- * Phần mở rộng, không sửa dữ liệu của màn 8. Mọi con số đo đạc suy ra từ `surveys` ở trên để ba màn
- * của cùng một survey không mâu thuẫn (xem ghi chú từng field).
- * ---------------------------------------------------------------------------------------------- */
+// Dữ liệu màn xác minh (/tech/surveys/:id/verify), số đo suy ra từ `surveys` ở trên để không mâu thuẫn
 
 export type SurveyRafterCondition = 'excellent' | 'good' | 'reinforce'
 export type SurveyRiskLevel = 'low' | 'moderate' | 'high'

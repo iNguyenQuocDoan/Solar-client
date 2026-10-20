@@ -1,11 +1,5 @@
-/*
- * Dữ liệu giả cho /tech/surveys/:id/photos, dựng từ survey_image_documentation/screen.png.
- * Dùng chung survey id với data/surveys.ts (SS-8842): mã dự án, khách hàng, địa chỉ, thông số
- * mái và tủ điện phải khớp với màn 8 và màn 9.
- *
- * Số ảnh bắt buộc và tiến độ KHÔNG hard-code: `getSurveyPhotoProgress` tính lại từ `sections`
- * để thanh tiến độ, số "critical shots remaining" và nhãn ở dock không bao giờ lệch nhau.
- */
+// Dữ liệu giả cho /tech/surveys/:id/photos, dùng chung survey id SS-8842 với data/surveys.ts
+// Tiến độ tính từ `sections` (getSurveyPhotoProgress) để các số không lệch nhau
 
 export type PhotoTagTone = 'verified' | 'warning'
 

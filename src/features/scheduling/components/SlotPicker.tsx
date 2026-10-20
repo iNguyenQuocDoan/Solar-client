@@ -15,17 +15,11 @@ import { errorMessage } from '@/services/api/errors'
 import type { SurveySlot } from '@/types/res/surveySlotsRes'
 import { cx } from '@/utils/cx'
 
-/*
-  Chọn giờ khảo sát của khách: lưới 30 ngày (từ hôm nay tới 29 ngày sau, giới hạn đặt trước của backend) xếp theo cột thứ như
-  lịch tháng, rồi các giờ bắt đầu backend trả cho ngày đó. Không tự vẽ khung 08:00-17:00 rồi đoán giờ nào trống: chỉ hiện
-  giờ đã kiểm tra được kỹ thuật viên + đường đi; ngày không còn giờ thì nói lý do (`note`). Khách chỉ chọn giờ, không chọn
-  người (hệ thống giữ chỗ một kỹ thuật viên phù hợp, kinh doanh phân công sau).
-  Cả ngày lẫn giờ là nhóm radio thật (input ẩn trong label, như Segmented): Tab vào nhóm, phím mũi tên đi giữa các ô.
-*/
+// Chọn giờ khảo sát: lưới 30 ngày rồi các giờ trống backend trả cho ngày đó
+// Không tự đoán giờ trống. Khách chỉ chọn giờ, hệ thống tự giữ chỗ một kỹ thuật viên
 
 const WEEK_HEADER = ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN']
 
-/** Ô chọn (ngày hoặc giờ): "đang chọn" là nền accent-soft + viền accent-line, như lựa chọn đang dùng ở mọi nơi khác. */
 const choice = cx(
   'press flex cursor-pointer items-center justify-center rounded-control border text-body',
   'border-line-2 bg-canvas text-fg [&:not(:has(:checked)):not(:has(:disabled)):hover]:border-fg-3 [&:not(:has(:checked)):not(:has(:disabled)):hover]:bg-hover',
@@ -79,7 +73,7 @@ function DayGrid({ value, onChange, today }: { value: string; onChange: (date: s
                 aria-label={`${date === today ? 'Hôm nay, ' : ''}${formatDay(date, { year: true })}`}
               />
               <span className="tnum">{showMonth ? chip.date : chip.date.slice(0, 2)}</span>
-              {/* Ô hẹp (~48px) không đủ chỗ cho chữ "Hôm nay": chấm dưới số, chữ đầy đủ nằm ở aria-label và chú thích dưới lưới. */}
+              {/* Ô hẹp nên "Hôm nay" chỉ là chấm dưới số, chữ đầy đủ nằm ở aria-label */}
               <span
                 aria-hidden
                 className={cx('size-1.5 rounded-full', date === today ? 'bg-accent' : 'bg-transparent')}
@@ -167,7 +161,7 @@ export function SlotPicker({
   const afternoon = list.filter((s) => formatTime(s.startsAt) >= '12:00')
   const note = noteText(slots.data?.note)
 
-  // Lịch ngày và giờ đứng cạnh nhau theo bề rộng của khung (container query), không theo màn hình: khối nằm trong cột 2/3.
+  // Dùng container query vì khối nằm trong cột 2/3
   return (
     <div className="@container">
       <div className="grid gap-6 @2xl:grid-cols-[minmax(0,20rem)_minmax(0,1fr)]">
@@ -200,7 +194,7 @@ export function SlotPicker({
               ))}
             </div>
           ) : slots.isError && slots.error.code === 'PROPERTY_SITE_LOCATION_REQUIRED' ? (
-            // Địa điểm khai trước khi toạ độ bắt buộc (12/10/2026): không có API sửa địa điểm nên chỉ hướng dẫn.
+            // Địa điểm cũ thiếu toạ độ, không có API sửa nên chỉ hướng dẫn
             <Notice tone="warn" title="Địa điểm chưa có toạ độ">
               Không có toạ độ công trình nên chưa tính được đường đi và giờ khảo sát. Liên hệ bộ phận kinh doanh, hoặc
               làm lại đánh giá sơ bộ với toạ độ công trình.

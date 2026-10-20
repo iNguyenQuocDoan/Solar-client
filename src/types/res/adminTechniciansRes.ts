@@ -1,9 +1,4 @@
-/*
- * VIẾT TAY, swagger chỉ khai "200 OK" cho tag AdminTechnicians, không có schema response.
- * Tên kiểu và field lấy đúng theo SmartSolar.Modules.Scheduling.PreSurveyAppointments.AdminTechnicianHandlers
- * (TechnicianProfileView, WorkingScheduleView, UnavailablePeriodView, ConflictingAppointmentView, backend
- * main 4d12e4d, 12/10/2026). Khi backend khai response trong swagger, `npm run gen:api` sẽ ghi đè file này.
- */
+// Viết tay vì swagger không có schema response. Theo AdminTechnicianHandlers của backend
 
 /** GET /api/admin/technicians (mỗi tài khoản có vai trò TECHNICIAN) và PUT .../profile. */
 export type TechnicianProfileView = {
@@ -50,10 +45,7 @@ export type UnavailablePeriodView = {
   reason: string | null
 }
 
-/**
- * Lịch hẹn đã có mà thay đổi cấu hình sẽ làm hỏng; nằm trong `error.details.conflictingAppointments`
- * của lỗi 409 TECHNICIAN_HAS_CONFLICTING_APPOINTMENTS. Backend không tự huỷ lịch nào.
- */
+/** Lịch bị ảnh hưởng, nằm trong `error.details.conflictingAppointments` của lỗi 409 */
 export type ConflictingAppointmentView = {
   appointmentId: string
   surveyRequestId: string | null

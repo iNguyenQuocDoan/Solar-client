@@ -1,11 +1,7 @@
 import { Icon, ProgressBar } from '@/components/common/stitch-ui'
 import { cn } from '@/utils/cn'
 
-/*
- * Thẻ số đo dùng chung hai màn:
- * - installation_task_checklist: nhãn + ngưỡng, giá trị data-metric, huy hiệu PASS, thanh so ngưỡng.
- * - warranty_request: thêm icon trước nhãn, chân thẻ hai bên và tông đỏ cho phép đo trượt ngưỡng.
- */
+// Thẻ số đo: nhãn, ngưỡng, giá trị và thanh so ngưỡng. Đo trượt ngưỡng thì tô đỏ
 export type MeasurementReading = {
   label: string
   /** Ngưỡng bên phải nhãn, ví dụ "Target: 405-418 V" */

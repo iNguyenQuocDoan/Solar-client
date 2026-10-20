@@ -22,15 +22,10 @@ import {
 import { errorMessage, type ApiError } from '@/services/api/errors'
 import type { ScheduleAppointmentView, TechnicianScheduleView } from '@/types/res/technicianAppointmentsRes'
 
-/*
-  Lịch một ngày của một kỹ thuật viên: các lịch theo giờ, chặng đường tới từng lịch (ước tính đã lưu, không gọi lại Vietmap),
-  tổng quãng đường / thời gian đi, cảnh báo trùng giờ. Chỉ chặng "OK" là số liệu hiện tại; chặng đang tính lại, cũ, lỗi
-  hoặc chưa có thì ghi rõ trạng thái và không hiện số cũ như đang đúng (tổng của backend cũng chỉ cộng chặng OK).
-  Dùng cho kỹ thuật viên (lịch của mình) và quản trị / quản lý (lịch của một kỹ thuật viên).
-*/
+// Lịch một ngày của kỹ thuật viên: các lịch, chặng đường và cảnh báo trùng giờ
+// Chỉ chặng có trạng thái OK mới hiện số liệu
 
-/* Ngày trước / ô ngày (hiện 13/10/2026 dù trình duyệt tiếng gì) / ngày sau / Hôm nay. "Hôm nay" luôn có chỗ, chỉ tắt khi đang
-   xem hôm nay, để cụm nút không nhảy khi đổi ngày. */
+// "Hôm nay" luôn có chỗ để cụm nút không nhảy khi đổi ngày
 export function DayNav({
   date,
   onChange,
@@ -78,7 +73,6 @@ function Leg({ item }: { item: ScheduleAppointmentView }) {
   )
 }
 
-/* Mỗi lịch một khối có viền (giờ | công trình, trạng thái, đường đi | nút xem), để các lịch trong ngày tách rõ nhau. */
 function AppointmentItem({
   item,
   linkTo,
@@ -107,7 +101,6 @@ function AppointmentItem({
       {linkTo && (
         <ButtonLink to={linkTo} size="sm" variant="soft" className="justify-self-start">
           Xem chi tiết
-          {/* Mỗi lịch một link: tên công trình cho trình đọc màn hình phân biệt được các link trong ngày. */}
           <span className="sr-only"> {item.propertyName}</span>
         </ButtonLink>
       )}

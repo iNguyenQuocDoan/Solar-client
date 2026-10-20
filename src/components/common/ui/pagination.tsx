@@ -1,11 +1,7 @@
 import { Icon } from '@/components/common/stitch-ui/Icon'
 import { cx } from '@/utils/cx'
 
-/*
-  Page numbers as quiet buttons (only the current one below md). The current page sits on the accent tint, the same
-  "đang chọn" colour as the open menu item and the selected tab; the others show a neutral field on hover. It stays
-  free of solid fills so the one solid button on a list page remains the page's real action.
-*/
+// Trang hiện tại tô nền nhạt màu chính, không dùng nền đặc
 export function Pagination({
   page,
   pages,

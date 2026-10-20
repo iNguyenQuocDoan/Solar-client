@@ -13,16 +13,9 @@ import { errorMessage, isApiError } from '@/services/api/errors'
 import type { UpdateProductRequest } from '@/types/req/adminProductsReq'
 import type { ProductResponse } from '@/types/res/adminProductsRes'
 
-/*
- * Form thêm / sửa sản phẩm (POST và PUT /api/admin/products).
- * Ràng buộc lấy từ lỗi validate thật của backend (29/09/2026):
- *   bắt buộc sku, productType, name, brand, unit, unitPrice, currency (đúng 3 ký tự);
- *   unitPrice, warrantyMonth >= 0; ratedPowerW, widthMm, heightMm > 0 khi có nhập;
- *   spec phải là JSON object; status chỉ ACTIVE | INACTIVE.
- * Loại SOLAR_PANEL (không phân biệt hoa thường) bắt buộc thêm ratedPowerW, widthMm, heightMm (dò 05/10/2026);
- * mô phỏng 3D dùng đúng ba số này.
- * PUT không nhận status; thêm mới luôn gửi ACTIVE vì backend ẩn sản phẩm INACTIVE khỏi mọi danh sách (dò 08/10/2026).
- */
+// Form thêm / sửa sản phẩm (POST và PUT /api/admin/products), luật kiểm tra theo backend
+// SOLAR_PANEL bắt buộc thêm ratedPowerW, widthMm, heightMm vì mô phỏng cần
+// PUT không nhận status, thêm mới luôn gửi ACTIVE vì backend ẩn sản phẩm INACTIVE
 
 const required = (label: string) => z.string().trim().min(1, `Vui lòng nhập ${label}`)
 
@@ -199,7 +192,7 @@ function ProductForm({
   })
   const spec = useFieldArray({ control, name: 'spec' })
 
-  // Đang lưu thì không cho đóng dialog (Esc, Huỷ): đóng giữa chừng mất lỗi từng ô và dễ bấm lưu lần hai.
+  // Đang lưu thì không cho đóng dialog
   useEffect(() => {
     onBusyChange(isSubmitting)
     return () => onBusyChange(false)
@@ -207,14 +200,14 @@ function ProductForm({
 
   const onSubmit = async (values: ProductFormValues) => {
     const body = toRequest(values)
-    // Không đụng tới thông số thì gửi lại đúng spec cũ: đi qua ô nhập, số và true/false sẽ thành chuỗi.
+    // Không sửa thông số thì gửi lại spec cũ, tránh số và true/false bị đổi thành chuỗi
     if (product && sameSpecRows(values.spec, valuesFromProduct(product).spec)) body.spec = product.spec ?? null
     try {
       if (isEdit && product?.id) {
         await updateMutation.mutateAsync({ id: product.id, body })
         toast.success(`Đã lưu ${values.name}`)
       } else {
-        // Luôn tạo ở trạng thái Đang bán: backend ẩn sản phẩm ngừng bán khỏi mọi danh sách, tạo xong sẽ không thấy đâu.
+        // Luôn tạo ở trạng thái Đang bán vì backend ẩn sản phẩm ngừng bán
         await createMutation.mutateAsync({ ...body, status: 'ACTIVE' })
         toast.success(`Đã thêm ${values.name}`)
       }
@@ -239,12 +232,11 @@ function ProductForm({
 
   const f = (name: string) => `${id}-${name}`
   const isPanel = isSolarPanelType(watch('productType'))
-  /* aria-invalid tô viền đỏ (portal kit), aria-describedby không cần vì Field đặt lỗi ngay dưới ô với role="alert". */
   const invalid = (name: keyof ProductFormValues) => (errors[name] ? true : undefined)
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} noValidate>
-      {/* Form dài: trên điện thoại "Đóng" ở đầu và hàng nút ở chân (dính đáy) để không phải cuộn hết form mới thoát được. */}
+      {/* Trên điện thoại hàng nút dính đáy để không phải cuộn hết form */}
       <div className="flex items-start justify-between gap-4">
         <div>
           <DialogTitle>{isEdit ? 'Sửa sản phẩm' : 'Thêm sản phẩm'}</DialogTitle>
@@ -318,7 +310,7 @@ function ProductForm({
           />
         </Field>
 
-        {/* Ba số này đi cùng nhau: bắt buộc với tấm pin vì backend kiểm tra và mô phỏng 3D cần chúng. */}
+        {/* Bắt buộc với tấm pin vì mô phỏng cần ba số này */}
         <fieldset className="grid grid-cols-1 gap-4 border-t border-line pt-4 sm:col-span-2 sm:grid-cols-3">
           <legend className="contents">
             <span className="text-body font-semibold sm:col-span-3">
@@ -439,8 +431,7 @@ function ProductForm({
         </div>
       )}
 
-      {/* -bottom-6: phần tử dính trong khung cuộn có đệm 24px dừng ở mép trong lớp đệm, để hở một khe cho nội dung lộ ra dưới
-          thanh nút; kéo xuống đúng bằng lớp đệm để thanh nút sát đáy hộp thoại. */}
+      {/* Kéo xuống bằng lớp đệm để thanh nút sát đáy dialog */}
       <DialogFooter className="sticky -bottom-6 -mx-6 -mb-6 border-t border-line bg-canvas px-6 py-4">
         <Button variant="ghost" disabled={isSubmitting} onClick={onDone}>
           Huỷ

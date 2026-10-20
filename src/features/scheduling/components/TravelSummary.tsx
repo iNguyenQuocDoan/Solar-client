@@ -9,11 +9,7 @@ import {
 } from '@/features/scheduling/components/schedulingDisplay'
 import type { TravelEstimateView } from '@/types/res/technicianAvailabilityRes'
 
-/*
-  Một chặng đường (ước tính xe máy của Vietmap): điểm đi, quãng đường, thời gian + phút dự phòng, giao thông. Là số liệu
-  ước tính tại `estimatedAt`, không phải giao thông trực tiếp, ghi rõ ở dòng phụ. Chặng không tính được thì nói không tính
-  được, không bao giờ in "0 phút". Không hứa chỉ đường: backend không trả hình tuyến đường.
-*/
+// Một chặng đường (ước tính của Vietmap). Không tính được thì ghi rõ, không bao giờ in "0 phút"
 export function TravelSummary({ leg, label }: { leg: TravelEstimateView; label?: string }) {
   const ok = leg.routeCalculationStatus === 'OK' && leg.durationSeconds != null
   return (

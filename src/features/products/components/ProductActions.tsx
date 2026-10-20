@@ -4,12 +4,8 @@ import { isProductActive } from '@/features/products/components/productDisplay'
 import type { ProductResponse } from '@/types/res/adminProductsRes'
 import { cx } from '@/utils/cx'
 
-/*
-  Ba thao tác của admin trên một sản phẩm, màu theo việc chúng làm (12/10/2026): Sửa xanh, Ngừng bán vàng (hoàn tác được),
-  Xoá đỏ. Dùng ở đầu trang chi tiết và trên từng dòng danh sách (người dùng hỏi "tại sao lại không để cái nút này ở ngoài
-  luôn cho tiện"). `compact` cho dòng danh sách: nút nhỏ, Xoá chỉ có icon (tooltip "Xoá sản phẩm"), tên sản phẩm đi kèm nhãn
-  đọc cho trình đọc màn hình. Cụm nút nằm trên lớp link phủ cả dòng (relative z-10), nên bấm nút không mở trang chi tiết.
-*/
+// Thao tác của admin trên một sản phẩm: Sửa, Ngừng bán, Xoá
+// `compact` dùng trên dòng danh sách: nút nhỏ, Xoá chỉ có icon. Cụm nút nằm trên lớp link phủ dòng (z-10)
 export function ProductActions({
   product,
   busy = false,
@@ -29,8 +25,7 @@ export function ProductActions({
 }) {
   const size = compact ? 'sm' : 'md'
   const name = product.name ?? ''
-  // Trên dòng danh sách, tên sản phẩm đi kèm nhãn cho trình đọc màn hình bằng chữ ẩn (không dùng aria-label, để nhãn
-  // "Đang ngừng bán..." lúc chờ vẫn được đọc).
+  // Dùng chữ ẩn thay cho aria-label để nhãn "Đang ngừng bán..." vẫn được đọc
   const forName = compact && name ? <span className="sr-only"> {name}</span> : null
   return (
     <div className={cx('relative z-10 flex flex-wrap items-center gap-2', className)}>
@@ -62,7 +57,7 @@ export function ProductActions({
   )
 }
 
-/* Hỏi lại trước khi ngừng bán: backend ẩn sản phẩm ngừng bán khỏi mọi API đọc, chỉ mở lại được từ trình duyệt này. */
+// Hỏi lại trước khi ngừng bán vì backend ẩn sản phẩm khỏi mọi API đọc
 export function HideProductDialog({
   product,
   busy,

@@ -1,10 +1,7 @@
 import type { Tone } from '@/components/common/ui/badge'
 import type { ActivationState, AdminUserListItem } from '@/types/res/adminUsersRes'
 
-/*
- * Nhãn của quản lý tài khoản (AdminUserContracts, backend main 4d12e4d, 12/10/2026). Mã vai trò / trạng thái là chuỗi IN
- * HOA của backend; mã lạ in nguyên văn thay vì đoán nghĩa.
- */
+// Nhãn vai trò / trạng thái tài khoản. Mã lạ thì in nguyên văn
 
 export const ROLE_OPTIONS = [
   { value: 'CUSTOMER', label: 'Khách hàng' },
@@ -29,10 +26,6 @@ export const STATUS_OPTIONS = [
   { value: 'DISABLED', label: 'Vô hiệu' },
 ] as const
 
-/*
-  Đang hoạt động là ok; chờ kích hoạt là đang xử lý (người dùng chưa đặt mật khẩu / xác minh email); tạm khoá là lưu ý;
-  vô hiệu và đã xoá là không còn hoạt động.
-*/
 const STATUS_TONES: Record<string, Tone> = {
   PENDING_VERIFICATION: 'info',
   ACTIVE: 'ok',
@@ -48,7 +41,7 @@ export function userStatusMeta(u: Pick<AdminUserListItem, 'status' | 'deletedAt'
   }
 }
 
-/** Câu báo kết quả gửi link (tạo tài khoản, đổi email, gửi lại link). `ok` = link thật sự đã vào hàng đợi gửi. */
+/** `ok` là link đã thật sự được đưa vào hàng đợi gửi */
 export function activationMessage(a: ActivationState): { ok: boolean; text: string } {
   const what =
     a.status === 'PENDING_ACCOUNT_SETUP'

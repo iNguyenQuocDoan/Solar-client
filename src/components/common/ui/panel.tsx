@@ -1,15 +1,8 @@
 import type { HTMLAttributes, ReactNode } from 'react'
 import { cx } from '@/utils/cx'
 
-/*
-  A Panel is a section of the document, not a box: no fill, no border box.
-  Consecutive panels in the same column are separated by one hairline.
-  For repeated records inside one list use ListRow instead.
-
-  `raised`: the one block on a page that asks for a decision or input
-  (sign a quotation, file a request, authorize) sits in a bordered field so
-  the eye finds the action without a second solid button.
-*/
+// Panel là một phần của trang, không có nền hay khung. Các panel liền nhau ngăn bằng đường kẻ
+// `raised`: khối cần khách quyết định / nhập liệu thì có khung
 export function Panel({ raised, className, children, ...rest }: HTMLAttributes<HTMLElement> & { raised?: boolean }) {
   return (
     <section
@@ -24,10 +17,7 @@ export function Panel({ raised, className, children, ...rest }: HTMLAttributes<H
   )
 }
 
-/*
-  Cột phụ của trang chi tiết / wizard (khách hàng, tiến độ, ghi chú sau khi gửi): nền xám nhạt tách vùng thông tin
-  tham khảo khỏi vùng làm việc chính. Chỉ cao bằng nội dung của nó (self-start), Panel bên trong vẫn chia bằng đường kẻ.
-*/
+// Cột phụ của trang chi tiết / wizard, nền xám nhạt
 export function PanelAside({ className, children, ...rest }: HTMLAttributes<HTMLElement>) {
   return (
     <aside className={cx('space-y-4 self-start rounded-container bg-surface-2 p-4 lg:p-5', className)} {...rest}>
@@ -36,7 +26,6 @@ export function PanelAside({ className, children, ...rest }: HTMLAttributes<HTML
   )
 }
 
-/* Title and action share a line; when the action is long they wrap instead of squeezing the title. */
 export function PanelHeader({
   title,
   description,

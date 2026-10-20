@@ -3,15 +3,7 @@ import { Card } from '@/components/common/stitch-ui/Card'
 import { Icon } from '@/components/common/stitch-ui/Icon'
 import { cn } from '@/utils/cn'
 
-/*
- * Ba bố cục KPI trong thiết kế:
- * - stacked: user_management (delta dưới giá trị)
- * - inline:  admin_dashboard (delta cạnh giá trị, nhãn label-md, slot footer)
- * - compact: product_catalogue (thẻ ngang: chữ bên trái, ô icon phân loại bên phải)
- *
- * Chỉ compact còn ô icon: ở đó icon phân biệt nhóm sản phẩm. Trên dashboard icon
- * lặp lại cho mọi thẻ nên đã bỏ.
- */
+// Ba kiểu thẻ KPI: stacked (delta dưới giá trị), inline (delta cạnh giá trị), compact (thẻ ngang có icon)
 export type MetricTone = 'primary' | 'secondary' | 'tertiary' | 'error' | 'muted'
 export type MetricLayout = 'stacked' | 'inline' | 'compact'
 
@@ -60,7 +52,7 @@ export type MetricCardProps = {
   /** Màu nhãn; mặc định theo layout */
   labelTone?: 'default' | MetricTone
   valueTone?: 'default' | MetricTone
-  /** metric = data-metric 36px; headline = headline-lg cho giá trị dạng chữ ("Optimal / Green") */
+  /** metric: số lớn, headline: giá trị dạng chữ */
   valueSize?: 'metric' | 'headline'
   delta?: MetricDelta
   description?: string

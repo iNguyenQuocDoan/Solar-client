@@ -10,10 +10,7 @@ import type { ProductDeletedResponse, ProductResponse } from '@/types/res/adminP
 import type { ProductResponsePagedResult } from '@/types/res/productsRes'
 import type { ApiError } from '@/services/api/errors'
 
-/*
- * Query + mutation cho sản phẩm. Mọi thao tác ghi xong (kể cả khi lỗi, vd. 404 vì admin khác đã xoá)
- * đều làm mới cả danh sách lẫn chi tiết, nên trang admin và trang công khai luôn thấy dữ liệu mới nhất.
- */
+// Mọi thao tác ghi (kể cả lỗi) đều làm mới danh sách và chi tiết
 
 export const productKeys = {
   all: ['products'] as const,
@@ -39,10 +36,7 @@ export function useProductQuery(id: string | undefined) {
   })
 }
 
-/*
- * Không trả promise: mutateAsync của TanStack chờ cả onSettled, nên trả promise ở đây sẽ bắt nút bấm chờ tải lại
- * xong mọi danh sách mới báo xong (chậm hơn và dễ mất việc nếu tải lại trang giữa chừng).
- */
+// Không trả promise để nút bấm không phải chờ tải lại xong
 function useInvalidateProducts() {
   const queryClient = useQueryClient()
   return () => {

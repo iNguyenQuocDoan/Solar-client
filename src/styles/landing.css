@@ -1,8 +1,4 @@
-/* =====================================================================
-   Trang công khai (PublicLayout: "/", "/coming-soon").
-   Chỉ thêm tên mới (font-vn, max-w-landing, max-w-copy, ease-ld, ld-*); không đổi token của portal.
-   Màu dùng lại token portal (canvas, fg, fg-2, fg-3, line, line-2, accent) nên dark mode tự theo.
-   ===================================================================== */
+/* Trang công khai (PublicLayout). Chỉ thêm token mới (font-vn, max-w-landing, ld-*), màu dùng lại token của portal */
 
 @theme {
   /* Be Vietnam Pro có subset vietnamese; Schibsted Grotesk của portal thiếu U+1EA0-1EF1. */
@@ -17,19 +13,15 @@
   --ease-ld: cubic-bezier(0.2, 0, 0, 1);
 }
 
-/* Màn hình thấp (laptop 1366 x 657 sau thanh trình duyệt): màn xác thực thu khoảng đệm để vừa một màn. */
+/* Màn hình thấp: màn xác thực thu khoảng đệm cho vừa một màn */
 @custom-variant short (@media (height < 45rem));
 
-/* Header dính cao 64px: cuộn tới anchor hay focus bằng bàn phím không bị header che (WCAG 2.4.11). */
+/* Chừa chỗ cho header dính 64px */
 :root:has(.public-shell) {
   scroll-padding-top: 80px;
 }
 
-/*
-  Thang chữ landing: mobile trước, desktop từ 64rem (lg của portal).
-  Line-height tiêu đề 1,25-1,38 vì dấu chồng của Be Vietnam Pro (Ỗ, Ễ) cao 1,21em trên
-  baseline; thấp hơn thì dấu chạm chân chữ dòng trên.
-*/
+/* Thang chữ landing. Line-height tiêu đề 1,25-1,38 vì dấu chồng của Be Vietnam Pro cao */
 /* Tiêu đề hero: trang công ty cần một câu định vị đọc được từ xa. */
 @utility ld-display {
   font-size: 38px;
@@ -121,10 +113,7 @@
   }
 }
 
-/*
-  Hero: ảnh phủ kín khung, chữ trắng đặt thẳng lên ảnh. Lớp phủ tối chỉ ở góc dưới trái, nơi có chữ,
-  để chữ đạt tương phản mà phần còn lại của ảnh vẫn sáng. Lớp phủ luôn tối, không đổi theo dark mode.
-*/
+/* Hero: lớp phủ tối chỉ ở góc dưới trái nơi có chữ */
 @utility ld-hero-frame {
   height: min(86svh, 720px);
   @media (width >= 64rem) {
@@ -144,12 +133,8 @@
 }
 
 /*
-  Chuyển động nhẹ, chỉ transform và opacity (không đẩy layout), không thư viện.
-    ld-settle  ảnh hero thu từ 108% về 100% khi tải trang
-    ld-rise    chữ và nút hero trượt lên 16px và hiện dần, lệch nhau bằng ld-delay-*
-    ld-reveal  khối nội dung trượt lên khi cuộn tới (component Reveal gắn data-shown)
-  prefers-reduced-motion: rule chung trong globals.css đưa animation về 0,01ms và tắt transition,
-  còn ld-reveal được hiện ngay (xem @media cuối file).
+  Chuyển động chỉ dùng transform và opacity
+  ld-settle: ảnh hero thu về 100%, ld-rise: chữ trượt lên, ld-reveal: khối hiện khi cuộn tới
 */
 @keyframes ld-settle {
   from {

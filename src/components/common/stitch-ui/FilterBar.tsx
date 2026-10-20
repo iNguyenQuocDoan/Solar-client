@@ -3,9 +3,8 @@ import { Card } from '@/components/common/stitch-ui/Card'
 import { Icon } from '@/components/common/stitch-ui/Icon'
 import { cn } from '@/utils/cn'
 
-/* Theo thanh lọc trong user_management (search + select + active scopes) và my_tasks_1 (chip Today/Upcoming, chip loại). */
+// Thanh lọc: ô tìm, select và chip
 
-/* ---------- SearchInput ---------- */
 export type SearchInputProps = Omit<ComponentProps<'input'>, 'size' | 'type'> & {
   size?: 'md' | 'lg'
   /** Gợi ý phím tắt góc phải, ví dụ "Ctrl K" */
@@ -34,7 +33,6 @@ export function SearchInput({ size = 'lg', shortcutHint, className, ...rest }: S
   )
 }
 
-/* ---------- Select ---------- */
 export type SelectOption = { value: string; label: string }
 
 export type SelectProps = Omit<ComponentProps<'select'>, 'size'> & {
@@ -74,7 +72,6 @@ export function Select({ options, size = 'lg', className, ...rest }: SelectProps
   )
 }
 
-/* ---------- FilterChip ---------- */
 export type FilterChipProps = Omit<ComponentProps<'button'>, 'children'> & {
   label: string
   active?: boolean
@@ -136,7 +133,6 @@ export function FilterChip({
   )
 }
 
-/* ---------- FilterBar ---------- */
 export type ActiveScope = { key: string; label: string; onRemove?: () => void }
 
 export type FilterBarProps = {

@@ -16,19 +16,14 @@ function maskEmail(email: string) {
   return `${local.slice(0, 1)}***@${domain}`
 }
 
-/*
- * /verify-email
- *
- * - Có ?token= (link trong email) thì tự gọi POST /api/auth/verify-email.
- *   VerifyEmailRequest trong swagger CHỈ có `token`, không có email.
- * - Không có token thì hiện màn "kiểm tra hộp thư", nút gửi lại gọi resend-verification
- *   (ResendVerificationRequest = { email }) kèm đếm ngược 60 giây.
- */
+// /verify-email
+// Có ?token= thì tự gọi POST /api/auth/verify-email
+// Không có token thì hiện màn kiểm tra hộp thư, có nút gửi lại (đếm ngược 60 giây)
 export function VerifyEmailPage() {
   const [searchParams] = useSearchParams()
   const token = searchParams.get('token')
   const emailParam = searchParams.get('email')
-  // Link trong email chỉ có ?token, không có ?email: link hết hạn thì cho khách tự gõ email để gửi lại.
+  // Link trong email không có email, nên link hết hạn thì cho khách tự nhập email
   const [typedEmail, setTypedEmail] = useState('')
   const resendEmail = emailParam ?? typedEmail.trim()
 
@@ -83,7 +78,6 @@ export function VerifyEmailPage() {
     }
   }
 
-  /* ----------------------------------------- mở từ link trong email: đang xác thực */
   if (verifyState === 'pending') {
     return (
       <AuthCard className="items-center text-center">
@@ -163,8 +157,6 @@ export function VerifyEmailPage() {
     )
   }
 
-  /* ------------------------------------------------- không có token: kiểm tra hộp thư */
-
   return (
     <AuthCard className="items-center text-center">
       <div className="relative mb-space-md flex h-20 w-20 items-center justify-center rounded-full bg-surface-container-high text-accent-fg shadow-sm">
@@ -174,7 +166,7 @@ export function VerifyEmailPage() {
       <h1 className="mb-1 text-headline-xl text-on-surface">{verifyContent.title}</h1>
       <p className="mb-space-md max-w-md text-body-lg text-on-surface-variant">{verifyContent.description}</p>
 
-      {/* Mở trang trực tiếp (không có ?email): hỏi email để gửi lại, thay vì vừa ghi "đã gửi tới email" vừa báo lỗi thiếu email. */}
+      {/* Không có ?email thì hỏi email để gửi lại */}
       {emailParam ? (
         <div className="mb-space-lg inline-flex items-center gap-2 rounded-xl bg-surface-container px-4 py-2 text-headline-md text-accent-fg">
           <Icon name="alternate_email" className="text-[20px]" />

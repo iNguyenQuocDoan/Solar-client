@@ -29,15 +29,9 @@ import { errorMessage } from '@/services/api/errors'
 import type { ProductResponse } from '@/types/res/adminProductsRes'
 import { cx } from '@/utils/cx'
 
-/*
-  Quản lý sản phẩm (bộ portal kit): danh sách đọc GET /api/products (lọc, sắp xếp, phân trang phía server), bấm một dòng
-  mở trang chi tiết /admin/products/:id. Sửa / Ngừng bán / Xoá có ngay trên từng dòng và ở trang chi tiết (12/10/2026);
-  cuối trang là mục "Đã ngừng bán" để mở bán lại.
-  Swagger không có API danh sách riêng cho admin nên dùng chung GET /api/products, và API đó không trả sản phẩm ngừng bán
-  (xem hiddenProducts.ts): danh sách ở đây chỉ có sản phẩm đang bán.
-  Bộ lọc và trang nằm trên địa chỉ (?q=&loai=&hang=&sapxep=&trang=): từ trang chi tiết bấm Back, hay ngừng bán / xoá xong
-  quay về, danh sách mở lại đúng bộ lọc và trang đang xem. Đổi bộ lọc thay mục lịch sử hiện tại (replace), không chồng thêm.
-*/
+// Quản lý sản phẩm: danh sách đọc GET /api/products, bấm dòng mở trang chi tiết
+// API này không trả sản phẩm ngừng bán nên cuối trang có mục "Đã ngừng bán" (hiddenProducts.ts)
+// Bộ lọc và trang lưu trên URL để Back quay lại đúng chỗ
 
 const PAGE_SIZE = 20
 const DEFAULT_SORT = PRODUCT_SORT_OPTIONS[0]!.value
@@ -63,7 +57,7 @@ export function AdminProductsPage() {
   const { hide, reopen, pendingStatus } = useProductStatusActions()
   const listRef = useRef<HTMLElement>(null)
   const hiddenHeadingRef = useRef<HTMLHeadingElement>(null)
-  // Chỗ nhận focus khi hộp thoại (xoá / ngừng bán) đóng xong, vì dòng chứa nút vừa bấm biến khỏi bảng.
+  // Nhận focus khi dialog đóng, vì dòng chứa nút vừa bấm đã mất
   const focusAfterDialog = useRef<HTMLElement | null>(null)
   const restoreFocus = () => {
     focusAfterDialog.current?.focus()
@@ -87,8 +81,7 @@ export function AdminProductsPage() {
     [setParams],
   )
 
-  // Ghi từ khoá lên địa chỉ khi người dùng ngừng gõ. Chờ giá trị trễ bắt kịp ô tìm (search === searchText) để bấm "Xoá bộ
-  // lọc" giữa chừng không bị giá trị trễ cũ ghi đè lại.
+  // Ghi từ khoá lên URL khi ngừng gõ
   useEffect(() => {
     if (search !== searchText.trim() || search === urlSearch) return
     setUrl({ q: search, trang: '' })
@@ -103,7 +96,7 @@ export function AdminProductsPage() {
     ...parseSort(filter.sort),
   })
   const options = useProductOptions()
-  // Cảnh báo ở đầu trang tính trên toàn bộ tấm pin, không chỉ trang đang xem (cùng cache với mô phỏng 3D).
+  // Cảnh báo tính trên toàn bộ tấm pin, không chỉ trang đang xem
   const panels = useProductsQuery(SOLAR_PANEL_QUERY)
   const incompletePanels = (panels.data?.items ?? []).filter((p) => {
     const gaps = panelSpecGaps(p)
@@ -114,11 +107,10 @@ export function AdminProductsPage() {
   const total = query.data?.totalItems ?? 0
   const pages = query.data?.totalPages ?? 0
   const isFiltering = searchText.trim() !== '' || filter.productType !== '' || filter.brand !== ''
-  // Trang cũ giữ trên màn hình trong lúc tải trang khác; nếu trang cũ trống thì coi như đang tải, đừng báo "chưa có".
+  // Đang giữ trang cũ mà trang cũ trống thì coi như đang tải
   const loading = query.isPending || (query.isPlaceholderData && products.length === 0)
 
-  // Trang trên địa chỉ vượt quá số trang (vừa xoá hoặc ngừng bán dòng cuối, dữ liệu đổi ở nơi khác, địa chỉ cũ): backend vẫn
-  // trả 200 với danh sách rỗng, nên tự lùi về trang cuối còn dữ liệu.
+  // Trang trên URL vượt quá số trang thì lùi về trang cuối còn dữ liệu
   const lastPage = Math.max(1, pages)
   const overflow = Boolean(query.data && !query.isFetching && !query.isPlaceholderData && page > lastPage)
   useEffect(() => {
@@ -163,7 +155,7 @@ export function AdminProductsPage() {
             onChange={(e) => setSearchText(e.target.value)}
           />
         </label>
-        {/* Loại và hãng là danh sách chọn từ dữ liệu thật: backend chỉ lọc khớp đúng cả chuỗi. Đang lọc thì ô tô màu. */}
+        {/* Backend chỉ lọc khớp đúng cả chuỗi nên dùng danh sách chọn */}
         <label className="w-full sm:w-52">
           <span className="sr-only">Loại sản phẩm</span>
           <Select

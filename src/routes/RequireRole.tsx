@@ -15,7 +15,7 @@ export function RequireRole({ role, children }: RequireRoleProps) {
   const location = useLocation()
 
   if (status === 'loading') return <AuthLoadingScreen />
-  // Giữ cả query string để đăng nhập xong quay lại đúng chỗ; trang 403 cũng nhớ trang đích cho nút "Đổi tài khoản khác".
+  // Giữ cả query string để đăng nhập xong quay lại đúng chỗ
   const from = location.pathname + location.search
   if (!user) return <Navigate to={ROUTES.LOGIN} replace state={{ from }} />
   if (user.role !== role) return <Navigate to={ROUTES.FORBIDDEN} replace state={{ required: role, from }} />

@@ -1,21 +1,9 @@
 import type { HTMLAttributes, TdHTMLAttributes, ThHTMLAttributes } from 'react'
 import { cx } from '@/utils/cx'
 
-/*
-  A table takes the width of its container; columns decide their own wrapping
-  (numbers and actions set whitespace-nowrap, text is allowed to wrap). When it
-  still overflows, the wrapper scrolls and shades the clipped edge so the
-  overflow is visible. Secondary columns hide from md up with `hidden md:table-cell`.
-
-  `stack`: below lg every row becomes a block of label/value pairs, using each
-  cell's `label` (rendered as data-label). Hidden columns come back in that
-  layout, so a phone or tablet sees every field instead of a sideways scroll.
-  `stack="xl"`: xếp khối đến xl (1280px) cho bảng nhiều cột có cụm thao tác (sản phẩm admin): ở 1024px, rail 208px chỉ
-  còn ~790px cho bảng, chia cột thì tên sản phẩm bị bóp còn vài chữ mỗi dòng và cụm thao tác tràn ra ngoài.
-
-  Khi chia cột: dòng tô nền nhạt khi rê chuột để thao tác cuối dòng gắn với đúng dòng đang xem. Ô đầu/cuối có lề 12px
-  và bảng lấn ra 12px mỗi bên, nên chữ vẫn thẳng mép trang mà nền rê chuột không cắt sát chữ.
-*/
+// Bảng rộng theo khung chứa, tràn thì cuộn ngang. Cột phụ ẩn bằng `hidden md:table-cell`
+// `stack`: dưới lg mỗi dòng thành khối nhãn / giá trị (lấy từ `label` của ô). `stack="xl"` thì xếp khối tới 1280px
+// Ô đầu / cuối có lề 12px và bảng lấn ra 12px mỗi bên, để chữ vẫn thẳng mép trang
 export function Table({ stack, className, ...rest }: HTMLAttributes<HTMLTableElement> & { stack?: boolean | 'xl' }) {
   return (
     <div

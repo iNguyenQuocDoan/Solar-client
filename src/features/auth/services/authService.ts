@@ -20,11 +20,7 @@ import type {
 } from '@/types/res/authRes'
 import { apiPost } from '@/services/api/client'
 
-/*
- * 9 endpoint Auth; kiểu request ở types/req/authReq.ts, response ở types/res/authRes.ts.
- * Mọi endpoint đều là POST, body JSON, trả về wrapper *ApiResponse; apiPost đã
- * mở wrapper nên các hàm dưới đây trả thẳng phần `data`.
- */
+// Các endpoint Auth, đều là POST. apiPost đã bỏ wrapper nên các hàm trả thẳng `data`
 
 /** POST /api/auth/register, { email, password, fullName, phone } */
 export function register(body: RegisterRequest) {

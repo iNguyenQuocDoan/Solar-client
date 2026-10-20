@@ -1,10 +1,6 @@
 import { cn } from '@/utils/cn'
 
-/*
- * Biểu đồ quỹ đạo mặt trời (GIS Solar Potential Model), SVG nội tuyến lấy từ site_survey_task/code.html.
- * Mọi màu đổi sang biến token trong globals.css; riêng nét đứt của vòm trời dùng outline-variant
- * thay cho #cbd5e1 (màu slate mặc định của Tailwind, không có trong bảng token).
- */
+// Biểu đồ quỹ đạo mặt trời (SVG)
 export type SunPathChartProps = { className?: string }
 
 export function SunPathChart({ className }: SunPathChartProps) {

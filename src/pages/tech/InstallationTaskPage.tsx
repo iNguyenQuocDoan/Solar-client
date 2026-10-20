@@ -13,8 +13,6 @@ import { cn } from '@/utils/cn'
 import { executionCounterLabel, getInstallationTask, type InstallationStep } from '@/data/installations'
 import { notFound } from '@/routes/notFound'
 
-/* Dựng từ installation_task/code.html + screen.png. Mọi dữ liệu lấy từ data/installations.ts. */
-
 type SyncState = 'idle' | 'syncing' | 'synced'
 
 const syncIcon: Record<SyncState, string> = { idle: 'sync', syncing: 'refresh', synced: 'check' }
@@ -39,10 +37,7 @@ function InstallationTaskView({ task }: { task: NonNullable<ReturnType<typeof ge
   const toggleStep = (stepId: string, checked: boolean) =>
     setCheckedIds((current) => (checked ? [...current, stepId] : current.filter((value) => value !== stepId)))
 
-  /*
-   * Mốc mở màn lấy nguyên 65% của thiết kế. Khi kỹ thuật viên chỉnh bộ đếm panel thì tính lại
-   * theo công thức trong code.html: 2 bước nền = 33%, bước "Racking & Panels" thêm tối đa 32%.
-   */
+  // Mở màn là 65%, đổi số panel thì tính lại: 2 bước đầu = 33%, bước lắp tấm thêm tối đa 32%
   const initialPanels = activeStep?.counter?.initial ?? 0
   const totalPanels = activeStep?.counter?.total ?? 1
   const livePercent =

@@ -4,9 +4,7 @@ import { cx } from '@/utils/cx'
 /** `attention`: số đếm là việc đang chờ người xem, tô đỏ (xem Count). */
 export type Chip<T extends string> = { value: T; label: string; count?: number; attention?: boolean }
 
-/* Filters are tabs on a rule, not pills. They scroll sideways instead of wrapping, so the rule stays one line.
-   The rule is an inset hairline (not a border) so the active tab's 2px line can sit exactly on it inside the scroller.
-   Tab đang chọn: vạch màu thương hiệu + chữ đậm; tab khác hiện vạch xám khi rê chuột để thấy là bấm được. */
+// Bộ lọc dạng tab gạch chân, cuộn ngang thay vì xuống dòng
 export function FilterChips<T extends string>({
   chips,
   value,

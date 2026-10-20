@@ -33,11 +33,7 @@ function byDay(rows: TechnicianAppointmentListItem[]) {
   return [...groups]
 }
 
-/*
-  Lịch khảo sát kinh doanh đã phân công cho kỹ thuật viên (GET /api/technicians/me/appointments), nhóm theo ngày. Lịch còn
-  chờ xác nhận ("Chờ bạn nhận việc") là việc của người xem: số đỏ ở menu, nhãn đỏ trên dòng; số trên tab để xám (một sự
-  việc chỉ báo đỏ một lần). Nhận việc ở trang chi tiết, sau khi đã xem địa chỉ và số liệu.
-*/
+// Lịch khảo sát đã phân công, nhóm theo ngày. Lịch chờ nhận việc tô đỏ
 export function TechJobsPage() {
   const query = useMyAppointmentsQuery()
   const [tab, setTab] = useState<Tab>('upcoming')

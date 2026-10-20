@@ -29,10 +29,7 @@ export function ForgotPasswordPage() {
 
   const submitting = forgotMutation.isPending
 
-  /*
-   * Thông báo luôn trung tính, kể cả khi email không tồn tại hoặc API trả lỗi:
-   * không để lộ email nào đang có trong hệ thống.
-   */
+  // Luôn báo trung tính để không lộ email nào đang có trong hệ thống
   const onSubmit = handleSubmit(async (values) => {
     if (submitting) return
     try {

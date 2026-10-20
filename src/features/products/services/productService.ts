@@ -7,17 +7,9 @@ import type { ProductDeletedResponse, ProductResponse } from '@/types/res/adminP
 import type { ProductResponsePagedResult } from '@/types/res/productsRes'
 import { apiGet, apiPost, apiRequest } from '@/services/api/client'
 
-/*
- * 6 endpoint sản phẩm: 2 endpoint đọc (tag Products) và 4 endpoint quản trị (tag AdminProducts).
- * Kiểu body/response sinh từ swagger; riêng query của GET /api/products không có schema nên
- * khai ở đây, tên field đúng như swagger (PascalCase).
- */
+// Các endpoint sản phẩm. Query của GET /api/products không có schema nên khai ở đây (PascalCase)
 
-/*
- * Swagger khai SortBy/SortDirection là string; giá trị hợp lệ lấy từ lỗi validate của backend
- * (29/09/2026): SortBy ∈ name | brand | ratedPowerW | unitPrice | createdAt, SortDirection ∈ asc | desc,
- * Page >= 1, PageSize 1-100 (mặc định 20), MinPrice <= MaxPrice.
- */
+// SortBy: name | brand | ratedPowerW | unitPrice | createdAt, SortDirection: asc | desc, PageSize 1-100
 export type ProductSortBy = 'name' | 'brand' | 'ratedPowerW' | 'unitPrice' | 'createdAt'
 export type ProductSortDirection = 'asc' | 'desc'
 export const PRODUCT_PAGE_SIZE_MAX = 100

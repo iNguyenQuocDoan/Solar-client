@@ -5,19 +5,10 @@ import type { RefreshTokenRequest } from '@/types/req/authReq'
 import type { ApiResponse } from '@/types/res/apiRes'
 import type { AuthTokensResponse } from '@/types/res/authRes'
 
-/*
- * Axios instance dùng chung.
- *
- * - Request: gắn Authorization: Bearer <accessToken>.
- * - Response: mở wrapper *ApiResponse ({ isSuccess, traceId, data, error }) và trả thẳng `data`;
- *   lỗi thì ném ApiError.
- * - 401: gọi /auth/refresh theo kiểu single-flight (nhiều request cùng 401 chỉ refresh 1 lần,
- *   các request còn lại xếp hàng chờ rồi retry). Refresh hỏng thì xoá phiên + bắn "session-expired".
- *   Chỉ lỗi của chính lần refresh mới tính là hết phiên; request gửi lại mà lỗi (400, 409, 5xx...) thì
- *   trả nguyên lỗi đó cho màn hình.
- * - Backend thu hồi MỌI phiên khi một refresh token đã dùng bị gửi lại, nên refresh giữa các tab được
- *   xếp hàng bằng Web Locks và luôn đọc refresh token mới nhất ngay trước khi gửi.
- */
+// Axios instance dùng chung
+// Request gắn Bearer token. Response bỏ wrapper *ApiResponse và trả thẳng `data`, lỗi thì ném ApiError
+// Gặp 401 thì refresh một lần cho mọi request đang chờ (single-flight), refresh lỗi thì bắn "session-expired"
+// Refresh giữa các tab xếp hàng bằng Web Locks, vì backend thu hồi mọi phiên khi một refresh token bị dùng lại
 
 /** Sự kiện phát trên window khi phiên không còn cứu được. */
 export const SESSION_EXPIRED_EVENT = 'session-expired'
@@ -33,11 +24,7 @@ export const apiClient = axios.create({
   headers: { 'Content-Type': 'application/json' },
 })
 
-/**
- * Đường dẫn không gắn token và không thử refresh khi 401.
- * /auth/logout chỉ cần refresh token trong body (dò 08/10/2026: trả 200 cả khi không có Bearer); để nó
- * đi qua refresh-rồi-gửi-lại sẽ gửi lại đúng refresh token vừa bị đổi, tức là "dùng lại" token.
- */
+/** Đường dẫn không gắn token và không refresh khi 401. Logout chỉ cần refresh token trong body */
 const PUBLIC_PATHS = [
   '/auth/login',
   '/auth/logout',
@@ -64,15 +51,10 @@ apiClient.interceptors.request.use((config) => {
   return config
 })
 
-/* ---------------------------------------------------------------- refresh */
-
 /** Promise của lần refresh đang chạy; các 401 khác chờ vào đây thay vì gọi thêm. */
 let refreshInFlight: Promise<string> | null = null
 
-/*
- * Gọi /auth/refresh bằng axios "trần" để không lọt vào interceptor của apiClient
- * (tránh đệ quy khi chính refresh trả 401).
- */
+// Dùng axios riêng để không lọt vào interceptor (tránh đệ quy khi refresh trả 401)
 async function requestNewAccessToken(): Promise<string> {
   const refreshToken = getRefreshToken()
   if (!refreshToken) throw new ApiError({ status: 401, message: messageForStatus(401) })
@@ -103,11 +85,7 @@ async function requestNewAccessToken(): Promise<string> {
 
 const REFRESH_LOCK = 'smart-solar.refresh'
 
-/*
- * Xếp hàng refresh giữa các tab cùng trình duyệt (cùng chung refresh token trong localStorage): tab sau
- * chờ tab trước đổi xong rồi mới đọc token, nên không bao giờ gửi một token đã bị đổi. Trình duyệt không có
- * Web Locks thì chạy thẳng như cũ.
- */
+// Xếp hàng refresh giữa các tab để không gửi token đã bị đổi
 function withRefreshLock<T>(run: () => Promise<T>): Promise<T> {
   if (typeof navigator === 'undefined' || !navigator.locks) return run()
   return navigator.locks.request(REFRESH_LOCK, run)
@@ -121,12 +99,10 @@ export function refreshAccessToken(): Promise<string> {
   return refreshInFlight
 }
 
-/** Chờ lần refresh đang chạy (nếu có) xong, bỏ qua kết quả; dùng trước khi đọc refresh token để đăng xuất. */
+/** Chờ lần refresh đang chạy xong, dùng trước khi đăng xuất */
 export async function waitForRefresh() {
   await refreshInFlight?.catch(() => undefined)
 }
-
-/* --------------------------------------------------------------- response */
 
 type RetriableConfig = InternalAxiosRequestConfig & { _retried?: boolean }
 
@@ -159,7 +135,7 @@ apiClient.interceptors.response.use(
 
     const { status, data, headers } = axiosError.response
 
-    // Không có refreshToken = khách chưa đăng nhập: trả 401 cho màn hình tự xử lý, không bật "hết phiên".
+    // Không có refreshToken nghĩa là chưa đăng nhập: trả 401, không bật hộp hết phiên
     const canRetry =
       status === 401 && config && !config._retried && !isPublicPath(config.url) && getRefreshToken() !== null
     if (canRetry) {
@@ -179,7 +155,7 @@ apiClient.interceptors.response.use(
       return apiClient.request(config)
     }
 
-    // 429 kèm Retry-After (giới hạn tạo mô phỏng 10 lần/phút): màn hình đếm ngược thay vì đoán thời gian chờ.
+    // 429 kèm Retry-After để màn hình đếm ngược
     throw toApiError(status, data, parseRetryAfter(headers?.['retry-after']))
   },
 )

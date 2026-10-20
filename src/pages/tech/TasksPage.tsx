@@ -124,7 +124,6 @@ export function TasksPage() {
   const navigate = useNavigate()
   const [view, setView] = useState<TaskView>('list')
   const [filter, setFilter] = useState<TaskFilterValue>(initialFilter)
-  /* openDrawer(...) trong code.html: nút Rapid Action của dòng, nút thẻ Bento và "Quick Dispatch Action". */
   const [drawerOrder, setDrawerOrder] = useState<WorkOrder | null>(null)
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [toast, setToast] = useState(false)

@@ -1,11 +1,7 @@
 import type { ReactNode } from 'react'
 import { cx } from '@/utils/cx'
 
-/*
-  Sticky footer for multi-step work (assessment, survey, installation).
-  It bleeds to the edges of the main column, matching the main padding
-  (px-4 below md, px-6 from md), so its rule lines up with the page.
-*/
+// Thanh thao tác dính đáy, lấn ra mép bằng đúng padding của main để đường kẻ thẳng hàng với trang
 export function ActionBar({ children, className }: { children: ReactNode; className?: string }) {
   return (
     <div

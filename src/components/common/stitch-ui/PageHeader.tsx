@@ -4,7 +4,6 @@ import { cn } from '@/utils/cn'
 
 export type { Crumb } from '@/components/common/stitch-ui/Breadcrumb'
 
-/* Theo phần đầu trang admin_dashboard / user_management: breadcrumb, eyebrow, h1 headline-xl, mô tả, nút. */
 export type PageHeaderProps = {
   breadcrumb?: Crumb[]
   /** Góc phải hàng breadcrumb: trạng thái cluster, sync... */
@@ -14,7 +13,7 @@ export type PageHeaderProps = {
   title: string
   description?: string
   actions?: ReactNode
-  /** Khoảng cách dưới header: mặc định lg (bố cục gọn 05/10/2026); user_management xl, none khi đặt trong Card */
+  /** Khoảng cách dưới header, mặc định lg */
   bottomSpacing?: 'none' | 'lg' | 'xl' | '2xl'
   titleClassName?: string
   className?: string

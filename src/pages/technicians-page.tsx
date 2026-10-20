@@ -14,11 +14,7 @@ import { useTechniciansQuery } from '@/features/scheduling/hooks/useTechnicianAd
 import { ROUTES, withId } from '@/routes/paths'
 import type { TechnicianProfileView } from '@/types/res/adminTechniciansRes'
 
-/*
-  Kỹ thuật viên và việc nhận lịch của họ (GET /api/admin/technicians, mọi tài khoản có vai trò kỹ thuật viên, kể cả chưa
-  cấu hình). Quản trị và quản lý dùng chung trang (backend cho cả hai vai trò). Người chưa nhận lịch được đứng đầu: thiếu
-  nơi xuất phát là việc phải làm (đỏ). Cả dòng là link sang trang cấu hình.
-*/
+// Danh sách kỹ thuật viên. Người thiếu nơi xuất phát lên đầu và tô đỏ
 
 const rank = (t: TechnicianProfileView) => (t.readyForScheduling ? 2 : technicianReadiness(t).tone === 'danger' ? 0 : 1)
 

@@ -3,12 +3,7 @@ import { InfoTileGrid, type InfoTileData } from '@/components/common/tech/InfoTi
 import { Card, Icon, ProgressBar, StatusBadge, type StatusVariant } from '@/components/common/stitch-ui'
 import { cn } from '@/utils/cn'
 
-/*
- * "Top command context bar" của installation_task: pill loại việc + mã job + badge giai đoạn,
- * mô tả gói thiết bị, nhóm nút phụ bên phải, lưới meta 4 ô, thanh tiến độ và các mốc.
- * Khác TaskHeaderCard (luồng khảo sát) ở chỗ có hàng nút, lưới meta và thanh tiến độ,
- * nên tách riêng cho nhóm installation / maintenance / warranty.
- */
+// Header của việc lắp đặt / bảo trì / bảo hành: loại việc, mã, giai đoạn, nút, lưới thông tin và tiến độ
 export type JobHeaderAction = {
   label: string
   icon: string

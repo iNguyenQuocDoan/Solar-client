@@ -1,10 +1,4 @@
-/*
- * VIẾT TAY, swagger chỉ khai "200 OK" cho tag CustomerSurveyRequests, không có schema response.
- * Tên kiểu và field lấy đúng theo SmartSolar.Modules.Scheduling.PreSurveyAppointments.Views
- * (CustomerSurveyRequestView, CustomerAppointmentView, BookingConfirmation, backend main 4d12e4d,
- * 12/10/2026). Khách không bao giờ thấy kỹ thuật viên đang được giữ chỗ, chỉ thấy tên người
- * được phân công chính thức. Khi backend khai response trong swagger, `npm run gen:api` sẽ ghi đè file này.
- */
+// Viết tay vì swagger không có schema response. Khách không bao giờ thấy kỹ thuật viên đang giữ chỗ
 import type { AppointmentStatus } from '@/types/res/surveyRequestsRes'
 
 /** PENDING, ASSIGNED, REVIEWING, SCHEDULED, COMPLETED, CANCELLED (tên enum SurveyRequestStatus viết hoa). */

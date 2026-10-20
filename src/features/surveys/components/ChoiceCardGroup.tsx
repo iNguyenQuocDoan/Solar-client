@@ -1,10 +1,7 @@
 import { Icon } from '@/components/common/stitch-ui/Icon'
 import { cn } from '@/utils/cn'
 
-/*
- * Lưới thẻ chọn có icon lớn + nhãn + mô tả ngắn ("Roof Surface Profile" trong site_survey_task).
- * Thẻ được chọn tô primary-container.
- */
+// Lưới thẻ chọn có icon, nhãn và mô tả
 export type ChoiceCardOption = { value: string; label: string; icon: string; caption?: string }
 
 export type ChoiceCardGroupProps = {

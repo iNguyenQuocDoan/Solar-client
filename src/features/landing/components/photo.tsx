@@ -1,10 +1,7 @@
 import { cx } from '@/utils/cx'
 import type { Shot } from '@/data/landing'
 
-/*
-  Ảnh của trang: có `src` thì hiện ảnh cắt theo khung cha (object-cover), chưa có thì một khung phẳng
-  đúng tỷ lệ ghi rõ cần ảnh gì. Không lấp bằng ảnh stock hay ảnh ngẫu nhiên.
-*/
+// Có `src` thì hiện ảnh, chưa có thì hiện khung đúng tỷ lệ ghi cần ảnh gì
 export function LandingPhoto({
   shot,
   sizes,

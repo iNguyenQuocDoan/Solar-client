@@ -20,11 +20,7 @@ import { Switch } from '@/components/common/stitch-ui/Switch'
 import { cn } from '@/utils/cn'
 import { regionZones, userRoleMap, userRoleValues, userRoles, type UserRecord } from '@/data/users'
 
-/*
- * "Governance Drawer" trong user_management chuyển thành Dialog (theo yêu cầu):
- * mode create = "+ Invite New User" (thêm ô tên/email/phòng ban), mode edit = sửa role, zone, MFA.
- * Validate bằng zod + react-hook-form.
- */
+// Dialog tạo / sửa người dùng, validate bằng zod + react-hook-form
 const userFormSchema = z.object({
   name: z.string().trim().min(2, 'Vui lòng nhập họ và tên'),
   email: z.email('Email không hợp lệ'),

@@ -1,9 +1,4 @@
-/*
- * Dữ liệu giả cho hai màn lắp đặt dùng chung một installation id:
- * - Màn 11 installation_task: /tech/installations/:id
- * - Màn 12 installation_task_checklist: /tech/installations/:id/checklist (mở rộng ở cuối file)
- * Mọi số liệu (số panel, phần trăm, tên khách, crew...) phải khớp nhau giữa hai màn.
- */
+// Dữ liệu giả cho màn lắp đặt và checklist, dùng chung một installation id nên số liệu phải khớp nhau
 
 import type { ChecklistPhaseTone, ChecklistTaskItem } from '@/features/installations/components/ChecklistPhaseCard'
 import type { EvidenceDropzoneItem, EvidencePhotoItem } from '@/components/common/tech/EvidenceGallery'
@@ -372,11 +367,7 @@ export function getInstallationTask(id: string | undefined): InstallationTask | 
 /** Nhãn đếm bước dưới tiêu đề "Execution Sequence & Sign-off". */
 export const executionCounterLabel = (done: number, total: number) => `Đã xong ${done}/${total} bước`
 
-/* ------------------------------------------------------------------ *
- * Màn 12, installation_task_checklist (/tech/installations/:id/checklist)
- * Mở rộng cùng job order INS-7704: khách David Chen, 24 module REC Alpha 400W
- * (9.6 kW DC), 18/24 panel đã lắp và các mốc giờ trùng với màn 11.
- * ------------------------------------------------------------------ */
+// Dữ liệu màn checklist (/tech/installations/:id/checklist), cùng job INS-7704 với màn lắp đặt
 
 export type ChecklistPhase = {
   id: string

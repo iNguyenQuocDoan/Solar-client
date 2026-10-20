@@ -2,13 +2,7 @@ import type { ReactNode } from 'react'
 import { Checkbox, Icon, StatusBadge } from '@/components/common/stitch-ui'
 import { cn } from '@/utils/cn'
 
-/*
- * Danh sách bước công việc dùng chung hai màn:
- * - variant "installation" (installation_task): có số thứ tự, bước đang làm nổi lên nền trắng
- *   + ring primary-container, giờ hoàn thành kèm icon check.
- * - variant "protocol" (maintenance_task): tiêu đề gạch ngang khi xong, trạng thái là pill,
- *   bước đang làm nền primary-fixed/20 với ô icon sync thay ô tick.
- */
+// Danh sách bước công việc. installation: có số thứ tự, protocol: trạng thái dạng pill
 export type ExecutionStepState = 'done' | 'active' | 'pending'
 
 export type ExecutionStepItem = {
@@ -20,7 +14,7 @@ export type ExecutionStepItem = {
   state: ExecutionStepState
   /** Giờ hoàn thành khi done, nhãn hàng đợi khi pending */
   statusText: string
-  /** installation: số liệu bên phải bước đang làm ("18 / 24 Mounted"). protocol: pill kết quả khi xong ("Passed") */
+  /** installation: số liệu của bước đang làm, protocol: kết quả khi xong */
   activeMetric?: string
 }
 

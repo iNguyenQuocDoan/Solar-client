@@ -5,12 +5,7 @@ import type { StatusVariant } from '@/components/common/stitch-ui/StatusBadge'
 import type { TimelineStepProps } from '@/components/common/stitch-ui/Timeline'
 import { ROUTES } from '@/routes/paths'
 
-/*
- * Dữ liệu giả cho /tech/tasks/:id, nội dung ORD-8821 lấy từ task_detail_timeline/screen.png.
- * id, tên khách và trạng thái khớp data/tasks.ts (bảng work order) và data/techDashboard.ts.
- * Thiết kế ghi chủ nhà là "Marcus Vance", trùng tên kỹ thuật viên, nên dùng Elena Rostova
- * theo my_tasks_1 để ba màn nhất quán.
- */
+// Dữ liệu giả cho /tech/tasks/:id, id và tên khách khớp với data/tasks.ts và data/techDashboard.ts
 
 export type TaskDetail = {
   id: string
@@ -254,7 +249,7 @@ const ord8821: TaskDetail = {
   },
 }
 
-/** ORD-8824, đang trên đường tới hiện trường (khớp trạng thái "En Route" ở bảng work order). */
+/** ORD-8824, đang trên đường tới hiện trường */
 const ord8824: TaskDetail = {
   id: 'ORD-8824',
   code: '#ORD-8824',

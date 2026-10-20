@@ -6,14 +6,8 @@ import type {
 } from '@/features/products/services/productService'
 import type { ProductResponse } from '@/types/res/adminProductsRes'
 
-/*
- * Cách hiển thị một ProductResponse, dùng chung cho trang admin và trang sản phẩm công khai.
- *
- * Swagger khai `status` là string tự do. Danh sách dưới đây là các giá trị backend nhận
- * (backend trả "'Status' must be ACTIVE or INACTIVE." khi dò PATCH .../status ngày 29/09/2026);
- * so khớp không phân biệt hoa thường,
- * giá trị lạ thì in nguyên văn thay vì đoán nghĩa.
- */
+// Hiển thị ProductResponse, dùng chung cho trang admin và trang công khai
+// `status` chỉ có ACTIVE / INACTIVE, giá trị lạ thì in nguyên văn
 export const PRODUCT_STATUSES = [
   { value: 'ACTIVE', label: 'Đang bán', tone: 'ok' },
   { value: 'INACTIVE', label: 'Ngừng bán', tone: 'neutral' },
@@ -21,14 +15,10 @@ export const PRODUCT_STATUSES = [
 
 export type ProductStatus = (typeof PRODUCT_STATUSES)[number]['value']
 
-/*
- * Loại sản phẩm là chữ tự do; riêng tấm pin có mã SOLAR_PANEL mà backend kiểm tra thêm (dò validator
- * 05/10/2026, không phân biệt hoa thường): bắt buộc ratedPowerW, widthMm, heightMm. Mô phỏng 3D cũng
- * chỉ lấy sản phẩm loại này.
- */
+// Loại sản phẩm là chữ tự do, riêng SOLAR_PANEL bị backend kiểm tra thêm công suất và kích thước
 export const SOLAR_PANEL_TYPE = 'SOLAR_PANEL'
 
-/** Danh sách tấm pin cho mô phỏng và cảnh báo thiếu thông số ở admin: cùng tham số nên dùng chung một cache. */
+/** Dùng chung một cache cho mô phỏng và admin */
 export const SOLAR_PANEL_QUERY = {
   ProductType: SOLAR_PANEL_TYPE,
   PageSize: 100,
@@ -40,7 +30,7 @@ export function isSolarPanelType(productType: string | null | undefined) {
   return productType?.trim().toUpperCase() === SOLAR_PANEL_TYPE
 }
 
-/** Tên loại cho khách và sales: mã SOLAR_PANEL đọc thành "Tấm pin"; loại khác là chữ tự do nên giữ nguyên. Admin vẫn thấy mã gốc. */
+/** SOLAR_PANEL hiện là "Tấm pin", loại khác giữ nguyên */
 export function productTypeLabel(productType: string | null | undefined) {
   if (!productType?.trim()) return null
   return isSolarPanelType(productType) ? 'Tấm pin' : productType
@@ -56,10 +46,7 @@ export function productStatusMeta(status: string | null | undefined): { label: s
   return { label: status?.trim() || 'Chưa đặt trạng thái', tone: 'warn' }
 }
 
-/**
- * Thông số tấm pin còn thiếu (công suất, kích thước). Backend bắt buộc chúng khi tạo/sửa loại SOLAR_PANEL,
- * nhưng dữ liệu cũ vẫn có thể thiếu; tấm thiếu thì mô phỏng bố trí không dùng được nên phải lộ ra ở admin.
- */
+/** Thông số tấm pin còn thiếu. Dữ liệu cũ có thể thiếu nên cần báo ở admin */
 export function panelSpecGaps(product: Pick<ProductResponse, 'productType' | 'ratedPowerW' | 'widthMm' | 'heightMm'>) {
   if (!isSolarPanelType(product.productType)) return { power: false, size: false }
   return {
@@ -104,10 +91,7 @@ export function formatWarranty(months: number | null | undefined) {
   return months % 12 === 0 ? `${months / 12} năm` : `${months} tháng`
 }
 
-/*
- * Swagger không khai kiểu của `spec` (schema rỗng). Chuỗi thì in thẳng; object thì trải
- * thành các cặp "khoá: giá trị"; dạng khác bỏ qua.
- */
+// `spec` không có kiểu: chuỗi thì in thẳng, object thì trải thành các cặp khoá: giá trị
 export function specEntries(spec: unknown): { key: string; value: string }[] {
   if (spec == null) return []
   if (typeof spec === 'string') {

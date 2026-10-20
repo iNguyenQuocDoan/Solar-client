@@ -4,10 +4,7 @@ import { Checkbox } from '@/components/common/stitch-ui/Checkbox'
 import { Pagination, type PaginationProps } from '@/components/common/stitch-ui/Pagination'
 import { cn } from '@/utils/cn'
 
-/*
- * Theo bảng trong user_management (chọn hàng, cột action, phân trang), product_catalogue (dense)
- * và bảng audit gọn trong admin_dashboard (variant plain + size sm).
- */
+// Bảng dữ liệu: chọn hàng, cột thao tác, phân trang
 export type DataTableColumn<T> = {
   key: string
   header: ReactNode
@@ -37,7 +34,7 @@ export type DataTableProps<T> = {
   emptyMessage?: ReactNode
   /** card = bọc trong Card trắng (mặc định); plain = chỉ bảng, để đặt trong card có sẵn */
   variant?: 'card' | 'plain'
-  /** md = bảng chính; sm = bảng gọn (header 11px, hàng py-3); compact = product_catalogue; matrix = my_tasks_1 (ô cao, nội dung căn trên) */
+  /** md: bảng chính, sm: bảng gọn, compact: danh mục sản phẩm, matrix: ô cao, nội dung căn trên */
   size?: 'md' | 'sm' | 'compact' | 'matrix'
   /** Kẻ đường ngăn giữa các hàng (my_tasks_1) */
   divided?: boolean
@@ -68,7 +65,7 @@ const sizeStyles = {
     tbody: 'text-body-sm text-on-surface',
     rowHover: 'hover:bg-surface-container-low/40',
   },
-  /** my_tasks_1: header label-sm in hoa, ô py-space-lg, nội dung căn trên, mép trái/phải space-lg */
+  /** Header in hoa, ô cao, nội dung căn trên */
   matrix: {
     thead: 'bg-surface-container-low text-label-sm text-on-surface-variant',
     th: 'px-space-md py-space-md font-semibold',

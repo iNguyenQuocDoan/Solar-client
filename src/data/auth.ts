@@ -1,13 +1,6 @@
-/*
- * Nội dung các màn xác thực, lấy nguyên văn tiếng Việt từ
- * design/stitch/stitch_smart_solar_customer_portal/auth_portal/code.html.
- */
+// Nội dung các màn xác thực
 
-/*
- * Ảnh cột trái của AuthLayout (người dùng cung cấp: public/images/Login.png, Register.png; bản WebP
- * sinh từ đó). Chữ đã in sẵn trong ảnh nên `alt` chép lại đúng câu đó cho trình đọc màn hình.
- * Ảnh không phải công trình của Smart Solar nên không chú thích địa điểm hay công suất.
- */
+// Ảnh cột trái của AuthLayout. Chữ đã in sẵn trong ảnh nên `alt` chép lại đúng câu đó
 export const authImages = {
   login: {
     src: '/images/login-1122.webp',

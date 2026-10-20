@@ -4,7 +4,7 @@ import { cn } from '@/utils/cn'
 export type FieldProps = {
   label: ReactNode
   htmlFor?: string
-  /** default = label-md đậm (form user_management); caps = label-sm in hoa màu outline (panel product_catalogue) */
+  /** default: nhãn đậm, caps: nhãn nhỏ in hoa */
   variant?: 'default' | 'caps'
   labelClassName?: string
   /** Chữ nhỏ bên phải nhãn, ví dụ "Clearance: Level 3" */

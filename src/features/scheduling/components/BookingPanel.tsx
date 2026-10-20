@@ -13,13 +13,9 @@ import type { SurveySlot } from '@/types/res/surveySlotsRes'
 
 const NOTE_MAX = 500
 
-/*
-  Khối đặt giờ / đổi giờ khảo sát của khách: chọn ngày + giờ, ghi chú cho kỹ thuật viên, xác nhận. Đây là khối duy nhất
-  trên trang đòi khách quyết định nên nằm trong khung viền (Panel raised) và có nút đặc của trang.
-  - 201: đặt mới. 200 + created=false: lần gửi trước đã tới server (mất phản hồi, bấm lại), vẫn là thành công.
-  - 409 SURVEY_SLOT_UNAVAILABLE: người khác vừa lấy giờ đó; giờ trống đã tải lại (hook), bỏ chọn để khách chọn giờ khác.
-  - Lỗi khác: giữ lựa chọn, báo lỗi ngay trên nút.
-*/
+// Đặt / đổi giờ khảo sát của khách
+// 201 là đặt mới, 200 + created=false là lần trước đã thành công
+// 409 SURVEY_SLOT_UNAVAILABLE: giờ đó vừa bị lấy, bỏ chọn để khách chọn giờ khác
 export function BookingPanel({
   surveyRequestId,
   propertySiteId,

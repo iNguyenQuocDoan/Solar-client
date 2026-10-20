@@ -1,15 +1,8 @@
 import { jwtDecode } from 'jwt-decode'
 import { parseRole, type UserRole } from '@/config/roles'
 
-/*
- * Đọc claim trong accessToken.
- *
- * AuthTokensResponse của swagger không có role/tên người dùng, nên role lấy từ JWT. Token thật
- * (dò 08/10/2026) để role ở claim .NET `http://schemas.microsoft.com/ws/2008/06/identity/claims/role`
- * với giá trị ADMIN / SALES / CUSTOMER; claim `role` ngắn vẫn được đọc trước nếu sau này backend đổi.
- * Token không có claim tên và backend chưa có /me, nên tên hiển thị là email; khi có /me thì
- * chuyển sang dùng dữ liệu của /me (xem src/features/auth/services/me.ts).
- */
+// Đọc claim trong accessToken. Role nằm ở claim .NET ClaimTypes.Role (ADMIN / SALES / CUSTOMER...)
+// Token chưa có tên người dùng nên tạm hiện email
 
 export type JwtClaims = {
   role?: unknown
@@ -52,10 +45,7 @@ export function emailFromToken(token: string): string | null {
   )
 }
 
-/**
- * Tên hiển thị lấy từ claim name/fullName (hoặc họ + tên tách rời) nếu backend có phát. Token thật (dò lại 08/10/2026)
- * chỉ có sub, email, role nên hiện tại trả null và giao diện hiện email; backend thêm claim là tên tự hiện.
- */
+/** Tên hiển thị từ claim name / fullName nếu có, hiện tại backend chưa phát nên trả null */
 export function nameFromToken(token: string): string | null {
   const claims = decodeToken(token)
   if (!claims) return null

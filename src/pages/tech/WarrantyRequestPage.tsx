@@ -11,8 +11,6 @@ import { cn } from '@/utils/cn'
 import { getWarrantyCase, type WarrantyCase } from '@/data/warranty'
 import { notFound } from '@/routes/notFound'
 
-/* Dựng từ warranty_request/code.html + screen.png. Form chốt bảo hành dùng zod + react-hook-form. */
-
 const statToneClasses = {
   default: 'text-on-surface',
   primary: 'text-primary',
@@ -370,7 +368,6 @@ function WarrantyRequestView({ warranty }: { warranty: WarrantyCase }) {
         </Card>
       </div>
 
-      {/* Cột phải: hồ sơ site, burn-in, chốt bảo hành */}
       <div className="col-span-12 flex flex-col gap-space-xl xl:col-span-4">
         <Card padding="lg" className="flex flex-col gap-space-md">
           <div className="flex items-center justify-between gap-space-xs">

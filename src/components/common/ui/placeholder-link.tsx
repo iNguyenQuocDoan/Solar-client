@@ -1,12 +1,7 @@
 import type { HTMLAttributes } from 'react'
 import { cx } from '@/utils/cx'
 
-/*
-  A link whose destination is not part of this build. It keeps the look and the
-  inline flow of the link it stands in for, is reachable from the keyboard,
-  announces itself, and does nothing when pressed (the same convention as
-  reserved entries in the rail). A span, not a button: buttons cannot sit inline in a sentence.
-*/
+// Link tới trang chưa có trong bản này: trông như link nhưng bấm không làm gì
 export function PlaceholderLink({ className, children, ...rest }: HTMLAttributes<HTMLSpanElement>) {
   return (
     <span

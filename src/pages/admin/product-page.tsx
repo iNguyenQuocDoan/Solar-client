@@ -11,13 +11,8 @@ import { useProductQuery } from '@/features/products/hooks/useProducts'
 import { CatalogProductPage } from '@/pages/catalog-product-page'
 import { ROUTES } from '@/routes/paths'
 
-/*
-  Chi tiết một sản phẩm của admin (/admin/products/:id): cùng bố cục với trang chi tiết của các portal khác, thêm trạng
-  thái, mã loại và ba nút có màu theo việc chúng làm (12/10/2026): Sửa xanh, Ngừng bán vàng (hoàn tác được), Xoá đỏ, cùng
-  cụm nút với từng dòng danh sách (ProductActions).
-  Backend ẩn sản phẩm ngừng bán khỏi cả GET chi tiết, nên ngừng bán hay xoá xong thì quay về danh sách: sản phẩm ngừng bán
-  nằm ở mục "Đã ngừng bán" cuối trang danh sách, toast có "Hoàn tác".
-*/
+// Chi tiết sản phẩm của admin: Sửa, Ngừng bán, Xoá
+// Ngừng bán / xoá xong thì quay về danh sách vì backend ẩn sản phẩm ngừng bán
 export function AdminProductPage() {
   const { id } = useParams()
   const navigate = useNavigate()
@@ -28,7 +23,7 @@ export function AdminProductPage() {
   const [deleting, setDeleting] = useState(false)
   const [hiding, setHiding] = useState(false)
   const busy = Boolean(id && pendingStatus.has(id))
-  // Mở từ danh sách thì quay về đúng địa chỉ đó (bộ lọc + trang); mở thẳng bằng link thì về danh sách gốc.
+  // Quay về đúng danh sách đã mở (giữ bộ lọc và trang)
   const fromList = (useLocation().state as { backTo?: unknown } | null)?.backTo
   const backTo =
     typeof fromList === 'string' && fromList.startsWith(ROUTES.ADMIN.PRODUCTS) ? fromList : ROUTES.ADMIN.PRODUCTS

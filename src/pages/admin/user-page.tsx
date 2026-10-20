@@ -51,10 +51,7 @@ function TechnicianSummary({ user }: { user: AdminUserDetail }) {
   )
 }
 
-/*
-  Một tài khoản (GET /api/admin/users/{id}): thông tin, vai trò, trạng thái, gửi link mật khẩu, xoá. Quản trị không tự khoá
-  hay xoá chính mình (backend cũng chặn); tài khoản đã xoá chỉ xem.
-*/
+// Chi tiết một tài khoản. Quản trị không tự khoá hay xoá chính mình
 export function AdminUserPage() {
   const { id } = useParams()
   const navigate = useNavigate()

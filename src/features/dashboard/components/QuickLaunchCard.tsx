@@ -4,10 +4,7 @@ import { cn } from '@/utils/cn'
 /* "Governance Quick Launchpads" trong admin_dashboard: nav phụ dạng thẻ bấm được. */
 export type QuickLaunchTone = 'primary' | 'secondary' | 'primary-container' | 'tertiary'
 
-/*
-  Cả app chỉ còn một màu nhấn nên 4 tone không còn khác nhau về màu; giữ kiểu
-  prop để dữ liệu cũ không phải sửa.
-*/
+// Chỉ còn một màu nhấn nên các tone giống nhau, giữ prop để dữ liệu cũ không phải sửa
 const ctaClasses = 'text-primary'
 const titleHoverClasses = 'group-hover:text-primary'
 

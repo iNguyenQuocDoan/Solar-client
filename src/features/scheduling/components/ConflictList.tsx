@@ -10,10 +10,7 @@ const PROBLEMS: Record<string, string> = {
   SCHEDULING_DISABLED: 'phải chuyển cho người khác trước khi tắt nhận lịch',
 }
 
-/*
-  Thay đổi cấu hình bị từ chối vì làm hỏng lịch đã có. Backend không tự huỷ lịch nào; quản trị nhờ kinh doanh phụ trách đổi
-  giờ hoặc chuyển lịch cho người khác rồi lưu lại. Mỗi lịch một dòng: giờ, trạng thái, lý do.
-*/
+// Thay đổi bị từ chối vì đụng lịch đã có, liệt kê các lịch đó (backend không tự huỷ)
 export function ConflictList({ conflicts }: { conflicts: ConflictingAppointmentView[] }) {
   if (conflicts.length === 0) return null
   return (

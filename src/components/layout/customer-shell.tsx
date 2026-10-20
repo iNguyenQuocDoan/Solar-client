@@ -16,19 +16,9 @@ import { THEME_OPTIONS, useTheme } from '@/hooks/useTheme'
 import { ROUTES } from '@/routes/paths'
 import { cx } from '@/utils/cx'
 
-/*
-  Khung của cổng khách hàng (08/10/2026, người dùng: "khách hàng phải là 1 cái giao diện khác chứ tại sao lại là 1 giao
-  diện y chang của bên quản trị"). Khách hàng là doanh nghiệp vào xem và gửi yêu cầu, không phải nhân viên dùng công cụ cả
-  ngày, nên cổng khách đi theo website công khai (PublicLayout) thay vì rail của các portal nhân viên (app-shell):
-  - Thanh trên dính: logo đầy đủ, menu chữ (mục đang mở đậm + gạch chân xanh, như header trang công khai), nút tài khoản
-    ghi tên người đang đăng nhập (chữ cái đầu + tên; backend chưa trả họ tên nên tạm là email) và mở bảng chức năng:
-    Đổi mật khẩu, Giao diện, Đăng xuất.
-  - Nội dung căn giữa, rộng tối đa 1200px (max-w-landing), font Be Vietnam Pro như trang công khai và màn đăng nhập.
-    Lề 16/24px giống <main> của portal nên ActionBar và Table vẫn lấn mép đúng.
-  - Trang con (chi tiết sản phẩm) có dòng định vị "Sản phẩm / <tên>" ngay trên tiêu đề để quay lại danh sách.
-  - Điện thoại: nút Menu mở bảng ngay dưới thanh trên, gồm menu và các chức năng tài khoản.
-  Control bên trong (nút, ô nhập, bảng, nhãn) vẫn là portal kit: cùng hệ màu, bán kính, trạng thái.
-*/
+// Khung của cổng khách hàng, theo kiểu website công khai thay vì rail của nhân viên
+// Thanh trên dính có logo, menu chữ và nút tài khoản. Nội dung căn giữa, rộng tối đa 1200px
+// Điện thoại: nút Menu mở bảng gồm menu và tài khoản
 export function CustomerShell({ children }: { children: ReactNode }) {
   const portal = PORTALS.customer
   const items = portal.groups.flatMap((group) => group.items)
@@ -63,7 +53,7 @@ export function CustomerShell({ children }: { children: ReactNode }) {
 
       <header className="sticky top-0 z-30 border-b border-line bg-canvas">
         <div className="mx-auto flex h-14 w-full max-w-landing items-center gap-8 px-4 md:px-6 lg:h-16">
-          {/* Logo người dùng cung cấp; chữ "Smart" màu navy chìm trên nền tối nên ở dark mode logo đặt trên nền sáng. */}
+          {/* Ở dark mode logo đặt trên nền sáng vì chữ "Smart" màu navy khó thấy */}
           <Link to={portal.home} className="flex shrink-0 items-center rounded-control dark:bg-fg dark:px-2 dark:py-1">
             <img
               src="/images/logo-64h.webp"
@@ -166,7 +156,7 @@ export function CustomerShell({ children }: { children: ReactNode }) {
   )
 }
 
-/* Mục menu thanh trên: chữ như header trang công khai; mục đang mở đậm + gạch chân xanh, mục khác gạch chân xám khi rê. */
+// Mục đang mở đậm + gạch chân xanh
 function TopNavLink({ item, pathname }: { item: NavItem; pathname: string }) {
   const active = isNavItemActive(item, pathname)
   return (
@@ -185,10 +175,7 @@ function TopNavLink({ item, pathname }: { item: NavItem; pathname: string }) {
   )
 }
 
-/*
-  Nút "Tài khoản" (desktop) mở bảng chức năng tài khoản ngay dưới nút. Đóng khi bấm ra ngoài, nhấn Esc (focus về nút)
-  hoặc sau khi chọn một chức năng.
-*/
+// Bảng tài khoản đóng khi bấm ra ngoài, nhấn Esc hoặc sau khi chọn chức năng
 function AccountMenu({ onChangePassword, className }: { onChangePassword: () => void; className?: string }) {
   const { user } = useAuth()
   const name = user?.name ?? ''

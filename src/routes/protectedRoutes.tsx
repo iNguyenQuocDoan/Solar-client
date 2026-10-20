@@ -15,16 +15,9 @@ const manage = ROUTES.manage
 /** Mọi đường dẫn còn lại trong portal (màn mock đã ẩn, link cũ, gõ sai) về trang có dữ liệu thật. */
 const fallback = (to: string): RouteObject => ({ path: '*', element: <Navigate to={to} replace /> })
 
-/*
-  Route cần đăng nhập, mỗi portal bọc trong <RequireRole role="...">:
-  chưa đăng nhập thì về /login (nhớ trang đích), sai vai trò thì về /403.
-
-  Chỉ màn đã đổ dữ liệu thật từ backend mới có route (05/10/2026). Màn mock vẫn nằm trong
-  pages/<portal>/ và data/*.ts; nối API xong thì thêm lại route ở đây và mục menu trong
-  config/portals.ts (mọi portal, kể cả admin và kỹ thuật viên, dùng chung shell portal kit từ 08/10/2026).
-*/
+// Route cần đăng nhập, mỗi portal bọc trong <RequireRole>
+// Chỉ màn có dữ liệu thật mới có route. Màn mock nối API xong thì thêm route ở đây và mục menu trong config/portals.ts
 export const protectedRoutes: RouteObject[] = [
-  /* ---- Portal khách hàng ---- */
   {
     path: customer.home,
     element: (
@@ -63,7 +56,6 @@ export const protectedRoutes: RouteObject[] = [
     ],
   },
 
-  /* ---- Portal kinh doanh ---- */
   {
     path: ops.home,
     element: (
@@ -99,10 +91,10 @@ export const protectedRoutes: RouteObject[] = [
     ],
   },
 
-  /* ---- /field: bản portal kit cũ của kỹ thuật viên, gộp về /tech (08/10/2026) ---- */
+  // /field cũ chuyển về /tech
   { path: `${ROUTES.field.home}/*`, element: <Navigate to={ROUTES.TECH.DASHBOARD} replace /> },
 
-  /* ---- Portal quản lý: lịch + cấu hình kỹ thuật viên (dùng chung trang với quản trị), danh mục sản phẩm ---- */
+  // Portal quản lý
   {
     path: manage.home,
     element: (
@@ -137,7 +129,6 @@ export const protectedRoutes: RouteObject[] = [
     ],
   },
 
-  /* ---- Portal quản trị viên ---- */
   {
     path: ROUTES.ADMIN.DASHBOARD,
     element: (
@@ -180,7 +171,7 @@ export const protectedRoutes: RouteObject[] = [
     ],
   },
 
-  /* ---- Portal kỹ thuật viên /tech: lịch khảo sát được giao (xác nhận nhận việc), lịch làm việc, danh mục sản phẩm ---- */
+  // Portal kỹ thuật viên
   {
     path: ROUTES.TECH.DASHBOARD,
     element: (

@@ -10,10 +10,7 @@ import { useMyRequestsQuery } from '@/features/scheduling/hooks/useBooking'
 import { ROUTES, withId } from '@/routes/paths'
 import type { CustomerSurveyRequestView } from '@/types/res/customerSurveyRequestsRes'
 
-/*
-  Các yêu cầu khảo sát của khách (GET /api/customers/me/survey-requests). Việc của khách đứng đầu: yêu cầu chưa đặt giờ,
-  rồi lịch sắp tới theo thứ tự thời gian, cuối cùng là phần còn lại (mới gửi lên trước).
-*/
+// Yêu cầu khảo sát của khách. Chưa đặt giờ lên đầu, rồi lịch sắp tới, rồi còn lại
 function rank(r: CustomerSurveyRequestView) {
   if (canBook(r)) return 0
   if (r.appointment) return 1

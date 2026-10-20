@@ -2,10 +2,7 @@ import type { ReactNode } from 'react'
 import { Icon } from '@/components/common/stitch-ui/Icon'
 import { cn } from '@/utils/cn'
 
-/*
- * Thanh hành động dính đáy màn hình của các màn khảo sát: icon + tiến độ bên trái, nhóm nút bên phải.
- * installation_task / maintenance_task dùng biến thể `pulse`: chấm xanh nhấp nháy thay ô icon.
- */
+// Thanh hành động dính đáy màn hình. Biến thể `pulse` dùng chấm nhấp nháy thay icon
 export type ActionDockProps = {
   /** Bỏ trống khi dùng `pulse` */
   icon?: string

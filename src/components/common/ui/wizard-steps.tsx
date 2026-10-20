@@ -10,14 +10,8 @@ export type WizardStep = {
   onSelect?: () => void
 }
 
-/*
-  Thanh các bước của form nhiều bước (người dùng 10/10/2026: "các bước chưa chuẩn UI UX", chọn kiểu vòng số + đường nối).
-  Khác `Stepper` (dải tiến độ của một hành trình, chỉ để xem): ở đây là chỗ điều hướng.
-  - Máy tính (md+): vòng tròn đánh số nối bằng đường. Xong: vòng xanh có dấu ✓ kèm dòng tóm tắt, bấm để quay lại sửa;
-    đang làm: vòng xanh có số, quầng nhạt, chữ đậm; chưa tới: vòng viền xám. Đường nối xanh tới bước đang làm.
-  - Điện thoại: một khối gọn "Bước 3/5: Mặt lắp", thanh tiến độ chia đoạn và "Tiếp theo: ..." (năm nhãn không vừa 360px).
-  Vòng tròn là điểm mốc tiến độ nên dùng rounded-full (quy tắc bán kính chỉ cho phép ở hình tròn thật).
-*/
+// Thanh các bước của form nhiều bước, bấm bước đã xong để quay lại
+// Từ md: vòng số nối bằng đường. Điện thoại: khối gọn "Bước 3/5" + thanh tiến độ
 export function WizardSteps({ steps, label, className }: { steps: WizardStep[]; label: string; className?: string }) {
   const activeIndex = steps.findIndex((s) => s.state === 'active')
   const current = steps[activeIndex]

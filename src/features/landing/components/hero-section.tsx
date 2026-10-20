@@ -5,10 +5,7 @@ import { hero, projects } from '@/data/landing'
 import { LANDING_CONTAINER, ctaClass } from './classes'
 import { LandingPhoto } from './photo'
 
-/*
-  Bạn là ai, bạn làm gì. Ảnh công trình phủ kín khung; chữ trắng đặt thẳng lên ảnh, trên lớp phủ tối ở
-  góc dưới trái. Khi tải trang ảnh thu nhẹ về cỡ thật, chữ và nút trượt lên lần lượt (ld-settle, ld-rise).
-*/
+// Hero: ảnh phủ kín khung, chữ trắng trên lớp phủ tối ở góc dưới trái
 export function HeroSection() {
   return (
     <section aria-labelledby="hero-title" className="relative isolate overflow-hidden bg-surface-3">

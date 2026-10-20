@@ -3,7 +3,7 @@ import { AuthLayout } from '@/components/layout/AuthLayout'
 import { PublicLayout } from '@/components/layout/PublicLayout'
 import { ROUTES } from '@/routes/paths'
 
-/* Route không cần đăng nhập: trang chủ, /coming-soon, /products, các màn xác thực, /403 và /styleguide. */
+// Route không cần đăng nhập
 export const publicRoutes: RouteObject[] = [
   {
     element: <PublicLayout />,
@@ -52,7 +52,7 @@ export const publicRoutes: RouteObject[] = [
       },
     ],
   },
-  // Bảng mẫu component chỉ cho lúc phát triển: bản build không có route này (số liệu trong đó là mẫu).
+  // Trang mẫu component chỉ có ở dev
   ...(import.meta.env.DEV
     ? [
         {

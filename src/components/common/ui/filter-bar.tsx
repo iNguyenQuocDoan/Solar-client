@@ -1,10 +1,7 @@
 import type { ReactNode } from 'react'
 import { cx } from '@/utils/cx'
 
-/*
-  One shape for every list page: search and selects on the first line,
-  stage tabs beneath, then a fixed step before the table or list.
-*/
+// Thanh lọc chung cho các trang danh sách: ô tìm và select, bên dưới là tab
 export function FilterBar({
   children,
   tabs,

@@ -1,14 +1,5 @@
-/*
- * Sinh kiểu DTO từ docs/api/swagger.json vào src/types/req và src/types/res.
- * Chạy bằng `npm run gen:api`. Mọi file sinh ra đều bị ghi đè, không sửa tay.
- *
- * - Request body của endpoint thuộc tag X: src/types/req/<x>Req.ts
- * - Response 2xx của endpoint thuộc tag X: src/types/res/<x>Res.ts
- *   Wrapper *ApiResponse được bỏ: client.ts đã mở wrapper, service chỉ nhận `data`,
- *   nên file res chứa schema của `data`.
- * - ApiError + dạng chung của wrapper: src/types/res/apiRes.ts
- * Schema lồng bên trong đi cùng file của schema đầu tiên dùng nó.
- */
+// Sinh type DTO từ docs/api/swagger.json vào src/types/req và src/types/res (npm run gen:api)
+// File sinh ra luôn bị ghi đè, không sửa tay. File res chỉ chứa schema của `data` vì client.ts đã bỏ wrapper
 import fs from 'node:fs'
 import path from 'node:path'
 
@@ -24,7 +15,6 @@ const isWrapper = (name) => {
 }
 const fileKey = (tag) => tag.charAt(0).toLowerCase() + tag.slice(1).replace(/[^A-Za-z0-9]/g, '')
 
-/* ------------------------------------------------ gán mỗi schema vào một file */
 const owner = new Map() // schema thuộc file nào: 'req/authReq' | 'res/authRes' | 'res/apiRes'
 owner.set('ApiError', 'res/apiRes')
 
@@ -92,7 +82,6 @@ function objectType(schema, file, imports, indent) {
   return lines.length ? `{\n${lines.join('\n')}\n${indent}}` : 'Record<string, never>'
 }
 
-/* ------------------------------------------------------------------ ghi file */
 const HEADER = '/* Sinh tự động từ docs/api/swagger.json bằng `npm run gen:api` – KHÔNG sửa tay. */\n'
 
 const files = new Map()

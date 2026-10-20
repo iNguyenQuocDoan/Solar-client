@@ -1,9 +1,6 @@
 import { errorMessage, isApiError } from '@/services/api/errors'
 
-/*
- * Lỗi khi tải danh mục trên trang công khai. GET /api/products đã mở cho khách chưa đăng nhập
- * (dò 08/10/2026), nên không còn nhánh mời đăng nhập khi gặp 401.
- */
+// Lỗi tải danh mục trên trang công khai
 export function CatalogError({ error, onRetry }: { error: unknown; onRetry: () => void }) {
   // 404 (sản phẩm đã xoá, đường dẫn sai) thử lại vẫn vậy nên không có nút "Thử lại".
   const retryable = !(isApiError(error) && error.status === 404)

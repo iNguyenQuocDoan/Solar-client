@@ -2,10 +2,7 @@ import { Icon } from '@/components/common/stitch-ui/Icon'
 import { StatusBadge } from '@/components/common/stitch-ui/StatusBadge'
 import { cn } from '@/utils/cn'
 
-/*
- * Hàng tiêu đề của từng nhóm ảnh trong survey_image_documentation:
- * ô icon 32px, tiêu đề + badge yêu cầu, mô tả, và số ảnh đã chụp ở mép phải.
- */
+// Tiêu đề nhóm ảnh: icon, tiêu đề, mô tả và số ảnh đã chụp
 export type PhotoSectionIconTone = 'primary' | 'secondary' | 'tertiary' | 'neutral'
 export type PhotoSectionRequirementTone = 'error' | 'success' | 'neutral'
 

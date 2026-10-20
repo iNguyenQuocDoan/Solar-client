@@ -1,9 +1,6 @@
 import { cn } from '@/utils/cn'
 
-/*
- * "Array Topology Map" trong installation_task_checklist: dãy module của một string,
- * đường bus nét đứt và hộp combiner. Vẽ bằng SVG theo đúng toạ độ trong code.html.
- */
+// Sơ đồ module của một string, vẽ bằng SVG
 export type ArrayTopologyMapProps = {
   title: string
   /** Chú thích bên phải tiêu đề, ví dụ "2x 12-module strings" */

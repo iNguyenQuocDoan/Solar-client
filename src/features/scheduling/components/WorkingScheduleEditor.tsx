@@ -24,7 +24,7 @@ function toWeek(periods: WorkingPeriodView[]): Week {
   return week
 }
 
-/* Luật bám SetWorkingScheduleCommandValidator: mỗi khoảng kết thúc sau khi bắt đầu, cùng ngày không chồng nhau, tối đa 42. */
+// Mỗi khoảng kết thúc sau khi bắt đầu, cùng ngày không chồng nhau, tối đa 42
 function weekIssue(week: Week): string | null {
   const all = Object.values(week).flat()
   if (all.length === 0) return 'Cần ít nhất một khoảng làm việc trong tuần, hoặc chọn giờ chung của hệ thống.'
@@ -194,11 +194,8 @@ function WeekForm({
   )
 }
 
-/*
-  Giờ làm theo tuần của một kỹ thuật viên (giờ Việt Nam). Mặc định dùng giờ chung của hệ thống (08:00-12:00, 13:00-17:00
-  mọi ngày); "Giờ riêng" thay cả tuần, ngày không có khoảng nào là ngày nghỉ. Đổi giờ làm mà làm lịch đã có rơi ra ngoài giờ
-  thì backend từ chối và liệt kê lịch đó, không tự huỷ. Cần có hồ sơ nhận lịch trước (TECHNICIAN_PROFILE_REQUIRED).
-*/
+// Giờ làm theo tuần (giờ Việt Nam). Mặc định dùng giờ chung, "Giờ riêng" thay cả tuần
+// Cần có hồ sơ nhận lịch trước (TECHNICIAN_PROFILE_REQUIRED)
 export function WorkingScheduleEditor({ technicianUserId }: { technicianUserId: string }) {
   const query = useWorkingScheduleQuery(technicianUserId)
   const save = useSetWorkingScheduleMutation()
@@ -242,7 +239,7 @@ export function WorkingScheduleEditor({ technicianUserId }: { technicianUserId: 
       />
       {current === 'default' ? (
         <div className="space-y-4">
-          {/* Backend chỉ trả giờ chung khi người này đang dùng nó; đang dùng giờ riêng thì không biết giờ chung để vẽ. */}
+          {/* Đang dùng giờ riêng thì backend không trả giờ chung */}
           {schedule.usesDefault ? (
             <DefaultWeek schedule={schedule} />
           ) : (

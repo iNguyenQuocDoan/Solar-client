@@ -130,10 +130,8 @@ function History({ items }: { items: CustomerSurveyRequestDetailView['history'] 
   )
 }
 
-/*
-  Chi tiết một yêu cầu khảo sát của khách: đặt giờ khi chưa có lịch, đổi giờ / huỷ khi lịch còn chờ phân công, chỉ xem
-  khi kỹ thuật viên đã được phân công (khi đó muốn đổi phải qua kinh doanh). Không hiện kỹ thuật viên hệ thống đang giữ chỗ.
-*/
+// Chi tiết yêu cầu khảo sát của khách: đặt giờ, đổi giờ / huỷ khi còn chờ phân công
+// Đã phân công thì chỉ xem, muốn đổi phải qua kinh doanh
 export function CustomerRequestPage() {
   const { id } = useParams()
   const query = useMyRequestQuery(id)

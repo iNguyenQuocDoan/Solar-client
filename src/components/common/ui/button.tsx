@@ -4,26 +4,13 @@ import { Icon } from '@/components/common/stitch-ui/Icon'
 import { WithTooltip } from '@/components/common/ui/tooltip'
 import { cx } from '@/utils/cx'
 
-/*
-  Thứ bậc nút. Người dùng 12/10/2026: "những nút chức năng bắt buộc phải là phím ấn kèm theo border" và "các nút chức năng
-  lại không có màu làm khó thao tác", nên MỌI nút đều có viền (hoặc nền đặc) ngay khi nghỉ, không còn nút chỉ có chữ, và
-  màu nói nút làm gì:
-    primary       hành động chính của trang, nút đặc màu thương hiệu, mỗi màn một nút
-    soft          hành động chính / tích cực của từng dòng, khối (Sửa, Nhận yêu cầu, Phân công, Đổi giờ, Mở bán lại): nền
-                  xanh nhạt + viền xanh đậm đủ. Viền là thứ tách nó khỏi nhãn trạng thái "Đang bán" (nhãn không có viền).
-    secondary     thao tác trung tính, điều hướng (Tài khoản, Xem bản đồ, Hôm nay): nền trắng, viền xám
-    ghost         thao tác phụ (Huỷ trong hộp thoại, Lưu nháp, Xoá bộ lọc): viền xám, nền trong suốt, chữ xám đậm
-    warn          tạm dừng nhưng hoàn tác được (Ngừng bán, Tạm khoá): viền + chữ vàng, rê chuột nền vàng nhạt
-    danger        xoá, huỷ (Xoá, Bỏ, Huỷ lịch, Vô hiệu hoá): viền + chữ đỏ, rê chuột nền đỏ nhạt. Xoá dữ liệu đã lưu thì mở
-                  hộp thoại xác nhận; bỏ một dòng trong form chưa lưu (khoảng giờ làm, thông số, vật cản) thì bỏ ngay, vì
-                  bấm Huỷ / không lưu là lấy lại được
-    danger-solid  xác nhận thao tác không hoàn tác (Xoá): nút đặc đỏ, chỉ đặt trong hộp thoại xác nhận
-  Viền đo >= 3:1 với nền trang ở cả hai chế độ (xanh 3,3:1; vàng, đỏ 75% >= 3,3:1; xám 3,5:1), chữ >= 4,5:1 cả khi rê chuột.
-  Mọi nút bo cùng một bán kính (--radius-control, 6px).
-  Icon trên nút chỉ khi nó nói thêm điều chữ chưa nói hoặc giúp nhận ra nhanh: tạo (+), sửa, xoá, gọi, email, bản đồ,
-  lưu nháp, xoá bộ lọc, hiện mật khẩu, thử lại. Nút điều hướng bước (Tiếp tục, Quay lại), nút gửi form và nút hành động
-  chính của dòng không gắn icon.
-*/
+// Các kiểu nút, nút nào cũng có viền hoặc nền đặc:
+// primary: hành động chính của trang, mỗi màn một nút
+// soft: hành động chính của từng dòng (Sửa, Nhận yêu cầu, Phân công)
+// secondary: thao tác trung tính, điều hướng
+// ghost: thao tác phụ (Huỷ, Lưu nháp, Xoá bộ lọc)
+// warn: tạm dừng, hoàn tác được (Ngừng bán, Tạm khoá)
+// danger: xoá, huỷ. danger-solid: nút xác nhận trong hộp thoại xoá
 type Variant = 'primary' | 'soft' | 'secondary' | 'ghost' | 'warn' | 'danger' | 'danger-solid'
 type Size = 'sm' | 'md'
 
@@ -60,7 +47,7 @@ export function buttonClass(variant: Variant = 'secondary', size: Size = 'md', c
   return cx(base, variants[variant], sizes[size], className)
 }
 
-/* Icon trước nhãn: tên Material Symbols (chuỗi) hoặc node tự dựng. Icon theo màu chữ của nút. */
+// Icon trước nhãn: tên Material Symbols hoặc node
 function ButtonIcon({ icon }: { icon?: ReactNode | string }) {
   if (!icon) return null
   return typeof icon === 'string' ? <Icon name={icon} className="-ml-0.5 text-[20px]" /> : <>{icon}</>
@@ -70,7 +57,7 @@ type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   variant?: Variant
   size?: Size
   icon?: ReactNode | string
-  /** React 19: ref là prop thường, đi qua `...rest` xuống <button> (vd. trả focus về nút sau khi xoá một dòng). */
+  /** React 19: ref là prop thường, đi qua `...rest` xuống <button> */
   ref?: Ref<HTMLButtonElement>
 }
 
@@ -109,11 +96,7 @@ export function ButtonLink({
   )
 }
 
-/*
-  Nút chỉ có icon (thao tác lặp lại trên từng dòng, ví dụ Nhân bản, Xoá). Có viền như mọi nút. `label` là tên đọc cho
-  trình đọc màn hình và hiện thành tooltip (WithTooltip) khi rê chuột hoặc focus bằng bàn phím, nên icon không bao giờ
-  là tín hiệu duy nhất.
-*/
+// Nút chỉ có icon. `label` dùng cho trình đọc màn hình và hiện thành tooltip
 export function IconButton({
   icon,
   label,
@@ -126,7 +109,7 @@ export function IconButton({
 }: Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'children'> & {
   icon: string
   label: string
-  /** Chữ ngắn trên tooltip khi `label` dài vì kèm tên đối tượng cho trình đọc màn hình (vd. "Xoá" thay cho "Xoá Tấm pin ..."). */
+  /** Chữ ngắn trên tooltip khi `label` quá dài */
   tooltip?: string
   variant?: Variant
   size?: Size

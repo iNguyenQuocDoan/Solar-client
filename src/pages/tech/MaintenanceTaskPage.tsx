@@ -36,7 +36,7 @@ function MaintenanceTaskView({ task }: { task: Task }) {
   const toggleStep = (stepId: string, checked: boolean) =>
     setCheckedIds((current) => (checked ? [...current, stepId] : current.filter((value) => value !== stepId)))
 
-  /* Như code.html: bước đang đo cũng tính vào tiến độ nên mở màn là 4/6 = 66%. */
+  // Bước đang đo cũng tính vào tiến độ nên mở màn là 4/6
   const totalSteps = task.protocol.steps.length
   const doneSteps = task.protocol.steps.filter((step) => checkedIds.includes(step.id) || step.state === 'active').length
   const percent = totalSteps === 0 ? 0 : Math.round((doneSteps / totalSteps) * 100)

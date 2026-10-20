@@ -1,8 +1,5 @@
 export const ROUTES = {
-  /*
-    Một portal cho mỗi vai trò, cùng shell portal kit: customer, sales dùng ops, admin dùng ADMIN,
-    technician dùng TECH (field chuyển về TECH), manager dùng manage. / là landing công khai.
-  */
+  // Mỗi vai trò một portal. / là trang chủ công khai
   customer: {
     home: '/customer',
     assessment: '/customer/assessment',
@@ -18,7 +15,7 @@ export const ROUTES = {
     assistant: '/customer/assistant',
     products: '/customer/products',
     product: '/customer/products/:id',
-    /** Yêu cầu khảo sát đã gửi: đặt / đổi / huỷ giờ khảo sát (12/10/2026). */
+    /** Yêu cầu khảo sát đã gửi: đặt / đổi / huỷ giờ */
     requests: '/customer/requests',
     request: '/customer/requests/:id',
   },
@@ -27,7 +24,7 @@ export const ROUTES = {
     consultations: '/ops/consultations',
     customers: '/ops/customers',
     surveys: '/ops/surveys',
-    /** Tab "Của tôi" có đường dẫn riêng để mục menu đánh dấu đúng; đường tĩnh nên không đụng :id. */
+    /** Tab "Của tôi" có đường dẫn riêng để menu đánh dấu đúng */
     surveysMine: '/ops/surveys/mine',
     survey: '/ops/surveys/:id',
     products: '/ops/products',
@@ -66,7 +63,6 @@ export const ROUTES = {
     profile: '/manage/profile',
   },
 
-  /* Public landing, auth screens, and the portals built on src/components/common/stitch-ui (admin, technician). */
   HOME: '/',
   STYLEGUIDE: '/styleguide',
   /** Màn công khai & xác thực (landing_home, auth_portal) */
@@ -88,7 +84,6 @@ export const ROUTES = {
     TECHNICIAN: '/admin/technicians/:id',
     ROLES: '/admin/roles',
     PRODUCTS: '/admin/products',
-    /** Chi tiết một sản phẩm + Sửa / Ngừng bán / Xoá (12/10/2026: danh sách chỉ để chọn, bấm vào mới ra chi tiết). */
     PRODUCT: '/admin/products/:id',
     SERVICES: '/admin/services',
     CATEGORIES: '/admin/categories',
@@ -100,10 +95,9 @@ export const ROUTES = {
   },
   TECH: {
     DASHBOARD: '/tech',
-    /** Danh mục sản phẩm (GET /api/products): màn có dữ liệu thật duy nhất của kỹ thuật viên lúc này. */
     PRODUCTS: '/tech/products',
     PRODUCT: '/tech/products/:id',
-    /** Lịch khảo sát được kinh doanh phân công (12/10/2026): danh sách, chi tiết + xác nhận nhận việc. */
+    /** Lịch khảo sát được phân công */
     JOBS: '/tech/jobs',
     JOB: '/tech/jobs/:id',
     TASKS: '/tech/tasks',

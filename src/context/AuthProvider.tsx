@@ -8,17 +8,9 @@ import { clearTokens, getAccessToken, getRefreshToken, hasRefreshToken, saveToke
 import { emailFromToken, nameFromToken, roleFromToken, userIdFromToken } from '@/utils/jwt'
 import type { UserRole } from '@/config/roles'
 
-/*
- * Phiên đăng nhập thật (API .NET ở /api/auth/*).
- *
- * - accessToken nằm trong bộ nhớ, refreshToken trong storage (xem services/api/tokens.ts).
- * - Mở app: còn refreshToken thì gọi /auth/refresh để khôi phục phiên; trong lúc chờ
- *   status = 'loading' để RequireRole (routes/RequireRole.tsx) không đá người dùng về /login quá sớm.
- * - Không còn bộ đếm 30 phút giả lập: modal hết hạn mở khi client.ts bắn
- *   sự kiện "session-expired" (refresh thất bại).
- * - Đổi người dùng (đăng nhập, đăng xuất, hết phiên) thì xoá cache của React Query, để người sau không
- *   thấy dữ liệu của người trước (tên, số điện thoại khách...) trong lúc chờ tải lại.
- */
+// Phiên đăng nhập. accessToken trong bộ nhớ, refreshToken trong storage (services/api/tokens.ts)
+// Mở app mà còn refreshToken thì gọi /auth/refresh, trong lúc chờ status = 'loading'
+// Đổi người dùng thì xoá cache React Query để không lộ dữ liệu của người trước
 
 export type AuthUser = {
   name: string
@@ -47,10 +39,7 @@ export type AuthContextValue = {
 
 const AuthContext = createContext<AuthContextValue | null>(null)
 
-/**
- * Dựng AuthUser từ accessToken (+ /me nếu backend đã có).
- * Không đọc được vai trò thì coi như đăng nhập hỏng, tốt hơn là đoán bừa.
- */
+/** Dựng AuthUser từ accessToken. Không đọc được vai trò thì coi như đăng nhập lỗi */
 async function buildUser(accessToken: string, fallbackEmail?: string): Promise<AuthUser> {
   const profile = await fetchCurrentUser().catch(() => null)
 

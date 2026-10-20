@@ -30,7 +30,7 @@ export function LoginPage() {
   const { user, status, signIn, expireSession } = useAuth()
   const [formError, setFormError] = useState<string | null>(null)
   const [submitting, setSubmitting] = useState(false)
-  // Đang đăng nhập bằng form này: để chính doSignIn điều hướng (về trang `from`), đừng để chốt "đã đăng nhập" bên dưới chen vào.
+  // Đang đăng nhập bằng form này thì để doSignIn tự điều hướng
   const signingIn = useRef(false)
 
   const {
@@ -56,8 +56,7 @@ export function LoginPage() {
     try {
       const user = await signIn(email, password, remember)
       toast.success(loginContent.toastSuccess)
-      // Quay lại trang đang muốn vào nếu bị RequireRole chặn, nếu không thì theo vai trò.
-      // `from` có thể là trang của tài khoản vừa đăng xuất (vai trò khác), nên chỉ dùng khi thuộc portal của vai trò này.
+      // Quay lại trang đang muốn vào nếu thuộc portal của vai trò này, không thì về trang chủ của vai trò
       const home = homePathForRole(user.role)
       const from = (location.state as { from?: string } | null)?.from
       const inPortal =
@@ -73,7 +72,7 @@ export function LoginPage() {
 
   const onSubmit = handleSubmit((values) => doSignIn(values.email, values.password, values.remember))
 
-  // Đã đăng nhập sẵn (mở /login từ landing, hay gõ tay) thì vào thẳng trang làm việc thay vì hiện form.
+  // Đã đăng nhập thì vào thẳng trang làm việc
   if (status === 'ready' && user && !signingIn.current) return <Navigate to={homePathForRole(user.role)} replace />
 
   return (
@@ -89,10 +88,7 @@ export function LoginPage() {
           <div className="flex-1">
             <div className="text-label-lg font-bold">{loginContent.errorTitle}</div>
             <div className="text-body-sm">{formError}</div>
-            {/*
-              Backend chưa có bảng mã lỗi cố định nên không tự nhận ra được trường hợp
-              "email chưa xác thực"; để người dùng tự sang màn xác thực khi cần.
-            */}
+            {/* Backend chưa có mã lỗi riêng cho email chưa xác thực */}
             <Link
               to={`${ROUTES.VERIFY_EMAIL}${emailValue ? `?email=${encodeURIComponent(emailValue)}` : ''}`}
               className="mt-1 inline-block text-label-sm font-semibold underline"

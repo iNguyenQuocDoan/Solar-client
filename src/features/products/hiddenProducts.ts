@@ -1,18 +1,8 @@
 import { useSyncExternalStore } from 'react'
 
-/*
- * Sản phẩm admin đã chuyển sang Ngừng bán từ trình duyệt này.
- *
- * Backend ẩn sản phẩm INACTIVE khỏi GET /api/products và cả GET /api/products/{id}, kể cả với admin
- * (dò 08/10/2026: ngừng bán xong, danh sách và trang chi tiết đều không còn sản phẩm đó), nên giao diện
- * không tự tìm lại được để mở bán. PATCH .../status theo id vẫn chạy, vì vậy lưu id + tên ở đây để còn
- * "Mở bán lại". Chỉ có trên trình duyệt đã bấm ngừng bán; khi backend có cách liệt kê sản phẩm ngừng bán
- * thì bỏ file này.
- *
- * Từ 12/10/2026 ngừng bán nằm ở trang chi tiết, mục "Đã ngừng bán" ở trang danh sách: hai trang đọc chung một kho
- * (useSyncExternalStore), nên bấm "Hoàn tác" trên toast lúc đã về danh sách thì mục đó đổi theo ngay. Tab khác
- * của cùng trình duyệt nghe sự kiện storage.
- */
+// Sản phẩm đã ngừng bán từ trình duyệt này
+// Backend ẩn sản phẩm INACTIVE khỏi mọi API đọc, nên phải lưu id + tên ở đây để còn "Mở bán lại"
+// Bỏ file này khi backend có API liệt kê sản phẩm ngừng bán
 
 const KEY = 'smartsolar.hidden-products'
 
@@ -47,12 +37,7 @@ function writeHiddenProducts(list: HiddenProduct[]) {
   }
 }
 
-/*
-  `snapshot` chỉ là bản đọc cho useSyncExternalStore (cùng một mảng tới khi đổi). Nguồn thật là localStorage: mỗi lần ghi
-  đều đọc lại localStorage rồi mới sửa, nên trang không theo dõi kho (trang chi tiết) cũng không ghi đè bằng bản cũ những gì
-  tab khác vừa lưu, nếu không, sản phẩm tab kia vừa ngừng bán sẽ mất khỏi danh sách và không còn chỗ nào mở bán lại.
-  Một listener `storage` cho cả module (gắn khi có người theo dõi đầu tiên), đọc lại một lần rồi báo mọi người theo dõi.
-*/
+// Nguồn thật là localStorage: mỗi lần ghi đều đọc lại trước, để không ghi đè thay đổi của tab khác
 let snapshot = readHiddenProducts()
 const listeners = new Set<() => void>()
 
@@ -79,7 +64,7 @@ function subscribe(listener: () => void) {
   }
 }
 
-/* `change` trả lại đúng mảng nhận vào khi không có gì đổi: khi đó không ghi, chỉ cập nhật bản đọc nếu nó đã cũ. */
+// Không có gì đổi thì không ghi
 function update(change: (list: HiddenProduct[]) => HiddenProduct[]) {
   const current = readHiddenProducts()
   const next = change(current)
@@ -87,7 +72,7 @@ function update(change: (list: HiddenProduct[]) => HiddenProduct[]) {
   if (JSON.stringify(next) !== JSON.stringify(snapshot)) publish(next)
 }
 
-/** Ghi nhớ TRƯỚC khi gọi API ngừng bán: tải lại trang lúc đang chờ thì sản phẩm vẫn còn để mở bán lại. */
+/** Lưu trước khi gọi API để tải lại trang giữa chừng vẫn còn sản phẩm */
 export function rememberHidden(entry: HiddenProduct) {
   update((list) => [entry, ...list.filter((h) => h.id !== entry.id)])
 }

@@ -7,18 +7,11 @@ export type ActivityItem = {
   title: ReactNode
   body?: ReactNode
   by?: string
-  /**
-   * Mốc của một tiến trình: `done` đã xong, `current` bước đang tới, `todo` chưa tới / không diễn ra.
-   * Có `state` thì danh sách vẽ thành dòng thời gian có điểm mốc màu.
-   */
+  /** Trạng thái của mốc: done, current, todo. Có `state` thì vẽ thành dòng thời gian */
   state?: 'done' | 'current' | 'todo'
 }
 
-/*
-  Dòng thời gian tiến độ: điểm mốc tô theo trạng thái (đã xong = tròn đặc màu thương hiệu có dấu tích, bước đang tới =
-  vòng màu thương hiệu, chưa tới = vòng xám), nối bằng một đường dọc; đoạn đã đi qua cũng mang màu thương hiệu.
-  Việc cần chú ý (vd. chưa hẹn ngày) nói bằng Badge cảnh báo trong nội dung, không bằng màu điểm mốc.
-*/
+// Dòng thời gian: mốc đã xong tô màu chính, mốc đang tới viền màu chính, chưa tới viền xám
 function Timeline({ items, className }: { items: ActivityItem[]; className?: string }) {
   return (
     <ol className={className}>
@@ -156,11 +149,7 @@ export function Photo({
   )
 }
 
-/*
-  Thông báo trong trang: khối nền nhạt theo nghĩa, để phân biệt "đọc để biết" (neutral, info), "đã xong" (ok),
-  "lưu ý" (warn), "lỗi / không hoàn tác" (danger) với nội dung thường. Không có viền hay bóng.
-  Icon chỉ cho ok / warn / danger (nó nói trạng thái); khối chỉ để đọc thì không gắn icon, tránh icon ở mọi khối.
-*/
+// Thông báo trong trang, nền nhạt theo nghĩa. Chỉ ok / warn / danger mới có icon
 const noticeTones = {
   neutral: { box: 'bg-surface-2', icon: null, iconColor: '' },
   info: { box: 'bg-info-soft', icon: null, iconColor: '' },

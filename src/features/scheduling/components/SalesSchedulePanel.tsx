@@ -34,17 +34,11 @@ import { errorMessage, isApiError, type ApiError } from '@/services/api/errors'
 import type { AvailableTechnicianView, TechnicianAvailabilityView } from '@/types/res/technicianAvailabilityRes'
 import type { SurveyAppointmentSummary, SurveyRequestDetail } from '@/types/res/surveyRequestsRes'
 
-/*
-  Lịch khảo sát ở trang chi tiết yêu cầu của sales (luồng 1, 12/10/2026):
-  - Khách chưa đặt giờ: chỉ báo, sales không đặt thay được (backend không có API).
-  - Khách đã đặt (BOOKED): phân công chính thức, chọn trong danh sách kỹ thuật viên rảnh (người hệ thống đang giữ chỗ đứng
-    đầu, chọn sẵn). Yêu cầu thành "Đã hẹn khảo sát".
-  - Đã phân công / kỹ thuật viên đã nhận: đổi người (người mới phải xác nhận lại) hoặc đổi giờ (kiểm tra người rảnh ở giờ
-    mới trước khi đổi). Lỗi thì lịch cũ giữ nguyên trên server, màn hình tải lại để thấy đúng bản đang có.
-  Không cập nhật lạc quan: mọi thao tác chờ server rồi tải lại chi tiết + danh sách người rảnh.
-*/
+// Lịch khảo sát ở trang chi tiết yêu cầu của sales
+// Khách chưa đặt giờ: chỉ báo. Đã đặt: phân công từ danh sách kỹ thuật viên rảnh
+// Đã phân công: đổi người hoặc đổi giờ. Không cập nhật lạc quan, luôn chờ server
 
-/** Người nên chọn sẵn: người đang phụ trách / đang giữ chỗ nếu còn trong danh sách, không thì người đầu tiên. */
+/** Chọn sẵn người đang giữ chỗ nếu còn trong danh sách, không thì người đầu tiên */
 function defaultChoice(list: AvailableTechnicianView[], preferredId?: string | null) {
   return (
     list.find((t) => t.technicianUserId === preferredId) ?? list.find((t) => t.isCurrentReservation) ?? list[0] ?? null
@@ -453,7 +447,7 @@ function ScheduledPanel({
   onReschedule: () => void
 }) {
   const status = appointmentStatusMeta(appointment.status, 'sales')
-  // Lịch đã tới giờ thì backend không cho đổi; mốc lấy lúc mở trang (lỡ quá giờ trong lúc mở thì backend vẫn báo lỗi rõ).
+  // Lịch đã tới giờ thì backend không cho đổi
   const [now] = useState(() => Date.now())
   const upcoming = new Date(appointment.startsAt).getTime() > now
   return (
@@ -506,7 +500,7 @@ function ScheduledPanel({
 export function SalesSchedulePanel({ request }: { request: SurveyRequestDetail }) {
   const a = request.appointment
   const [dialog, setDialog] = useState<'reassign' | 'reschedule' | null>(null)
-  /* Tăng mỗi lần mở: key mới nên form (ngày, giờ, người chọn) bắt đầu lại từ lịch hiện tại, không giữ lần mở trước. */
+  // Đổi key mỗi lần mở để form bắt đầu lại từ lịch hiện tại
   const [session, setSession] = useState(0)
   const open = (which: 'reassign' | 'reschedule') => {
     setSession((n) => n + 1)

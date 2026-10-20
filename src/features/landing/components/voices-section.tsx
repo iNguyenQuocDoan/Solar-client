@@ -1,10 +1,7 @@
 import { stats, testimonials } from '@/data/landing'
 import { Section, SectionTitle } from './section'
 
-/*
-  Social proof: lời khách hàng và con số công ty. CHỈ render khi có dữ liệu thật trong
-  src/data/landing.ts (testimonials, stats), không có thì section không tồn tại.
-*/
+// Chỉ render khi có dữ liệu thật (testimonials, stats) trong src/data/landing.ts
 export function VoicesSection() {
   if (testimonials.length === 0 && stats.length === 0) return null
   return (

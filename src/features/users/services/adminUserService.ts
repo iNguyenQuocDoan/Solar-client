@@ -13,16 +13,13 @@ import type {
 } from '@/types/res/adminUsersRes'
 import { apiGet, apiPost, apiRequest } from '@/services/api/client'
 
-/*
- * Quản lý tài khoản (role ADMIN, tag AdminUsers). Không có ô mật khẩu: tài khoản mới nhận link đặt mật khẩu qua email
- * (dùng trang /reset-password); link không bao giờ trả về giao diện. Đổi trạng thái / vai trò / xoá làm mọi phiên đang
- * mở của tài khoản đó hết hiệu lực ngay (claim "av" trong JWT).
- */
+// Quản lý tài khoản (ADMIN). Tài khoản mới nhận link đặt mật khẩu qua email
+// Đổi trạng thái / vai trò / xoá thì mọi phiên của tài khoản đó hết hiệu lực
 
 const base = '/admin/users'
 const path = (id: string) => `${base}/${encodeURIComponent(id)}`
 
-/** Giá trị hợp lệ lấy từ AdminUserHandlers.ListAsync: pageSize 1-100; sort name | createdAt | status. */
+/** pageSize 1-100, sort: name | createdAt | status */
 export type AdminUserListParams = {
   page?: number
   pageSize?: number
@@ -75,7 +72,7 @@ export function deleteUser(id: string, reason: string | null) {
   return apiRequest<void>({ method: 'DELETE', url: path(id), params: reason ? { reason } : undefined })
 }
 
-/** POST .../send-password-reset (202), gửi link đặt mật khẩu / xác minh / đặt lại tuỳ trạng thái tài khoản. */
+/** Gửi link mật khẩu / xác minh tuỳ trạng thái tài khoản */
 export function sendPasswordReset(id: string) {
   return apiPost<RecoveryIssued>(`${path(id)}/send-password-reset`)
 }

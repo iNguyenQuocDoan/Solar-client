@@ -1,9 +1,6 @@
 import { cn } from '@/utils/cn'
 
-/*
- * Widget "South Roof Array Grid" của installation_task: ma trận 6 cột thể hiện
- * từng tấm pin theo trạng thái lắp đặt, kèm chú giải màu bên dưới.
- */
+// Ma trận tấm pin theo trạng thái lắp đặt, có chú giải màu
 export type PanelState = 'mounted' | 'active' | 'queued'
 
 export type PanelCell = {

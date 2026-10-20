@@ -3,22 +3,13 @@ import { Card } from '@/components/common/stitch-ui/Card'
 import { Icon } from '@/components/common/stitch-ui/Icon'
 import { cn } from '@/utils/cn'
 
-/*
- * Card có hàng đầu "icon vuông + tiêu đề + phụ đề + slot phải".
- * Lặp lại ở site_survey_task (Homeowner Submission / Technician Verified Audit),
- * site_survey_verification và survey_image_documentation.
- * installation_task / maintenance_task / warranty_request dùng biến thể `plain`:
- * icon primary 24px không có ô nền, tiêu đề in đậm.
- */
+// Card có hàng đầu gồm icon, tiêu đề, phụ đề và slot bên phải. Biến thể `plain` không có ô nền cho icon
 export type SectionCardProps = {
   /** Bỏ trống khi dùng `step` */
   icon?: string
   /** Số thứ tự bước thay cho icon: ô 32px nền primary-container (site_survey_verification) */
   step?: number
-  /**
-   * neutral = nền surface-container-highest; primary = nền primary-container (khối của kỹ thuật viên);
-   * plain = icon trần màu primary 24px (các màn installation / maintenance / warranty)
-   */
+  /** neutral: nền xám, primary: nền màu chính, plain: chỉ có icon */
   iconTone?: 'neutral' | 'primary' | 'plain'
   title: string
   subtitle?: string

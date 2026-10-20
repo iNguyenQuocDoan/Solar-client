@@ -40,7 +40,7 @@ function activeWorkOf(error: unknown): AccountActiveWork | null {
   }
 }
 
-/* Không tự chuyển việc: chỉ liệt kê để quản trị nhờ kinh doanh đổi người / chuyển yêu cầu trước. */
+// Chỉ liệt kê, không tự chuyển việc
 function ActiveWork({ work }: { work: AccountActiveWork }) {
   return (
     <Notice tone="danger" title="Tài khoản còn việc đang dở">
@@ -66,8 +66,6 @@ function ActiveWork({ work }: { work: AccountActiveWork }) {
     </Notice>
   )
 }
-
-/* ------------------------------------------------------------------ vai trò */
 
 export function RolesPanel({ user, readOnly }: { user: AdminUserDetail; readOnly: boolean }) {
   const [roles, setRoles] = useState<string[]>(() => [...user.roles])
@@ -126,9 +124,7 @@ export function RolesPanel({ user, readOnly }: { user: AdminUserDetail; readOnly
   )
 }
 
-/* ---------------------------------------------------------------- trạng thái */
-
-/** `tone`: màu nút theo việc nó làm, Tạm khoá (hoàn tác được) vàng, Vô hiệu hoá đỏ, Mở khoá / Kích hoạt lại xanh. */
+/** Màu nút theo việc: Tạm khoá vàng, Vô hiệu hoá đỏ, Mở khoá xanh */
 type StatusAction = {
   status: 'ACTIVE' | 'SUSPENDED' | 'DISABLED'
   label: string
@@ -174,7 +170,7 @@ function actionsFor(user: AdminUserDetail): StatusAction[] {
   }
 }
 
-/* Nội dung hộp thoại đổi trạng thái; ModalDialog chỉ dựng nó khi mở nên lý do / lỗi bắt đầu lại mỗi lần. */
+// Dialog chỉ dựng nội dung khi mở nên mỗi lần mở là form mới
 function StatusForm({
   user,
   action,
@@ -279,12 +275,7 @@ export function StatusPanel({ user, isSelf }: { user: AdminUserDetail; isSelf: b
   )
 }
 
-/* ---------------------------------------------------------- link mật khẩu */
-
-/*
-  Một nút cho mọi trường hợp; backend chọn loại link theo trạng thái: chưa đặt mật khẩu thì link đặt mật khẩu lần đầu, chưa
-  xác minh email thì link xác minh, còn lại là link đặt lại mật khẩu. Link chỉ gửi qua email, không hiện ở đây.
-*/
+// Backend tự chọn loại link theo trạng thái tài khoản (đặt mật khẩu, xác minh, đặt lại)
 export function RecoveryPanel({ user }: { user: AdminUserDetail }) {
   const send = useSendPasswordResetMutation()
   const [result, setResult] = useState<{ ok: boolean; text: string } | null>(null)
@@ -326,8 +317,6 @@ export function RecoveryPanel({ user }: { user: AdminUserDetail }) {
     </Panel>
   )
 }
-
-/* -------------------------------------------------------------------- xoá */
 
 export function DeleteAccountDialog({
   user,

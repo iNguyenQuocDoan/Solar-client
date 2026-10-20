@@ -32,10 +32,7 @@ import type { SurveyRequestDetail } from '@/types/res/surveyRequestsRes'
 
 const num = new Intl.NumberFormat('vi-VN', { maximumFractionDigits: 1 })
 
-/*
-  Một nhãn đỏ ở đầu trang cho việc sales phải làm (quy tắc màu: mỗi sự việc báo đỏ một lần trên một màn): khách đã đặt
-  giờ mà chưa phân công kỹ thuật viên. Khách chưa đặt giờ chỉ là nhãn xám (việc của khách, sales chỉ nhắc).
-*/
+// Nhãn đỏ khi khách đã đặt giờ mà chưa phân công kỹ thuật viên
 function scheduleBadge(r: SurveyRequestDetail): { label: string; tone: Tone } | null {
   const a = r.appointment
   if (!a) return needsScheduling(r.status) ? { label: 'Khách chưa đặt giờ khảo sát', tone: 'neutral' } : null
@@ -84,10 +81,7 @@ function mapUrl(r: SurveyRequestDetail) {
   return address === '—' ? null : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`
 }
 
-/*
-  Mô phỏng khách đã chọn khi gửi (selectedSimulation) + các lần chạy khác của bản đánh giá, chỉ đọc: sales được xem
-  nhưng không tạo mô phỏng (backend trả 403). Yêu cầu gửi khi chưa chạy mô phỏng thì nói rõ, không dựng mô phỏng giả định.
-*/
+// Mô phỏng khách đã chọn + các lần chạy khác, sales chỉ được xem
 function SimulationPanel({ request }: { request: SurveyRequestDetail }) {
   const selected = request.selectedSimulation
   const list = useSimulationsQuery(request.preSurveyId)
@@ -109,7 +103,7 @@ function SimulationPanel({ request }: { request: SurveyRequestDetail }) {
         />
         <PanelBody className="space-y-4">
           {selected && viewing !== selected.simulationId && (
-            // Đang xem một lần chạy khác: tiêu đề và câu tóm tắt ở trên vẫn nói về lần khách chọn, nên phải nói rõ ngay đây.
+            // Báo rõ đang xem lần chạy khác với lần khách chọn
             <Notice tone="info" title="Đang xem một lần chạy khác của khách">
               Đây không phải mô phỏng khách chọn khi gửi.
               <span className="mt-3 flex">
@@ -152,12 +146,8 @@ function SimulationPanel({ request }: { request: SurveyRequestDetail }) {
   )
 }
 
-/*
-  Chi tiết một yêu cầu khảo sát; backend chỉ trả cho sales đã nhận yêu cầu đó.
-  Từ 12/10/2026 khách tự đặt giờ; việc chính của sales ở màn này là phân công kỹ thuật viên cho giờ khách đặt (và đổi người
-  / đổi giờ khi cần), nên khối lịch khảo sát đứng đầu cột chính. Gọi / Email / Bản đồ vẫn nằm dưới tiêu đề; số liệu khách
-  khai đi sau để đối chiếu.
-*/
+// Chi tiết yêu cầu khảo sát, chỉ trả cho sales đã nhận yêu cầu
+// Việc chính là phân công kỹ thuật viên nên khối lịch khảo sát đứng đầu
 export function OpsSurveyRequestPage() {
   const { id } = useParams()
   const query = useSurveyRequestQuery(id)
@@ -215,7 +205,7 @@ export function OpsSurveyRequestPage() {
                     description="Đối chiếu khi gọi khách và đo lại khi khảo sát."
                   />
                   <PanelBody className="space-y-6">
-                    {/* lg: thay vì md:, StatRow có sẵn md:grid-cols-4 và cx không gộp class, nên chỉ media query muộn hơn mới đè được. */}
+                    {/* Dùng lg: vì cx không gộp class, chỉ breakpoint lớn hơn mới đè được md:grid-cols-4 */}
                     <StatRow className="lg:grid-cols-3">
                       <Stat
                         label="Diện tích dùng được"
@@ -269,10 +259,7 @@ export function OpsSurveyRequestPage() {
                 <SimulationPanel request={r} />
               </div>
 
-              {/*
-                Dính theo khi cuộn (lg): phần mô phỏng ở cột trái dài hơn cột phụ nhiều, không dính thì cạnh mặt bằng / 3D là
-                một khoảng trống và hình trông lệch trái (người dùng 10/10/2026). Cao hơn khung nhìn thì cuộn trong khung.
-              */}
+              {/* Cột phụ dính khi cuộn vì cột trái dài hơn nhiều */}
               <PanelAside
                 aria-label="Khách hàng và tiến độ"
                 className="lg:sticky lg:top-16 lg:max-h-[calc(100dvh-5rem)] lg:overflow-y-auto lg:scrollbar-thin"

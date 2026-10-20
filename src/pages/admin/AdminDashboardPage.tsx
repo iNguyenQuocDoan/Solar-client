@@ -172,7 +172,6 @@ export function AdminDashboardPage() {
       </section>
 
       <div className="grid grid-cols-1 gap-space-xl lg:grid-cols-12">
-        {/* Cột trái: audit trail + launchpads */}
         <div className="flex flex-col gap-space-xl lg:col-span-8">
           <Card className="flex flex-col">
             <div className="mb-space-lg flex flex-col justify-between gap-space-sm sm:flex-row sm:items-center">

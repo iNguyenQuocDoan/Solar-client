@@ -1,18 +1,7 @@
 import type { ApiErrorBody } from '@/types/res/apiRes'
 
-/*
- * Lỗi API.
- *
- * Wrapper *ApiResponse trong swagger có dạng { isSuccess, traceId, data, error },
- * `error` là ApiError { code, message, details }. Swagger KHÔNG khai kiểu của
- * `details` (chỉ "nullable": true) nên parser dưới đây nhận mọi dạng thường gặp
- * và bỏ qua dạng lạ.
- *
- * Thứ tự chọn câu hiển thị:
- *   1. bản dịch theo `code` trong ERROR_MESSAGES (mã đã quan sát được từ backend thật);
- *   2. `message` của server (hiện đang là tiếng Anh) cho mã lạ;
- *   3. câu tiếng Việt theo HTTP status khi không có message.
- */
+// Lỗi API. `details` không có kiểu trong swagger nên parser nhận nhiều dạng
+// Câu hiển thị: bản dịch theo `code`, nếu không có thì message của server, cuối cùng là câu theo HTTP status
 
 /** Lỗi theo từng field, đã chuẩn hoá về { tenField: "thông báo đầu tiên" }. */
 export type FieldErrors = Record<string, string>
@@ -25,7 +14,7 @@ export class ApiError extends Error {
   readonly details: unknown
   /** Số giây phải chờ theo header Retry-After (429); null khi server không gửi. */
   readonly retryAfter: number | null
-  /** Câu gốc (tiếng Anh) của server; có khi kèm mã lý do trong ngoặc, vd. "(DAILY_LIMIT_REACHED)". */
+  /** Câu gốc tiếng Anh của server, có khi kèm mã lý do trong ngoặc */
   readonly serverMessage: string | null
 
   constructor(init: {
@@ -54,11 +43,7 @@ export class ApiError extends Error {
   }
 }
 
-/*
- * Mã lỗi quan sát trực tiếp từ backend (POST /api/auth/* ngày 21/09/2026).
- * Server trả message tiếng Anh nên cần bản dịch; mã chưa có ở đây sẽ rơi về
- * message của server.
- */
+// Bản dịch theo mã lỗi. Mã chưa có ở đây thì dùng message của server
 const ERROR_MESSAGES: Record<string, string> = {
   AUTH_INVALID_CREDENTIALS: 'Email hoặc mật khẩu không chính xác, hoặc tài khoản chưa thể đăng nhập.',
   AUTH_EMAIL_ALREADY_EXISTS: 'Email này đã được đăng ký. Hãy đăng nhập hoặc dùng email khác.',
@@ -68,11 +53,11 @@ const ERROR_MESSAGES: Record<string, string> = {
   AUTH_REFRESH_TOKEN_INVALID: 'Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.',
   AUTH_UNAUTHORIZED: 'Bạn cần đăng nhập để thực hiện thao tác này.',
   AUTH_TOO_MANY_REQUESTS: 'Bạn thao tác quá nhanh. Vui lòng chờ ít phút rồi thử lại.',
-  // POST /api/auth/change-password sai mật khẩu hiện tại (quan sát 06/10/2026)
+  // Đổi mật khẩu
   AUTH_CURRENT_PASSWORD_INVALID: 'Mật khẩu hiện tại không đúng.',
-  // /api/products và /api/admin/products (quan sát ngày 29/09/2026)
+  // Sản phẩm
   CATALOG_PRODUCT_NOT_FOUND: 'Không tìm thấy sản phẩm. Có thể sản phẩm đã bị xoá.',
-  // /api/customers, /api/pre-surveys, /api/survey-requests (PreSurveyErrorCodes trong image 05/10/2026)
+  // Khách hàng, đánh giá sơ bộ, yêu cầu khảo sát
   PRESURVEY_UNAUTHORIZED: 'Bạn cần đăng nhập để thực hiện thao tác này.',
   PRESURVEY_VALIDATION_FAILED: 'Dữ liệu chưa hợp lệ. Vui lòng kiểm tra lại các ô được đánh dấu.',
   CUSTOMER_ALREADY_EXISTS: 'Tài khoản này đã có hồ sơ khách hàng.',
@@ -87,7 +72,7 @@ const ERROR_MESSAGES: Record<string, string> = {
   SURVEY_REQUEST_UNAVAILABLE: 'Yêu cầu này đã có người nhận hoặc không còn chờ xử lý.',
   SURVEY_REQUEST_NOT_FOUND: 'Không tìm thấy yêu cầu khảo sát.',
   SURVEY_REQUEST_NOT_ASSIGNED: 'Yêu cầu này không do bạn phụ trách nên không xem được chi tiết.',
-  // Mặt lắp + mô phỏng (PreSurveyErrorCodes, SimulationErrorCodes trong image 09/10/2026, dò ngày 09/10/2026)
+  // Mặt lắp và mô phỏng
   PRE_SURVEY_CONCURRENTLY_MODIFIED:
     'Bản đánh giá vừa được sửa ở nơi khác (tab hoặc máy khác). Tải lại bản mới nhất rồi lưu lại.',
   SIMULATION_VALIDATION_FAILED: 'Cấu hình mô phỏng chưa hợp lệ. Kiểm tra lại các ô được đánh dấu.',
@@ -106,7 +91,7 @@ const ERROR_MESSAGES: Record<string, string> = {
   SIMULATION_SOURCE_CHANGED: 'Mặt lắp vừa thay đổi sau lần tải trước. Đã tải lại mặt lắp, hãy chạy mô phỏng lại.',
   SIMULATION_NOT_FOUND: 'Không tìm thấy lần mô phỏng này.',
   SIMULATION_ACCESS_DENIED: 'Bạn không có quyền xem mô phỏng của bản đánh giá này.',
-  // Lịch khảo sát: SchedulingErrorCodes (backend main 4d12e4d, 12/10/2026)
+  // Lịch khảo sát
   SCHEDULING_VALIDATION_FAILED: 'Dữ liệu chưa hợp lệ. Vui lòng kiểm tra lại các ô được đánh dấu.',
   SURVEY_SLOT_UNAVAILABLE: 'Giờ vừa chọn không còn trống. Danh sách giờ đã được tải lại, hãy chọn giờ khác.',
   SURVEY_BOOKING_ALREADY_EXISTS: 'Yêu cầu này đã có lịch hẹn. Tải lại trang để xem lịch hiện tại.',
@@ -128,7 +113,7 @@ const ERROR_MESSAGES: Record<string, string> = {
   TECHNICIAN_HAS_CONFLICTING_APPOINTMENTS:
     'Thay đổi này làm hỏng lịch hẹn đã có. Đổi giờ hoặc chuyển các lịch bên dưới cho người khác trước.',
   TECHNICIAN_PROFILE_REQUIRED: 'Lưu hồ sơ lịch của kỹ thuật viên (nơi xuất phát) trước.',
-  // Quản lý tài khoản: AdminUserErrorCodes (backend main 4d12e4d, 12/10/2026)
+  // Quản lý tài khoản
   ADMIN_USER_NOT_FOUND: 'Không tìm thấy tài khoản.',
   ADMIN_INVALID_ROLE: 'Vai trò không hợp lệ.',
   ADMIN_INVALID_STATUS_TRANSITION:
@@ -139,7 +124,7 @@ const ERROR_MESSAGES: Record<string, string> = {
     'Tài khoản còn lịch khảo sát sắp tới hoặc yêu cầu khảo sát đang xử lý. Chuyển các việc này cho người khác trước.',
   ADMIN_USER_DELETED: 'Tài khoản đã bị xoá nên không sửa được.',
   ADMIN_RECOVERY_NOT_ALLOWED: 'Tài khoản đang tạm khoá hoặc bị vô hiệu: kích hoạt lại trước khi gửi link.',
-  // Mã chung của backend (dò GET bằng từng vai trò ngày 08/10/2026)
+  // Mã chung
   AUTH_FORBIDDEN: 'Tài khoản của bạn không có quyền xem nội dung này.',
   RESOURCE_NOT_FOUND: 'Không tìm thấy dữ liệu yêu cầu. Kiểm tra lại đường dẫn.',
   REQUEST_NOT_ACCEPTABLE: 'Máy chủ không hỗ trợ thao tác này.',
@@ -189,13 +174,9 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value)
 }
 
-/*
- * Chuẩn hoá `details` về { field: message }. Nhận 3 dạng hay gặp:
- *   1. { email: ["..."], password: ["..."] }        (ModelState / ProblemDetails của .NET)
- *   2. [{ field: "email", message: "..." }, ...]    (mảng lỗi)
- *   3. { errors: { email: [...] } }                 (ProblemDetails bọc thêm 1 lớp)
- * Dạng khác (chuỗi mô tả, null...) trả về {} và để message chung hiển thị ở alert.
- */
+// Chuẩn hoá `details` về { field: message }. Nhận 3 dạng:
+// { email: ["..."] }, [{ field, message }], { errors: { ... } }
+// Dạng khác trả về {}
 export function parseFieldErrors(details: unknown): FieldErrors {
   if (!details) return {}
 
@@ -229,7 +210,7 @@ export function parseFieldErrors(details: unknown): FieldErrors {
   return {}
 }
 
-/** Header Retry-After dạng số giây (backend gửi "60"); dạng ngày giờ HTTP cũng đổi về số giây còn lại. */
+/** Retry-After dạng số giây hoặc ngày giờ HTTP */
 export function parseRetryAfter(value: unknown): number | null {
   if (typeof value !== 'string' || !value.trim()) return null
   const seconds = Number(value)
@@ -271,7 +252,6 @@ export function isApiError(error: unknown): error is ApiError {
   return error instanceof ApiError
 }
 
-/** Lấy câu hiển thị cho người dùng từ bất kỳ lỗi nào. */
 export function errorMessage(error: unknown, fallback = 'Đã xảy ra lỗi. Vui lòng thử lại.') {
   if (isApiError(error)) return error.message
   if (error instanceof Error && error.message) return error.message

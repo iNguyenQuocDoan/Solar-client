@@ -66,7 +66,7 @@ const FIELDS: (keyof Form)[] = [
   'earliestBaseDeparture',
 ]
 
-/* Lỗi theo field của backend: tên PascalCase (BaseLatitude) hoặc camelCase (earliestBaseDeparture). */
+// Field lỗi của backend có thể là PascalCase hoặc camelCase
 function serverErrors(error: unknown): Errors {
   if (!isApiError(error)) return {}
   const out: Errors = {}
@@ -77,11 +77,7 @@ function serverErrors(error: unknown): Errors {
   return out
 }
 
-/*
-  Hồ sơ nhận lịch của kỹ thuật viên: nơi xuất phát (điểm bắt đầu mọi chặng đường đầu ngày, phải là nơi xuất phát thật,
-  không lấy toạ độ của khách), bật / tắt nhận lịch, số lịch tối đa / ngày, giờ rời nơi xuất phát sớm nhất. Phương tiện V1 cố
-  định là xe máy nên không có ô chọn. Tắt nhận lịch khi còn lịch sắp tới bị từ chối và liệt kê các lịch đó.
-*/
+// Hồ sơ nhận lịch của kỹ thuật viên: nơi xuất phát, bật / tắt nhận lịch, số lịch tối đa / ngày, giờ xuất phát sớm nhất
 export function TechnicianProfileForm({ technician }: { technician: TechnicianProfileView }) {
   const [form, setForm] = useState<Form>(() => toForm(technician))
   const [errors, setErrors] = useState<Errors>({})

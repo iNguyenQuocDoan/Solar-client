@@ -21,13 +21,8 @@ import { ROUTES } from '@/routes/paths'
 import type { ProductResponse } from '@/types/res/adminProductsRes'
 import { formatMoney } from '@/utils/format'
 
-/*
-  Chi tiết một sản phẩm trong mọi portal (khách hàng, kinh doanh, kỹ thuật viên, quản lý, và quản trị với các nút Sửa /
-  Ngừng bán / Xoá), đọc GET /api/products/{id}. Đường quay lại danh mục nằm ở thanh định vị của shell, nên trang không có
-  link "quay lại" riêng.
-  `action` là nút ở đầu trang, có thể dựng theo sản phẩm vừa tải; `notice` là thông báo ngay dưới đầu trang; `admin` hiện
-  thêm trạng thái và mã loại (bộ lọc, form và backend dùng đúng mã này).
-*/
+// Chi tiết sản phẩm, dùng chung cho mọi portal
+// `admin` thì hiện thêm trạng thái, mã loại và các nút quản trị
 export function CatalogProductPage({
   action,
   notice,

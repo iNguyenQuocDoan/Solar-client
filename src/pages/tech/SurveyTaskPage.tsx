@@ -88,10 +88,7 @@ function SurveyTaskView({ survey }: { survey: SurveyRecord }) {
         location={survey.location}
       />
 
-      {/*
-       * Thiết kế chia 5/7 từ xl trở lên, cột trái là aside dữ liệu chủ nhà.
-       * Dưới xl (gồm cả dưới lg) xếp một cột và `order` đẩy aside xuống dưới nội dung chính.
-       */}
+      {/* Từ xl chia 5/7, dưới xl xếp một cột và `order` đẩy aside xuống dưới */}
       <div className="grid grid-cols-1 items-start gap-space-lg xl:grid-cols-12">
         <aside className="order-2 flex flex-col gap-space-lg xl:order-1 xl:col-span-5">
           <SurveyHomeownerAside data={survey.homeowner} />

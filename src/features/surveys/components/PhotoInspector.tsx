@@ -5,10 +5,7 @@ import { StatusBadge } from '@/components/common/stitch-ui/StatusBadge'
 import { cn } from '@/utils/cn'
 import type { SurveyPhotoAsset, SurveyPhotoDoc } from '@/data/surveyPhotos'
 
-/*
- * Aside phải của survey_image_documentation: xem lại ảnh đang chọn, lớp chú thích, EXIF và ghi chú.
- * Lớp SVG annotation vẽ lại từ code.html, màu đổi sang token secondary-container / on-surface.
- */
+// Xem ảnh đang chọn, chú thích, EXIF và ghi chú
 export type PhotoInspectorProps = {
   config: SurveyPhotoDoc['inspector']
   tip: SurveyPhotoDoc['tip']

@@ -6,10 +6,7 @@ import { StatusBadge } from '@/components/common/stitch-ui/StatusBadge'
 import { cn } from '@/utils/cn'
 import type { SurveyPhoto, SurveyVerification } from '@/data/surveys'
 
-/*
- * Cột trái của site_survey_verification: dữ liệu chủ nhà tự khai (chỉ đọc) + checklist an toàn.
- * Card ngoài dùng nền surface-container-low, các ô bên trong nền surface-container-lowest như thiết kế.
- */
+// Cột trái màn xác minh: dữ liệu chủ nhà tự khai + checklist an toàn
 export type SurveyBaselineAsideProps = {
   data: SurveyVerification['baseline']
   safety: SurveyVerification['safety']

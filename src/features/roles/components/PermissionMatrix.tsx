@@ -4,11 +4,7 @@ import { Icon } from '@/components/common/stitch-ui/Icon'
 import { cn } from '@/utils/cn'
 import type { PermissionModule } from '@/data/roles'
 
-/*
- * "Functional Capability Matrix" trong roles_permissions: 5 module, mỗi quyền là một ô có Checkbox (shadcn/Radix).
- * State do trang quản lý (granted + onToggle); component chỉ giữ trạng thái thu gọn module.
- * Màn nhỏ: lưới quyền giữ nguyên số cột và cuộn ngang trong container thay vì vỡ layout.
- */
+// Ma trận quyền theo module, mỗi quyền một Checkbox. State nằm ở trang cha
 export type PermissionMatrixLabels = {
   title: string
   collapse: string

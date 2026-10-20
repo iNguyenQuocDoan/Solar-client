@@ -7,19 +7,14 @@ import { isApiError } from '@/services/api/errors'
 /* 4xx (không có quyền, không tìm thấy...) gọi lại vẫn vậy: không bày nút "Thử lại" vô ích. */
 const retryable = (error: unknown) => !(isApiError(error) && error.status >= 400 && error.status < 500)
 
-/* Tiêu đề nói đúng chuyện gì xảy ra; đường quay lại danh sách nằm ở thanh định vị của shell. */
 function errorTitle(error: unknown) {
   if (isApiError(error) && error.status === 404) return 'Không tìm thấy nội dung này.'
   if (isApiError(error) && error.status === 403) return 'Bạn không có quyền xem nội dung này.'
   return undefined
 }
 
-/*
-  Loading shows a skeleton; if nothing has loaded yet and the request failed, shows the error state.
-  If data is already on screen and a background refresh fails (polling, window focus), the data stays
-  and a quiet notice sits above it: replacing a working list with an error page would hide what the
-  person was reading.
-*/
+// Đang tải thì hiện skeleton, chưa có dữ liệu mà lỗi thì hiện lỗi
+// Đã có dữ liệu mà làm mới nền bị lỗi thì giữ dữ liệu và hiện thông báo nhỏ
 export function QueryBoundary<T>({ query, children }: { query: UseQueryResult<T>; children: (data: T) => ReactNode }) {
   if (query.isPending) return <PageSkeleton />
   if (query.data === undefined)

@@ -5,15 +5,8 @@ import { useChangeProductStatusMutation } from '@/features/products/hooks/usePro
 import { errorMessage, isApiError } from '@/services/api/errors'
 import type { ProductResponse } from '@/types/res/adminProductsRes'
 
-/*
-  Ngừng bán / mở bán lại của admin, dùng chung cho trang chi tiết, từng dòng danh sách và mục "Đã ngừng bán". Backend ẩn
-  sản phẩm ngừng bán khỏi mọi API đọc, nên ghi nhớ sản phẩm (hiddenProducts.ts) trước khi gọi API; toast ngừng bán có
-  "Hoàn tác". Trả true / false để trang biết đóng hộp thoại và chuyển trang hay giữ nguyên.
-
-  Việc đang chờ nằm trong một kho chung của module, không theo từng trang: "Hoàn tác" bấm sau khi trang chi tiết đã đóng
-  (ngừng bán xong là về danh sách) vẫn làm nút "Mở bán lại" ở danh sách khoá lại và ghi đúng việc đang làm; bấm lần nữa khi
-  sản phẩm đang chờ thì bỏ qua, không gửi trùng.
-*/
+// Ngừng bán / mở bán lại, dùng chung cho trang chi tiết và danh sách
+// Lưu sản phẩm (hiddenProducts.ts) trước khi gọi API. Việc đang chờ lưu ở module để không gửi trùng
 export type PendingStatus = 'hide' | 'reopen'
 
 let pending: ReadonlyMap<string, PendingStatus> = new Map()
@@ -69,7 +62,7 @@ export function useProductStatusActions() {
       toast.success(`Đã ngừng bán ${entry.name}`, { action: { label: 'Hoàn tác', onClick: () => void reopen(entry) } })
       return true
     } catch (error) {
-      // 4xx: chắc chắn chưa đổi trạng thái thì bỏ ghi nhớ; lỗi mạng/5xx thì có thể đã đổi, giữ lại để còn mở bán lại.
+      // 4xx thì chắc chắn chưa đổi nên bỏ lưu, lỗi mạng / 5xx thì có thể đã đổi nên giữ lại
       if (isApiError(error) && error.status >= 400 && error.status < 500) forgetHidden(entry.id)
       toast.error(errorMessage(error))
       return false

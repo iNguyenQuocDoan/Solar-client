@@ -2,7 +2,7 @@ import { Icon } from '@/components/common/stitch-ui/Icon'
 import { cn } from '@/utils/cn'
 import type { RoleScopeTone, RoleSummary } from '@/data/roles'
 
-/* Thẻ role trong cột "System Roles" của roles_permissions; thẻ đang chọn có vạch primary bên trái. */
+// Thẻ đang chọn có vạch màu bên trái
 const scopeToneClasses: Record<RoleScopeTone, string> = {
   protected: 'font-semibold text-tertiary-container',
   custom: 'text-on-surface-variant',

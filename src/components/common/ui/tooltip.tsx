@@ -8,14 +8,8 @@ export type TooltipHandlers = Partial<
   >
 >
 
-/*
-  Tooltip cho nút chỉ có icon (rail thu gọn, nút xoá cuối dòng...), thay cho `title` của trình duyệt: `title` hiện chậm,
-  không hiện khi dùng bàn phím. Hiện khi rê chuột hoặc focus bằng bàn phím; vẽ thẳng vào body (portal) nên khung cuộn
-  (rail, bảng) không cắt mất. Ẩn khi rời chuột / mất focus / bấm / Esc; rê chuột sang chính tooltip vẫn giữ nó
-  (WCAG 1.4.13): ẩn trễ 120ms và huỷ nếu con trỏ đã sang tooltip.
-  Tên đọc của nút vẫn là aria-label; tooltip chỉ để người nhìn biết icon là gì.
-  Dùng dạng render-prop: `<WithTooltip label="...">{(tip) => <button {...tip} />}</WithTooltip>`. `label` null: không tooltip.
-*/
+// Tooltip cho nút chỉ có icon, thay cho `title`: hiện cả khi focus bàn phím và vẽ vào body nên không bị khung cuộn cắt
+// Rê chuột sang tooltip vẫn giữ nó (ẩn trễ 120ms)
 export function WithTooltip({
   label,
   side = 'top',
@@ -81,7 +75,7 @@ export function WithTooltip({
         createPortal(
           <span
             role="tooltip"
-            // Né mép màn hình: đo sau khi vẽ, tràn bên nào thì dời ngược lại (thuộc tính translate, không đụng transform).
+            // Tràn mép màn hình thì dời ngược lại
             ref={(el) => {
               if (!el) return
               el.style.translate = ''

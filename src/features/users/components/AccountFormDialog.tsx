@@ -15,7 +15,7 @@ type Errors = Partial<Record<keyof Form, string>>
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 const PHONE = /^\+?[0-9 .-]{6,20}$/
 
-/* Luật bám CreateAdminUserCommandValidator / UpdateAdminUserCommandValidator (backend main 4d12e4d). */
+// Luật theo CreateAdminUserCommandValidator / UpdateAdminUserCommandValidator
 function validate(f: Form, creating: boolean): Errors {
   const errors: Errors = {}
   const email = f.email.trim()
@@ -40,10 +40,8 @@ function serverErrors(error: unknown): Errors {
   return out
 }
 
-/*
-  Tạo hoặc sửa tài khoản. Không có ô mật khẩu: tài khoản mới nhận link đặt mật khẩu qua email (không bao giờ hiện ở đây).
-  Sửa thì không đổi vai trò (khối vai trò riêng ở trang chi tiết); đổi email làm mất dấu đã xác minh và gửi link xác minh mới.
-*/
+// Tạo / sửa tài khoản. Không có ô mật khẩu, tài khoản mới nhận link qua email
+// Đổi email thì mất trạng thái đã xác minh và gửi link xác minh mới
 export function AccountFormDialog({
   open,
   onOpenChange,

@@ -39,10 +39,7 @@ const SORTS = [
 type Filter = { search: string; role: string; status: string; sort: string; includeDeleted: boolean }
 const defaultFilter: Filter = { search: '', role: '', status: '', sort: SORTS[0].value, includeDeleted: false }
 
-/*
-  Tài khoản của mọi vai trò (GET /api/admin/users: tìm, lọc, sắp xếp, phân trang phía server). Tạo tài khoản không có mật
-  khẩu: người dùng nhận link qua email để tự đặt. Cả dòng là link sang trang chi tiết (sửa, vai trò, trạng thái, xoá).
-*/
+// Danh sách tài khoản (tìm, lọc, sắp xếp, phân trang phía server). Bấm dòng để mở chi tiết
 export function AdminUsersPage() {
   const navigate = useNavigate()
   const [filter, setFilter] = useState<Filter>(defaultFilter)

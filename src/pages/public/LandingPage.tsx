@@ -12,12 +12,7 @@ import {
 } from '@/features/landing/components'
 import { pageTitle } from '@/data/landing'
 
-/*
-  Trang chủ công khai "/", website bán hàng của công ty thi công điện mặt trời áp mái cho doanh nghiệp.
-  Mỗi section trả lời một câu hỏi bán hàng và có bố cục
-  riêng, ảnh lớn xen section chữ: bạn là ai, công trình, khách hàng nói gì (khi có dữ liệu), vì sao
-  tin, doanh nghiệp nhận được gì, theo dõi công trình, bắt đầu.
-*/
+// Trang chủ công khai, website bán hàng cho doanh nghiệp
 export function LandingPage() {
   const { hash } = useLocation()
 

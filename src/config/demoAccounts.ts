@@ -1,12 +1,6 @@
 import { roleLabels, USER_ROLES, type UserRole } from '@/config/roles'
 
-/*
- * Khối "Thử nhanh theo các vai trò" ở /login.
- *
- * Chỉ dùng khi chạy dev: email/mật khẩu lấy từ .env.development.local
- * (file này khớp *.local trong .gitignore nên không commit). Xem .env.example
- * để biết tên biến. Không khai báo biến nào thì khối này tự ẩn.
- */
+// Tài khoản thử ở /login, chỉ dùng khi chạy dev. Lấy từ .env.development.local, không khai thì ẩn
 
 export type DemoAccount = {
   role: UserRole

@@ -1,17 +1,8 @@
 import type { ReactNode } from 'react'
 import { cx } from '@/utils/cx'
 
-/*
-  Figures in a row share three subgrid tracks (label, value, note), so a label
-  that wraps never pushes its figure out of line with the others. No dividers:
-  the gap does the separating, the figures are not tiles.
-  Columns: 2 on phones, 4 on md; pass `md:grid-cols-3` or `xl:grid-cols-6` when the data calls for it.
-*/
-/*
-  `framed`: các số gom trong một khung có viền, mỗi số một ô cách nhau bằng đường kẻ mảnh (nền đường kẻ lộ qua khe 1px).
-  Dùng khi dải số đứng một mình trên trang rộng: không khung thì 4 số rải hết bề ngang, trông rời rạc (lịch theo ngày,
-  người dùng chê 12/10/2026).
-*/
+// Dải số liệu dùng subgrid để nhãn dài không làm lệch số. 2 cột trên điện thoại, 4 cột từ md
+// `framed`: gom các số vào một khung, mỗi số một ô
 export function StatRow({
   children,
   className,

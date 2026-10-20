@@ -10,10 +10,7 @@ import type { CustomerAppointmentView } from '@/types/res/customerSurveyRequests
 
 const REASON_MAX = 200
 
-/*
-  Khách huỷ lịch còn BOOKED. Huỷ nhả chỗ của kỹ thuật viên ngay; yêu cầu vẫn còn và khách đặt lại giờ khác được, nên nút
-  xác nhận là `danger` (viền đỏ), không phải nút đặc đỏ của thao tác không hoàn tác.
-*/
+// Khách huỷ lịch còn BOOKED. Yêu cầu vẫn còn và đặt lại được nên dùng nút `danger` thường
 export function CancelBookingDialog({
   surveyRequestId,
   appointment,

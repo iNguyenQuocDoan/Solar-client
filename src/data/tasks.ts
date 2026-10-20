@@ -4,10 +4,7 @@ import type { ButtonVariant } from '@/components/common/stitch-ui/Button'
 import type { StatusVariant } from '@/components/common/stitch-ui/StatusBadge'
 import type { TaskAccent } from '@/components/common/stitch-ui/TaskCard'
 
-/*
- * Dữ liệu giả cho /tech/tasks, nội dung lấy từ my_tasks_1/screen.png.
- * Elena Rostova (ORD-8821) và David Chen (ORD-8824) dùng chung id với data/techDashboard.ts.
- */
+// Dữ liệu giả cho /tech/tasks, dùng chung id với data/techDashboard.ts
 
 export const tasksHeader = {
   title: 'Phiếu công việc',
@@ -175,10 +172,7 @@ export const workOrders: WorkOrder[] = [
   },
 ]
 
-/*
- * Quick Status Drawer (#quickStatusDrawer trong my_tasks_1/code.html).
- * Phần đầu drawer lấy theo work order đang chọn; các khối dưới là nội dung dùng chung của thiết kế.
- */
+// Nội dung của Quick Status Drawer, phần đầu theo work order đang chọn
 export type LifecycleStage = {
   /** 1-4, khớp WorkOrder.lifecycleStage */
   value: 1 | 2 | 3 | 4

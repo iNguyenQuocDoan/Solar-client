@@ -22,10 +22,7 @@ const MAX_DAYS = 366
 /** "2026-10-20T08:00" hiểu là giờ Việt Nam. */
 const toVnIso = (local: string) => `${local}:00+07:00`
 
-/*
-  Mỗi mốc là ô ngày (13/10/2026) + ô giờ 24 giờ, thay cho ô datetime-local hiện theo ngôn ngữ trình duyệt
-  ("10/13/2026, 01:00 PM" ở bản tiếng Anh, 12/10/2026). Giờ mặc định 08:00 đến 17:00 là một ngày làm việc.
-*/
+// Ô ngày + ô giờ 24h thay cho datetime-local. Mặc định 08:00 đến 17:00
 function AddPeriodForm({ technicianUserId }: { technicianUserId: string }) {
   const [fromDate, setFromDate] = useState('')
   const [fromTime, setFromTime] = useState('08:00')
@@ -113,11 +110,7 @@ function AddPeriodForm({ technicianUserId }: { technicianUserId: string }) {
   )
 }
 
-/*
-  Lịch nghỉ (nghỉ phép, bận việc khác) của một kỹ thuật viên: trong khoảng này hệ thống không xếp lịch cho người đó. Thêm
-  lịch nghỉ đè lên lịch đã có thì backend từ chối và liệt kê lịch đó (không tự huỷ). Bỏ lịch nghỉ chỉ thêm giờ trống.
-  Danh sách chỉ có các khoảng chưa kết thúc.
-*/
+// Lịch nghỉ của kỹ thuật viên. Đè lên lịch đã có thì backend từ chối và trả về danh sách lịch đó
 export function UnavailablePeriods({ technicianUserId }: { technicianUserId: string }) {
   const query = useUnavailablePeriodsQuery(technicianUserId)
   const remove = useRemoveUnavailablePeriodMutation()

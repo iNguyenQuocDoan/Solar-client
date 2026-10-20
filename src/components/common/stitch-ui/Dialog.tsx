@@ -3,10 +3,7 @@ import type { ComponentProps } from 'react'
 import { Icon } from '@/components/common/stitch-ui/Icon'
 import { cn } from '@/utils/cn'
 
-/*
- * Dialog kiểu shadcn trên Radix. Hộp thoại theo DESIGN.md: rounded-2xl, shadow Level 3, nền trắng.
- * z-index trên sidebar (z-50) và overlay drawer (z-45).
- */
+// Dialog Radix, z-index nằm trên sidebar và drawer
 export const Dialog = DialogPrimitive.Root
 export const DialogTrigger = DialogPrimitive.Trigger
 export const DialogClose = DialogPrimitive.Close

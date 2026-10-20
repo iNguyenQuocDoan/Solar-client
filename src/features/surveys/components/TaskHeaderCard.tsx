@@ -4,10 +4,7 @@ import { Icon } from '@/components/common/stitch-ui/Icon'
 import { StatusBadge } from '@/components/common/stitch-ui/StatusBadge'
 import { cn } from '@/utils/cn'
 
-/*
- * Card ngữ cảnh đầu trang của luồng khảo sát: mã dự án, trạng thái, tiêu đề, danh bạ và địa chỉ.
- * Dùng lại ở cả ba màn /tech/surveys/:id, .../verify và .../photos.
- */
+// Card đầu trang của luồng khảo sát, dùng ở cả ba màn
 export type TaskHeaderContact = { icon: string; label: string; value: string }
 
 export type TaskHeaderCardProps = {

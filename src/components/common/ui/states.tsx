@@ -51,7 +51,6 @@ export function EmptyState({
   )
 }
 
-/* Lỗi tải dữ liệu: khối nền đỏ nhạt + icon, cùng kiểu với Notice tone="danger", nút "Thử lại" là nút thật. */
 export function ErrorState({
   title = 'Không tải được trang này.',
   message,

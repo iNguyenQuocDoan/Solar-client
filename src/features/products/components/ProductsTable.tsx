@@ -12,17 +12,9 @@ import type { PendingStatus } from '@/features/products/hooks/useProductStatusAc
 import type { ProductResponse } from '@/types/res/adminProductsRes'
 import { formatMoney } from '@/utils/format'
 
-/*
-  Danh sách sản phẩm của /admin/products. Người dùng 12/10/2026: "phải là 1 list khi ấn vào thì mới hiển thị chi tiết" -
-  mỗi dòng chỉ giữ thứ để nhận ra và so nhanh (ảnh, tên, SKU, loại, hãng, công suất, giá, trạng thái); model, kích thước,
-  nhóm hàng, thông số nằm ở trang chi tiết /admin/products/:id. Rồi "tại sao lại không để cái nút này ở ngoài luôn cho
-  tiện": Sửa / Ngừng bán / Xoá có cả trên từng dòng (ProductActions compact) lẫn ở trang chi tiết.
-  Cả dòng bấm được như danh mục của các portal khác (link tên phủ cả dòng bằng ::after, rê chuột thì tên xanh + gạch chân),
-  trừ cụm nút nằm trên lớp phủ; bàn phím Tab tới đúng link tên rồi tới từng nút. Tấm pin thiếu công suất / kích thước báo đỏ
-  ngay trên dòng: mô phỏng bố trí không dùng được tấm đó cho tới khi sửa.
-  Bảy cột nên xếp khối dưới xl (1280px): ở 1024px, rail 208px chỉ còn ~770px, chia cột thì tên bị bóp còn vài chữ mỗi dòng.
-  Khi xếp khối bỏ hai ô Loại / Hãng (hãng hiện dưới tên) để mỗi sản phẩm vẫn gọn như một dòng danh sách.
-*/
+// Danh sách sản phẩm của /admin/products, bấm dòng để mở trang chi tiết
+// Sửa / Ngừng bán / Xoá có trên từng dòng. Tấm pin thiếu công suất / kích thước thì báo đỏ
+// Bảng 7 cột nên xếp khối dưới xl (1280px)
 export function ProductsTable({
   products,
   detailPath,
@@ -117,7 +109,6 @@ export function ProductsTable({
               <Td label="Trạng thái" className="whitespace-nowrap">
                 <Badge tone={status.tone}>{status.label}</Badge>
               </Td>
-              {/* Không nhãn: khi xếp khối ô trải hết bề ngang nên ba nút nằm một hàng (360px: ~270px cho cụm nút). */}
               <Td className="whitespace-nowrap">
                 <ProductActions
                   compact

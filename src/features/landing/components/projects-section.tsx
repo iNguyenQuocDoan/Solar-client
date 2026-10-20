@@ -5,13 +5,9 @@ import { LandingPhoto } from './photo'
 import { Reveal } from './reveal'
 import { Section, SectionTitle } from './section'
 
-/* Rê chuột vào ảnh công trình thì ảnh phóng nhẹ trong khung, chỉ transform, không đổi layout. */
 const ZOOM = 'transition-transform duration-700 ease-ld group-hover:scale-103'
 
-/*
-  Công trình trông như thế nào: một ảnh lớn và hai ảnh nhỏ (bất đối xứng theo độ quan trọng),
-  rồi một cặp trước/sau. Chú thích chỉ ghi loại công trình.
-*/
+// Section công trình: một ảnh lớn, hai ảnh nhỏ, rồi một cặp trước / sau
 export function ProjectsSection() {
   const { featured, others, beforeAfter } = projects
   return (

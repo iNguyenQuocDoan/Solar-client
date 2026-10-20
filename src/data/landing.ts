@@ -1,14 +1,5 @@
-/*
- * Nội dung trang chủ công khai "/", website bán hàng của một công ty thi công điện mặt trời áp mái
- * cho DOANH NGHIỆP (nhà xưởng, kho bãi, toà nhà).
- *
- * Mỗi section trả lời một câu hỏi bán hàng: bạn là ai và làm gì, công trình trông thế nào, vì sao tin,
- * doanh nghiệp nhận được gì, theo dõi công trình ra sao, bắt đầu thế nào. Không bảng giá, không biểu
- * giá điện, không quy định pháp lý, không dashboard; giao diện hệ thống chỉ xuất hiện một lần.
- *
- * Ảnh: `src` có thì hiện ảnh, chưa có thì khung đúng tỷ lệ ghi "Ảnh cần bổ sung". Không chú thích ảnh như
- * công trình của Smart Solar khi chưa có ảnh thật. Lời khách và con số công ty chỉ hiện khi có dữ liệu thật.
- */
+// Nội dung trang chủ, website bán hàng cho doanh nghiệp (nhà xưởng, kho, toà nhà)
+// Không có bảng giá hay quy trình. Ảnh chưa có thì hiện khung "Ảnh cần bổ sung"
 
 export type Shot = {
   src?: string
@@ -38,8 +29,7 @@ export const hero = {
   lede: 'Smart Solar khảo sát tận mái, lên phương án riêng cho từng công trình, lắp đặt bằng đội kỹ thuật của mình và bàn giao hệ thống chạy ổn định.',
   cta: 'Nhận khảo sát mái nhà xưởng',
   secondary: 'Xem công trình',
-  // Ảnh do người dùng thả vào public/images/Hero.png; bản WebP sinh từ ảnh đó. Chưa xác nhận là công
-  // trình của Smart Solar nên không chú thích tên, địa điểm hay công suất.
+  // Chưa phải ảnh công trình của Smart Solar nên không ghi tên, địa điểm, công suất
   photo: {
     src: '/images/hero-1672.webp',
     srcSet: '/images/hero-960.webp 960w, /images/hero-1672.webp 1672w',
@@ -55,11 +45,11 @@ export const statement = {
   rest: 'Chúng tôi biến phần mái đang bỏ trống thành nguồn điện cho chính nhà máy của bạn, lắp một lần và chạy nhiều năm.',
 }
 
-/* Công trình trông như thế nào. Chú thích chỉ nói loại công trình, không bịa địa điểm hay công suất. */
+// Chú thích chỉ ghi loại công trình
 export const projects = {
   id: 'cong-trinh',
   title: 'Công trình trên mái nhà xưởng, kho bãi và toà nhà',
-  // Ảnh tải từ báo và trang bán hàng, không phải công trình của Smart Solar; thay bằng ảnh công trình thật khi có.
+  // Ảnh tạm, thay bằng ảnh công trình thật khi có
   featured: {
     label: 'Nhà xưởng sản xuất',
     shot: {
@@ -120,7 +110,7 @@ export const projects = {
 export const trust = {
   id: 'nang-luc',
   title: 'Đội kỹ thuật của Smart Solar tự khảo sát và tự lắp đặt',
-  // Ảnh tải từ trang của đơn vị khác, không phải đội của Smart Solar; thay bằng ảnh đội mình khi có.
+  // Ảnh tạm, thay bằng ảnh đội thi công thật khi có
   photo: {
     // Cắt sẵn phần bên trái ảnh gốc về 4:5 cho khớp khung, giữ đủ nhóm kỹ thuật viên.
     src: '/images/trust-crew-1200.webp',

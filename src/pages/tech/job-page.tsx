@@ -72,11 +72,7 @@ function AcknowledgePanel({ job }: { job: TechnicianJobView }) {
   )
 }
 
-/*
-  Chi tiết một lịch khảo sát được giao (GET /api/technicians/me/appointments/{id}): giờ, đường tới, công trình, khách hàng,
-  số liệu khách khai, mô phỏng khách chọn (kỹ thuật viên được phân công đọc được). Luồng 1 dừng ở "Nhận việc": không có
-  thao tác "Hoàn thành khảo sát" ở đây.
-*/
+// Chi tiết một lịch khảo sát được giao. Chỉ tới bước "Nhận việc", chưa có "Hoàn thành khảo sát"
 export function TechJobPage() {
   const { id } = useParams()
   const query = useMyAppointmentQuery(id)

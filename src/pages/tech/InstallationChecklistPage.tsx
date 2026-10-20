@@ -13,8 +13,6 @@ import { cn } from '@/utils/cn'
 import { getInstallationChecklist, getInstallationTask } from '@/data/installations'
 import { notFound } from '@/routes/notFound'
 
-/* Dựng từ installation_task_checklist/code.html + screen.png. Cùng job order với màn chi tiết lắp đặt. */
-
 const statToneClasses = {
   default: 'text-on-surface',
   primary: 'text-primary',

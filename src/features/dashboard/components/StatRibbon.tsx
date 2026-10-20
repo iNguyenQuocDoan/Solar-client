@@ -3,7 +3,7 @@ import { Card } from '@/components/common/stitch-ui/Card'
 import { Icon } from '@/components/common/stitch-ui/Icon'
 import { cn } from '@/utils/cn'
 
-/* Dải "Quick Status / Daily Metrics" đầu technician_dashboard_1: 4 ô số liệu + trạng thái điều phối. */
+// Dải 4 ô số liệu + trạng thái điều phối
 export type StatTileTone = 'primary' | 'neutral' | 'secondary' | 'success'
 
 export type StatRibbonItem = {

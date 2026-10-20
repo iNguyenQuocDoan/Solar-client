@@ -26,11 +26,7 @@ const schema = z
 
 type ResetValues = z.infer<typeof schema>
 
-/*
- * /reset-password?token=...
- * ResetPasswordRequest trong swagger = { token, newPassword }, KHÔNG có email,
- * nên trang chỉ đọc `token` từ query.
- */
+// /reset-password?token=... Request chỉ có token, không có email
 export function ResetPasswordPage() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()

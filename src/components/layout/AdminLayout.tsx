@@ -9,11 +9,7 @@ import { useTechniciansQuery } from '@/features/scheduling/hooks/useTechnicianAd
 import { useAdminUsersQuery } from '@/features/users/hooks/useAdminUsers'
 import { ROUTES } from '@/routes/paths'
 
-/*
-  Bọc mọi route /admin/*. Dùng chung shell của portal kit với khách hàng và sales (08/10/2026) để cả web một kiểu.
-  Số cạnh mục menu: tổng tài khoản và tổng sản phẩm (xám, PageSize 1 vì chỉ cần totalItems); số kỹ thuật viên chưa có nơi
-  xuất phát (đỏ: việc quản trị phải làm, nếu không khách không đặt được giờ với người đó).
-*/
+// Layout cho /admin/*. Số cạnh menu: tổng tài khoản, tổng sản phẩm, và số kỹ thuật viên chưa có nơi xuất phát (đỏ)
 export function AdminLayout({ children }: { children?: ReactNode }) {
   // Layout còn là khung chờ trước RequireRole: chỉ gọi khi phiên admin đã khôi phục xong.
   const isAdmin = useAuth().user?.role === 'admin'

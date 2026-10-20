@@ -14,11 +14,8 @@ export const roleLabels: Record<UserRole, string> = {
   admin: 'Quản trị viên',
 }
 
-/*
- * Đổi giá trị claim `role` trong JWT sang vai trò của web.
- * So khớp không phân biệt hoa thường; thêm vài biến thể hay gặp phía .NET.
- * Nếu backend phát giá trị khác, bổ sung vào bảng này (chỉ sửa 1 chỗ).
- */
+// Đổi claim `role` trong JWT sang vai trò của web, không phân biệt hoa thường
+// Backend có giá trị mới thì thêm vào bảng này
 const ROLE_ALIASES: Record<string, UserRole> = {
   customer: 'customer',
   user: 'customer',
@@ -33,10 +30,7 @@ const ROLE_ALIASES: Record<string, UserRole> = {
   systemadmin: 'admin',
 }
 
-/*
- * Ai được tự đổi mật khẩu trong giao diện (quyết định 08/10/2026): chỉ khách hàng. Tài khoản nội bộ (sales, kỹ thuật
- * viên, quản lý, quản trị) do quản trị cấp. Backend vẫn cho mọi vai trò gọi API đổi mật khẩu; đây chỉ là ẩn ở giao diện.
- */
+// Chỉ khách hàng tự đổi mật khẩu, tài khoản nội bộ do quản trị cấp (backend vẫn cho phép, đây chỉ ẩn ở giao diện)
 export function canChangeOwnPassword(role: UserRole | undefined) {
   return role === 'customer'
 }

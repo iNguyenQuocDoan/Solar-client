@@ -4,7 +4,7 @@ import { Card } from '@/components/common/stitch-ui/Card'
 import { Icon } from '@/components/common/stitch-ui/Icon'
 import { cn } from '@/utils/cn'
 
-/* Theo lưới ảnh trong survey_image_documentation: thẻ ảnh có tag, giờ, GPS, ghi chú + ô trống để thêm ảnh. */
+// Lưới ảnh có tag, giờ, GPS, ghi chú và ô thêm ảnh
 export type PhotoCardProps = {
   src: string
   alt: string

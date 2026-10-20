@@ -6,10 +6,7 @@ import type {
 } from '@/types/res/technicianAppointmentsRes'
 import { apiGet, apiPost } from '@/services/api/client'
 
-/*
- * Việc của kỹ thuật viên (role TECHNICIAN, tag TechnicianAppointments): chỉ lịch đã được kinh doanh phân công chính thức.
- * Luồng 1 dừng ở bước kỹ thuật viên xác nhận đã nhận việc (ACKNOWLEDGED), không phải "đã khảo sát xong".
- */
+// Việc của kỹ thuật viên: chỉ các lịch đã được phân công chính thức
 
 const base = '/technicians/me'
 
@@ -18,7 +15,6 @@ export function listMyAppointments() {
   return apiGet<TechnicianAppointmentListItem[]>(`${base}/appointments`)
 }
 
-/** GET /api/technicians/me/appointments/{id}, khách, địa điểm, số liệu khách khai, mô phỏng đã chọn, chặng đường tới. */
 export function getMyAppointment(id: string) {
   return apiGet<TechnicianJobView>(`${base}/appointments/${encodeURIComponent(id)}`)
 }
@@ -28,7 +24,7 @@ export function acknowledgeAppointment(id: string) {
   return apiPost<AcknowledgementView>(`${base}/appointments/${encodeURIComponent(id)}/acknowledge`)
 }
 
-/** GET /api/technicians/me/schedule?date=YYYY-MM-DD, lịch một ngày kèm đường đi đã lưu (không gọi Vietmap). */
+/** Lịch một ngày kèm đường đi đã lưu */
 export function getMySchedule(date: string) {
   return apiGet<TechnicianScheduleView>(`${base}/schedule`, { params: { date } })
 }

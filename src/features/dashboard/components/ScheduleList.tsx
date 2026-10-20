@@ -3,7 +3,7 @@ import { Icon } from '@/components/common/stitch-ui/Icon'
 import { StatusBadge, type StatusVariant } from '@/components/common/stitch-ui/StatusBadge'
 import { cn } from '@/utils/cn'
 
-/* Khối "Upcoming Schedule (3-Day)" trong technician_dashboard_1: nhóm theo ngày, mỗi việc là một hàng. */
+// Lịch sắp tới nhóm theo ngày, mỗi việc một hàng
 export type ScheduleRowTone = 'primary' | 'secondary'
 
 export type ScheduleRow = {
