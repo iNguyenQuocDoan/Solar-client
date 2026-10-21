@@ -9,7 +9,7 @@ import { Panel, PanelAside, PanelBody, PanelHeader } from '@/components/common/u
 import { QueryBoundary } from '@/components/common/ui/query-boundary'
 import { usePageCrumb } from '@/components/layout/page-crumb'
 import { useAuth } from '@/context/AuthProvider'
-import { formatDateTime } from '@/features/pre-surveys/components/preSurveyDisplay'
+import { formatDateTime } from '@/features/pre-surveys/utils/preSurveyDisplay'
 import { AccountFormDialog } from '@/features/users/components/AccountFormDialog'
 import { DeleteAccountDialog, RecoveryPanel, RolesPanel, StatusPanel } from '@/features/users/components/AccountPanels'
 import { activationMessage, rolesText, userStatusMeta } from '@/features/users/components/userDisplay'
@@ -31,18 +31,14 @@ function TechnicianSummary({ user }: { user: AdminUserDetail }) {
       />
       <PanelBody>
         {!t?.hasProfile ? (
-          <p className="text-body text-fg-2">Chưa cấu hình nơi xuất phát nên chưa nhận lịch khảo sát.</p>
+          <p className="text-body text-fg-2">Chưa có hồ sơ nhận lịch nên chưa nhận lịch khảo sát.</p>
         ) : (
           <KeyValueList
             items={[
               { k: 'Nhận lịch', v: t.isSchedulingActive ? 'Đang nhận' : 'Đang tắt' },
-              { k: 'Nơi xuất phát', v: t.hasBaseLocation ? (t.baseLabel ?? 'Đã có toạ độ') : 'Chưa có' },
+              { k: 'Khu vực phục vụ', v: t.zoneCodes.length > 0 ? t.zoneCodes.join(', ') : 'Chưa có' },
               { k: 'Lịch / ngày', v: t.maxAppointmentsPerDay ?? 'Mặc định' },
               { k: 'Giờ làm', v: t.hasCustomWorkingSchedule ? 'Giờ riêng' : 'Giờ chung' },
-              {
-                k: 'Rời nơi xuất phát từ',
-                v: t.earliestBaseDeparture ? t.earliestBaseDeparture.slice(0, 5) : 'Mặc định',
-              },
             ]}
           />
         )}

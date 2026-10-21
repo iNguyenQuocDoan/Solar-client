@@ -9,7 +9,7 @@ import { PageHeader } from '@/components/common/ui/page-header'
 import { Pagination } from '@/components/common/ui/pagination'
 import { EmptyState, ErrorState, Skeleton } from '@/components/common/ui/states'
 import { Table, Td, Th, Tr } from '@/components/common/ui/table'
-import { formatDateTime, formatRelative } from '@/features/pre-surveys/components/preSurveyDisplay'
+import { formatDateTime, formatRelative } from '@/features/pre-surveys/utils/preSurveyDisplay'
 import { AccountFormDialog } from '@/features/users/components/AccountFormDialog'
 import {
   ROLE_OPTIONS,

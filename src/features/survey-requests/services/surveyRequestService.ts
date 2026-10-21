@@ -3,6 +3,7 @@ import type { TechnicianAvailabilityView } from '@/types/res/technicianAvailabil
 import type {
   AssignmentView,
   ClaimSurveyRequestResponse,
+  EscalatedAppointmentView,
   MySurveyRequestItem,
   PendingSurveyRequestItem,
   SalesRescheduleView,
@@ -10,7 +11,8 @@ import type {
 } from '@/types/res/surveyRequestsRes'
 import { apiGet, apiPost, apiRequest } from '@/services/api/client'
 
-// API phía sales: nhận yêu cầu, xem kỹ thuật viên rảnh, phân công, đổi giờ
+// API phía sales. Nhận yêu cầu chỉ là nhận chăm sóc khách (không đổi trạng thái lịch).
+// Kỹ thuật viên trong khu vực tự nhận lịch; sales chỉ phân công khi quá hạn không ai nhận (lý do bắt buộc)
 
 export function listPendingSurveyRequests() {
   return apiGet<PendingSurveyRequestItem[]>('/survey-requests/pending')
@@ -29,18 +31,21 @@ export function claimSurveyRequest(id: string) {
   return apiPost<ClaimSurveyRequestResponse>(`/survey-requests/${encodeURIComponent(id)}/claim`)
 }
 
-/** Không truyền startsAt thì dùng giờ khách đã đặt */
-export function getTechnicianAvailability(surveyRequestId: string, startsAt?: string) {
-  return apiGet<TechnicianAvailabilityView>('/technicians/availability', {
-    params: startsAt ? { surveyRequestId, startsAt } : { surveyRequestId },
-  })
+/** Kỹ thuật viên nhận được giờ khách đã đặt, kèm người không nhận được và lý do */
+export function getTechnicianAvailability(surveyRequestId: string) {
+  return apiGet<TechnicianAvailabilityView>('/technicians/availability', { params: { surveyRequestId } })
+}
+
+/** Lịch quá hạn không ai nhận, cần nhân viên phân công */
+export function listEscalatedAppointments() {
+  return apiGet<EscalatedAppointmentView[]>('/survey-requests/escalated')
 }
 
 export function assignTechnician(id: string, body: AssignTechnicianRequest) {
   return apiPost<AssignmentView>(`/survey-requests/${encodeURIComponent(id)}/assign-technician`, body)
 }
 
-/** Đổi người thì xác nhận của người cũ mất hiệu lực */
+/** Đổi người phụ trách lịch đã xác nhận (lý do bắt buộc) */
 export function reassignTechnician(id: string, body: AssignTechnicianRequest) {
   return apiRequest<AssignmentView>({
     method: 'PUT',
@@ -49,7 +54,7 @@ export function reassignTechnician(id: string, body: AssignTechnicianRequest) {
   })
 }
 
-/** Truyền thêm technicianUserId để đổi cả người */
+/** Không truyền technicianUserId thì giữ người cũ nếu vẫn rảnh, không thì lịch quay về chờ nhận */
 export function rescheduleSurveyRequest(id: string, body: SalesRescheduleRequest) {
   return apiRequest<SalesRescheduleView>({
     method: 'PUT',

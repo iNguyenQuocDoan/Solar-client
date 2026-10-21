@@ -295,3 +295,13 @@ export function Radio({ label, description, className, ...rest }: ChoiceProps) {
     </label>
   )
 }
+
+/** Ô nhập kèm đơn vị đứng sau, ví dụ [ 12,5 ] m */
+export function WithUnit({ unit, children }: { unit: string; children: ReactNode }) {
+  return (
+    <div className="flex items-center gap-2">
+      {children}
+      <span className="text-body text-fg-2">{unit}</span>
+    </div>
+  )
+}

@@ -2,7 +2,6 @@ import type { Tone } from '@/components/common/ui/badge'
 import { errorMessage, isApiError } from '@/services/api/errors'
 import type { ConflictingAppointmentView } from '@/types/res/adminTechniciansRes'
 import type { CustomerSurveyRequestView } from '@/types/res/customerSurveyRequestsRes'
-import type { TravelCongestionView } from '@/types/res/technicianAvailabilityRes'
 
 // Nhãn và định dạng của lịch khảo sát, dùng chung cho mọi vai trò
 // Luôn dùng giờ Việt Nam: ngày gửi API là "YYYY-MM-DD", giờ hẹn kèm "+07:00"
@@ -117,18 +116,32 @@ export function initialBookingDate(now: Date = new Date()) {
 type Viewer = 'customer' | 'sales' | 'technician' | 'staff'
 
 const APPOINTMENT_LABELS: Record<string, string> = {
-  BOOKED: 'Đã đặt giờ, chờ phân công',
-  ASSIGNED: 'Đã phân công',
-  ACKNOWLEDGED: 'Kỹ thuật viên đã nhận việc',
+  PENDING_ACCEPTANCE: 'Chờ kỹ thuật viên nhận',
+  ESCALATED: 'Không ai nhận kịp, cần phân công',
+  ACCEPTED: 'Kỹ thuật viên đã nhận',
+  ASSIGNED: 'Đã phân công kỹ thuật viên',
+  COMPLETED: 'Đã khảo sát',
   CANCELLED: 'Đã huỷ',
 }
 
-// Đỏ là việc người xem phải làm: sales thấy BOOKED (cần phân công), kỹ thuật viên thấy ASSIGNED (cần nhận việc)
+// Kỹ thuật viên xem việc của chính mình nên gọi là "bạn"
+const TECHNICIAN_LABELS: Record<string, string> = {
+  ACCEPTED: 'Bạn đã nhận',
+  ASSIGNED: 'Được phân công cho bạn',
+}
+
+// Đỏ là việc người xem phải làm: sales thấy ESCALATED (cần phân công), kỹ thuật viên thấy lịch chờ nhận
 const APPOINTMENT_TONES: Record<Viewer, Record<string, Tone>> = {
-  customer: { BOOKED: 'info', ASSIGNED: 'ok', ACKNOWLEDGED: 'ok', CANCELLED: 'neutral' },
-  sales: { BOOKED: 'danger', ASSIGNED: 'info', ACKNOWLEDGED: 'ok', CANCELLED: 'neutral' },
-  technician: { BOOKED: 'neutral', ASSIGNED: 'danger', ACKNOWLEDGED: 'ok', CANCELLED: 'neutral' },
-  staff: { BOOKED: 'info', ASSIGNED: 'info', ACKNOWLEDGED: 'ok', CANCELLED: 'neutral' },
+  customer: { PENDING_ACCEPTANCE: 'info', ESCALATED: 'info', ACCEPTED: 'ok', ASSIGNED: 'ok', COMPLETED: 'neutral' },
+  sales: { PENDING_ACCEPTANCE: 'info', ESCALATED: 'danger', ACCEPTED: 'ok', ASSIGNED: 'ok', COMPLETED: 'neutral' },
+  technician: {
+    PENDING_ACCEPTANCE: 'danger',
+    ESCALATED: 'danger',
+    ACCEPTED: 'ok',
+    ASSIGNED: 'ok',
+    COMPLETED: 'neutral',
+  },
+  staff: { PENDING_ACCEPTANCE: 'info', ESCALATED: 'danger', ACCEPTED: 'ok', ASSIGNED: 'ok', COMPLETED: 'neutral' },
 }
 
 export function appointmentStatusMeta(
@@ -137,15 +150,46 @@ export function appointmentStatusMeta(
 ): { label: string; tone: Tone } {
   if (!status) return { label: '—', tone: 'neutral' }
   return {
-    label:
-      viewer === 'technician' && status === 'ASSIGNED' ? 'Chờ bạn nhận việc' : (APPOINTMENT_LABELS[status] ?? status),
+    label: (viewer === 'technician' ? TECHNICIAN_LABELS[status] : undefined) ?? APPOINTMENT_LABELS[status] ?? status,
     tone: APPOINTMENT_TONES[viewer][status] ?? 'neutral',
   }
 }
 
-/** Trạng thái của một lần đặt trong lịch sử (khách hàng). */
+// Cách kỹ thuật viên có lịch: tự nhận hoặc được phân công
+const ASSIGNMENT_SOURCES: Record<string, string> = {
+  SELF_ACCEPTED: 'Kỹ thuật viên tự nhận',
+  SALES_ASSIGNED: 'Kinh doanh phân công',
+  MANAGER_OVERRIDE: 'Quản lý phân công',
+  MANAGER_DISPATCH: 'Quản lý điều phối',
+}
+
+export function assignmentSourceLabel(source: string | null | undefined, viewer: Viewer) {
+  if (!source) return '—'
+  if (viewer === 'technician' && source === 'SELF_ACCEPTED') return 'Bạn tự nhận'
+  return ASSIGNMENT_SOURCES[source] ?? source
+}
+
+/** Kỹ thuật viên đã xác nhận lịch (tự nhận hoặc được phân công) */
+export function isConfirmed(status: string | null | undefined) {
+  return status === 'ACCEPTED' || status === 'ASSIGNED' || status === 'COMPLETED'
+}
+
+/** Trạng thái của một lần đặt trong lịch sử (khách hàng) */
 export function historyStatusLabel(status: string) {
   return status === 'CANCELLED' ? 'Đã huỷ hoặc đổi giờ' : (APPOINTMENT_LABELS[status] ?? status)
+}
+
+// Trạng thái khách thấy (acceptanceStatus), khách không thấy ai đang giữ chỗ
+const ACCEPTANCE: Record<string, { label: string; tone: Tone }> = {
+  WAITING_FOR_TECHNICIAN: { label: 'Đã đặt giờ, chờ kỹ thuật viên nhận', tone: 'info' },
+  NEEDS_STAFF: { label: 'Đã đặt giờ, nhân viên đang xếp kỹ thuật viên', tone: 'info' },
+  CONFIRMED: { label: 'Kỹ thuật viên đã nhận lịch', tone: 'ok' },
+  COMPLETED: { label: 'Đã khảo sát xong', tone: 'neutral' },
+  CANCELLED: { label: 'Đã huỷ', tone: 'neutral' },
+}
+
+export function acceptanceStatusMeta(status: string): { label: string; tone: Tone } {
+  return ACCEPTANCE[status] ?? { label: status, tone: 'neutral' }
 }
 
 // Gộp trạng thái yêu cầu + lịch hẹn thành một nhãn. Chưa đặt giờ là việc của khách nên tô đỏ
@@ -160,97 +204,43 @@ export function customerProgress(r: Pick<CustomerSurveyRequestView, 'status' | '
     return canBook(r)
       ? { label: 'Chưa đặt giờ khảo sát', tone: 'danger' }
       : { label: 'Chưa có lịch hẹn', tone: 'neutral' }
-  return appointmentStatusMeta(a.status, 'customer')
+  return acceptanceStatusMeta(a.acceptanceStatus)
 }
 
 /** Khách đặt giờ được khi yêu cầu chưa có lịch hiệu lực */
 export function canBook(r: Pick<CustomerSurveyRequestView, 'status' | 'appointment'>) {
-  return !r.appointment && (r.status === 'PENDING' || r.status === 'ASSIGNED')
+  return !r.appointment && r.status === 'PENDING'
 }
 
-const decimal = new Intl.NumberFormat('vi-VN', { maximumFractionDigits: 1 })
-
-/** "850 m", "12,3 km" */
-export function formatDistance(meters: number | null | undefined) {
-  if (meters == null) return '—'
-  return meters < 1000 ? `${Math.round(meters)} m` : `${decimal.format(meters / 1000)} km`
+// Vì sao địa điểm chưa có giờ để đặt (coverageStatus của GET /api/survey-slots)
+const COVERAGE: Record<string, string> = {
+  SITE_LOCATION_REQUIRED: 'Địa điểm chưa có mã phường, xã nên chưa biết thuộc khu vực nào.',
+  NO_ZONE_COVERAGE: 'Phường, xã của công trình chưa thuộc khu vực phục vụ nào.',
+  ZONE_NOT_SERVICEABLE: 'Khu vực của công trình đang tạm ngừng nhận lịch.',
+  NO_ZONE_TECHNICIAN: 'Khu vực của công trình chưa có kỹ thuật viên.',
+  NO_AVAILABLE_TECHNICIAN: 'Kỹ thuật viên của khu vực đã kín lịch trong những ngày tới.',
+  SCHEDULE_CONFLICT: 'Kỹ thuật viên của khu vực đã kín lịch ngày này. Thử ngày khác.',
 }
 
-/** "25 phút", "1 giờ 5 phút" (làm tròn lên phút). */
-export function formatDuration(seconds: number | null | undefined) {
-  if (seconds == null) return '—'
-  const minutes = Math.ceil(seconds / 60)
-  if (minutes < 60) return `${minutes} phút`
-  const h = Math.floor(minutes / 60)
-  const m = minutes % 60
-  return m ? `${h} giờ ${m} phút` : `${h} giờ`
+export function coverageText(status: string) {
+  return COVERAGE[status] ?? null
 }
 
-export function originLabel(kind: string) {
-  return kind === 'BASE' ? 'Từ nơi xuất phát' : kind === 'APPOINTMENT' ? 'Từ công trình trước' : kind
-}
-
-/** Kết quả gọi Vietmap của một chặng (RouteCalculationStatuses). */
-const ROUTE_CALCULATION: Record<string, string> = {
-  OK: 'Đã tính',
-  ROUTE_NOT_FOUND: 'Không tìm được đường đi',
-  QUOTA_EXCEEDED: 'Hết lượt tính của Vietmap',
-  RATE_LIMITED: 'Vietmap đang giới hạn số lượt',
-  TIMEOUT: 'Vietmap không phản hồi kịp',
-  PROVIDER_UNAVAILABLE: 'Vietmap đang lỗi',
-  INVALID_RESPONSE: 'Vietmap trả dữ liệu không đọc được',
-  REJECTED_REQUEST: 'Vietmap từ chối yêu cầu',
-  PROVIDER_DISABLED: 'Chưa bật dịch vụ tính đường đi',
-  BUDGET_EXHAUSTED: 'Quá số lượt tính cho một thao tác',
-}
-
-export function routeCalculationLabel(status: string) {
-  return ROUTE_CALCULATION[status] ?? status
-}
-
-// Trạng thái chặng đường. Chỉ OK mới là số liệu hiện tại
-const SCHEDULE_ROUTING: Record<string, { label: string; tone: Tone }> = {
-  OK: { label: 'Đường đi đã kiểm tra', tone: 'ok' },
-  PENDING_RECALCULATION: { label: 'Đang tính lại đường đi', tone: 'info' },
-  STALE: { label: 'Đường đi cũ, cần tính lại', tone: 'warn' },
-  FAILED: { label: 'Không tính được đường đi', tone: 'warn' },
-  MISSING: { label: 'Chưa có ước tính đường đi', tone: 'warn' },
-}
-
-export function scheduleRoutingMeta(status: string): { label: string; tone: Tone } {
-  return SCHEDULE_ROUTING[status] ?? { label: status, tone: 'neutral' }
-}
-
-/** Không có dữ liệu thì nói không có, không bao giờ suy ra "thông thoáng". */
-export function congestionText(c: TravelCongestionView | null | undefined) {
-  if (!c || c.status !== 'AVAILABLE') return 'Không có dữ liệu giao thông'
-  const heavy = c.heavyOrWorseMeters ?? 0
-  return heavy > 0 ? `Kẹt xe nặng khoảng ${formatDistance(heavy)} trên đường` : 'Vietmap không ghi nhận đoạn kẹt nặng'
-}
-
-const FEASIBILITY: Record<string, string> = {
-  BASE_LOCATION_MISSING: 'chưa có nơi xuất phát',
-  APPOINTMENT_LOCATION_MISSING: 'công trình chưa có toạ độ',
-  TECHNICIAN_UNAVAILABLE_PERIOD: 'đang trong lịch nghỉ',
-  DAILY_LIMIT_REACHED: 'đã đủ số lịch trong ngày',
-  OVERLAPPING_APPOINTMENT: 'trùng giờ với lịch khác',
-  CANNOT_ARRIVE_IN_TIME: 'không kịp tới công trình',
-  LATE_FOR_NEXT_APPOINTMENT: 'sẽ trễ lịch kế tiếp',
-  DEPARTURE_IN_PAST: 'giờ phải xuất phát đã qua',
-  ROUTE_NOT_VERIFIED: 'chưa kiểm tra được đường đi',
+// Vì sao một kỹ thuật viên không nhận được lịch (mã của backend)
+const INELIGIBLE: Record<string, string> = {
+  TECHNICIAN_INACTIVE: 'tài khoản không hoạt động',
+  TECHNICIAN_SCHEDULING_DISABLED: 'đang tắt nhận lịch',
+  TECHNICIAN_OUTSIDE_ZONE: 'không thuộc khu vực của công trình',
   OUTSIDE_WORKING_HOURS: 'ngoài giờ làm',
-  BEFORE_EARLIEST_BASE_DEPARTURE: 'phải rời nơi xuất phát sớm hơn giờ cho phép',
-  SCHEDULING_DISABLED: 'kỹ thuật viên bị tắt nhận lịch',
+  TECHNICIAN_ON_LEAVE: 'đang nghỉ',
+  TECHNICIAN_SCHEDULE_CONFLICT: 'trùng lịch khác',
+  DAILY_LIMIT_REACHED: 'đã đủ số lịch trong ngày',
+  SCHEDULE_CONFLICT: 'trùng lịch khác',
 }
 
-export function feasibilityLabel(code: string) {
-  return FEASIBILITY[code] ?? code
-}
-
-/** Lấy mã lý do trong câu gốc của server, vd. "...cannot take this appointment (DAILY_LIMIT_REACHED)." thành "đã đủ số lịch trong ngày" */
-export function reasonFromServerMessage(message: string | null | undefined) {
-  const code = message?.match(/\(([A-Z_]{4,})\)/)?.[1]
-  return code ? feasibilityLabel(code) : null
+export function ineligibleLabel(code: string | null | undefined) {
+  if (!code) return null
+  return INELIGIBLE[code] ?? code
 }
 
 /** Danh sách lịch bị ảnh hưởng trong lỗi 409 TECHNICIAN_HAS_CONFLICTING_APPOINTMENTS */
@@ -262,31 +252,12 @@ export function conflictsOf(error: unknown): ConflictingAppointmentView[] {
     : []
 }
 
-/** Câu lỗi khi xếp lịch, kèm lý do nếu server có ghi */
+/** Câu lỗi khi xếp lịch, 429 thì kèm số giây phải chờ */
 export function schedulingErrorMessage(error: unknown) {
-  if (isApiError(error)) {
-    if (error.code === 'TECHNICIAN_NOT_AVAILABLE') {
-      const reason = reasonFromServerMessage(error.serverMessage)
-      if (reason)
-        return `Kỹ thuật viên này không nhận được lịch (${reason}). Danh sách đã được tải lại, hãy chọn người khác.`
-    }
-    if (error.status === 429 && error.retryAfter) return `Bạn thao tác quá nhanh. Thử lại sau ${error.retryAfter} giây.`
+  if (isApiError(error) && error.status === 429 && error.retryAfter) {
+    return `Bạn thao tác quá nhanh. Thử lại sau ${error.retryAfter} giây.`
   }
   return errorMessage(error)
-}
-
-const RECALCULATION_REASONS: Record<string, string> = {
-  CANCELLATION: 'có lịch bị huỷ',
-  CUSTOMER_RESCHEDULE: 'khách đổi giờ',
-  SALES_RESCHEDULE: 'kinh doanh đổi giờ',
-  REASSIGNMENT: 'đổi kỹ thuật viên',
-  BASE_LOCATION_CHANGED: 'đổi nơi xuất phát',
-  WORKING_SCHEDULE_CHANGED: 'đổi giờ làm',
-  UNAVAILABILITY_CHANGED: 'đổi lịch nghỉ',
-}
-
-export function recalculationReasonLabel(reason: string) {
-  return RECALCULATION_REASONS[reason] ?? reason
 }
 
 export const WEEK_DAYS = [
@@ -303,18 +274,16 @@ export function weekDayLabel(day: string) {
   return WEEK_DAYS.find((d) => d.value === day)?.label ?? day
 }
 
-// Kỹ thuật viên nhận được lịch không. Thiếu nơi xuất phát thì tô đỏ, tắt nhận lịch / bị khoá thì xám
+// Kỹ thuật viên nhận được lịch không. Chưa thuộc khu vực nào thì tô đỏ, tắt nhận lịch / bị khoá thì xám
 export function technicianReadiness(t: {
   readyForScheduling: boolean
   isActiveUser: boolean
   isSchedulingActive: boolean
-  baseLatitude: number | null
-  baseLongitude: number | null
+  zones: unknown[]
 }): { label: string; tone: Tone } {
   if (t.readyForScheduling) return { label: 'Sẵn sàng nhận lịch', tone: 'ok' }
   if (!t.isActiveUser) return { label: 'Tài khoản không hoạt động', tone: 'neutral' }
-  const hasBase = t.baseLatitude != null && t.baseLongitude != null && !(t.baseLatitude === 0 && t.baseLongitude === 0)
-  if (!hasBase) return { label: 'Chưa có nơi xuất phát', tone: 'danger' }
+  if (t.zones.length === 0) return { label: 'Chưa thuộc khu vực nào', tone: 'danger' }
   return { label: 'Đang tắt nhận lịch', tone: 'neutral' }
 }
 

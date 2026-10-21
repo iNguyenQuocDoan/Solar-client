@@ -1,11 +1,6 @@
-import {
-  EMPTY_PROFILE,
-  EMPTY_SITE,
-  type ProfileForm,
-  type SiteForm,
-} from '@/features/pre-surveys/components/assessmentForm'
-import { EMPTY_SIMULATION_FORM, type SimulationForm } from '@/features/pre-surveys/components/simulationForm'
-import { EMPTY_SURFACE_FORM, newObstacleKey, type SurfaceForm } from '@/features/pre-surveys/components/surfaceForm'
+import { EMPTY_PROFILE, EMPTY_SITE, type ProfileForm, type SiteForm } from '@/features/pre-surveys/utils/assessmentForm'
+import { EMPTY_SIMULATION_FORM, type SimulationForm } from '@/features/pre-surveys/utils/simulationForm'
+import { EMPTY_SURFACE_FORM, newObstacleKey, type SurfaceForm } from '@/features/pre-surveys/utils/surfaceForm'
 import type { CreateCustomerProfileRequest, CreatePropertySiteRequest } from '@/types/req/customersReq'
 
 // Backend không có API lấy lại bản nháp hay địa điểm của khách, nên lưu id và thông tin vào localStorage.
@@ -40,6 +35,26 @@ export function writeDraft(account: string, draft: AssessmentDraft) {
 
 export function clearDraft(account: string) {
   writeDraft(account, {})
+}
+
+// Cờ "tài khoản đã có hồ sơ khách hàng". Hồ sơ chỉ tạo một lần nên lần sau bỏ qua bước hồ sơ
+const profileDoneKey = (account: string) => `smartsolar.customer-profile.${account}`
+
+export function readProfileDone(account: string) {
+  try {
+    return localStorage.getItem(profileDoneKey(account)) === '1'
+  } catch {
+    return false
+  }
+}
+
+export function writeProfileDone(account: string, done: boolean) {
+  try {
+    if (done) localStorage.setItem(profileDoneKey(account), '1')
+    else localStorage.removeItem(profileDoneKey(account))
+  } catch {
+    // Trình duyệt chặn localStorage: bỏ qua
+  }
 }
 
 // Form đang nhập dở, để tải lại trang không bị mất

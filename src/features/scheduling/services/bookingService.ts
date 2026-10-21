@@ -11,12 +11,12 @@ import type {
 import type { SurveySlotsView } from '@/types/res/surveySlotsRes'
 import { apiGet, apiPost, apiRequest } from '@/services/api/client'
 
-// Khách tự đặt giờ khảo sát, hệ thống giữ chỗ một kỹ thuật viên. Đổi / huỷ được khi lịch còn BOOKED
+// Khách tự đặt giờ khảo sát, kỹ thuật viên trong khu vực tự nhận lịch. Đổi / huỷ được khi còn đủ xa giờ hẹn
 
 const base = '/customers/me/survey-requests'
 const path = (id: string) => `${base}/${encodeURIComponent(id)}`
 
-/** Chỉ trả các giờ đã kiểm tra được kỹ thuật viên và đường đi */
+/** Luôn 200: không có giờ thì coverageStatus cho biết vì sao */
 export function getSurveySlots(propertySiteId: string, date: string) {
   return apiGet<SurveySlotsView>('/survey-slots', { params: { propertySiteId, date } })
 }
@@ -36,7 +36,7 @@ export function bookAppointment(id: string, body: BookSurveyAppointmentRequest) 
   return apiPost<BookingConfirmation>(`${path(id)}/booking`, body)
 }
 
-/** PUT .../booking, đổi sang giờ khác khi còn BOOKED (lịch cũ giữ làm lịch sử). */
+/** PUT .../booking, đổi sang giờ khác (lịch cũ giữ làm lịch sử), lịch quay về chờ kỹ thuật viên nhận */
 export function rescheduleAppointment(id: string, body: BookSurveyAppointmentRequest) {
   return apiRequest<BookingConfirmation>({ method: 'PUT', url: `${path(id)}/booking`, data: body })
 }

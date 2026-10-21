@@ -1,10 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import * as surveyRequestService from '@/features/pre-surveys/services/surveyRequestService'
+import * as surveyRequestService from '@/features/survey-requests/services/surveyRequestService'
 import type { SalesRescheduleRequest } from '@/types/req/surveyRequestsReq'
 import type { TechnicianAvailabilityView } from '@/types/res/technicianAvailabilityRes'
 import type {
   AssignmentView,
   ClaimSurveyRequestResponse,
+  EscalatedAppointmentView,
   MySurveyRequestItem,
   PendingSurveyRequestItem,
   SalesRescheduleView,
@@ -20,6 +21,7 @@ export const surveyRequestKeys = {
   my: () => [...surveyRequestKeys.all, 'my'] as const,
   detail: (id: string) => [...surveyRequestKeys.all, 'detail', id] as const,
   availability: (id: string) => [...surveyRequestKeys.all, 'availability', id] as const,
+  escalated: () => [...surveyRequestKeys.all, 'escalated'] as const,
 }
 
 const QUEUE_REFRESH_MS = 60_000
@@ -61,18 +63,21 @@ export function useClaimSurveyRequestMutation() {
   })
 }
 
-// Không tự tải lại khi quay về tab, vì mỗi lần gọi có thể tốn lượt gọi Vietmap
-export function useTechnicianAvailabilityQuery(
-  surveyRequestId: string | undefined,
-  startsAt?: string,
-  { enabled = true } = {},
-) {
+export function useEscalatedAppointmentsQuery({ enabled = true }: QueueOptions = {}) {
+  return useQuery<EscalatedAppointmentView[], ApiError>({
+    queryKey: surveyRequestKeys.escalated(),
+    queryFn: surveyRequestService.listEscalatedAppointments,
+    refetchInterval: QUEUE_REFRESH_MS,
+    enabled,
+  })
+}
+
+export function useTechnicianAvailabilityQuery(surveyRequestId: string | undefined, { enabled = true } = {}) {
   return useQuery<TechnicianAvailabilityView, ApiError>({
-    queryKey: [...surveyRequestKeys.availability(surveyRequestId ?? ''), startsAt ?? 'booked'],
-    queryFn: () => surveyRequestService.getTechnicianAvailability(surveyRequestId!, startsAt),
+    queryKey: surveyRequestKeys.availability(surveyRequestId ?? ''),
+    queryFn: () => surveyRequestService.getTechnicianAvailability(surveyRequestId!),
     enabled: Boolean(surveyRequestId) && enabled,
     staleTime: 30_000,
-    refetchOnWindowFocus: false,
     retry: false,
   })
 }
@@ -83,15 +88,16 @@ function useInvalidateSchedule() {
   return () => queryClient.invalidateQueries({ queryKey: surveyRequestKeys.all })
 }
 
-type AssignVars = { id: string; technicianUserId: string; reason: string | null; reassign: boolean }
+type AssignVars = { id: string; technicianUserId: string; reason: string; revision: number; reassign: boolean }
 
 export function useAssignTechnicianMutation() {
   const invalidate = useInvalidateSchedule()
   return useMutation<AssignmentView, ApiError, AssignVars>({
-    mutationFn: ({ id, technicianUserId, reason, reassign }) =>
+    mutationFn: ({ id, technicianUserId, reason, revision, reassign }) =>
       (reassign ? surveyRequestService.reassignTechnician : surveyRequestService.assignTechnician)(id, {
         technicianUserId,
         reason,
+        expectedRevision: revision,
       }),
     onSettled: invalidate,
   })

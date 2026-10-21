@@ -82,7 +82,7 @@ function objectType(schema, file, imports, indent) {
   return lines.length ? `{\n${lines.join('\n')}\n${indent}}` : 'Record<string, never>'
 }
 
-const HEADER = '/* Sinh tự động từ docs/api/swagger.json bằng `npm run gen:api` – KHÔNG sửa tay. */\n'
+const HEADER = '/* Sinh tự động từ docs/api/swagger.json bằng `npm run gen:api`, KHÔNG sửa tay. */\n'
 
 const files = new Map()
 for (const [name, file] of owner) (files.get(file) ?? files.set(file, []).get(file)).push(name)

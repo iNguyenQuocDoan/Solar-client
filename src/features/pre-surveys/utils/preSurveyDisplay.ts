@@ -2,8 +2,8 @@ import type { Tone } from '@/components/common/ui/badge'
 import type { CustomerType, InstallationSurfaceType } from '@/types/req/customersReq'
 import type { SurveyRequestStatus } from '@/types/res/surveyRequestsRes'
 
-// Nhãn và định dạng dùng chung cho khách hàng và sales
-// Swagger chỉ có số của enum, tên lấy từ SmartSolar.Modules.PreSurvey.Enums của backend
+// Nhãn và định dạng dùng chung cho màn của khách hàng và màn của sales.
+// Swagger chỉ có số của enum, tên từng giá trị lấy từ SmartSolar.Modules.PreSurvey.Enums của backend.
 
 export const CUSTOMER_TYPES = [
   { value: 1, label: 'Cá nhân' },
@@ -40,17 +40,26 @@ export function directionLabel(degree: number | null | undefined) {
   return DIRECTIONS[Math.round(normalized / 45) % 8]!
 }
 
+/** Giá trị chưa có trong bảng nhãn thì in nguyên số, không đoán nghĩa */
+function unknownTypeLabel(value: number | null | undefined) {
+  if (value == null) return '—'
+  return `Loại ${value}`
+}
+
 export function customerTypeLabel(value: number | null | undefined) {
-  return CUSTOMER_TYPES.find((t) => t.value === value)?.label ?? (value == null ? '—' : `Loại ${value}`)
+  const known = CUSTOMER_TYPES.find((type) => type.value === value)
+  return known ? known.label : unknownTypeLabel(value)
 }
 
 export function surfaceTypeLabel(value: number | null | undefined) {
-  return SURFACE_TYPES.find((t) => t.value === value)?.label ?? (value == null ? '—' : `Loại ${value}`)
+  const known = SURFACE_TYPES.find((type) => type.value === value)
+  return known ? known.label : unknownTypeLabel(value)
 }
 
-// "Chờ nhận" tô đỏ vì cần người nhận
+// Chưa có kỹ thuật viên là đang chờ kỹ thuật viên trong khu vực nhận, chưa phải việc của sales nên không tô đỏ
 const STATUS_META: Record<SurveyRequestStatus, { label: string; tone: Tone }> = {
-  1: { label: 'Chờ nhận', tone: 'danger' },
+  1: { label: 'Chưa có kỹ thuật viên', tone: 'info' },
+  // 2, 3 không còn dùng ở backend mới, giữ nhãn để đọc được dữ liệu cũ
   2: { label: 'Đã nhận', tone: 'info' },
   3: { label: 'Đang xem xét', tone: 'info' },
   4: { label: 'Đã hẹn khảo sát', tone: 'ok' },
@@ -70,35 +79,37 @@ const HCM_BOXES = [
 ]
 
 export function isInHcm(latitude: number, longitude: number) {
-  return HCM_BOXES.some(
-    (b) => latitude >= b.latMin && latitude <= b.latMax && longitude >= b.lonMin && longitude <= b.lonMax,
-  )
+  return HCM_BOXES.some((box) => {
+    const latitudeInside = latitude >= box.latMin && latitude <= box.latMax
+    const longitudeInside = longitude >= box.lonMin && longitude <= box.lonMax
+    return latitudeInside && longitudeInside
+  })
 }
 
 export const HCM_COORDINATE_HINT = 'vĩ độ (số đầu) khoảng 10.3 đến 11.6, kinh độ (số sau) khoảng 106.3 đến 107.6'
 
 /** Dùng dấu chấm như Google Maps, tránh nhầm với dấu phẩy ngăn cách */
 export function formatCoordinates(latitude: number, longitude: number) {
-  const part = (v: number) => String(Number(v.toFixed(5)))
-  return `${part(latitude)}, ${part(longitude)}`
+  // Tối đa 5 chữ số lẻ (chính xác tới khoảng 1 m), bỏ số 0 thừa ở cuối
+  const shorten = (value: number) => String(Number(value.toFixed(5)))
+  return `${shorten(latitude)}, ${shorten(longitude)}`
 }
 
 export function mapsUrl(latitude: number, longitude: number) {
   return `https://www.google.com/maps?q=${latitude},${longitude}`
 }
 
-/** Đã nhận nhưng chưa phân công kỹ thuật viên */
+/** Chưa có kỹ thuật viên xác nhận lịch khảo sát */
 export function needsScheduling(status: number | null | undefined) {
-  return status === 2 || status === 3
+  return status === 1 || status === 2 || status === 3
 }
 
 export function surveyStatusMeta(status: number | null | undefined): { label: string; tone: Tone } {
-  return (
-    STATUS_META[status as SurveyRequestStatus] ?? {
-      label: status == null ? '—' : `Trạng thái ${status}`,
-      tone: 'neutral',
-    }
-  )
+  const known = STATUS_META[status as SurveyRequestStatus]
+  if (known) return known
+  // Trạng thái lạ thì in nguyên số
+  const label = status == null ? '—' : `Trạng thái ${status}`
+  return { label, tone: 'neutral' }
 }
 
 const decimal = new Intl.NumberFormat('vi-VN', { maximumFractionDigits: 1 })
@@ -133,14 +144,15 @@ export function formatRelative(iso: string | null | undefined, now = Date.now())
   const time = new Date(iso).getTime()
   if (Number.isNaN(time)) return '—'
   const diff = time - now
-  const abs = Math.abs(diff)
+  const distance = Math.abs(diff)
+  if (distance < MINUTE) return 'vừa xong'
+  if (distance >= 30 * DAY) return formatDateTime(iso)
+
   let text: string
-  if (abs < MINUTE) text = 'vừa xong'
-  else if (abs < HOUR) text = relative.format(Math.round(diff / MINUTE), 'minute')
-  else if (abs < DAY) text = relative.format(Math.round(diff / HOUR), 'hour')
-  else if (abs < 30 * DAY) text = relative.format(Math.round(diff / DAY), 'day')
-  else return formatDateTime(iso)
-  // Intl viết hoa "Hôm qua", đổi về chữ thường
+  if (distance < HOUR) text = relative.format(Math.round(diff / MINUTE), 'minute')
+  else if (distance < DAY) text = relative.format(Math.round(diff / HOUR), 'hour')
+  else text = relative.format(Math.round(diff / DAY), 'day')
+  // Intl viết hoa "Hôm qua", đổi về chữ thường vì câu hiển thị luôn đặt nó sau một động từ
   return text.charAt(0).toLowerCase() + text.slice(1)
 }
 
@@ -157,7 +169,7 @@ export function formatAddress(parts: {
   province?: string | null
 }) {
   const text = [parts.streetLine, parts.ward, parts.district, parts.province]
-    .map((p) => p?.trim())
+    .map((part) => part?.trim())
     .filter(Boolean)
     .join(', ')
   return text || '—'
